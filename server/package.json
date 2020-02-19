@@ -43,5 +43,8 @@
     "webpack",
     "prettier"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jsforce": "^1.9.3"
+  }
 }
