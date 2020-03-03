@@ -1,16 +1,19 @@
-import math from './mathematic';
-import express from 'express';
-import bodyParser from 'body-parser';
-import { userInfo } from 'os';
+// import math from './mathematic';
+// import {serverController} from './controllers/index';
+import TestServer from './server'
+// import bodyParser from 'body-parser';
 
 // console.log('The answer is: ' + math.add(2, 2));
 
-const app = express();
-const port = process.env.PORT || 8000;
+// const app = express();
+// const port = process.env.PORT || 8000;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 
-// app.get('api/users/:id', getUser);
+const server = new TestServer();
+server.start(8000);
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({extended: true}));
 
-app.listen(port, () => console.log("Hello world"));
+// // app.get('api/users/:id', getUser);
+
+// app.listen(port, () => console.log("Hello world"));

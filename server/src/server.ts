@@ -1,11 +1,14 @@
 import * as bodyParser from 'body-parser';
 import * as controllers from './controllers';
+import { Server } from 'http';
+import * as express from 'express';
 
-class Server extends Server {
+class TestServer extends Server {
     private readonly SERVER_STARTED = "Example server started on port: ";
 
+    app = express();
     constructor() {
-        super(true);
+        super();
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({extended: true}));
         this.setupControllers();
@@ -20,16 +23,16 @@ class Server extends Server {
                 ctlInstances.push(new controller());
             }
         }
-        super.addControllers(ctlInstances);
+        // super.addControllers(ctlInstances);
     }
 
-    public start(port: number) void {
-        this.app.get('*', (req,res) => {
+    public start(port: number): void {
+        this.app.get('*', (req, res) => {
             res.send(this.SERVER_STARTED + port);
         });
         this.app.listen(port, () => {
-            //can log stuff if needed
-        });
+            console.log(this.SERVER_STARTED + port);
+        })
     }
 }
-export default Server;
+export default TestServer;
