@@ -2,11 +2,15 @@ import * as bodyParser from 'body-parser';
 import * as controllers from './controllers';
 import { Server } from 'http';
 import * as express from 'express';
+import {XMLHttpRequest} from 'xmlhttprequest-ts';
 
 class TestServer extends Server {
     private readonly SERVER_STARTED = "Example server started on port: ";
 
-    app = express();
+    open = require('open');
+
+    public app = express();
+
     constructor() {
         super();
         this.app.use(bodyParser.json());
@@ -32,6 +36,9 @@ class TestServer extends Server {
         });
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
+            var xml = new XMLHttpRequest();
+            xml.open("POST",'http://127.0.0.1:'+ port);
+            xml.send();
         })
     }
 }
