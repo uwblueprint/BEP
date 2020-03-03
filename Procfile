@@ -1,2 +1,1 @@
-web:webpack
-web:ts-node/server/src/config/server.ts
+web: cd server && npm start
