@@ -51,5 +51,6 @@
     "jsforce": "^1.9.3",
     "open": "^7.0.2",
     "xmlhttprequest-ts": "^1.0.1"
+    "ts-node": "^4.1.0"
   }
 }
