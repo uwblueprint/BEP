@@ -30,15 +30,15 @@ class TestServer extends Server {
     //     // super.addControllers(ctlInstances);
     // }
 
-    public start(port: number): void {
+    public start(port): void {
         this.app.get('*', (req, res) => {
             res.send(this.SERVER_STARTED + port);
         });
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
-            var xml = new XMLHttpRequest();
-            xml.open("POST",'http://127.0.0.1:'+ port);
-            xml.send();
+            // var xml = new XMLHttpRequest();
+            // xml.open("POST",'http://127.0.0.1:'+ port);
+            // xml.send();
         })
     }
 }

@@ -6,11 +6,11 @@ import TestServer from './server'
 // console.log('The answer is: ' + math.add(2, 2));
 
 // const app = express();
-// const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8000;
 
 
 const server = new TestServer();
-server.start(8000);
+server.start(port);
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({extended: true}));
 
