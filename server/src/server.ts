@@ -65,8 +65,6 @@ class TestServer extends Server {
 
         this.app.get('/token', (req, res) => {
             const conn = new jsforce.Connection({ oauth2: oauth2 });
-            //   console.log('request:');
-            //   console.log(req);
             const code = req.query.code;
             conn.authorize(code, function (err, userInfo) {
                 if (err) {
@@ -98,7 +96,6 @@ class TestServer extends Server {
                     return console.error(err, ret);
                 }
                 console.log('Created record id : ' + ret.id);
-                // ...
             });
             // GET QUERY
             // var records = [];
