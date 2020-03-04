@@ -1,7 +1,7 @@
-import { Request, Response } from  'express';
+// import { Request, Response } from  'express';
 // import { Post } from 'http';
-
-// // @Controller('api')
+//
+// @Controller('api')
 // export class serverController {
 // @post()
 // private getMessage(req: Request, res: Response) {
