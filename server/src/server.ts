@@ -1,15 +1,12 @@
 import * as bodyParser from 'body-parser';
 // import * as controllers from './controllers';
 import { Server } from 'http';
-// import * as express from 'express';
-const express = require('express');
-
-const jsforce = require('jsforce');
-const morgan = require('morgan');
-const session = require('express-session');
-
 import dotenv from 'dotenv';
 
+import express from 'express';
+import session from 'express-session';
+
+const jsforce = require('jsforce');
 const result = dotenv.config();
 
 if (result.error) {
