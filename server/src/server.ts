@@ -2,7 +2,7 @@ import * as bodyParser from 'body-parser';
 // import * as controllers from './controllers';
 import { Server } from 'http';
 import * as express from 'express';
-import {XMLHttpRequest} from 'xmlhttprequest-ts';
+// import {XMLHttpRequest} from 'xmlhttprequest-ts';
 
 class TestServer extends Server {
     private readonly SERVER_STARTED = "Example server started on port: ";
