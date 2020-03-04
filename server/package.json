@@ -47,11 +47,14 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
     "jsforce": "^1.9.3",
+    "morgan": "^1.9.1",
     "open": "^7.0.2",
-    "xmlhttprequest-ts": "^1.0.1",
     "ts-node": "^4.1.0",
-    "typescript": "^2.7.1"
+    "typescript": "^2.7.1",
+    "xmlhttprequest-ts": "^1.0.1"
   }
 }

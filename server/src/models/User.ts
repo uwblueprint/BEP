@@ -1,7 +1,5 @@
-// import request from 'request.ts';
-
 export default class User {
-    
+
     // userType: 0 = admin/superuser, 1 = teacher/educator, 2 = volunteer/student
 
     private firstName: string;
@@ -33,18 +31,5 @@ export default class User {
 
 
 
-    
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
