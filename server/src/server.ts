@@ -28,9 +28,9 @@ console.log(result.parsed);
 class TestServer extends Server {
     private readonly SERVER_STARTED = "Example server started on port: ";
 
-    private accessToken: string;
-    private instanceUrl: string;
-    private refreshToken: string;
+    // private accessToken: string;
+    // private instanceUrl: string;
+    // private refreshToken: string;
 
     private conn: jsforce.Connection;
 
@@ -80,9 +80,9 @@ class TestServer extends Server {
                 console.log('User ID: ' + userInfo.id);
                 console.log('Org ID: ' + userInfo.organizationId);
 
-                this.accessToken = conn.accessToken;
-                this.instanceUrl = conn.instanceUrl;
-                this.refreshToken = conn.refreshToken;
+                // this.accessToken = conn.accessToken;
+                // this.instanceUrl = conn.instanceUrl;
+                // this.refreshToken = conn.refreshToken;
 
                 // this.app.use(session({accessToken: conn.accessToken, instanceUrl: }))
                 res.redirect('http://localhost:3030');
