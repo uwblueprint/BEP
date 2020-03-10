@@ -6,11 +6,11 @@ import cors from "cors";
 import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
-
+import jsforce from 'jsforce';
 import { requestsRouter } from "./requests/requests.router";
 
 
-const jsforce = require('jsforce');
+// const jsforce = require('jsforce');
 const result = dotenv.config();
 
 if (result.error) {
@@ -27,6 +27,12 @@ const oauth2 = new jsforce.OAuth2({
 console.log(result.parsed);
 class TestServer extends Server {
     private readonly SERVER_STARTED = "Example server started on port: ";
+
+    private accessToken: string;
+    private instanceUrl: string;
+    private refreshToken: string;
+
+    private conn: jsforce.Connection;
 
     // open = require('open');
 
@@ -45,17 +51,6 @@ class TestServer extends Server {
         // this.setupControllers();
     }
     
-    // private setupControllers(): void {
-    //     const ctlInstances = [];
-    //
-    //     // for (const name in controllers) {
-    //     //     if (controllers.hasOwnProperty(name)) {
-    //     //         const controller = (controllers as any)[name];
-    //     //         ctlInstances.push(new controller());
-    //     //     }
-    //     // }
-    //     // super.addControllers(ctlInstances);
-    // }
 
     public start(port): void {
         // this.app.get('*', (req, res) => {
@@ -73,10 +68,11 @@ class TestServer extends Server {
         this.app.get('/token', (req, res) => {
             const conn = new jsforce.Connection({ oauth2: oauth2 });
             const code = req.query.code;
-            conn.authorize(code, function (err, userInfo) {
+            conn.authorize(code, (err, userInfo) => {
                 if (err) {
                     return console.error('This error is in the auth callback: ' + err);
                 }
+
                 console.log('\nAuthentication successful!\n');
                 console.log('Access Token: ' + conn.accessToken);
                 console.log('Instance URL: ' + conn.instanceUrl);
@@ -84,37 +80,30 @@ class TestServer extends Server {
                 console.log('User ID: ' + userInfo.id);
                 console.log('Org ID: ' + userInfo.organizationId);
 
-                req.session.accessToken = conn.accessToken;
-                req.session.instanceUrl = conn.instanceUrl;
-                req.session.refreshToken = conn.refreshToken;
+                this.accessToken = conn.accessToken;
+                this.instanceUrl = conn.instanceUrl;
+                this.refreshToken = conn.refreshToken;
 
+                // this.app.use(session({accessToken: conn.accessToken, instanceUrl: }))
                 res.redirect('http://localhost:3030');
             });
+            this.conn = conn;
         });
+
         this.app.get('/test', (req, res) => {
-            let conn = new jsforce.Connection({
-                oauth2: { oauth2 },
-                accessToken: req.session.accessToken,
-                instanceUrl: req.session.instanceUrl
-            });
-            // Single record creation
-            conn.sobject('Test__c').create({ Name: 'My Account #1', Email__c: 'test@tests.com' }, function (err, ret) {
-                if (err || !ret.success) {
-                    return console.error(err, ret);
-                }
-                console.log('Created record id : ' + ret.id);
-            });
-            // GET QUERY
-            // var records = [];
-            conn.query('SELECT Name,Email__c FROM Test__c', function (err, result) {
+            console.log("in /test: this.conn.accessToken: ", this.accessToken);
+            this.conn.query('SELECT Name,Email__c FROM Test__c', function (err, result) {
                 if (err) {
+                    console.log("query error");
                     return console.error(err);
                 }
                 console.log('total : ' + result.totalSize);
                 console.log('fetched : ' + result.records.length);
                 console.log(result.records);
             });
+            res.send("test OK");
         });
+
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
         });
