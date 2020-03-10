@@ -48,7 +48,8 @@ requestsRouter.get("/:id", async (req: Express.Request, res: Express.Response) =
 
 requestsRouter.post("/", async (req: Express.Request, res: Express.Response) => {
     try {
-        const request: Request = req.body.item;
+        const request: Request = req.body.request;
+        console.log("body of post req", request);
 
         await RequestService.create(request);
 
