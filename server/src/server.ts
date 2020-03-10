@@ -50,18 +50,19 @@ class TestServer extends Server {
         this.app.use("/requests", requestsRouter);
         // this.setupControllers();
     }
-    
 
     public start(port): void {
-        // this.app.get('*', (req, res) => {
-        //     res.send(this.SERVER_STARTED + port);
-        // });
         this.app.get('/', (req, res) => {
             console.log('Testing /');
             res.send('Hello world!');
         });
         this.app.get('/auth/login', (req, res) => {
             // Redirect to Salesforce login/authorization page
+            // Connected app settings FIXED so doesn't need a salesforce USER login
+            // Will directly re-direct you to /token
+
+            // TODO: handle re-authentication when oauth token TIMES OUT 
+            // (check settings to see how long time is)
             res.redirect(oauth2.getAuthorizationUrl({ scope: 'api id web refresh_token full' }));
         });
 
@@ -80,18 +81,12 @@ class TestServer extends Server {
                 console.log('User ID: ' + userInfo.id);
                 console.log('Org ID: ' + userInfo.organizationId);
 
-                // this.accessToken = conn.accessToken;
-                // this.instanceUrl = conn.instanceUrl;
-                // this.refreshToken = conn.refreshToken;
-
-                // this.app.use(session({accessToken: conn.accessToken, instanceUrl: }))
                 res.redirect('http://localhost:3030');
             });
             this.conn = conn;
         });
 
         this.app.get('/test', (req, res) => {
-            console.log("in /test: this.conn.accessToken: ", this.accessToken);
             this.conn.query('SELECT Name,Email__c FROM Test__c', function (err, result) {
                 if (err) {
                     console.log("query error");
@@ -109,4 +104,5 @@ class TestServer extends Server {
         });
     }
 }
+
 export default TestServer;
