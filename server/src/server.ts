@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import express from 'express';
 import session from 'express-session';
+import { userRouter } from './controllers/UserController';
 
 const jsforce = require('jsforce');
 const result = dotenv.config();
@@ -108,6 +109,7 @@ class TestServer extends Server {
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
         });
+        this.app.use("/user", userRouter);
     }
 }
 export default TestServer;
