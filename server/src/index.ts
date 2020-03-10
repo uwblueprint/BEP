@@ -6,7 +6,7 @@ import TestServer from './server'
 // console.log('The answer is: ' + math.add(2, 2));
 
 // const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3030;
 
 
 const server = new TestServer();

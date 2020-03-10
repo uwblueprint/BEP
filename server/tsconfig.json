@@ -9,6 +9,7 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "baseUrl": ".",
+    "esModuleInterop": true,
     "paths": {
     }
   },
