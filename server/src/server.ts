@@ -2,9 +2,13 @@ import * as bodyParser from 'body-parser';
 // import * as controllers from './controllers';
 import { Server } from 'http';
 import dotenv from 'dotenv';
-
+import cors from "cors";
+import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
+
+import { requestsRouter } from "./requests/requests.router";
+
 
 const jsforce = require('jsforce');
 const result = dotenv.config();
@@ -33,8 +37,14 @@ class TestServer extends Server {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(session({ secret: 'S3CRE7', resave: true, saveUninitialized: true }));
+
+        this.app.use(helmet());
+        this.app.use(cors());
+        this.app.use(express.json());
+        this.app.use("/requests", requestsRouter);
         // this.setupControllers();
     }
+    
     // private setupControllers(): void {
     //     const ctlInstances = [];
     //
