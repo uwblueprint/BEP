@@ -34,7 +34,8 @@
     "nodemon": "nodemon",
     "tslint:fix": "tslint --fix -c tslint.json \"*.{ts,tsx}\"",
     "test": "jest --coverage",
-    "build": "webpack"
+    "build": "webpack",
+    "start": "ts-node ./src/index.ts"
   },
   "keywords": [
     "microserver",
@@ -46,6 +47,12 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "jsforce": "^1.9.3"
+    "@types/express-session": "^1.17.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "jsforce": "^1.9.3",
+    "ts-node": "^4.1.0",
+    "typescript": "^2.7.1"
   }
 }

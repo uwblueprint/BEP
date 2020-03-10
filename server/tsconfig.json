@@ -1,15 +1,19 @@
 {
-  "compilerOptions": {                    
+  "compilerOptions": {
     "target": "ES2017",
     "module": "commonjs",
     "allowJs": true,
     "sourceMap": true,
-    "esModuleInterop": true,
-    "outDir": "./dist",                        
-    "noUnusedLocals": true, 
+    "outDir": "./dist",
+    "noUnusedLocals": true,
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "baseUrl": ".",
+    "esModuleInterop": true,
     "paths": {
     }
-  }
+  },
+  "include": [
+    "src/**/*"
+]
 }
