@@ -43,17 +43,14 @@ class TestServer extends Server {
                 loginUrl: process.env.LOGIN_URL,
                 clientId: process.env.CLIENT_ID,
                 clientSecret: process.env.CLIENT_SECRET,
-                redirectUri: 'http://localhost:3030/auth/token'
+                redirectUri: process.env.REDIRECT_URI
             }
         });
         conn.login(process.env.SALESFORCE_USERNAME, process.env.SALESFORCE_PASSWORD, (err, userInfo) => {
             if (err) { 
                 return console.error("err in salesforce login", err); 
             }
-            // Now you can get the access token and instance URL information.
-            // Save them to establish connection next time.
-            console.log("connection login successful");
-            // logged in user property
+            console.log("salesforce connection established successfully");
         });
     }
 
@@ -62,12 +59,10 @@ class TestServer extends Server {
             console.log("testing /")
             res.send("hello world")
         })
-        this.app.listen(port, () => {
-            console.log(this.SERVER_STARTED + port);
-        });
-
+        
+        // Sanity check test method
         this.app.get('/test', (req, res) => {
-            conn.query('SELECT Name,Email__c FROM Test__c', function (err, result) {
+            conn.query('SELECT Name,Email__c FROM Test__c', (err, result) => {
                 if (err) {
                     console.log("query error");
                     return console.error(err);
@@ -77,6 +72,10 @@ class TestServer extends Server {
                 console.log(result.records);
             });
             res.send("test OK");
+        });
+
+        this.app.listen(port, () => {
+            console.log(this.SERVER_STARTED + port);
         });
     }
 }
