@@ -5,6 +5,7 @@
 
 import { Request } from "./request.interface";
 import { Requests } from "./requests.interface";
+import { conn } from "./../server";
 
 /**
  * In-Memory Store - for LOCAL TESTING
