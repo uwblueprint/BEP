@@ -2,11 +2,16 @@ import * as bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 // import * as controllers from './controllers';
 import { Server } from 'http';
-
+import dotenv from 'dotenv';
+import cors from "cors";
+import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
+import jsforce from 'jsforce';
+import { requestsRouter } from "./requests/requests.router";
 
-const jsforce = require('jsforce');
+
+// const jsforce = require('jsforce');
 const result = dotenv.config();
 
 if (result.error) {
@@ -22,91 +27,84 @@ const oauth2 = new jsforce.OAuth2({
 
 console.log(result.parsed);
 class TestServer extends Server {
-  // open = require('open');
+    private readonly SERVER_STARTED = "Example server started on port: ";
+
+    // private accessToken: string;
+    // private instanceUrl: string;
+    // private refreshToken: string;
+
+    private conn: jsforce.Connection;
+
+    // open = require('open');
 
   public app = express();
   private readonly SERVER_STARTED = 'Example server started on port: ';
 
-  constructor() {
-    super();
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: true }));
-    this.app.use(session({ secret: 'S3CRE7', resave: true, saveUninitialized: true }));
-    // this.setupControllers();
-  }
-  // private setupControllers(): void {
-  //     const ctlInstances = [];
-  //
-  //     // for (const name in controllers) {
-  //     //     if (controllers.hasOwnProperty(name)) {
-  //     //         const controller = (controllers as any)[name];
-  //     //         ctlInstances.push(new controller());
-  //     //     }
-  //     // }
-  //     // super.addControllers(ctlInstances);
-  // }
+    constructor() {
+        super();
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(session({ secret: 'S3CRE7', resave: true, saveUninitialized: true }));
 
-  public start(port): void {
-    // this.app.get('*', (req, res) => {
-    //     res.send(this.SERVER_STARTED + port);
-    // });
-    this.app.get('/', (req, res) => {
-      console.log('Testing /');
-      res.send('Hello world!');
-    });
-    this.app.get('/auth/login', (req, res) => {
-      // Redirect to Salesforce login/authorization page
-      res.redirect(oauth2.getAuthorizationUrl({ scope: 'api id web refresh_token full' }));
-    });
+        this.app.use(helmet());
+        this.app.use(cors());
+        this.app.use(express.json());
+        this.app.use("/requests", requestsRouter);
+        // this.setupControllers();
+    }
 
-    this.app.get('/token', (req, res) => {
-      const conn = new jsforce.Connection({ oauth2: oauth2 });
-      const code = req.query.code;
-      conn.authorize(code, function(err, userInfo) {
-        if (err) {
-          return console.error('This error is in the auth callback: ' + err);
-        }
-        console.log('\nAuthentication successful!\n');
-        console.log('Access Token: ' + conn.accessToken);
-        console.log('Instance URL: ' + conn.instanceUrl);
-        console.log('refreshToken: ' + conn.refreshToken);
-        console.log('User ID: ' + userInfo.id);
-        console.log('Org ID: ' + userInfo.organizationId);
+    public start(port): void {
+        this.app.get('/', (req, res) => {
+            console.log('Testing /');
+            res.send('Hello world!');
+        });
+        this.app.get('/auth/login', (req, res) => {
+            // Redirect to Salesforce login/authorization page
+            // Connected app settings FIXED so doesn't need a salesforce USER login
+            // Will directly re-direct you to /token
 
-        req.session.accessToken = conn.accessToken;
-        req.session.instanceUrl = conn.instanceUrl;
-        req.session.refreshToken = conn.refreshToken;
+            // TODO: handle re-authentication when oauth token TIMES OUT 
+            // (check settings to see how long time is)
+            res.redirect(oauth2.getAuthorizationUrl({ scope: 'api id web refresh_token full' }));
+        });
 
-        res.redirect('http://localhost:3030');
-      });
-    });
-    this.app.get('/test', (req, res) => {
-      let conn = new jsforce.Connection({
-        oauth2: { oauth2 },
-        accessToken: req.session.accessToken,
-        instanceUrl: req.session.instanceUrl
-      });
-      // Single record creation
-      // conn.sobject('Test__c').create({ Name: 'My Account #1', Email__c: 'test@tests.com' }, function (err, ret) {
-      //     if (err || !ret.success) {
-      //         return console.error(err, ret);
-      //     }
-      //     console.log('Created record id : ' + ret.id);
-      // });
-      // GET QUERY
-      // var records = [];
-      conn.query('SELECT Name,Email__c FROM Test__c', function(err, result) {
-        if (err) {
-          return console.error(err);
-        }
-        console.log('total : ' + result.totalSize);
-        console.log('fetched : ' + result.records.length);
-        console.log(result.records);
-      });
-    });
-    this.app.listen(port, () => {
-      console.log(this.SERVER_STARTED + port);
-    });
-  }
+        this.app.get('/token', (req, res) => {
+            const conn = new jsforce.Connection({ oauth2: oauth2 });
+            const code = req.query.code;
+            conn.authorize(code, (err, userInfo) => {
+                if (err) {
+                    return console.error('This error is in the auth callback: ' + err);
+                }
+
+                console.log('\nAuthentication successful!\n');
+                console.log('Access Token: ' + conn.accessToken);
+                console.log('Instance URL: ' + conn.instanceUrl);
+                console.log('refreshToken: ' + conn.refreshToken);
+                console.log('User ID: ' + userInfo.id);
+                console.log('Org ID: ' + userInfo.organizationId);
+
+                res.redirect('http://localhost:3030');
+            });
+            this.conn = conn;
+        });
+
+        this.app.get('/test', (req, res) => {
+            this.conn.query('SELECT Name,Email__c FROM Test__c', function (err, result) {
+                if (err) {
+                    console.log("query error");
+                    return console.error(err);
+                }
+                console.log('total : ' + result.totalSize);
+                console.log('fetched : ' + result.records.length);
+                console.log(result.records);
+            });
+            res.send("test OK");
+        });
+
+        this.app.listen(port, () => {
+            console.log(this.SERVER_STARTED + port);
+        });
+    }
 }
+
 export default TestServer;
