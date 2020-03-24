@@ -1,10 +1,12 @@
-import { TestServer } from './server'
+import { BackendServer } from './server'
 
-const port = process.env.PORT || 3030;
+const port = process.env.PORT || "3030";
 
 /**
- *  App Configuration
+ *  Server Configuration
  */
 
-const server = new TestServer();
+const server = new BackendServer();
 server.start(port);
+
+

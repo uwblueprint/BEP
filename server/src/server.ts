@@ -6,11 +6,9 @@ import cors from "cors";
 import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
-import { requestsRouter } from "./requests/requests.router";
-// import { authRouter } from "./auth/auth.router";
+// import { requestsRouter } from "./requests/requests.router";
 import jsforce from 'jsforce';
 
-// const jsforce = require('jsforce');
 const result = dotenv.config();
 
 let conn;
@@ -21,7 +19,7 @@ if (result.error) {
 
 console.log(result.parsed);
 
-class TestServer extends Server {
+class BackendServer extends Server {
     private readonly SERVER_STARTED = "Example server started on port: ";
 
     public app = express();
@@ -35,7 +33,7 @@ class TestServer extends Server {
         this.app.use(helmet());
         this.app.use(cors());
         this.app.use(express.json());
-        this.app.use("/requests", requestsRouter);
+        // this.app.use("/requests", requestsRouter);
 
         // Authenticate to Salesforce
         conn = new jsforce.Connection({
@@ -47,19 +45,18 @@ class TestServer extends Server {
             }
         });
         conn.login(process.env.SALESFORCE_USERNAME, process.env.SALESFORCE_PASSWORD, (err, userInfo) => {
-            if (err) { 
-                return console.error("err in salesforce login", err); 
+            if (err) {
+                return console.error("err in salesforce login", err);
             }
             console.log("salesforce connection established successfully");
         });
     }
 
-    public start(port): void {
+    public start(port: string): void {
         this.app.get('/', (req, res) => {
             console.log("testing /")
             res.send("hello world")
         })
-        
         // Sanity check test method
         this.app.get('/test', (req, res) => {
             conn.query('SELECT Name,Email__c FROM Test__c', (err, result) => {
@@ -70,6 +67,7 @@ class TestServer extends Server {
                 console.log('total : ' + result.totalSize);
                 console.log('fetched : ' + result.records.length);
                 console.log(result.records);
+                res.send(result.records);
             });
             res.send("test OK");
         });
@@ -81,7 +79,12 @@ class TestServer extends Server {
 }
 
 export {
-    TestServer,
+    BackendServer,
     conn
 }
+
+
+
+
+
 
