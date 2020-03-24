@@ -52,11 +52,8 @@
   "dependencies": {
     "@types/cors": "^2.8.6",
     "@types/express-session": "^1.17.0",
-<<<<<<< HEAD
-=======
     "@types/helmet": "0.0.45",
     "@types/jsforce": "^1.9.13",
->>>>>>> 29ef92502fe1d4b8f1e4aebf74a1d62f661834a8
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
