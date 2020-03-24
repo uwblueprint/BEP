@@ -50,7 +50,9 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@types/cors": "^2.8.6",
     "@types/express-session": "^1.17.0",
+    "@types/helmet": "0.0.45",
     "@types/jsforce": "^1.9.13",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
