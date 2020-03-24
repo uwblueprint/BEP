@@ -1,4 +1,6 @@
 export interface Request {
-    id: number;
+    id: string;
     name: string;
+    status: string;
+    openedBy: string;
 }

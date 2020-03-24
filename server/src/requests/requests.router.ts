@@ -7,6 +7,7 @@ import * as Express from "express";
 import * as RequestService from "./requests.service";
 import { Request } from "./request.interface";
 import { Requests } from "./requests.interface";
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Router Definition
@@ -48,7 +49,12 @@ requestsRouter.get("/:id", async (req: Express.Request, res: Express.Response) =
 
 requestsRouter.post("/", async (req: Express.Request, res: Express.Response) => {
     try {
-        const request: Request = req.body.request;
+        const name: string = req.body.name;
+        let status: string = "pending";
+        const user: string = req.body.user;
+        const id: string = uuidv4();
+
+        let request: Request = {id: id, name: name, status: status, openedBy: user};
 
         await RequestService.create(request);
 
