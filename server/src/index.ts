@@ -1,13 +1,12 @@
-// import math from './mathematic';
-// import {serverController} from './controllers/index';
-import TestServer from './server'
-// import bodyParser from 'body-parser';
+import { BackendServer } from './server'
 
-// console.log('The answer is: ' + math.add(2, 2));
+const port = process.env.PORT || "3030";
 
-// const app = express();
-const port = process.env.PORT || 3030;
+/**
+ *  Server Configuration
+ */
 
+<<<<<<< HEAD
 /**
  *  App Configuration
  */
@@ -15,10 +14,9 @@ const port = process.env.PORT || 3030;
 
  
 const server = new TestServer();
+=======
+const server = new BackendServer();
+>>>>>>> 29ef92502fe1d4b8f1e4aebf74a1d62f661834a8
 server.start(port);
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: true}));
 
-// // app.get('api/users/:id', getUser);
 
-// app.listen(port, () => console.log("Hello world"));

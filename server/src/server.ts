@@ -7,17 +7,26 @@ import cors from "cors";
 import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
+<<<<<<< HEAD
 import jsforce from 'jsforce';
 import { requestsRouter } from "./requests/requests.router";
 
 
 // const jsforce = require('jsforce');
+=======
+// import { requestsRouter } from "./requests/requests.router";
+import jsforce from 'jsforce';
+
+>>>>>>> 29ef92502fe1d4b8f1e4aebf74a1d62f661834a8
 const result = dotenv.config();
+
+let conn;
 
 if (result.error) {
   throw result.error;
 }
 
+<<<<<<< HEAD
 const oauth2 = new jsforce.OAuth2({
   loginUrl: process.env.LOGIN_URL,
   clientId: process.env.CLIENT_ID,
@@ -25,10 +34,11 @@ const oauth2 = new jsforce.OAuth2({
   redirectUri: 'http://localhost:3030/token'
 });
 
+=======
+>>>>>>> 29ef92502fe1d4b8f1e4aebf74a1d62f661834a8
 console.log(result.parsed);
-class TestServer extends Server {
-    private readonly SERVER_STARTED = "Example server started on port: ";
 
+<<<<<<< HEAD
     // private accessToken: string;
     // private instanceUrl: string;
     // private refreshToken: string;
@@ -36,6 +46,10 @@ class TestServer extends Server {
     private conn: jsforce.Connection;
 
     // open = require('open');
+=======
+class BackendServer extends Server {
+    private readonly SERVER_STARTED = "Example server started on port: ";
+>>>>>>> 29ef92502fe1d4b8f1e4aebf74a1d62f661834a8
 
   public app = express();
   private readonly SERVER_STARTED = 'Example server started on port: ';
@@ -49,6 +63,7 @@ class TestServer extends Server {
         this.app.use(helmet());
         this.app.use(cors());
         this.app.use(express.json());
+<<<<<<< HEAD
         this.app.use("/requests", requestsRouter);
         // this.setupControllers();
     }
@@ -66,8 +81,28 @@ class TestServer extends Server {
             // TODO: handle re-authentication when oauth token TIMES OUT 
             // (check settings to see how long time is)
             res.redirect(oauth2.getAuthorizationUrl({ scope: 'api id web refresh_token full' }));
-        });
+=======
+        // this.app.use("/requests", requestsRouter);
 
+        // Authenticate to Salesforce
+        conn = new jsforce.Connection({
+            oauth2: {
+                loginUrl: process.env.LOGIN_URL,
+                clientId: process.env.CLIENT_ID,
+                clientSecret: process.env.CLIENT_SECRET,
+                redirectUri: process.env.REDIRECT_URI
+            }
+        });
+        conn.login(process.env.SALESFORCE_USERNAME, process.env.SALESFORCE_PASSWORD, (err, userInfo) => {
+            if (err) {
+                return console.error("err in salesforce login", err);
+            }
+            console.log("salesforce connection established successfully");
+>>>>>>> 29ef92502fe1d4b8f1e4aebf74a1d62f661834a8
+        });
+    }
+
+<<<<<<< HEAD
         this.app.get('/token', (req, res) => {
             const conn = new jsforce.Connection({ oauth2: oauth2 });
             const code = req.query.code;
@@ -90,6 +125,17 @@ class TestServer extends Server {
 
         this.app.get('/test', (req, res) => {
             this.conn.query('SELECT Name,Email__c FROM Test__c', function (err, result) {
+=======
+    public start(port: string): void {
+        this.app.get('/', (req, res) => {
+            console.log("testing /")
+            res.send("hello world")
+        })
+
+        // Sanity check test method
+        this.app.get('/test', (req, res) => {
+            conn.query('SELECT Name,Email__c FROM Test__c', (err, result) => {
+>>>>>>> 29ef92502fe1d4b8f1e4aebf74a1d62f661834a8
                 if (err) {
                     console.log("query error");
                     return console.error(err);
@@ -97,6 +143,7 @@ class TestServer extends Server {
                 console.log('total : ' + result.totalSize);
                 console.log('fetched : ' + result.records.length);
                 console.log(result.records);
+                res.send(result.records);
             });
             res.send("test OK");
         });
@@ -107,4 +154,17 @@ class TestServer extends Server {
     }
 }
 
+<<<<<<< HEAD
 export default TestServer;
+=======
+export {
+    BackendServer,
+    conn
+}
+
+
+
+
+
+
+>>>>>>> 29ef92502fe1d4b8f1e4aebf74a1d62f661834a8
