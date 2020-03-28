@@ -75,7 +75,6 @@ class BackendServer extends Server {
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
         });
-        this.app.use("/user", userRouter);
     }
 }
 
