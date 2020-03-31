@@ -23,7 +23,7 @@ export const requestsRouter = Express.Router();
 
 requestsRouter.get("/", async (req: Express.Request, res: Express.Response) => {
     try {
-        const reqs: Requests = await RequestService.findAll();
+        var reqs: Array<Request> = await RequestService.findAll();
 
         res.status(200).send(reqs);
     } catch (e) {
@@ -34,7 +34,8 @@ requestsRouter.get("/", async (req: Express.Request, res: Express.Response) => {
 // GET requests/:id
 
 requestsRouter.get("/:id", async (req: Express.Request, res: Express.Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    // const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
 
     try {
         const r: Request = await RequestService.find(id);

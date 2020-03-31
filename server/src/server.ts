@@ -6,7 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
-// import { requestsRouter } from "./requests/requests.router";
+import { requestsRouter } from "./requests/requests.router";
 import jsforce from 'jsforce';
 
 const result = dotenv.config();
@@ -33,7 +33,7 @@ class BackendServer extends Server {
         this.app.use(helmet());
         this.app.use(cors());
         this.app.use(express.json());
-        // this.app.use("/requests", requestsRouter);
+        this.app.use("/requests", requestsRouter);
 
         // Authenticate to Salesforce
         conn = new jsforce.Connection({

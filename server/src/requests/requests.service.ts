@@ -53,18 +53,47 @@ const request: string = "Request__c";
  * Service Methods
  */
 
-export const findAll = async (): Promise<Requests> => {
-    return requests;
+export const findAll = async (): Promise<Request[]> => {
+    var requestArray = new Array<Request>();
+    const query = await conn.query('SELECT Name, ID__c, Status__c, acceptedBy__c, OpenedBy__c FROM Request__c', function(err, request) {
+        if (err) { return console.error(err); }
+        request.records.forEach(element => {
+            let r = {id: element.ID__C, name: element.Name, status: element.Status__c, openedBy: element.OpenedBy__c}
+            requestArray.push(r)
+
+        });
+        return requestArray;
+    });
+    return requestArray;
 };
 
-export const find = async (id: number): Promise<Request> => {
-    const record: Request = requests[id];
+export const find = async (id: string): Promise<Request> => {
+    // const record: Request = requests[id];
 
-    if (record) {
-        return record;
-    }
+    // if (record) {
+    //     return record;
+    // }
 
-    throw new Error("No record found");
+    // throw new Error("No record found");
+
+    // Single record retrieval
+    // conn.sobject("Request__c").select("Name", function(err, request) {
+    //     if (err) { return console.error(err); }
+    //     console.log("Name : " + request.Name);
+    //     // ...
+    // });
+    
+    conn.query('SELECT Name FROM Request__c', function(err, request) {
+        if (err) { return console.error(err); }
+        
+        request.records.forEach(element => {
+            // console.log(element);
+            
+        });
+        // ...
+    });
+    console.log(requestArray);
+    
 };
 
 export const create = async (newRequest: Request): Promise<void> => {
