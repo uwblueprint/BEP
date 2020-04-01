@@ -18,11 +18,11 @@ export const userRouter = Express.Router();
 
 // GET requests/:id
 
-userRouter.get("/:id", async (req: Express.Request, res: Express.Response) => {
+userRouter.get("/", async (req: Express.Request, res: Express.Response) => {
     const id: number = parseInt(req.params.id, 10);
 
     try {
-        const fetchedUser: User = await UserService.find(id);
+        const fetchedUser = await UserService.getUserInfo(id);
 
         res.status(200).send(fetchedUser);
     } catch (e) {
@@ -34,9 +34,14 @@ userRouter.get("/:id", async (req: Express.Request, res: Express.Response) => {
 
 userRouter.post("/create", async (req: Express.Request, res: Express.Response) => {
     try {
-        const createdUser: User = req.body.request;
-        console.log("body of post req", createdUser);
-        await UserService.create(createdUser);
+        // Type match request body into User interface when Salesforce fields are figured out
+        // const createdUser: User = req.body.request;
+        let name: string = req.params.name;
+        let email: string = req.params.email;
+        let password: string = req.params.password;
+        let phoneNumber: string = req.params.phoneNumber;
+        let lastName: string = req.params.lastName;
+        await UserService.create(name, email, password, phoneNumber, lastName);
 
         res.sendStatus(201);
     } catch (e) {
@@ -44,30 +49,30 @@ userRouter.post("/create", async (req: Express.Request, res: Express.Response) =
     }
 });
 
-// PUT requests/
+// // PUT requests/
 
-userRouter.put("/:id", async (req: Express.Request, res: Express.Response) => {
-    const id: number = parseInt(req.params.id, 10);
+// userRouter.put("/:id", async (req: Express.Request, res: Express.Response) => {
+//     const id: number = parseInt(req.params.id, 10);
 
-    try {
+//     try {
 
-        await UserService.update(id);
+//         await UserService.update(id);
 
-        res.sendStatus(200);
-    } catch (e) {
-        res.status(500).send(e.message);
-    }
-});
+//         res.sendStatus(200);
+//     } catch (e) {
+//         res.status(500).send(e.message);
+//     }
+// });
 
-// DELETE requests/:id
+// // DELETE requests/:id
 
-userRouter.delete("/:id", async (req: Express.Request, res: Express.Response) => {
-    try {
-        const id: number = parseInt(req.params.id, 10);
-        await UserService.remove(id);
+// userRouter.delete("/:id", async (req: Express.Request, res: Express.Response) => {
+//     try {
+//         const id: number = parseInt(req.params.id, 10);
+//         await UserService.remove(id);
 
-        res.sendStatus(200);
-    } catch (e) {
-        res.status(500).send(e.message);
-    }
-}); 
+//         res.sendStatus(200);
+//     } catch (e) {
+//         res.status(500).send(e.message);
+//     }
+// }); 

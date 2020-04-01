@@ -8,6 +8,7 @@ import express from 'express';
 import session from 'express-session';
 // import { requestsRouter } from "./requests/requests.router";
 import jsforce from 'jsforce';
+import { userRouter } from './users/UserRouter';
 
 const result = dotenv.config();
 
@@ -71,6 +72,7 @@ class BackendServer extends Server {
                 res.send(result.records);
             });
         });
+        this.app.use("/user", userRouter);
 
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
