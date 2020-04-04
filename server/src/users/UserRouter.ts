@@ -16,13 +16,14 @@ export const userRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET requests/:id
+// GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
 
-userRouter.get("/", async (req: Express.Request, res: Express.Response) => {
-    const id: number = parseInt(req.params.id, 10);
+userRouter.get("/:name", async (req: Express.Request, res: Express.Response) => {
+    // const id: number = parseInt(req.params.id, 10);
+    const name: string = req.params.name;
 
     try {
-        const fetchedUser = await UserService.getUserInfo(id);
+        const fetchedUser = await UserService.getUserInfo(name);
 
         res.status(200).send(fetchedUser);
     } catch (e) {
@@ -35,12 +36,12 @@ userRouter.get("/", async (req: Express.Request, res: Express.Response) => {
 userRouter.post("/create", async (req: Express.Request, res: Express.Response) => {
     try {
         // Type match request body into User interface when Salesforce fields are figured out
-        // const createdUser: User = req.body.request;
-        let name: string = req.params.name;
-        let email: string = req.params.email;
-        let password: string = req.params.password;
-        let phoneNumber: string = req.params.phoneNumber;
-        let lastName: string = req.params.lastName;
+        // const userInfo: User = req.body.user;
+        let name: string = req.body.name;
+        let email: string = req.body.email;
+        let password: string = req.body.password;
+        let phoneNumber: string = req.body.phoneNumber;
+        let lastName: string = req.body.lastName;
         await UserService.create(name, email, password, phoneNumber, lastName);
 
         res.sendStatus(201);

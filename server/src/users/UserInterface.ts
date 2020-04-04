@@ -6,16 +6,11 @@ export default interface UserInterface {
     firstName: string;
     lastName: string;
     email: string;
-    isActive: boolean;
+    // isActive: boolean;
     phoneNumber: string;
-    userType: number;
-    status: number;
+    password: string;
+    // userType: number;
+    // status: number;
     // private requestList?: Array<Request>;
-
-    // function getRequests(userId: string, userType: number): Array<Request> {
-    //     if (userId === this.userId || userType === 0) {
-    //         return this.requestList;
-    //     }
-    // }
 
 }

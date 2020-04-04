@@ -17,15 +17,27 @@ const siteUser: string = "SiteUser__c";
 
 
 
- // Basic query for now to retrieve ALL users
-export const getUserInfo = async (id: number): Promise<void> => {
-    conn.query('SELECT Name FROM SiteUser__c', function(err: Error, result) {
-        if (err){
-            return console.log(err)
-        }
-        console.log(result);
-        
-    })
+ // Basic query for now to retrieve a user based on first name
+export const getUserInfo = async (id: string): Promise<User> => {
+    let userInfo: User = conn.sobject(siteUser).find({
+        Name: id
+    }, "Name, lastName__c, email__c, phoneNumber__c, password__c") 
+        .limit(1)
+        .execute(function(err: Error, record: any) {
+            if (err) {
+                return console.error(err);
+            }
+            let user: User = {
+                firstName: record[0].Name,
+                lastName: record[0].lastName__c,
+                email: record[0].email__c,
+                phoneNumber: record[0].phoneNumber__c,
+                password: record[0].password__c
+            }
+            return user;
+        });
+        console.log(userInfo);
+    return userInfo;
 };
 
 //create new user object in salesforce with fields
@@ -41,7 +53,7 @@ export const create = async (name: string, email: string, password: string, phon
         if (err || !result.success) { 
             return console.error(err, result); 
         }
-        console.log("created User with ID : " + result.id);
+        console.log("created User with ID : " + result.id + result.Name);
     })
 };
 
