@@ -3,7 +3,6 @@
  * Data Model Interfaces
  */
 
-import jsforce from 'jsforce';
 import User from './UserInterface';
 import { conn } from '../server';
 import * as express from 'express';
@@ -40,7 +39,8 @@ export const getUserInfo = async (id: string): Promise<User> => {
     return userInfo;
 };
 
-//create new user object in salesforce with fields
+// create new user object in salesforce with fields 
+// Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
 export const create = async (name: string, email: string, password: string, phoneNumber: string, lastName: string): Promise<void> => {
     conn.sobject(siteUser).create({ 
         Name: name,
@@ -63,7 +63,12 @@ export const create = async (name: string, email: string, password: string, phon
 //     throw new Error("No record found to update");
 // };
 
-// export const remove = async (id: number): Promise<void> => {
-//     conn.
-//     throw new Error("No record found to delete");
-// }; 
+// Delete a user by ID (salesforce generated)
+export const remove = async (id: string): Promise<void> => {
+    conn.sobject(siteUser).destroy(id, function(err: Error, result) {
+        if (err || !result.success) {
+            return console.error(err, result);
+        }
+        console.log('Deleted Successfully: ' + result.id)
+    })
+}; 

@@ -65,15 +65,15 @@ userRouter.post("/create", async (req: Express.Request, res: Express.Response) =
 //     }
 // });
 
-// // DELETE requests/:id
+// DELETE requests/:id
 
-// userRouter.delete("/:id", async (req: Express.Request, res: Express.Response) => {
-//     try {
-//         const id: number = parseInt(req.params.id, 10);
-//         await UserService.remove(id);
+userRouter.delete("/:id", async (req: Express.Request, res: Express.Response) => {
+    try {
+        let id: string = req.params.id;
+        await UserService.remove(id);
 
-//         res.sendStatus(200);
-//     } catch (e) {
-//         res.status(500).send(e.message);
-//     }
-// }); 
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+}); 
