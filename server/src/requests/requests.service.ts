@@ -55,10 +55,10 @@ const request: string = "Request__c";
 
 export const findAll = async (): Promise<Request[]> => {
     var requestArray = new Array<Request>();
-    const query = await conn.query('SELECT Name, ID__c, Status__c, acceptedBy__c, OpenedBy__c FROM Request__c', function(err, request) {
+    const query = await conn.query('SELECT Name, Id, Status__c, acceptedBy__c, OpenedBy__c FROM Request__c', function(err, request) {
         if (err) { return console.error(err); }
         request.records.forEach(element => {
-            let r = {id: element.ID__C, name: element.Name, status: element.Status__c, openedBy: element.OpenedBy__c}
+            let r = {ID: element.Id, name: element.Name, status: element.Status__c, openedBy: element.OpenedBy__c}
             requestArray.push(r)
 
         });
@@ -67,45 +67,25 @@ export const findAll = async (): Promise<Request[]> => {
     return requestArray;
 };
 
-export const find = async (id: string): Promise<Request> => {
-    // const record: Request = requests[id];
+export const find = async (name: string): Promise<Request> => {
 
-    // if (record) {
-    //     return record;
-    // }
-
-    // throw new Error("No record found");
-
-    // Single record retrieval
-    // conn.sobject("Request__c").select("Name", function(err, request) {
-    //     if (err) { return console.error(err); }
-    //     console.log("Name : " + request.Name);
-    //     // ...
-    // });
-    
-    conn.query('SELECT Name FROM Request__c', function(err, request) {
+    const query = await conn.sobject("Request__c").retrieve(id, function(err, request) {
         if (err) { return console.error(err); }
-        
-        request.records.forEach(element => {
-            // console.log(element);
-            
-        });
+        console.log("Name : " + request.Name);
         // ...
     });
-    console.log(requestArray);
+
+    // const query = await conn.sobject(request).find({
+    //     Name: name
+    // }, function(err, request) {
+    //     if (err) { return console.error(err); }
+    //     console.log("Name : " + request);
+    // });
     
 };
 
 export const create = async (newRequest: Request): Promise<void> => {
-    // const id = new Date().valueOf();
-    // requests[id] = {
-    //     ...newRequest,
-    //     id
-    // };
-
-    // Query for creating a request
-   
-   conn.sobject("Request").create({
+   const query = await conn.sobject("Request").create({
         Name:"Hi", // newRequest.name,
         ID__c: "02",// newRequest.id,
         // OpenedBy__c: newRequest.openedBy,
@@ -119,17 +99,9 @@ export const create = async (newRequest: Request): Promise<void> => {
 };
 
 export const update = async (updatedRequest: Request): Promise<void> => {
-    // if (requests[updatedRequest.id]) {
-    //     requests[updatedRequest.id] = updatedRequest;
-    //     return;
-    // }
-
-    // throw new Error("No record found to update");
-
-    // Single record update
-    conn.sobject(request).update({ 
-        Id : '0017000000hOMChAAO',
-        Name : 'Updated Account #1'
+    const query = await conn.sobject(request).update({
+        Name__c: updatedRequest.name,
+        Status__c: updatedRequest.status
     }, function(err, ret) {
         if (err || !ret.success) { return console.error(err, ret); }
         console.log('Updated Successfully : ' + ret.id);
@@ -137,13 +109,15 @@ export const update = async (updatedRequest: Request): Promise<void> => {
     });
 };
 
-export const remove = async (id: number): Promise<void> => {
-    const record: Request = requests[id];
 
-    if (record) {
-        delete requests[id];
-        return;
-    }
-
-    throw new Error("No record found to delete");
-};
+export const remove = async (name: string): Promise<void> => {
+    conn.sobject(request).find({
+        Name: name
+    }).destroy(function (err: Error, result) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log(result);
+        console.log('Deleted User with ID: ' + result[0].id);
+    })
+}; 
