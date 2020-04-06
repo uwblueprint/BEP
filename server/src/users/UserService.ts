@@ -5,7 +5,7 @@
 
 import User from './UserInterface';
 import { conn } from '../server';
-import * as express from 'express';
+// import * as express from 'express';
 
 
 const siteUser: string = "SiteUser__c";
@@ -15,11 +15,17 @@ const siteUser: string = "SiteUser__c";
  */
 
 
+/**
+ * See https://jsforce.github.io/document/ under Query and CRUD for documentation
+ * Field Names of SiteUser object in Salesforce can be found by clicking Gear Icon -> Schema Builder -> SiteUser__c -> Fields
+ */
 
- // Basic query for now to retrieve a user based on first name
-export const getUserInfo = async (id: string): Promise<User> => {
+
+
+ // Basic query for now to retrieve a user based on first name (should be changed to ID in future)
+export const getUserInfo = async (name: string): Promise<User> => {
     let userInfo: User = conn.sobject(siteUser).find({
-        Name: id
+        Name: name
     }, "Name, lastName__c, email__c, phoneNumber__c, password__c") 
         .limit(1)
         .execute(function(err: Error, record: any) {
@@ -63,12 +69,14 @@ export const create = async (name: string, email: string, password: string, phon
 //     throw new Error("No record found to update");
 // };
 
-// Delete a user by ID (salesforce generated)
-export const remove = async (id: string): Promise<void> => {
-    conn.sobject(siteUser).destroy(id, function(err: Error, result) {
-        if (err || !result.success) {
-            return console.error(err, result);
+// Delete a user by name (should be changed to ID in the future once ID field in salesforce is figured out)
+export const remove = async (name: string): Promise<void> => {
+    conn.sobject(siteUser).find({
+        Name: name
+    }).destroy(function (err: Error, result) {
+        if (err) {
+            return console.log(err);
         }
-        console.log('Deleted Successfully: ' + result.id)
+        console.log('Deleted User with ID: ' + result[0].id);
     })
 }; 

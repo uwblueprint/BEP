@@ -4,7 +4,7 @@
 
 import * as Express from "express";
 import * as UserService from "./UserService";
-import User from "./UserInterface";
+// import User from "./UserInterface";
 
 /**
  * Router Definition
@@ -65,9 +65,9 @@ userRouter.post("/create", async (req: Express.Request, res: Express.Response) =
 //     }
 // });
 
-// DELETE requests/:id
+// DELETE requests/:id using name for now
 
-userRouter.delete("/:id", async (req: Express.Request, res: Express.Response) => {
+userRouter.delete("/:name", async (req: Express.Request, res: Express.Response) => {
     try {
         let id: string = req.params.id;
         await UserService.remove(id);
