@@ -63,12 +63,6 @@ export const create = async (name: string, email: string, password: string, phon
     })
 };
 
-// export const update = async (updatedUser: User): Promise<void> => {
-//     const updatedUser
-
-//     throw new Error("No record found to update");
-// };
-
 // Delete a user by name (should be changed to ID in the future once ID field in salesforce is figured out)
 export const remove = async (name: string): Promise<void> => {
     conn.sobject(siteUser).find({

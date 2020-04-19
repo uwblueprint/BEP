@@ -52,18 +52,6 @@ userRouter.post("/create", async (req: Express.Request, res: Express.Response) =
 
 // // PUT requests/
 
-// userRouter.put("/:id", async (req: Express.Request, res: Express.Response) => {
-//     const id: number = parseInt(req.params.id, 10);
-
-//     try {
-
-//         await UserService.update(id);
-
-//         res.sendStatus(200);
-//     } catch (e) {
-//         res.status(500).send(e.message);
-//     }
-// });
 
 // DELETE requests/:id using name for now
 
