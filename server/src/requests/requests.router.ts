@@ -32,9 +32,9 @@ requestsRouter.get("/", async (req: Express.Request, res: Express.Response) => {
 });
 
 // GET requests/:id
+// currently uses name 
 
 requestsRouter.get("/:name", async (req: Express.Request, res: Express.Response) => {
-    // const id: number = parseInt(req.params.id, 10);
     const name: string = req.params.name;
 
     try {
@@ -53,7 +53,6 @@ requestsRouter.post("/", async (req: Express.Request, res: Express.Response) => 
         const name: string = req.body.name;
         let status: string = req.body.status;
         const user: string = req.body.user;
-        // const id: string = uuidv4();
 
         let request: Request = {id: id, name: name, status: status, openedBy: user};
 
@@ -80,11 +79,11 @@ requestsRouter.put("/", async (req: Express.Request, res: Express.Response) => {
 });
 
 // DELETE requests/:id
+// using name for now
 
 requestsRouter.delete("/:name", async (req: Express.Request, res: Express.Response) => {
     try {
         const name: string = req.params.name;
-        // const id: number = parseInt(req.params.id, 10);
         await RequestService.remove(name);
 
         res.sendStatus(200);

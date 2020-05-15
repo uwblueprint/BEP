@@ -74,22 +74,16 @@ export const find = async (name: string): Promise<Request> => {
         console.log("Name : " + request.Name);
         // ...
     });
-
-    // const query = await conn.sobject(request).find({
-    //     Name: name
-    // }, function(err, request) {
-    //     if (err) { return console.error(err); }
-    //     console.log("Name : " + request);
-    // });
     
 };
 
+// WIP: requests currently do not work with non-hard coded values. Need to figure this out.
 export const create = async (newRequest: Request): Promise<void> => {
    const query = await conn.sobject("Request").create({
-        Name:"Hi", // newRequest.name,
-        ID__c: "02",// newRequest.id,
-        // OpenedBy__c: newRequest.openedBy,
-        Status__c: "pending"//newRequest.status
+        Name: newRequest.name,
+        ID__c: newRequest.id,
+        OpenedBy__c: newRequest.openedBy,
+        Status__c: newRequest.status
 
     }, function(err, ret) {
         if (err || !ret.success) { return console.error(err, ret); }
@@ -100,6 +94,7 @@ export const create = async (newRequest: Request): Promise<void> => {
 
 export const update = async (updatedRequest: Request): Promise<void> => {
     const query = await conn.sobject(request).update({
+        // currently only updates name and status
         Name__c: updatedRequest.name,
         Status__c: updatedRequest.status
     }, function(err, ret) {
