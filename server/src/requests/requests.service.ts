@@ -27,20 +27,6 @@ const requests: Requests = {
     },
 }
 
-/**
- * OAuth Token verification
- */
-
-//  //Verify session here 
-//  const oauth2 = new jsforce.OAuth2({
-//     loginUrl: process.env.LOGIN_URL,
-//     clientId: process.env.CLIENT_ID,
-//     clientSecret: process.env.CLIENT_SECRET,
-//     redirectUri: 'http://localhost:3030/token'
-// });
-
-// var conn = new jsforce.Connection({ oauth2 : oauth2 });
-
 
 /**
  * Static variables 
