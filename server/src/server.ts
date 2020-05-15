@@ -1,28 +1,42 @@
+/* tslint:disable */
 import * as bodyParser from 'body-parser';
+
 // import * as controllers from './controllers';
 import { Server } from 'http';
-import dotenv from 'dotenv';
 import cors from "cors";
 import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
 import { requestsRouter } from "./requests/requests.router";
 import jsforce from 'jsforce';
+import { userRouter } from './users/UserRouter';
 
-const result = dotenv.config();
+
+let result;
+
+// Display environment variables
+if (process.env.NODE_ENV !== 'production'){ 
+
+    const dotenv = require('dotenv');
+    
+    result = dotenv.config();
+
+    if (result.error) {
+        throw result.error;
+      }
+      
+      console.log(result.parsed);
+}
 
 let conn;
 
-if (result.error) {
-    throw result.error;
-}
 
-console.log(result.parsed);
 
 class BackendServer extends Server {
-    private readonly SERVER_STARTED = "Example server started on port: ";
+
 
     public app = express();
+    private readonly SERVER_STARTED = 'Example server started on port: ';
 
     constructor() {
         super();
@@ -34,6 +48,10 @@ class BackendServer extends Server {
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use("/requests", requestsRouter);
+
+
+        
+
 
         // Authenticate to Salesforce
         conn = new jsforce.Connection({
@@ -71,6 +89,7 @@ class BackendServer extends Server {
             });
             res.send("test OK");
         });
+        this.app.use("/user", userRouter);
 
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
