@@ -1,24 +1,32 @@
 import React from 'react';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import RequestViewSection from '../components/Requests/RequestSection';
 
-export default App;
+export default class App extends React.Component {
+  constructor(props: any) {
+    super(props);
+
+
+    this.state = {
+      loading: true,
+    };
+  };
+
+  componentDidMount() {
+    // auth stuff
+  }
+
+  render() {
+    return (
+      <Router>
+        <React.Fragment>
+          <Switch>
+            <Route exact path="/" component={RequestViewSection}/>
+          </Switch>
+        </React.Fragment>
+      </Router>
+    )
+  }
+}
