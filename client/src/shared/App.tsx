@@ -7,8 +7,6 @@ import RequestViewSection from '../components/Requests/RequestSection';
 export default class App extends React.Component {
   constructor(props: any) {
     super(props);
-
-
     this.state = {
       loading: true,
     };

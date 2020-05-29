@@ -2,14 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import store from './data/store';
 
 import App from './shared/App';
-
-// to remove
-const test = () => { return true }
-
-var store = createStore(test);
 
 ReactDOM.render(
     <Provider store={store}>

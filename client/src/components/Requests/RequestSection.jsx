@@ -1,5 +1,6 @@
 import React from 'react';
-import { getTestService } from '../../data/services/GetTestService';
+import { connect } from 'react-redux';
+import {getRequestTest} from '../../data/actions/requestActions';
 
 class RequestSection extends React.Component {
     constructor(props) {
@@ -8,17 +9,17 @@ class RequestSection extends React.Component {
 
         };
     }
-    
-    async componentDidMount() {
-        const { data } = await getTestService();
-        console.log(data);
-    }
 
     render () {
+        console.log(this.props);
         return (
             <div>test</div>
         )
     }
 }
 
-export default RequestSection;
+const mapDispatchToProps = dispatch => ({
+    data: dispatch(getRequestTest())
+})
+
+export default connect(null, mapDispatchToProps)(RequestSection);
