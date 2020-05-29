@@ -25,5 +25,3 @@ const post = (url, body) => {
 }
 
 export { post, get };
-
-

@@ -1,4 +1,4 @@
-import { getRequestTestService } from '../services/GetRequestTestService';
+import { getRequestTestService } from '../services/requests';
 
 import { GET_REQUEST_TEST } from './requestActionTypes';
 
@@ -8,3 +8,4 @@ export function getRequestTest() {
         payload: getRequestTestService()
     };
 }
+
