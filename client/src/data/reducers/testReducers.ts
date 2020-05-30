@@ -2,20 +2,18 @@ import { FETCH_TEST } from '../actions/actionTypes';
 
 // this won't be necessary with individual reducers -> each will have its own action/action types to define structures
 const initialState = {
-    names: [],
-    emails: [],
-    existingData: 'some data from something else',
+    users: [],
 }
 
 // we will use combineReducer to manage our separate reducers
 export default function(state=initialState, action: {type: string, payload: any}) {
     switch (action.type) {
         case FETCH_TEST:
-            console.log(action.payload);
-            const newData = {names:['test']}
+            const { data } = action.payload;
+            const users = data.data;
             return {
                 ...state,
-                newData
+                users
             }
         default:
             return state;

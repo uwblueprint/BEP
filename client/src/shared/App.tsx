@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
 
-import RequestViewSection from '../components/Requests/RequestSection';
+import TestSection from '../components/Requests/TestSection';
 
 export default class App extends React.Component {
   constructor(props: any) {
@@ -21,8 +21,7 @@ export default class App extends React.Component {
       <Router>
         <React.Fragment>
           <Switch>
-            <Route exact path="/" component={RequestViewSection}/>
-
+            <Route exact path="/" component={TestSection}/>
           </Switch>
         </React.Fragment>
       </Router>
