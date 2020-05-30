@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getRequestTest } from '../../data/actions/requestActions';
+import { fetchTest } from '../../data/actions/testActions';
 
 // map dispatch to props will be for calling APIs
 // we use this instead of directly calling the API is so we can update the Redux store as well
 // will change with redux-saga or thunk?
 const mapDispatchToProps = async (dispatch) => ({
-    data: dispatch(getRequestTest())
+    data: dispatch(fetchTest())
 })
 
 // mapStateToProps -> for selectors

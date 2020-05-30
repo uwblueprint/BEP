@@ -1,1 +1,1 @@
-export const GET_REQUEST_TEST = "GET_REQUEST_TEST";
+export const FETCH_TEST = "FETCH_TEST";

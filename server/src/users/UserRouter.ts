@@ -50,7 +50,7 @@ userRouter.post("/create", async (req: Express.Request, res: Express.Response) =
     }
 });
 
-// // PUT requests/
+// PUT requests/
 
 
 // DELETE requests/:id using name for now
