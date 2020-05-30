@@ -5,6 +5,7 @@ export const getRequestTestService = () => {
     return get("/test").then((result) => {
         // check if success
         const { data } = result;
+        console.log(data);
         return data;
     }).catch((err) => {
         console.log(err);

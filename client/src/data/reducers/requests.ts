@@ -1,4 +1,4 @@
-import { GET_REQUEST_TEST } from '../actions/requestActionTypes';
+import { GET_REQUEST_TEST } from '../actions/actionTypes';
 
 // this won't be necessary with individual reducers -> each will have its own action/action types to define structures
 const initialState = {
