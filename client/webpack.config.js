@@ -4,8 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const bundleDir = path.join(__dirname, "dist");
 
 module.exports = {
-  //   entry: "./src/index.tsx",
-  entry: "./src/index.tsx",
+  entry: "./src/index.jsx",
   devtool: 'inline-source-map',
   output: {
     path: bundleDir,
@@ -30,7 +29,7 @@ module.exports = {
       },
       //babel-loader
       {
-        test: /\.m?js$/,
+        test: /\.(m?js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
@@ -41,7 +40,7 @@ module.exports = {
       },
       //source-map loader
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         enforce: 'pre',
         use: ['source-map-loader'],
       },
@@ -54,6 +53,6 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js', '.html' ],
+    extensions: [ '.tsx', '.ts', '.jsx', '.js', '.html' ],
   }
 };
