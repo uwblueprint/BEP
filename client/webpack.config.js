@@ -5,7 +5,8 @@ const bundleDir = path.join(__dirname, "dist");
 
 module.exports = {
   //   entry: "./src/index.tsx",
-  entry: "./src/index.js",
+  entry: "./src/index.tsx",
+  devtool: 'inline-source-map',
   output: {
     path: bundleDir,
     publicPath: ".",
@@ -20,4 +21,39 @@ module.exports = {
       template: "./public/index.html",
     }),
   ],
+  module: {
+    rules: [
+      //css-loader
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+      //babel-loader
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-react']
+          }
+        }
+      },
+      //source-map loader
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      },
+      //ts-loader
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      }
+    ]
+  },
+  resolve: {
+    extensions: [ '.tsx', '.ts', '.js', '.html' ],
+  }
 };
