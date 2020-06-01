@@ -5,7 +5,7 @@ const bundleDir = path.join(__dirname, "dist");
 
 module.exports = {
   //   entry: "./src/index.tsx",
-  entry: "./src/index.ts",
+  entry: "./src/index.tsx",
   devtool: 'inline-source-map',
   output: {
     path: bundleDir,
@@ -35,7 +35,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env']
+            presets: ['@babel/preset-react']
           }
         }
       },
