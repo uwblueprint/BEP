@@ -5,10 +5,14 @@ import { connect } from 'react-redux';
 import { fetchTestService } from '../../data/services/testServices';
 
 /* Selectors */
-import { getTestData } from '../../data/selectors/testSelector';
+import { getTests } from '../../data/selectors/testSelector';
 
 const mapStateToProps = state => ({
-    users: getTestData(state),
+    users: getTests(state),
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    testing: dispatch(fetchTestService()),
 })
 
 class TestSection extends React.Component {
@@ -16,10 +20,6 @@ class TestSection extends React.Component {
         super(props);
         this.state = {
         };
-    }
-
-    componentDidMount() {
-        this.props.dispatch(fetchTestService())
     }
 
     render () {
@@ -42,4 +42,4 @@ class TestSection extends React.Component {
     }
 }
 
-export default connect(mapStateToProps)(TestSection);
+export default connect(mapStateToProps, mapDispatchToProps)(TestSection);
