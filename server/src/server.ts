@@ -7,9 +7,9 @@ import cors from "cors";
 import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
-// import { requestsRouter } from "./requests/requests.router";
 import jsforce from 'jsforce';
 import { userRouter } from './users/UserRouter';
+import { requestsRouter } from './requests/requests.router';
 
 
 let result;
@@ -23,17 +23,14 @@ if (process.env.NODE_ENV !== 'production'){
 
     if (result.error) {
         throw result.error;
-      }
+    }
       
-      console.log(result.parsed);
+    console.log(result.parsed);
 }
-
 let conn;
 
 
-
 class BackendServer extends Server {
-
 
     public app = express();
     private readonly SERVER_STARTED = 'Example server started on port: ';
@@ -47,11 +44,6 @@ class BackendServer extends Server {
         this.app.use(helmet());
         this.app.use(cors());
         this.app.use(express.json());
-        // this.app.use("/requests", requestsRouter);
-
-
-        
-
 
         // Authenticate to Salesforce
         conn = new jsforce.Connection({
@@ -71,11 +63,6 @@ class BackendServer extends Server {
     }
 
     public start(port: string): void {
-        this.app.get('/', (req, res) => {
-            console.log("testing /")
-            res.send("hello world")
-        })
-
         // Sanity check test method
         this.app.get('/test', (req, res) => {
             conn.query('SELECT Name,Email__c FROM Test__c', (err, result) => {
@@ -83,14 +70,12 @@ class BackendServer extends Server {
                     console.log("query error");
                     return console.error(err);
                 }
-                console.log('total : ' + result.totalSize);
-                console.log('fetched : ' + result.records.length);
                 console.log(result.records);
                 res.send(result.records);
             });
-            res.send("test OK");
         });
-        this.app.use("/user", userRouter);
+        this.app.use("/api/user", userRouter);
+        this.app.use("/api/requests", requestsRouter);
 
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
