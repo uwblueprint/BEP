@@ -37,7 +37,10 @@ export const getUserInfo = async (name: string): Promise<User> => {
                 lastName: record[0].lastName__c,
                 email: record[0].email__c,
                 phoneNumber: record[0].phoneNumber__c,
-                password: record[0].password__c
+                password: record[0].password__c,
+                preferredPronouns: null,
+                followedPrograms: [],
+                isSubscribed: false,
             }
             return user;
         });
