@@ -2,8 +2,8 @@
  * Required External Modules and Interfaces
  */
 
-import * as Express from "express";
-import * as UserService from "./UserService";
+import * as Express from 'express';
+import * as UserService from './UserService';
 // import User from "./UserInterface";
 
 /**
@@ -18,7 +18,7 @@ export const userRouter = Express.Router();
 
 // GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
 
-userRouter.get("/:name", async (req: Express.Request, res: Express.Response) => {
+userRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
     // const id: number = parseInt(req.params.id, 10);
     const name: string = req.params.name;
 
@@ -33,7 +33,7 @@ userRouter.get("/:name", async (req: Express.Request, res: Express.Response) => 
 
 // POST requests/
 
-userRouter.post("/create", async (req: Express.Request, res: Express.Response) => {
+userRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
     try {
         // Type match request body into User interface when Salesforce fields are figured out
         // const userInfo: User = req.body.user;
@@ -52,10 +52,22 @@ userRouter.post("/create", async (req: Express.Request, res: Express.Response) =
 
 // PUT requests/
 
+userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
+    console.log('HERE');
+    try {
+        console.log(req.body);
+        const id: string = req.params.id;
+        await UserService.update(id, req.body);
+
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+});
 
 // DELETE requests/:id using name for now
 
-userRouter.delete("/:name", async (req: Express.Request, res: Express.Response) => {
+userRouter.delete('/:name', async (req: Express.Request, res: Express.Response) => {
     try {
         let id: string = req.params.id;
         await UserService.remove(id);
@@ -64,4 +76,4 @@ userRouter.delete("/:name", async (req: Express.Request, res: Express.Response) 
     } catch (e) {
         res.status(500).send(e.message);
     }
-}); 
+});

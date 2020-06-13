@@ -6,6 +6,8 @@ export default interface UserInterface {
     
     email: string;
     followedPrograms: string[];
+    id: number;
+    recordId: number; // From Salesforce.
     isSubscribed: boolean;
     password: string;
     phoneNumber: string;
