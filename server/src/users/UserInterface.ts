@@ -3,14 +3,16 @@
 export default interface UserInterface {
     
     // userType: 0 = admin/superuser, 1 = teacher/educator, 2 = volunteer/student
-    firstName: string;
-    lastName: string;
+    //firstName: string;
+    //lastName: string;
     email: string;
     // isActive: boolean;
-    phoneNumber: string;
+    //phoneNumber: string;
     password: string;
     // userType: number;
     // status: number;
     // private requestList?: Array<Request>;
 
 }
+
+export function InitUser(config: UserInterface) {}
