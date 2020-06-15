@@ -10,6 +10,11 @@ import session from 'express-session';
 import jsforce from 'jsforce';
 import { userRouter } from './users/UserRouter';
 import { requestsRouter } from './requests/requests.router';
+var expressSession = require('express-session');
+var cookieParser = require('cookie-parser');
+var authRouter = require('./auth/auth.js');
+
+const passport = require('passport');
 
 
 let result;
@@ -75,7 +80,29 @@ class BackendServer extends Server {
             });
         });
         this.app.use("/api/user", userRouter);
+        
+        //Set up authentication routing for logging in
+        this.app.use(cookieParser());
+        this.app.use(expressSession({
+        secret: 'rand',
+        cookie: {
+              maxAge: 1000*60*60*24
+        },
+        resave: false,
+        saveUninitialized: false
+        }));
+        require('./auth/passport.js')(this.app);
+        this.app.use('/auth', authRouter);
         this.app.use("/api/requests", requestsRouter);
+
+        //Uncomment soon. Test method to prevent non-logged in users from accessing '/'
+        // this.app.get('/', (req, res)  => {
+        //     if (!req.user) {
+        //         res.send(
+        //             {"Not Allowed"}
+        //         )
+        //     }
+        // });
 
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);

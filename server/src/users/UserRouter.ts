@@ -4,7 +4,7 @@
 
 import * as Express from "express";
 import * as UserService from "./UserService";
-import * as passport from "passport"
+const passport = require('passport');
 import LocalStrategy from "passport-local";
 import * as UserInterface from "./UserInterface"
 
@@ -91,7 +91,11 @@ userRouter.post("/register", async (req: Express.Request, res: Express.Response)
         //Create new user
         UserService.create("Test", email, password, "TestPhoneNumber", "TestLastName")
 
-    }
+    }));
+})
+
+userRouter.get("/hello_world", async (req: Express.Request, res: Express.Response) => {
+    res.json({"message" : "hello World"});
+});
 
 
-    });
