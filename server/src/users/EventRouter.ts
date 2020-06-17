@@ -37,13 +37,41 @@ eventRouter.post("/create", async (req: Express.Request, res: Express.Response) 
     try {
         // Type match request body into Event interface when Salesforce fields are figured out
         // const eventInfo: Event = req.body.event;
-        let eventName: string = req.body.eventName;
+        let name: string = req.body.name;
         let isActive: boolean = req.body.isActive;
 
-        await EventService.create(eventName, isActive);
+        await EventService.create(name, isActive);
 
         res.sendStatus(201);
     } catch (e) {
         res.status(404).send(e.message);
+    }
+});
+
+//PUT requests
+
+eventRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
+    console.log('HERE');
+    try {
+        console.log(req.body);
+        const id: string = req.params.id;
+        await EventService.update(id, req.body);
+
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+});
+
+// DELETE requests
+
+eventRouter.delete('/:name', async (req: Express.Request, res: Express.Response) => {
+    try {
+        let id: string = req.params.id;
+        await EventService.remove(id)
+
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(500).send(e.message);
     }
 });
