@@ -5,6 +5,7 @@
 
 import User from './UserInterface';
 import { conn } from '../server';
+import { RequestResult } from 'jsforce';
 // import * as express from 'express';
 
 
@@ -47,19 +48,22 @@ export const getUserInfo = async (name: string): Promise<User> => {
 
 // create new user object in salesforce with fields 
 // Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
-export const create = async (name: string, email: string, password: string, phoneNumber: string, lastName: string): Promise<void> => {
-    conn.sobject(siteUser).create({ 
+export const create = async (name: string, firstName: string, email: string, password: string, phoneNumber: string, lastName: string, preferredPronouns: string): Promise<void> => {
+    return conn.sobject(siteUser).create({ 
         Name: name,
+        firstName__c: firstName,
         email__c: email,
         password__c: password,
         phoneNumber__c: phoneNumber,
-        lastName__c: lastName
+        lastName__c: lastName,
+        preferredPronouns__c: preferredPronouns
     }, 
     function(err: Error, result) {
         if (err || !result.success) { 
             return console.error(err, result); 
         }
         console.log("created User with ID : " + result.id + result.Name);
+        return result.id
     })
 };
 

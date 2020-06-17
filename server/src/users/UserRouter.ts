@@ -7,6 +7,10 @@ import * as UserService from "./UserService";
 const passport = require('passport');
 import LocalStrategy from "passport-local";
 import * as UserInterface from "./UserInterface"
+import * as bcrypt from "bcrypt";
+import { RestApi } from "jsforce";
+
+const BCRYPT_ROUNDS = 4
 
 
 // import User from "./UserInterface";
@@ -72,30 +76,41 @@ export const userRouter = Express.Router();
 // }); 
 
 userRouter.post("/register", async (req: Express.Request, res: Express.Response) => {
+    try {
+        let firstName: string = req.body.firstName
+        let email: string = req.body.email;
+        let password: string = req.body.password;
+        let phoneNumber: string = req.body.phoneNumber;
+        let lastName: string = req.body.lastName;
+        let personalPronouns: string = req.body.personalPronouns
 
-    passport.use('local-signup', new LocalStrategy({
 
-        userField: 'email',
-        passwordField: 'password',
-        passReqToCallback: true
-    },
-    function(req, email: string, password: string, done) {
+        //Hash Password
+        const hash = await bcrypt.hash(password, BCRYPT_ROUNDS)
+        
+        await UserService.create(firstName + lastName, firstName, email, hash, phoneNumber, lastName, personalPronouns).then(id => {
+            res.status(200).send({
+                "userID": id
+            });
+        });
 
-        //TODO: Implement cheking to see if the user already exists
 
-        var newUser = UserInterface.InitUser({
-            email: email,
-            password: password
-        })
+    } catch (e) {
+        res.status(404).send(e.message)
+    }
+});
 
-        //Create new user
-        UserService.create("Test", email, password, "TestPhoneNumber", "TestLastName")
+// userRouter.post('/login', async (req: Express.Request, res: Express.Response) {
+//     try {
 
-    }));
-})
+//     }
+// }
 
+//Test UserRouter for Sanity Checks
 userRouter.get("/hello_world", async (req: Express.Request, res: Express.Response) => {
     res.json({"message" : "hello World"});
 });
+
+userRouter
 
 
