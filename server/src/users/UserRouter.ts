@@ -4,7 +4,7 @@
 
 import * as Express from 'express';
 import * as UserService from './UserService';
-// import User from "./UserInterface";
+import User from "./UserInterface";
 
 /**
  * Router Definition
@@ -16,14 +16,14 @@ export const userRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
+// GET requests/
 
-userRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
+userRouter.get('/:id', async (req: Express.Request, res: Express.Response) => {
     // const id: number = parseInt(req.params.id, 10);
-    const name: string = req.params.name;
+    const id: string = req.params.id;
 
     try {
-        const fetchedUser = await UserService.getUserInfo(name);
+        const fetchedUser = await UserService.getUserInfo(id);
 
         res.status(200).send(fetchedUser);
     } catch (e) {
@@ -53,9 +53,7 @@ userRouter.post('/create', async (req: Express.Request, res: Express.Response) =
 // PUT requests/
 
 userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
-    console.log('HERE');
     try {
-        console.log(req.body);
         const id: string = req.params.id;
         await UserService.update(id, req.body);
 
