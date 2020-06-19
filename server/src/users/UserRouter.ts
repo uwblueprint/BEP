@@ -4,7 +4,7 @@
 
 import * as Express from 'express';
 import * as UserService from './UserService';
-import User from "./UserInterface";
+import User from './UserInterface';
 
 /**
  * Router Definition
@@ -27,13 +27,13 @@ userRouter.get('/:id', async (req: Express.Request, res: Express.Response) => {
 
         res.status(200).send(fetchedUser);
     } catch (e) {
-        res.status(404).send(e.message);
+        res.status(500).send({ msg: e.message });
     }
 });
 
 // POST requests/
 
-userRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
+userRouter.post('/', async (req: Express.Request, res: Express.Response) => {
     try {
         // Type match request body into User interface when Salesforce fields are figured out
         // const userInfo: User = req.body.user;
@@ -46,7 +46,7 @@ userRouter.post('/create', async (req: Express.Request, res: Express.Response) =
 
         res.sendStatus(201);
     } catch (e) {
-        res.status(404).send(e.message);
+        res.status(500).send({ msg: e.message });
     }
 });
 
@@ -59,7 +59,8 @@ userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
 
         res.sendStatus(200);
     } catch (e) {
-        res.status(500).send(e.message);
+        console.log(e)
+        res.status(500).send({ msg: e.message });
     }
 });
 
@@ -72,6 +73,6 @@ userRouter.delete('/:name', async (req: Express.Request, res: Express.Response) 
 
         res.sendStatus(200);
     } catch (e) {
-        res.status(500).send(e.message);
+        res.status(500).send({ msg: e.message });
     }
 });
