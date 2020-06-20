@@ -5,7 +5,7 @@ export default interface VolunteerInterface extends UserInterface {
 
     // Applicable only if volunteer is offering co-op placements.
     coopPlacementMode?: string; // In person or virtual
-    coopPlacementSchoolAffiliation?: string; 
+    coopPlacementSchoolAffiliation?: string;
     coopPlacementTime?: string[]; // During school days, after school, etc.
 
     jobTitle: string;
@@ -14,7 +14,7 @@ export default interface VolunteerInterface extends UserInterface {
     employmentStatus: string;
     expertiseAreas: string[];
     extraDescription: string;
-    grades: string[];  // Grades the volunteer wants to work with.
+    grades: string[]; // Grades the volunteer wants to work with.
     introductionMethod: string; // How the volunteer was introduced to BEP.
     isVolunteerCoordinator: boolean;
     languages: string[];
@@ -45,39 +45,46 @@ export default interface VolunteerInterface extends UserInterface {
     // }[];
 }
 
-export const isVolunteer = (obj:any): boolean => { 
-    return UserType[obj.userType] === UserType[UserType.Volunteer] &&
-        typeof obj.careerDescription === "string" &&
-        (typeof obj.coopPlacementMode === "string" || obj.coopPlacementMode == null || obj.coopPlacementMode == undefined) &&
-        (typeof obj.coopPlacementSchoolAffiliation === "string" || obj.coopPlacementMode == null || obj.coopPlacementMode == undefined) &&
-        ((Array.isArray(obj.coopPlacementTime) && obj.coopPlacementTime.every(item => typeof item === "string")) || 
-            obj.coopPlacementTime == null || obj.coopPlacementTime == undefined) &&
-        typeof obj.jobTitle === "string" &&
-        typeof obj.department === "string" &&
-        typeof obj.employerName === "string" &&
-        typeof obj.employmentStatus === "string" &&
+export const isVolunteer = (obj: any): boolean => {
+    return (
+        UserType[obj.userType] === UserType[UserType.Volunteer] &&
+        typeof obj.careerDescription === 'string' &&
+        (typeof obj.coopPlacementMode === 'string' ||
+            obj.coopPlacementMode === null ||
+            obj.coopPlacementMode === undefined) &&
+        (typeof obj.coopPlacementSchoolAffiliation === 'string' ||
+            obj.coopPlacementMode === null ||
+            obj.coopPlacementMode === undefined) &&
+        ((Array.isArray(obj.coopPlacementTime) && obj.coopPlacementTime.every(item => typeof item === 'string')) ||
+            obj.coopPlacementTime === null ||
+            obj.coopPlacementTime === undefined) &&
+        typeof obj.jobTitle === 'string' &&
+        typeof obj.department === 'string' &&
+        typeof obj.employerName === 'string' &&
+        typeof obj.employmentStatus === 'string' &&
         Array.isArray(obj.expertiseAreas) &&
-        obj.expertiseAreas.every(item => typeof item === "string") &&
-        typeof obj.extraDescription === "string" &&
+        obj.expertiseAreas.every(item => typeof item === 'string') &&
+        typeof obj.extraDescription === 'string' &&
         Array.isArray(obj.grades) &&
-        obj.grades.every(item => typeof item === "string") &&
-        typeof obj.introductionMethod === "string" &&
+        obj.grades.every(item => typeof item === 'string') &&
+        typeof obj.introductionMethod === 'string' &&
         Array.isArray(obj.languages) &&
-        typeof obj.isVolunteerCoordinator === "boolean" && 
-        obj.languages.every(item => typeof item === "string") &&
-        typeof obj.linkedIn === "string" && 
+        typeof obj.isVolunteerCoordinator === 'boolean' &&
+        obj.languages.every(item => typeof item === 'string') &&
+        typeof obj.linkedIn === 'string' &&
         Array.isArray(obj.localPostSecondaryInstitutions) &&
-        obj.localPostSecondaryInstitutions.every(item => typeof item === "string") &&
+        obj.localPostSecondaryInstitutions.every(item => typeof item === 'string') &&
         Array.isArray(obj.locations) &&
-        obj.locations.every(item => typeof item === "string") &&
+        obj.locations.every(item => typeof item === 'string') &&
         Array.isArray(obj.postSecondaryTraining) &&
-        obj.postSecondaryTraining.every(item => typeof item === "string") &&
+        obj.postSecondaryTraining.every(item => typeof item === 'string') &&
         Array.isArray(obj.professionalAssociations) &&
-        obj.professionalAssociations.every(item => typeof item === "string") &&
+        obj.professionalAssociations.every(item => typeof item === 'string') &&
         Array.isArray(obj.reasonsForVolunteering) &&
-        obj.reasonsForVolunteering.every(item => typeof item === "string") &&
+        obj.reasonsForVolunteering.every(item => typeof item === 'string') &&
         Array.isArray(obj.volunteerDesiredExternalActivities) &&
-        obj.volunteerDesiredExternalActivities.every(item => typeof item === "string") &&
+        obj.volunteerDesiredExternalActivities.every(item => typeof item === 'string') &&
         Array.isArray(obj.volunteerDesiredInternalActivities) &&
-        obj.volunteerDesiredInternalActivities.every(item => typeof item === "string")
-}
+        obj.volunteerDesiredInternalActivities.every(item => typeof item === 'string')
+    );
+};

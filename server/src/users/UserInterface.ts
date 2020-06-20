@@ -25,14 +25,16 @@ export default interface UserInterface {
 }
 
 export const isUser = (obj: any): boolean => {
-    return typeof obj.firstName === "string" &&
-        typeof obj.lastName === "string" &&
-        typeof obj.email === "string" &&
-        Array.isArray(obj.followedPrograms) && 
-        typeof obj.followedPrograms.every(item => typeof item === "string") &&
-        typeof obj.isSubscribed === "boolean" &&
-        typeof obj.password === "string" &&
-        typeof obj.phoneNumber ===  "number" &&
-        typeof obj.preferredPronouns === "string" &&
-        typeof obj.userType === "number"
-}
+    return (
+        typeof obj.firstName === 'string' &&
+        typeof obj.lastName === 'string' &&
+        typeof obj.email === 'string' &&
+        Array.isArray(obj.followedPrograms) &&
+        typeof obj.followedPrograms.every(item => typeof item === 'string') &&
+        typeof obj.isSubscribed === 'boolean' &&
+        typeof obj.password === 'string' &&
+        typeof obj.phoneNumber === 'number' &&
+        typeof obj.preferredPronouns === 'string' &&
+        typeof obj.userType === 'number'
+    );
+};

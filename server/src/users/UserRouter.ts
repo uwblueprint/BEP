@@ -2,9 +2,8 @@
  * Required External Modules and Interfaces
  */
 
-import * as Express from 'express';
 import * as UserService from './UserService';
-import User from './UserInterface';
+import * as Express from 'express';
 
 /**
  * Router Definition
@@ -59,7 +58,7 @@ userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
 
         res.sendStatus(200);
     } catch (e) {
-        console.log(e)
+        console.log(e);
         res.status(500).send({ msg: e.message });
     }
 });
