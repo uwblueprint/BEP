@@ -33,7 +33,9 @@ export const getUserInfo = async (email: string): Promise<User> => {
             if (err) {
                 return console.error(err);
             }
-            console.log("This is the user: ", record[0])
+            if (record[0] == undefined) {
+                return undefined
+            }
             let user: User = {
                 firstName: record[0].firstName__c,
                 lastName: record[0].lastName__c,
