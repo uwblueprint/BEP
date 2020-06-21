@@ -64,16 +64,16 @@ export const userRouter = Express.Router();
 
 // // DELETE requests/:id using name for now
 
-// userRouter.delete("/:name", async (req: Express.Request, res: Express.Response) => {
-//     try {
-//         let id: string = req.params.id;
-//         await UserService.remove(id);
+userRouter.delete("/:name", async (req: Express.Request, res: Express.Response) => {
+    try {
+        let id: string = req.params.id;
+        await UserService.remove(id);
 
-//         res.sendStatus(200);
-//     } catch (e) {
-//         res.status(500).send(e.message);
-//     }
-// }); 
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+}); 
 
 userRouter.post("/register", async (req: Express.Request, res: Express.Response) => {
     try {
@@ -83,14 +83,15 @@ userRouter.post("/register", async (req: Express.Request, res: Express.Response)
         let phoneNumber: string = req.body.phoneNumber;
         let lastName: string = req.body.lastName;
         let personalPronouns: string = req.body.personalPronouns
+        let userType: string = req.body.userType
 
 
         //Hash Password
         const hash = await bcrypt.hash(password, BCRYPT_ROUNDS)
         
-        await UserService.create(firstName + lastName, firstName, email, hash, phoneNumber, lastName, personalPronouns).then(id => {
+        await UserService.create(firstName + " " + lastName, firstName, email, hash, phoneNumber, lastName, personalPronouns, userType).then(response => {
             res.status(200).send({
-                "userID": id
+                "Data": response
             });
         });
 
@@ -100,11 +101,32 @@ userRouter.post("/register", async (req: Express.Request, res: Express.Response)
     }
 });
 
-// userRouter.post('/login', async (req: Express.Request, res: Express.Response) {
-//     try {
+userRouter.post('/login', async (req: Express.Request, res: Express.Response) => {
+    try {
+        let email: string = req.body.email;
+        let password: string = req.body.password;
 
-//     }
-// }
+        const fetchUser = await UserService.getUserInfo(email)
+        console.log(fetchUser.password)
+        const valid = await bcrypt.compare(password, fetchUser.password)
+        console.log("The comparison was:" + valid)
+
+        if (valid) {
+            res.status(200).send({
+                "Status":"Authenticated"
+            })
+        } else {
+            res.status(401).send({
+                "Status":"Unauthenticated",
+                "Message":"Incorrect Username or Password"
+            }) 
+        }
+
+
+    } catch (e) {
+        console.error(e)
+    }
+});
 
 //Test UserRouter for Sanity Checks
 userRouter.get("/hello_world", async (req: Express.Request, res: Express.Response) => {

@@ -24,19 +24,19 @@ const siteUser: string = "SiteUser__c";
 
 
  // Basic query for now to retrieve a user based on first name (should be changed to ID in future)
-export const getUserInfo = async (name: string): Promise<User> => {
+export const getUserInfo = async (email: string): Promise<User> => {
     let userInfo: User = conn.sobject(siteUser).find({
-        Name: name
-    }, "Name, lastName__c, email__c, phoneNumber__c, password__c") 
+        email__c: email
+    }, "email__c, firstName__c, lastName__c, Name, phoneNumber__c, password__c") 
         .limit(1)
         .execute(function(err: Error, record: any) {
             if (err) {
                 return console.error(err);
             }
+            console.log("This is the user: ", record[0])
             let user: User = {
-                firstName: record[0].Name,
+                firstName: record[0].firstName__c,
                 lastName: record[0].lastName__c,
-                email: record[0].email__c,
                 phoneNumber: record[0].phoneNumber__c,
                 password: record[0].password__c
             }
@@ -48,7 +48,7 @@ export const getUserInfo = async (name: string): Promise<User> => {
 
 // create new user object in salesforce with fields 
 // Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
-export const create = async (name: string, firstName: string, email: string, password: string, phoneNumber: string, lastName: string, preferredPronouns: string): Promise<void> => {
+export const create = async (name: string, firstName: string, email: string, password: string, phoneNumber: string, lastName: string, preferredPronouns: string, userType: string): Promise<void> => {
     return conn.sobject(siteUser).create({ 
         Name: name,
         firstName__c: firstName,
@@ -56,7 +56,8 @@ export const create = async (name: string, firstName: string, email: string, pas
         password__c: password,
         phoneNumber__c: phoneNumber,
         lastName__c: lastName,
-        preferredPronouns__c: preferredPronouns
+        preferredPronouns__c: preferredPronouns,
+        userType__c: userType
     }, 
     function(err: Error, result) {
         if (err || !result.success) { 
