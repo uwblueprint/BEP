@@ -9,6 +9,7 @@ import LocalStrategy from "passport-local";
 import * as UserInterface from "./UserInterface"
 import * as bcrypt from "bcrypt";
 import { RestApi } from "jsforce";
+import * as jwt from "jsonwebtoken";
 
 const BCRYPT_ROUNDS = 4
 
@@ -90,9 +91,15 @@ userRouter.post("/register", async (req: Express.Request, res: Express.Response)
         const hash = await bcrypt.hash(password, BCRYPT_ROUNDS)
         
         await UserService.create(firstName + " " + lastName, firstName, email, hash, phoneNumber, lastName, personalPronouns, userType).then(response => {
-            res.status(200).send({
-                "Data": response
-            });
+
+            if (response["success"] == true) {
+                let token = jwt.sign({email: email}, process.env.SECRET_KEY, {expiresIn: 120});
+                res.status(200).send({
+                    "data": response,
+                    "token": token
+                });
+
+            }
         });
 
 

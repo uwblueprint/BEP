@@ -10,6 +10,7 @@ import session from 'express-session';
 import jsforce from 'jsforce';
 import { userRouter } from './users/UserRouter';
 import { requestsRouter } from './requests/requests.router';
+import {verifyWebToken} from './middleware/jwt'
 
 let result;
 
@@ -84,6 +85,8 @@ class BackendServer extends Server {
         //         )
         //     }
         // });
+
+        
 
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
