@@ -2,16 +2,16 @@
 
 export default interface UserInterface {
     
-    // userType: 0 = admin/superuser, 1 = teacher/educator, 2 = volunteer/student
-    //firstName: string;
-    //lastName: string;
-    email: string;
-    // isActive: boolean;
-    //phoneNumber: string;
+    //email: string;
+    firstName: string;
+    //followedPrograms: string[];
+    //id: string; // Record id from Salesforce, cannot be modified.
+    //isSubscribed: boolean;
+    lastName: string;
     password: string;
-    // userType: number;
-    // status: number;
-    // private requestList?: Array<Request>;
+    phoneNumber: string;
+    //preferredPronouns: string;
+    // userType: 0 = admin/superuser, 1 = teacher/educator, 2 = volunteer/student
 
 }
 
