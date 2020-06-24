@@ -5,7 +5,15 @@ import * as bcrypt from "bcrypt";
 
 const BCRYPT_ROUNDS = 4
 
+/**
+ * Router Definition
+ */
+
 export const authRouter = Express.Router()
+
+/**
+ * Controller Definitions
+ */
 
 authRouter.post("/register", async (req: Express.Request, res: Express.Response) => {
     try {

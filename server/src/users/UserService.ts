@@ -5,7 +5,6 @@
 
 import User from './UserInterface';
 import { conn } from '../server';
-import { RequestResult } from 'jsforce';
 // import * as express from 'express';
 
 
@@ -20,8 +19,6 @@ const siteUser: string = "SiteUser__c";
  * See https://jsforce.github.io/document/ under Query and CRUD for documentation
  * Field Names of SiteUser object in Salesforce can be found by clicking Gear Icon -> Schema Builder -> SiteUser__c -> Fields
  */
-
-
 
  // Basic query for now to retrieve a user based on first name (should be changed to ID in future)
 export const getUserInfo = async (email: string): Promise<User> => {

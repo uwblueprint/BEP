@@ -4,17 +4,6 @@
 
 import * as Express from "express";
 import * as UserService from "./UserService";
-const passport = require('passport');
-import LocalStrategy from "passport-local";
-import * as UserInterface from "./UserInterface"
-import * as bcrypt from "bcrypt";
-import { RestApi } from "jsforce";
-import * as jwt from "jsonwebtoken";
-
-const BCRYPT_ROUNDS = 4
-
-
-// import User from "./UserInterface";
 
 /**
  * Router Definition
@@ -52,6 +41,6 @@ userRouter.delete("/:name", async (req: Express.Request, res: Express.Response) 
     } catch (e) {
         res.status(500).send(e.message);
     }
-}); 
+});
 
 
