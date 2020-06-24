@@ -51,7 +51,6 @@ userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
 
         res.status(200).send({ id: id });
     } catch (e) {
-        console.log(e);
         res.status(500).send({ msg: e.message });
     }
 });

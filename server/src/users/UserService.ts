@@ -212,9 +212,9 @@ export const remove = async (id: string): Promise<void> => {
         .find({
             Id: id
         })
-        .destroy((err: Error, result: any) => {
-            if (err || !result.success) {
-                return console.error(err, result);
+        .destroy((err: Error) => {
+            if (err) {
+                return console.error(err);
             }
         });
 };
