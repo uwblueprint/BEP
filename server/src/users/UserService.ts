@@ -9,9 +9,79 @@ import Volunteer, { isVolunteer } from './VolunteerInterface';
 
 const siteUser: string = 'SiteUser__c';
 
+// Converts between Salesforce picklist (string of object delimited by semicolons) and arrays.
 const arrayToPicklistString = (arr: string[]): string =>
     arr.reduce((acc, item) => acc + item + ';', '').replace(/;$/, ''); // Remove trailing semicolon.
 const picklistStringToArray = (str: string): string[] => str.split(';');
+
+// Map fields of user modes to Salesforce fields.
+const createSalesforceUser = (user: User, id?: string): any => {
+    let salesforceUser: any = {
+        email__c: user.email,
+        firstName__c: user.firstName,
+        followedPrograms__c: arrayToPicklistString(user.followedPrograms),
+        ...(id && { Id: id }),
+        isSubscribed__c: user.isSubscribed,
+        lastName__c: user.lastName,
+        Name: user.firstName + ' ' + user.lastName,
+        password__c: user.password,
+        phoneNumber__c: user.phoneNumber,
+        preferredPronouns__c: user.preferredPronouns,
+        userType__c: user.userType
+    };
+
+    if (isEducator(user)) {
+        salesforceUser = {
+            ...salesforceUser,
+            educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
+            position__c: (user as Educator).position,
+            school__c: (user as Educator).school,
+            schoolBoard__c: (user as Educator).schoolBoard
+        };
+    } else if (isVolunteer(user)) {
+        salesforceUser = {
+            ...salesforceUser,
+            careerDescription__c: (user as Volunteer).careerDescription,
+            ...((user as Volunteer).coopPlacementMode && {
+                coopPlacementMode__c: (user as Volunteer).coopPlacementMode
+            }),
+            ...((user as Volunteer).coopPlacementSchoolAffiliation && {
+                coopPlacementSchoolAffiliation__c: (user as Volunteer).coopPlacementSchoolAffiliation
+            }),
+            ...((user as Volunteer).coopPlacementTime && {
+                coopPlacementTime__c: arrayToPicklistString((user as Volunteer).coopPlacementTime)
+            }),
+            department__c: (user as Volunteer).department,
+            employerName__c: (user as Volunteer).employerName,
+            employmentStatus__c: (user as Volunteer).employmentStatus,
+            expertiseAreas__c: arrayToPicklistString((user as Volunteer).expertiseAreas),
+            extraDescription__c: (user as Volunteer).extraDescription,
+            grades__c: arrayToPicklistString((user as Volunteer).grades),
+            introductionMethod__c: (user as Volunteer).introductionMethod,
+            isVolunteerCoordinator__c: (user as Volunteer).isVolunteerCoordinator,
+            jobTitle__c: (user as Volunteer).jobTitle,
+            languages__c: arrayToPicklistString((user as Volunteer).languages),
+            linkedIn__c: (user as Volunteer).linkedIn,
+            localPostSecondaryInstitutions__c: arrayToPicklistString(
+                (user as Volunteer).localPostSecondaryInstitutions
+            ),
+            locations__c: arrayToPicklistString((user as Volunteer).locations),
+            postSecondaryTraining__c: arrayToPicklistString((user as Volunteer).postSecondaryTraining),
+            professionalAssociations__c: arrayToPicklistString((user as Volunteer).professionalAssociations),
+            reasonsForVolunteering__c: arrayToPicklistString((user as Volunteer).reasonsForVolunteering),
+            volunteerDesiredExternalActivities__c: arrayToPicklistString(
+                (user as Volunteer).volunteerDesiredExternalActivities
+            ),
+            volunteerDesiredInternalActivities__c: arrayToPicklistString(
+                (user as Volunteer).volunteerDesiredInternalActivities
+            )
+        };
+    } else {
+        throw Error('Input is not a valid volunteer or educator.');
+    }
+
+    return salesforceUser;
+};
 
 /**
  * Service Methods
@@ -19,11 +89,10 @@ const picklistStringToArray = (str: string): string[] => str.split(';');
 
 /**
  * See https://jsforce.github.io/document/ under Query and CRUD for documentation
- * Field Names of SiteUser object in Salesforce can be found by clicking Gear Icon -> Schema Builder -> SiteUser__c -> Fields
  */
 
-// Basic query for now to retrieve a user based on first name (should be changed to ID in future)
-export const getUserInfo = async (id: string): Promise<User> => {
+// Retrieve user by ID.
+export const getUser = async (id: string): Promise<User> => {
     const userFields =
         'email__c, firstName__c, phoneNumber__c, followedPrograms__c, Id, isSubscribed__c, lastName__c, password__c, ' +
         'preferredPronouns__c, userType__c, educatorDesiredActivities__c, position__c, schoolBoard__c, school__c, careerDescription__c, ' +
@@ -32,7 +101,7 @@ export const getUserInfo = async (id: string): Promise<User> => {
         'linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, professionalAssociations__c, reasonsForVolunteering__c,' +
         'volunteerDesiredExternalActivities__c, volunteerDesiredInternalActivities__c';
 
-    const userInfo: User = conn
+    const user: User = conn
         .sobject(siteUser)
         .find(
             {
@@ -103,121 +172,49 @@ export const getUserInfo = async (id: string): Promise<User> => {
             return user;
         });
 
-    return userInfo;
+    return user;
 };
 
+// Update user by ID.
 export const update = async (id: string, user: User): Promise<User> => {
     if (!isUser(user)) {
         throw Error('Input is not a valid user.');
     }
 
-    let updateFields: any = {
-        email__c: user.email,
-        firstName__c: user.firstName,
-        followedPrograms__c: arrayToPicklistString(user.followedPrograms),
-        Id: id,
-        isSubscribed__c: user.isSubscribed,
-        lastName__c: user.lastName,
-        Name: user.firstName + ' ' + user.lastName,
-        password__c: user.password,
-        phoneNumber__c: user.phoneNumber,
-        preferredPronouns__c: user.preferredPronouns,
-        userType__c: user.userType
-    };
-
-    if (isEducator(user)) {
-        updateFields = {
-            ...updateFields,
-            educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
-            position__c: (user as Educator).position,
-            school__c: (user as Educator).school,
-            schoolBoard__c: (user as Educator).schoolBoard
-        };
-    } else if (isVolunteer(user)) {
-        updateFields = {
-            ...updateFields,
-            careerDescription__c: (user as Volunteer).careerDescription,
-            ...((user as Volunteer).coopPlacementMode && {
-                coopPlacementMode__c: (user as Volunteer).coopPlacementMode
-            }),
-            ...((user as Volunteer).coopPlacementSchoolAffiliation && {
-                coopPlacementSchoolAffiliation__c: (user as Volunteer).coopPlacementSchoolAffiliation
-            }),
-            ...((user as Volunteer).coopPlacementTime && {
-                coopPlacementTime__c: arrayToPicklistString((user as Volunteer).coopPlacementTime)
-            }),
-            department__c: (user as Volunteer).department,
-            employerName__c: (user as Volunteer).employerName,
-            employmentStatus__c: (user as Volunteer).employmentStatus,
-            expertiseAreas__c: arrayToPicklistString((user as Volunteer).expertiseAreas),
-            extraDescription__c: (user as Volunteer).extraDescription,
-            grades__c: arrayToPicklistString((user as Volunteer).grades),
-            introductionMethod__c: (user as Volunteer).introductionMethod,
-            isVolunteerCoordinator__c: (user as Volunteer).isVolunteerCoordinator,
-            jobTitle__c: (user as Volunteer).jobTitle,
-            languages__c: arrayToPicklistString((user as Volunteer).languages),
-            linkedIn__c: (user as Volunteer).linkedIn,
-            localPostSecondaryInstitutions__c: arrayToPicklistString(
-                (user as Volunteer).localPostSecondaryInstitutions
-            ),
-            locations__c: arrayToPicklistString((user as Volunteer).locations),
-            postSecondaryTraining__c: arrayToPicklistString((user as Volunteer).postSecondaryTraining),
-            professionalAssociations__c: arrayToPicklistString((user as Volunteer).professionalAssociations),
-            reasonsForVolunteering__c: arrayToPicklistString((user as Volunteer).reasonsForVolunteering),
-            volunteerDesiredExternalActivities__c: arrayToPicklistString(
-                (user as Volunteer).volunteerDesiredExternalActivities
-            ),
-            volunteerDesiredInternalActivities__c: arrayToPicklistString(
-                (user as Volunteer).volunteerDesiredInternalActivities
-            )
-        };
-    } else {
-        throw Error('Input is not a valid volunteer or educator.');
-    }
-
-    const updatedUser: User = conn.sobject(siteUser).update(updateFields, (err, ret) => {
-        if (err || !ret.success) {
-            return console.error(err, ret);
-        }
-    });
+    const updatedUser: User = conn
+        .sobject(siteUser)
+        .update(createSalesforceUser(user, id), (err: Error, result: any) => {
+            if (err || !result.success) {
+                return console.error(err, result);
+            }
+        });
 
     return updatedUser;
 };
 
-// create new user object in salesforce with fields
-// Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
-export const create = async (
-    name: string,
-    email: string,
-    password: string,
-    phoneNumber: string,
-    lastName: string
-): Promise<void> => {
-    conn.sobject(siteUser).create(
-        {
-            email__c: email,
-            lastName__c: lastName,
-            Name: name,
-            password__c: password,
-            phoneNumber__c: phoneNumber
-        },
-        (err: Error, result) => {
+// Create new user and return ID.
+export const create = async (user: User): Promise<string> => {
+    const userInfo: { id: string; success: boolean; errors: Error[] } = await conn
+        .sobject(siteUser)
+        .create(createSalesforceUser(user), (err: Error, result: any) => {
             if (err || !result.success) {
                 return console.error(err, result);
             }
-        }
-    );
+        });
+
+    return userInfo.id;
 };
 
-// Delete a user by name (should be changed to ID in the future once ID field in salesforce is figured out)
-export const remove = async (name: string): Promise<void> => {
-    conn.sobject(siteUser)
+// Delete a user by ID.
+export const remove = async (id: string): Promise<void> => {
+    return conn
+        .sobject(siteUser)
         .find({
-            Name: name
+            Id: id
         })
-        .destroy((err: Error, result) => {
-            if (err) {
-                return console.error(err);
+        .destroy((err: Error, result: any) => {
+            if (err || !result.success) {
+                return console.error(err, result);
             }
         });
 };

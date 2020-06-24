@@ -15,14 +15,14 @@ export const userRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET requests/
+// GET users/:id
 
 userRouter.get('/:id', async (req: Express.Request, res: Express.Response) => {
     // const id: number = parseInt(req.params.id, 10);
     const id: string = req.params.id;
 
     try {
-        const fetchedUser = await UserService.getUserInfo(id);
+        const fetchedUser = await UserService.getUser(id);
 
         res.status(200).send(fetchedUser);
     } catch (e) {
@@ -30,42 +30,35 @@ userRouter.get('/:id', async (req: Express.Request, res: Express.Response) => {
     }
 });
 
-// POST requests/
+// POST users/
 
 userRouter.post('/', async (req: Express.Request, res: Express.Response) => {
     try {
-        // Type match request body into User interface when Salesforce fields are figured out
-        // const userInfo: User = req.body.user;
-        let name: string = req.body.name;
-        let email: string = req.body.email;
-        let password: string = req.body.password;
-        let phoneNumber: string = req.body.phoneNumber;
-        let lastName: string = req.body.lastName;
-        await UserService.create(name, email, password, phoneNumber, lastName);
+        const id: string = await UserService.create(req.body);
 
-        res.sendStatus(201);
+        res.status(201).set('Location', `/api/user/${id}`).end();
     } catch (e) {
         res.status(500).send({ msg: e.message });
     }
 });
 
-// PUT requests/
+// PUT users/:id
 
 userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
         const id: string = req.params.id;
         await UserService.update(id, req.body);
 
-        res.sendStatus(200);
+        res.status(200).send({ id: id });
     } catch (e) {
         console.log(e);
         res.status(500).send({ msg: e.message });
     }
 });
 
-// DELETE requests/:id using name for now
+// DELETE users/:id 
 
-userRouter.delete('/:name', async (req: Express.Request, res: Express.Response) => {
+userRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
         let id: string = req.params.id;
         await UserService.remove(id);
