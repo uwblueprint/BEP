@@ -78,10 +78,10 @@ class BackendServer extends Server {
         this.app.use("/api/auth", authRouter)
         this.app.use("/api/requests", requestsRouter);
         //If in development, do not mount JWT auth middleware to users route
-        if (process.env.NODE_ENV == 'development') {
-            this.app.use("api/user/", userRouter);
-        } else {
+        if (process.env.NODE_ENV == 'production') {
             this.app.use("api/user/userRouter", verifyWebToken(), userRouter);
+        } else {
+            this.app.use("api/user/", userRouter);
         }
 
         //Uncomment soon. Test method to prevent non-logged in users from accessing '/'
