@@ -50,6 +50,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@types/bcrypt": "^3.0.0",
     "@types/cors": "^2.8.6",
     "@types/express-session": "^1.17.0",
     "@types/helmet": "0.0.45",
