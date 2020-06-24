@@ -1,8 +1,31 @@
-import React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 'react-router-dom';
 import './App.css';
 
+import Login from '../components/Auth/SignIn';
 import TestSection from '../components/Requests/TestSection';
+
+interface IProps extends RouteProps {
+  component: any;
+  isLoggedIn: boolean;
+}
+
+const PrivateRoute = (props:IProps) => {
+  const {component: Component, isLoggedIn, ...rest} = props;
+  return (
+    <Route {...rest} render={routeProps => (
+      // replace true with check for login
+      isLoggedIn ?
+        <Component {...routeProps} />
+      : <Redirect 
+          to={{
+            pathname:"/",
+            state: {from:routeProps.location}
+          }} 
+        />
+    )} />
+  );
+};
 
 export default class App extends React.Component {
   constructor(props: any) {
@@ -13,7 +36,7 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    // auth stuff
+    // update state with user info and loading:false
   }
 
   render() {
@@ -21,7 +44,8 @@ export default class App extends React.Component {
       <Router>
         <React.Fragment>
           <Switch>
-            <Route exact path="/" component={TestSection}/>
+            <Route exact path="/" component={Login}/>
+            <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
           </Switch>
         </React.Fragment>
       </Router>
