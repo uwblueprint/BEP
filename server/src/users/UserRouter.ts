@@ -15,14 +15,13 @@ export const userRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET users/:id
+// GET users/?email
 
-userRouter.get('/:id', async (req: Express.Request, res: Express.Response) => {
-    // const id: number = parseInt(req.params.id, 10);
-    const id: string = req.params.id;
+userRouter.get('/', async (req: Express.Request, res: Express.Response) => {
+    const email: string = req.query.email as string;
 
     try {
-        const fetchedUser = await UserService.getUser(id);
+        const fetchedUser = await UserService.getUser(email);
 
         res.status(200).send(fetchedUser);
     } catch (e) {
@@ -36,7 +35,9 @@ userRouter.post('/', async (req: Express.Request, res: Express.Response) => {
     try {
         const id: string = await UserService.create(req.body);
 
-        res.status(201).set('Location', `/api/user/${id}`).end();
+        res.status(201)
+            .set('Location', `/api/user/${id}`)
+            .end();
     } catch (e) {
         res.status(500).send({ msg: e.message });
     }
@@ -55,7 +56,7 @@ userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
     }
 });
 
-// DELETE users/:id 
+// DELETE users/:id
 
 userRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
     try {

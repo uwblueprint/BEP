@@ -92,7 +92,7 @@ const createSalesforceUser = (user: User, id?: string): any => {
  */
 
 // Retrieve user by ID.
-export const getUser = async (id: string): Promise<User> => {
+export const getUser = async (email: string): Promise<User> => {
     const userFields =
         'email__c, firstName__c, phoneNumber__c, followedPrograms__c, Id, isSubscribed__c, lastName__c, password__c, ' +
         'preferredPronouns__c, userType__c, educatorDesiredActivities__c, position__c, schoolBoard__c, school__c, careerDescription__c, ' +
@@ -105,7 +105,7 @@ export const getUser = async (id: string): Promise<User> => {
         .sobject(siteUser)
         .find(
             {
-                Id: id
+                email__c: email
             },
             userFields
         )
