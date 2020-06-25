@@ -10,7 +10,8 @@ import session from 'express-session';
 import jsforce from 'jsforce';
 import { userRouter } from './users/UserRouter';
 import { requestsRouter } from './requests/requests.router';
-
+import {verifyWebToken} from './middleware/jwt'
+import { authRouter } from './auth/authRouter'
 
 let result;
 
@@ -74,8 +75,23 @@ class BackendServer extends Server {
                 res.send(result.records);
             });
         });
-        this.app.use("/api/user", userRouter);
+        this.app.use("/api/auth", authRouter)
         this.app.use("/api/requests", requestsRouter);
+        //If in development, do not mount JWT auth middleware to users route
+        if (process.env.NODE_ENV == 'production') {
+            this.app.use("api/user/userRouter", verifyWebToken(), userRouter);
+        } else {
+            this.app.use("api/user/", userRouter);
+        }
+
+        //Uncomment soon. Test method to prevent non-logged in users from accessing '/'
+        // this.app.get('/', (req, res)  => {
+        //     if (!req.user) {
+        //         res.send(
+        //             {"Not Allowed"}
+        //         )
+        //     }
+        // });
 
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);

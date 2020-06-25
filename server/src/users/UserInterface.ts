@@ -38,3 +38,5 @@ export const isUser = (obj: any): boolean => {
         typeof obj.userType === 'number'
     );
 };
+
+export function InitUser(config: UserInterface) {}

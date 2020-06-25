@@ -2,8 +2,8 @@
  * Required External Modules and Interfaces
  */
 
-import * as UserService from './UserService';
-import * as Express from 'express';
+import * as Express from "express";
+import * as UserService from "./UserService";
 
 /**
  * Router Definition
