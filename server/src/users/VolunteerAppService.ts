@@ -35,10 +35,12 @@ export const getApplicationInfo = async (applicationId: string): Promise<Event> 
                 return console.error(err);
             }
             let application: Application = {
-                ApplicationId: record[0].Name,
-                isActive: false
+                applicationId: record[0].ApplicationId,
+                volunteerName: record[0].volunteerName__c,
+                applicationStatus: record[0].applicationStatus__c,
+                isActive: record[0].isActive__c
             }
-            return event;
+            return application;
         });
     console.log(applicationInfo);
     return applicationInfo;
