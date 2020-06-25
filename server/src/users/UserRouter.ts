@@ -22,7 +22,7 @@ userRouter.get("/:name", async (req: Express.Request, res: Express.Response) => 
     const name: string = req.params.name;
 
     try {
-        const fetchedUser = await UserService.getUserInfo(name);
+        const fetchedUser = await UserService.getUser(name);
 
         res.status(200).send(fetchedUser);
     } catch (e) {
