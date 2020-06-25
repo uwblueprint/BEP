@@ -84,6 +84,7 @@ class BackendServer extends Server {
             this.app.use("api/user/", userRouter);
         }
 
+
         //Uncomment soon. Test method to prevent non-logged in users from accessing '/'
         // this.app.get('/', (req, res)  => {
         //     if (!req.user) {

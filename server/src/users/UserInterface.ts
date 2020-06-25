@@ -14,7 +14,7 @@ export default interface UserInterface {
     email: string;
     firstName: string;
     followedPrograms: string[];
-    id: string; // Record id from Salesforce, cannot be modified.
+    id?: string; // Record id from Salesforce, cannot be modified.
     isSubscribed: boolean;
     lastName: string;
     password: string;

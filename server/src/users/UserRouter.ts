@@ -15,56 +15,32 @@ export const userRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET users/?email
+// GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
 
-userRouter.get('/', async (req: Express.Request, res: Express.Response) => {
-    const email: string = req.query.email as string;
+userRouter.get("/:name", async (req: Express.Request, res: Express.Response) => {
+    // const id: number = parseInt(req.params.id, 10);
+    const name: string = req.params.name;
 
     try {
-        const fetchedUser = await UserService.getUser(email);
+        const fetchedUser = await UserService.getUserInfo(name);
 
         res.status(200).send(fetchedUser);
     } catch (e) {
-        res.status(500).send({ msg: e.message });
+        res.status(404).send(e.message);
     }
 });
 
-// POST users/
+// DELETE Request
 
-userRouter.post('/', async (req: Express.Request, res: Express.Response) => {
-    try {
-        const id: string = await UserService.create(req.body);
-
-        res.status(201)
-            .set('Location', `/api/user/${id}`)
-            .end();
-    } catch (e) {
-        res.status(500).send({ msg: e.message });
-    }
-});
-
-// PUT users/:id
-
-userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
-    try {
-        const id: string = req.params.id;
-        await UserService.update(id, req.body);
-
-        res.status(200).send({ id: id });
-    } catch (e) {
-        res.status(500).send({ msg: e.message });
-    }
-});
-
-// DELETE users/:id
-
-userRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
+userRouter.delete("/:name", async (req: Express.Request, res: Express.Response) => {
     try {
         let id: string = req.params.id;
         await UserService.remove(id);
 
         res.sendStatus(200);
     } catch (e) {
-        res.status(500).send({ msg: e.message });
+        res.status(500).send(e.message);
     }
 });
+
+
