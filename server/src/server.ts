@@ -10,6 +10,7 @@ import session from 'express-session';
 import jsforce from 'jsforce';
 import { userRouter } from './users/UserRouter';
 import { requestsRouter } from './requests/requests.router';
+import { inviteRouter } from './users/VolunteerInviteRouter';
 
 
 let result;
@@ -76,6 +77,7 @@ class BackendServer extends Server {
         });
         this.app.use("/api/user", userRouter);
         this.app.use("/api/requests", requestsRouter);
+        this.app.use("/api/invites", inviteRouter);
 
         this.app.listen(port, () => {
             console.log(this.SERVER_STARTED + port);
