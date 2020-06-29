@@ -7,7 +7,7 @@ import { conn } from '../server';
 // import * as express from 'express';
 
 
-const eventApi: string = "Event__c";
+const eventApi: string = 'Event__c';
 
 /**
  * Service Methods
@@ -45,7 +45,7 @@ export const getEventInfo = async (name: string): Promise<Event> => {
 };
 
 export const update = async (id: string, event: Event): Promise<Event> => {
-    let updatedUser: Event = conn
+    let updatedEvent: Event = conn
         .sobject(eventApi)
         .update(
             {
@@ -61,7 +61,7 @@ export const update = async (id: string, event: Event): Promise<Event> => {
             }
         )
 
-    return updatedUser;
+    return updatedEvent;
 };
 
 // create new user object in salesforce with fields 
@@ -79,7 +79,7 @@ export const create = async (
             if (err || !result.success) {
                 return console.error(err, result);
             }
-            console.log("created Event with ID : " + result.id + result.Name);
+            console.log('created Event with ID : ' + result.id + result.Name);
         }
     );
 };

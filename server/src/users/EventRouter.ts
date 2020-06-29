@@ -2,9 +2,9 @@
  * Required External Modules and Interfaces
  */
 
-import * as Express from "express";
-import * as EventService from "./EventService";
-// import Event from "./EventInterface";
+import * as Express from 'express';
+import * as EventService from './EventService';
+// import Event from './EventInterface';
 
 /**
  * Router Definition
@@ -18,7 +18,7 @@ export const eventRouter = Express.Router();
 
 // GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
 
-eventRouter.get("/:name", async (req: Express.Request, res: Express.Response) => {
+eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
     // const id: number = parseInt(req.params.id, 10);
     const name: string = req.params.name;
 
@@ -33,7 +33,7 @@ eventRouter.get("/:name", async (req: Express.Request, res: Express.Response) =>
 
 // POST requests/
 
-eventRouter.post("/create", async (req: Express.Request, res: Express.Response) => {
+eventRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
     try {
         // Type match request body into Event interface when Salesforce fields are figured out
         // const eventInfo: Event = req.body.event;
@@ -51,7 +51,6 @@ eventRouter.post("/create", async (req: Express.Request, res: Express.Response) 
 //PUT requests
 
 eventRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
-    console.log('HERE');
     try {
         console.log(req.body);
         const id: string = req.params.id;

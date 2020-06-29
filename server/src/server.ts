@@ -9,22 +9,23 @@ import express from 'express';
 import session from 'express-session';
 import jsforce from 'jsforce';
 import { userRouter } from './users/UserRouter';
+import { eventRouter } from './users/EventRouter';
 import { requestsRouter } from './requests/requests.router';
 
 
 let result;
 
 // Display environment variables
-if (process.env.NODE_ENV !== 'production'){ 
+if (process.env.NODE_ENV !== 'production') {
 
     const dotenv = require('dotenv');
-    
+
     result = dotenv.config();
 
     if (result.error) {
         throw result.error;
     }
-      
+
     console.log(result.parsed);
 }
 let conn;
@@ -75,6 +76,7 @@ class BackendServer extends Server {
             });
         });
         this.app.use("/api/user", userRouter);
+        this.app.use("/api/events", eventRouter);
         this.app.use("/api/requests", requestsRouter);
 
         this.app.listen(port, () => {
