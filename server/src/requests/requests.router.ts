@@ -2,11 +2,11 @@
  * Required External Modules and Interfaces
  */
 
-import * as Express from "express";
+import * as Express from 'express';
 // import { Request } from "express" as expressRequest;
-import * as RequestService from "./requests.service";
-import { Request } from "./request.interface";
-import { Requests } from "./requests.interface";
+import * as RequestService from './requests.service';
+import { Request } from './request.interface';
+import { Requests } from './requests.interface';
 
 /**
  * Router Definition
@@ -20,7 +20,7 @@ export const requestsRouter = Express.Router();
 
 // GET requests/
 
-requestsRouter.get("/", async (req: Express.Request, res: Express.Response) => {
+requestsRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     try {
         const reqs: Requests = await RequestService.findAll();
 
@@ -32,7 +32,7 @@ requestsRouter.get("/", async (req: Express.Request, res: Express.Response) => {
 
 // GET requests/:id
 
-requestsRouter.get("/:id", async (req: Express.Request, res: Express.Response) => {
+requestsRouter.get('/:id', async (req: Express.Request, res: Express.Response) => {
     const id: number = parseInt(req.params.id, 10);
 
     try {
@@ -46,10 +46,10 @@ requestsRouter.get("/:id", async (req: Express.Request, res: Express.Response) =
 
 // POST requests/
 
-requestsRouter.post("/", async (req: Express.Request, res: Express.Response) => {
+requestsRouter.post('/', async (req: Express.Request, res: Express.Response) => {
     try {
         const request: Request = req.body.request;
-        console.log("body of post req", request);
+        console.log('body of post req', request);
 
         await RequestService.create(request);
 
@@ -61,7 +61,7 @@ requestsRouter.post("/", async (req: Express.Request, res: Express.Response) => 
 
 // PUT requests/
 
-requestsRouter.put("/", async (req: Express.Request, res: Express.Response) => {
+requestsRouter.put('/', async (req: Express.Request, res: Express.Response) => {
     try {
         const request: Request = req.body.item;
 
@@ -75,7 +75,7 @@ requestsRouter.put("/", async (req: Express.Request, res: Express.Response) => {
 
 // DELETE requests/:id
 
-requestsRouter.delete("/:id", async (req: Express.Request, res: Express.Response) => {
+requestsRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
         const id: number = parseInt(req.params.id, 10);
         await RequestService.remove(id);
