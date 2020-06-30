@@ -9,8 +9,6 @@ import express from 'express';
 import session from 'express-session';
 import jsforce from 'jsforce';
 import { userRouter } from './users/UserRouter';
-import { eventRouter } from './users/EventRouter';
-import { inviteRouter } from './users/VolunteerInviteRouter';
 import { requestsRouter } from './requests/requests.router';
 import {verifyWebToken} from './middleware/jwt'
 import { authRouter } from './auth/authRouter'
@@ -18,16 +16,16 @@ import { authRouter } from './auth/authRouter'
 let result;
 
 // Display environment variables
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production'){ 
 
     const dotenv = require('dotenv');
-
+    
     result = dotenv.config();
 
     if (result.error) {
         throw result.error;
     }
-
+      
     console.log(result.parsed);
 }
 let conn;
@@ -77,9 +75,6 @@ class BackendServer extends Server {
                 res.send(result.records);
             });
         });
-        this.app.use("/api/user", userRouter);
-        this.app.use("/api/events", eventRouter);
-        this.app.use("/api/invites", inviteRouter);
         this.app.use("/api/auth", authRouter)
         this.app.use("/api/requests", requestsRouter);
 
