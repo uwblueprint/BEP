@@ -18,16 +18,16 @@ import { authRouter } from './auth/authRouter'
 let result;
 
 // Display environment variables
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production'){ 
 
     const dotenv = require('dotenv');
-
+    
     result = dotenv.config();
 
     if (result.error) {
         throw result.error;
     }
-
+      
     console.log(result.parsed);
 }
 let conn;
