@@ -78,7 +78,6 @@ class BackendServer extends Server {
                 res.send(result.records);
             });
         });
-
         this.app.use("/api/events", eventRouter);
         this.app.use("/api/invites", inviteRouter);
         this.app.use("/api/auth", authRouter)
