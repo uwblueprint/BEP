@@ -34,4 +34,24 @@ inviteRouter.delete('/:id', async (req: Express.Request, res: Express.Response) 
     } catch (e) {
         res.status(500).send(e.message);
     }
-})
+});
+
+inviteRouter.put('/:accept', async (req: Express.Request, res: Express.Response) => {
+    try {
+        let id: string = req.params.id;
+        await VolunteerInviteService.accept(id);
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+});
+
+inviteRouter.put('/:decline', async (req: Express.Request, res: Express.Response) => {
+    try {
+        let id: string = req.params.id;
+        await VolunteerInviteService.decline(id);
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+});
