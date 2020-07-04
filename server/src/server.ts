@@ -10,6 +10,7 @@ import session from 'express-session';
 import jsforce from 'jsforce';
 import { userRouter } from './users/UserRouter';
 import { eventRouter } from './users/EventRouter';
+import { inviteRouter } from './users/VolunteerInviteRouter';
 import { requestsRouter } from './requests/requests.router';
 import {verifyWebToken} from './middleware/jwt'
 import { authRouter } from './auth/authRouter'
@@ -78,6 +79,7 @@ class BackendServer extends Server {
         });
         this.app.use("/api/user", userRouter);
         this.app.use("/api/events", eventRouter);
+        this.app.use("/api/invites", inviteRouter);
         this.app.use("/api/auth", authRouter)
         this.app.use("/api/requests", requestsRouter);
 
