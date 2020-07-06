@@ -6,7 +6,7 @@ import './App.css';
 
 import Login from '../pages/Auth/SignIn';
 import TestSection from '../pages/Requests/TestSection';
-import VolunteerList from '../components/VolunteerList/VolunteerList';
+import VolunteerList from '../pages/VolunteerList/VolunteerList';
 
 interface IProps extends RouteProps {
   component: any;
@@ -44,7 +44,8 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Router>
+      <ThemeProvider theme={theme}>
+        <Router>
         <React.Fragment>
           <Switch>
             <Route exact path="/" component={Login}/>
@@ -53,6 +54,7 @@ export default class App extends React.Component {
           </Switch>
         </React.Fragment>
       </Router>
+      </ThemeProvider>
     )
   }
 }
