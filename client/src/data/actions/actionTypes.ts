@@ -1,1 +1,2 @@
 export const FETCH_TEST = "FETCH_TEST";
+export const FETCH_VOLUNTEERS = "FETCH_VOLUNTEERS";
