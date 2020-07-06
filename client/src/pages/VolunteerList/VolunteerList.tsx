@@ -28,6 +28,10 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import { Grid } from "@material-ui/core";
 
+/* Components */
+import VolunteerCard from "./VolunteerCard";
+import { Grid } from "@material-ui/core";
+
 class VolunteerList extends React.Component<
   {
     volunteers: Volunteer[];
