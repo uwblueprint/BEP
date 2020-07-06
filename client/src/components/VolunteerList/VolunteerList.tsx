@@ -11,6 +11,10 @@ import { getVolunteers } from "../../data/selectors/volunteersSelector";
 /* Types */
 import { Volunteer } from "../../data/types/UserTypes";
 
+/* Components */
+import VolunteerCard from "./VolunteerCard";
+import { Grid } from "@material-ui/core";
+
 class VolunteerList extends React.Component<
   { volunteers: Volunteer[]; fetchVolunteers: any },
   {}
@@ -32,7 +36,22 @@ class VolunteerList extends React.Component<
 
   render() {
     // console.log(this.props.volunteers);
-    return <h1>HELLO</h1>;
+    const createVolunteerCard = (volunteer: Volunteer) => (
+      <Grid item xs={12} key={volunteer.email}>
+        <VolunteerCard {...volunteer} />
+      </Grid>
+    );
+    return (
+      <Grid container direction="row">
+        <Grid item sm={1} />
+        <Grid item container xs={12} sm={10}>
+          {this.props.volunteers.map((volunteer) =>
+            createVolunteerCard(volunteer)
+          )}
+        </Grid>
+        <Grid item sm={1} />
+      </Grid>
+    );
   }
 }
 
