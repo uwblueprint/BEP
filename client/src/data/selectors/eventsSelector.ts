@@ -5,7 +5,7 @@ const getEventsData = (state: EventsState) => {
     return state.list ? state.list : [];
 };
 
-export const getVolunteers = createSelector(
+export const getEvents = createSelector(
     [getEventsData],
     (events) => events
 );

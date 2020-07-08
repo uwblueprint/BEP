@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 're
 import './App.css';
 
 import Login from '../components/Auth/SignIn';
-import EducatorDashboard from '../components/EducatorDashboard';
+import EducatorDashboard from '../components/EducatorDashboard/EducatorDashboard';
 
 import TestSection from '../components/Requests/TestSection';
 
