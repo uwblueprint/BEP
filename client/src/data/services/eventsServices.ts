@@ -1,7 +1,7 @@
 import { get } from "../../utils/EventsApiUtils";
-import { fetchEvents } from "../actions/eventActions";
+import { fetchEvents } from "../actions/eventsActions";
 
-export function fetchVolunteersService(limit: number, offset: number) {
+export function fetchEventsService(limit: number, offset: number) {
     return (dispatch: any) => {
         return get(limit, offset).then((res: any) => {
             dispatch(fetchEvents(res.data));

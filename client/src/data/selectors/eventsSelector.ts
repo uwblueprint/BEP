@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { EventsState } from "../reducers/eventReducers";
+import { EventsState } from "../reducers/eventsReducers";
 
 const getEventsData = (state: EventsState) => {
     return state.list ? state.list : [];
