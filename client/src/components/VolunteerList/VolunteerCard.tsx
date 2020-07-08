@@ -5,6 +5,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 
 import { Volunteer } from "../../data/types/UserTypes";
 
@@ -39,6 +40,22 @@ export default function VolunteerCard(props: any) {
         <Typography className={classes.pos} color="textSecondary">
           {props.jobTitle} at {props.employerName}
         </Typography>
+        <Grid container direction="row">
+          <Grid item xs={4}>
+            <Typography>ACTIVITY TYPE</Typography>
+            <Typography>
+              {props.volunteerDesiredExternalActivities[0]}
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography>AREAS OF EXPERTISE</Typography>
+            <Typography>{props.expertiseAreas[0]}</Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography>TRAINING</Typography>
+            <Typography>{props.postSecondaryTraining[0]}</Typography>
+          </Grid>
+        </Grid>
       </CardContent>
     </Card>
   );
