@@ -44,7 +44,7 @@ class VolunteerList extends React.Component<
     return (
       <Grid container direction="row">
         <Grid item sm={1} />
-        <Grid item container xs={12} sm={10}>
+        <Grid item container xs={12} sm={10} spacing={2}>
           {this.props.volunteers.map((volunteer) =>
             createVolunteerCard(volunteer)
           )}
