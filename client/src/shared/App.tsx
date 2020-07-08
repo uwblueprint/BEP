@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 're
 import './App.css';
 
 import Login from '../components/Auth/SignIn';
+import EducatorDashboard from '../components/EducatorDashboard';
+
 import TestSection from '../components/Requests/TestSection';
 
 interface IProps extends RouteProps {
@@ -10,18 +12,18 @@ interface IProps extends RouteProps {
   isLoggedIn: boolean;
 }
 
-const PrivateRoute = (props:IProps) => {
-  const {component: Component, isLoggedIn, ...rest} = props;
+const PrivateRoute = (props: IProps) => {
+  const { component: Component, isLoggedIn, ...rest } = props;
   return (
     <Route {...rest} render={routeProps => (
       // replace true with check for login
       isLoggedIn ?
         <Component {...routeProps} />
-      : <Redirect 
+        : <Redirect
           to={{
-            pathname:"/",
-            state: {from:routeProps.location}
-          }} 
+            pathname: "/",
+            state: { from: routeProps.location }
+          }}
         />
     )} />
   );
@@ -44,7 +46,8 @@ export default class App extends React.Component {
       <Router>
         <React.Fragment>
           <Switch>
-            <Route exact path="/" component={Login}/>
+            <Route exact path="/" component={Login} />
+            <Route exact path="/educator-dashboard" component={EducatorDashboard} />
             <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
           </Switch>
         </React.Fragment>
