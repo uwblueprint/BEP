@@ -31,6 +31,16 @@ eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) =>
     }
 });
 
+eventRouter.get("/", async(req: Express.Request, res: Express.Response) => {
+    try {
+        const fetchedEvents = await EventService.getAllEvents();
+
+        res.status(200).send(fetchedEvents);
+    } catch (e) {
+        res.status(404).send(e.message);
+    }
+});
+
 // POST requests/
 
 eventRouter.post('/create', async (req: Express.Request, res: Express.Response) => {

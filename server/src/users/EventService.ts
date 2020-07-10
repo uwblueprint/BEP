@@ -44,6 +44,30 @@ export const getEventInfo = async (name: string): Promise<Event> => {
     return eventInfo;
 };
 
+export const getAllEvents = async(): Promise<Event> => {
+    let eventInfo : Event = conn
+        .sobject(eventApi)
+        .find({
+        },
+            'Name, isActive__c')
+        .execute(function (err: Error, record: any) {
+            var events = new Array()
+            if (err) {
+                return console.error(err);
+            }
+            record.forEach(item => {
+                let event: Event = {
+                    eventName: item.Name,
+                    isActive: false
+                }
+                events.push(event)
+            })
+            return events
+            });
+        console.log(eventInfo);
+        return eventInfo;
+};
+
 export const update = async (id: string, event: Event): Promise<Event> => {
     let updatedEvent: Event = conn
         .sobject(eventApi)
