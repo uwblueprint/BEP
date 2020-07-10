@@ -7,6 +7,11 @@ import { fetchTestService } from '../../data/services/testServices';
 /* Selectors */
 import { getTests } from '../../data/selectors/testSelector';
 
+/* Components and Styling */
+import Button from '../../components/Button'
+import { withStyles } from '@material-ui/core/styles';
+import { containedButtonStyle } from '../../styling/Button';
+
 const mapStateToProps = state => ({
     users: getTests(state),
 })
@@ -23,6 +28,7 @@ class TestSection extends React.Component {
     }
 
     render () {
+        const{classes} = this.props;
         const { users } = this.props;
         console.log('component accessible data ', users);
         const test = users.map((user) => (
@@ -33,6 +39,8 @@ class TestSection extends React.Component {
         ))
         return (
             <div>
+                <Button variant="contained" className={classes.button}>hello</Button>
+                
                 <div>test query is fetching data from the test backend API:</div>
                 <div>
                     {test}
@@ -42,4 +50,4 @@ class TestSection extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TestSection);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(containedButtonStyle)(TestSection));
