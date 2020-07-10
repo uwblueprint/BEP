@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 'react-router-dom';
+import { ThemeProvider } from "@material-ui/core/styles";
+import theme from "../styling/Theme";
 import './App.css';
 
 import Login from '../components/Auth/SignIn';
