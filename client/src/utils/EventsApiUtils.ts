@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
 
-const get = (limit: number, offset: number) => {
+const get = () => {
     const config: AxiosRequestConfig = {
-        url: `${baseURL}api/users/?type=event&limit=${limit}&offset=${offset}`,
+        url: `${baseURL}api/events/event-test-2`,
         method: "get",
     };
 
