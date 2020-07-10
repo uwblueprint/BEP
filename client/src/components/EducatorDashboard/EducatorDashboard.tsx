@@ -24,10 +24,17 @@ class EducatorDashboard extends React.Component<{ events: Event[]; fetchEvents: 
         this.props.fetchEvents()
     }
 
+
     render() {
 
         const { events } = this.props;
-        console.log('component accessible data', events);
+
+        const obj: Object = {
+            events: events
+        }
+
+        console.log("hello")
+        console.log('component accessible data', obj);
         const test = events.map((event) => (
             <div>
                 <div>{event.eventName}</div>
@@ -38,6 +45,7 @@ class EducatorDashboard extends React.Component<{ events: Event[]; fetchEvents: 
             <React.Fragment>
                 <div>
                     {test}
+                    <p>hello</p>
                 </div>
             </React.Fragment>
         );

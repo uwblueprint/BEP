@@ -3,7 +3,7 @@ import { baseURL } from "./ApiUtils";
 
 const get = () => {
     const config: AxiosRequestConfig = {
-        url: `${baseURL}api/events/event-test-2`,
+        url: `${baseURL}api/events/`,
         method: "get",
     };
 
