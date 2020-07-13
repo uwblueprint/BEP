@@ -1,62 +1,112 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
+/* tslint:disable */
+import * as bodyParser from 'body-parser';
 
-import { Volunteer } from "../../data/types/UserTypes";
+// import * as controllers from './controllers';
+import { Server } from 'http';
+import cors from "cors";
+import helmet from "helmet";
+import express from 'express';
+import session from 'express-session';
+import jsforce from 'jsforce';
+import { userRouter } from './users/UserRouter';
+import { eventRouter } from './users/EventRouter';
+import { inviteRouter } from './users/VolunteerInviteRouter';
+import { requestsRouter } from './requests/requests.router';
+import {verifyWebToken} from './middleware/jwt'
+import { authRouter } from './auth/authRouter'
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-});
+let result;
 
-export default function VolunteerCard(props: any) {
-  console.log(props);
-  const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
+// Display environment variables
+if (process.env.NODE_ENV !== 'production') {
 
-  return (
-    <Card className={classes.root}>
-      <CardContent>
-        <Typography variant="h5" component="h2">
-          {props.firstName} {props.lastName}
-        </Typography>
-        <Typography className={classes.pos} color="textSecondary">
-          {props.jobTitle} at {props.employerName}
-        </Typography>
-        <Grid container direction="row">
-          <Grid item xs={4}>
-            <Typography>ACTIVITY TYPE</Typography>
-            <Typography>
-              {props.volunteerDesiredExternalActivities[0]}
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography>AREAS OF EXPERTISE</Typography>
-            <Typography>{props.expertiseAreas[0]}</Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography>TRAINING</Typography>
-            <Typography>{props.postSecondaryTraining[0]}</Typography>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
+    const dotenv = require('dotenv');
+
+    result = dotenv.config();
+
+    if (result.error) {
+        throw result.error;
+    }
+
+    console.log(result.parsed);
+}
+let conn;
+
+
+class BackendServer extends Server {
+
+    public app = express();
+    private readonly SERVER_STARTED = 'Example server started on port: ';
+
+    constructor() {
+        super();
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(session({ secret: 'S3CRE7', resave: true, saveUninitialized: true }));
+
+        this.app.use(helmet());
+        this.app.use(cors());
+        this.app.use(express.json());
+
+        // Authenticate to Salesforce
+        conn = new jsforce.Connection({
+            oauth2: {
+                loginUrl: process.env.LOGIN_URL,
+                clientId: process.env.CLIENT_ID,
+                clientSecret: process.env.CLIENT_SECRET,
+                redirectUri: process.env.REDIRECT_URI
+            }
+        });
+        conn.login(process.env.SALESFORCE_USERNAME, process.env.SALESFORCE_PASSWORD, (err, userInfo) => {
+            if (err) {
+                return console.error("err in salesforce login", err);
+            }
+            console.log("salesforce connection established successfully");
+        });
+    }
+
+    public start(port: string): void {
+        // Sanity check test method
+        this.app.get('/test', (req, res) => {
+            conn.query('SELECT Name,Email__c FROM Test__c', (err, result) => {
+                if (err) {
+                    console.log("query error");
+                    return console.error(err);
+                }
+                console.log(result.records);
+                res.send(result.records);
+            });
+        });
+
+        this.app.use("/api/events", eventRouter);
+        this.app.use("/api/invites", inviteRouter);
+        this.app.use("/api/auth", authRouter)
+        this.app.use("/api/requests", requestsRouter);
+
+        //If in development, do not mount JWT auth middleware to users route
+        if (process.env.NODE_ENV == 'production') {
+            this.app.use("/api/users/userRouter", verifyWebToken(), userRouter);
+        } else {
+            this.app.use("/api/users", userRouter);
+        }
+
+
+        //Uncomment soon. Test method to prevent non-logged in users from accessing '/'
+        // this.app.get('/', (req, res)  => {
+        //     if (!req.user) {
+        //         res.send(
+        //             {"Not Allowed"}
+        //         )
+        //     }
+        // });
+
+        this.app.listen(port, () => {
+            console.log(this.SERVER_STARTED + port);
+        });
+    }
+}
+
+export {
+    BackendServer,
+    conn
 }
