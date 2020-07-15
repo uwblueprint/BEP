@@ -10,7 +10,7 @@ import { getTests } from '../../data/selectors/testSelector';
 /* Components and Styling */
 import Button from '../../components/Button'
 import { withStyles } from '@material-ui/core/styles';
-import { containedButtonStyle } from '../../styling/Button';
+import { containedButtonStyle } from '../../components/styling/Button';
 
 const mapStateToProps = state => ({
     users: getTests(state),
