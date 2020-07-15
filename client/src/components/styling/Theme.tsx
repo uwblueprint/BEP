@@ -35,8 +35,16 @@ const theme = createMuiTheme({
       fontSize: "36px",
       lineHeight: "49px",
     }
+  },
+  overrides: {
+    MuiSelect: {
+      select: {
+        "&:focus": {
+          backgroundColor: "$labelcolor"
+        }
+      }
+    }
   }
-
 });
 
 export default theme;
