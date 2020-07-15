@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
-import { Volunteer } from "../../data/types/UserTypes";
+import { Volunteer } from "../../data/types/userTypes";
 
 const useStyles = makeStyles({
   root: {
@@ -27,7 +27,6 @@ const useStyles = makeStyles({
 });
 
 export default function VolunteerCard(props: any) {
-  console.log(props);
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 

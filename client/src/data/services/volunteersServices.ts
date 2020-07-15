@@ -1,4 +1,4 @@
-import { get } from "../../utils/VolunteersApiUtils";
+import { get } from "../../utils/volunteersApiUtils";
 import { fetchVolunteers } from "../actions/volunteersActions";
 
 export function fetchVolunteersService(limit: number, offset: number) {
