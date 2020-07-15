@@ -2,9 +2,8 @@
  * Required External Modules and Interfaces
  */
 
-import * as Express from "express";
-import * as UserService from "./UserService";
-// import User from "./UserInterface";
+import * as UserService from './UserService';
+import * as Express from 'express';
 
 /**
  * Router Definition
@@ -16,52 +15,65 @@ export const userRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
+// GET users/?email&type&limit&offset
 
-userRouter.get("/:name", async (req: Express.Request, res: Express.Response) => {
-    // const id: number = parseInt(req.params.id, 10);
-    const name: string = req.params.name;
+userRouter.get('/', async (req: Express.Request, res: Express.Response) => {
+    const email: string = req.query.email as string;
+    const type: string = req.query.type as string;
+    const limit: number = req.query.limit as any;
+    const offset: number = req.query.offset as any;
 
     try {
-        const fetchedUser = await UserService.getUserInfo(name);
-
-        res.status(200).send(fetchedUser);
+        if (email !== undefined) {
+            // If email provided in query parameters, return user with email address.
+            const fetchedUser = await UserService.getUser(email);
+            res.status(200).send(fetchedUser);
+        } else if (type === 'volunteer') {
+            // If query parameters specify "volunteer", then return a paginated list of volunteers.
+            const users = await UserService.getVolunteers(limit ? limit : 10, offset ? offset : 0);
+            res.status(200).send(users);
+        } else {
+            throw Error(`Invalid query parameters. Either set "email" parameter or set "type" parameter.`);
+        }
     } catch (e) {
-        res.status(404).send(e.message);
+        res.status(500).send({ msg: e.message });
     }
 });
 
-// POST requests/
+// POST users/
 
-userRouter.post("/create", async (req: Express.Request, res: Express.Response) => {
+userRouter.post('/', async (req: Express.Request, res: Express.Response) => {
     try {
-        // Type match request body into User interface when Salesforce fields are figured out
-        // const userInfo: User = req.body.user;
-        let name: string = req.body.name;
-        let email: string = req.body.email;
-        let password: string = req.body.password;
-        let phoneNumber: string = req.body.phoneNumber;
-        let lastName: string = req.body.lastName;
-        await UserService.create(name, email, password, phoneNumber, lastName);
+        const id: string = await UserService.create(req.body);
 
-        res.sendStatus(201);
+        res.status(201).send({ id });
     } catch (e) {
-        res.status(404).send(e.message);
+        res.status(500).send({ msg: e.message });
     }
 });
 
-// PUT requests/
+// PUT users/:id
 
+userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
+    try {
+        const id: string = req.params.id;
+        await UserService.update(id, req.body);
 
-// DELETE requests/:id using name for now
+        res.status(200).send({ id: id });
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
+    }
+});
 
-userRouter.delete("/:name", async (req: Express.Request, res: Express.Response) => {
+// DELETE users/:id
+
+userRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
         let id: string = req.params.id;
         await UserService.remove(id);
 
         res.sendStatus(200);
     } catch (e) {
-        res.status(500).send(e.message);
+        res.status(500).send({ msg: e.message });
     }
-}); 
+});

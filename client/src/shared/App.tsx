@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 'react-router-dom';
+import { ThemeProvider } from "@material-ui/core/styles";
+import theme from "../styling/Theme";
 import './App.css';
 
-import Login from '../components/Auth/SignIn';
-import TestSection from '../components/Requests/TestSection';
+import Login from '../pages/Auth/SignIn';
+import TestSection from '../pages/Requests/TestSection';
 
 interface IProps extends RouteProps {
   component: any;
@@ -41,14 +43,16 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Router>
-        <React.Fragment>
-          <Switch>
-            <Route exact path="/" component={Login}/>
-            <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
-          </Switch>
-        </React.Fragment>
-      </Router>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <React.Fragment>
+            <Switch>
+              <Route exact path="/" component={Login}/>
+              <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
+            </Switch>
+          </React.Fragment>
+        </Router>
+      </ThemeProvider>
     )
   }
 }
