@@ -24,16 +24,18 @@ import { UserPicklistType } from "../../data/types/userPicklistTypes";
 import VolunteerCard from "./VolunteerCard";
 import Select from "../../components/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
 import { Grid } from "@material-ui/core";
 
 class VolunteerList extends React.Component<
   {
     volunteers: Volunteer[];
     picklists: {
-      activities: string[];
-      expertiseAreas: string[];
-      training: string[];
-      grades: string[];
+      activities: { displayName: string; list: string[] };
+      expertiseAreas: { displayName: string; list: string[] };
+      training: { displayName: string; list: string[] };
+      grades: { displayName: string; list: string[] };
     };
     fetchVolunteers: any;
     fetchPicklists: any;
@@ -76,11 +78,16 @@ class VolunteerList extends React.Component<
       <Grid container direction="row">
         {Object.entries(this.props.picklists).map((entry) => (
           <Grid item sm={3}>
-            <Select>
-              {entry[1].map((option) => (
-                <MenuItem>{option}</MenuItem>
-              ))}
-            </Select>
+            <FormControl style={{ minWidth: 160 }}>
+              <InputLabel shrink={false} focused={false}>
+                {entry[1].displayName}
+              </InputLabel>
+              <Select key={entry[0]}>
+                {entry[1].list.map((option) => (
+                  <MenuItem key={option}>{option}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
         ))}
 
@@ -100,12 +107,24 @@ const mapStateToProps = (state: any) => {
   return {
     volunteers: getVolunteers(state.volunteers),
     picklists: {
-      activities: getExternalActivitesPicklist(state.userPicklists).concat(
-        getInternalActivitesPicklist(state.userPicklists)
-      ),
-      expertiseAreas: getExpertiesAreasPicklist(state.userPicklists),
-      grades: getGradesPicklist(state.userPicklists),
-      training: getPostSecondaryTrainingPicklist(state.userPicklists),
+      activities: {
+        displayName: "Activities",
+        list: getExternalActivitesPicklist(state.userPicklists).concat(
+          getInternalActivitesPicklist(state.userPicklists)
+        ),
+      },
+      expertiseAreas: {
+        displayName: "Areas of Expertise",
+        list: getExpertiesAreasPicklist(state.userPicklists),
+      },
+      training: {
+        displayName: "Training",
+        list: getPostSecondaryTrainingPicklist(state.userPicklists),
+      },
+      grades: {
+        displayName: "Grade Levels",
+        list: getGradesPicklist(state.userPicklists),
+      },
     },
   };
 };
