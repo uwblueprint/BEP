@@ -30,6 +30,8 @@ import { Grid } from "@material-ui/core";
 
 /* Components */
 import VolunteerCard from "./VolunteerCard";
+import Select from "../../components/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import { Grid } from "@material-ui/core";
 
 class VolunteerList extends React.Component<
