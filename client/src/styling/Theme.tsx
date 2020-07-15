@@ -27,6 +27,15 @@ const theme = createMuiTheme({
       
     },
   },
+  overrides: {
+    MuiSelect: {
+      select: {
+        "&:focus": {
+          backgroundColor: "$labelcolor"
+        }
+      }
+    }
+  }
 });
 
 export default theme;
