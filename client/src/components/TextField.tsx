@@ -1,7 +1,7 @@
 import React from "react";
-import TextField, { InputProps } from "@material-ui/core/Input";
+import TextField from "@material-ui/core/TextField";
 
-const MaterialTextField: React.FunctionComponent<InputProps> = (props) => (
+const MaterialTextField: React.FunctionComponent<any> = (props) => (
   <TextField {...props}>{props.children}</TextField>
 );
 
