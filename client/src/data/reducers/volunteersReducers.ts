@@ -1,5 +1,10 @@
 import { FETCH_VOLUNTEERS } from "../actions/actionTypes";
-import { Volunteer } from "../types/UserTypes";
+import { Volunteer } from "../types/userTypes";
+import { VolunteersAction } from "../actions/volunteersActions";
+
+export interface VolunteersPayload {
+  list: Volunteer[];
+}
 
 export interface VolunteersState {
   list: Volunteer[];
@@ -15,7 +20,7 @@ const initialState: VolunteersState = {
 
 export default function (
   state: VolunteersState = initialState,
-  action: { type: string; payload: any }
+  action: VolunteersAction
 ) {
   switch (action.type) {
     case FETCH_VOLUNTEERS:
