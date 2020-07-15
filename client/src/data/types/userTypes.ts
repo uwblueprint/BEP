@@ -1,10 +1,3 @@
-// import Request from 'request.ts';
-
-// TODO: build API and Salesforce objects for:
-//         + employers
-//         + professional associations
-//         + local post-secondary institutions
-
 export enum UserType {
   Educator = 1,
   Volunteer = 2,
