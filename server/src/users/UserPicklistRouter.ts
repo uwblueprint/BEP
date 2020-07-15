@@ -15,12 +15,12 @@ export const userPicklistRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET users/:type
+// GET users/:name
 
-userPicklistRouter.get('/:type', async (req: Express.Request, res: Express.Response) => {
-    const picklistType: string = req.params.type;
+userPicklistRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
+    const picklistName: string = req.params.name;
     try {
-        const picklist: string[] = await UserPicklistService.getPicklist(picklistType);
+        const picklist: string[] = await UserPicklistService.getPicklist(picklistName + '__c');
         res.status(200).send(picklist);
     } catch (e) {
         res.status(500).send({ msg: e.message });
