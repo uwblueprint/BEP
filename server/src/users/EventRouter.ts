@@ -31,7 +31,7 @@ eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) =>
     }
 });
 
-eventRouter.get("/", async(req: Express.Request, res: Express.Response) => {
+eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
     try {
         const fetchedEvents = await EventService.getAllEvents();
 

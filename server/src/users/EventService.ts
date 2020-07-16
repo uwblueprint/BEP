@@ -28,7 +28,7 @@ export const getEventInfo = async (name: string): Promise<Event> => {
         .find({
             Name: name
         },
-            'Name, isActive__c')
+            'Name, isActive__c, eventType__c, startDate__c, endDate__c, applicationsReceived__c, invitationsSent__c')
         .limit(1)
         .execute(function (err: Error, record: any) {
             if (err) {
@@ -36,7 +36,12 @@ export const getEventInfo = async (name: string): Promise<Event> => {
             }
             let event: Event = {
                 eventName: record[0].Name,
-                isActive: false
+                isActive: false,
+                eventType: record[0].eventType__c,
+                startDate: record[0].startDate__c,
+                endDate: record[0].endDate__c,
+                applicationsReceived: record[0].applicationsReceived__c,
+                invitationsSent: record[0].invitationsSent__c
             }
             return event;
         });
@@ -44,12 +49,12 @@ export const getEventInfo = async (name: string): Promise<Event> => {
     return eventInfo;
 };
 
-export const getAllEvents = async(): Promise<Event> => {
-    let eventInfo : Event = conn
+export const getAllEvents = async (): Promise<Event> => {
+    let eventInfo: Event = conn
         .sobject(eventApi)
         .find({
         },
-            'Name, isActive__c')
+            'Name, isActive__c, eventType__c, startDate__c, endDate__c, applicationsReceived__c, invitationsSent__c')
         .execute(function (err: Error, record: any) {
             var events = new Array()
             if (err) {
@@ -58,14 +63,19 @@ export const getAllEvents = async(): Promise<Event> => {
             record.forEach(item => {
                 let event: Event = {
                     eventName: item.Name,
-                    isActive: false
+                    isActive: false,
+                    eventType: item.eventType__c,
+                    startDate: item.startDate__c,
+                    endDate: item.endDate__c,
+                    applicationsReceived: item.applicationsReceived__c,
+                    invitationsSent: item.invitationsSent__c
                 }
                 events.push(event)
             })
             return events
-            });
-        console.log(eventInfo);
-        return eventInfo;
+        });
+    console.log(eventInfo);
+    return eventInfo;
 };
 
 export const update = async (id: string, event: Event): Promise<Event> => {
@@ -74,7 +84,12 @@ export const update = async (id: string, event: Event): Promise<Event> => {
         .update(
             {
                 eventName: event.eventName,
-                isActive: event.isActive
+                isActive: event.isActive,
+                eventType: event.eventType,
+                startDate: event.startDate,
+                endDate: event.endDate,
+                applicationsReceived: event.applicationsReceived,
+                invitationsSent: event.invitationsSent
             },
             function (err, ret) {
                 if (err || !ret.success) {
@@ -92,12 +107,23 @@ export const update = async (id: string, event: Event): Promise<Event> => {
 // Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
 export const create = async (
     eventName: string,
-    isActive: boolean
+    isActive: boolean,
+    eventType: string,
+    startDate: Date,
+    endDate: Date,
+    applicationsReceived: number,
+    invitationsSent: number
 ): Promise<void> => {
     conn.sobject(event).create(
         {
-            Name: name,
-            isActive: isActive
+            Name: eventName,
+            isActive: isActive,
+            eventType: eventType,
+            startDate: startDate,
+            endDate: endDate,
+            applicationsReceived: applicationsReceived,
+            invitationsSent: invitationsSent
+
         },
         function (err: Error, result) {
             if (err || !result.success) {
