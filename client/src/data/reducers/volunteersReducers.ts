@@ -26,7 +26,7 @@ export default function (
     case FETCH_VOLUNTEERS:
       return {
         ...state,
-        list: action.payload.list,
+        list: state.list.concat(action.payload.list),
         filteredList: [],
       };
 
