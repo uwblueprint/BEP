@@ -18,26 +18,28 @@ export const eventRouter = Express.Router();
 
 // GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
 
-eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
+eventRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     // const id: number = parseInt(req.params.id, 10);
-    const name: string = req.params.name;
+    const name: string = req.query.name as string;
+    const isEventActive: string = req.query.isEventActive as string;
+    const limit: number = req.query.limit as any;
+    const offset: number = req.query.offset as any;
 
     try {
-        const fetchedEvent = await EventService.getEventInfo(name);
-
-        res.status(200).send(fetchedEvent);
+        if (name !== undefined) {
+            const fetchedEvent = await EventService.getEventInfo(name);
+            res.status(200).send(fetchedEvent);
+        } else if (isEventActive === 'true') {
+            const fetchedActiveEvents = await EventService.getActiveEvents(limit ? limit : 10, offset ? offset : 0);
+            res.status(200).send(fetchedActiveEvents);
+        } else if (isEventActive === 'false') {
+            const fetchedPastEvents = await EventService.getPastEvents(limit ? limit : 10, offset ? offset : 0);
+            res.status(200).send(fetchedPastEvents);
+        } else {
+            throw Error(`Invalid query parameters. Either set "isEventActive" parameter or put eventName.`);
+        }
     } catch (e) {
-        res.status(404).send(e.message);
-    }
-});
-
-eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
-    try {
-        const fetchedEvents = await EventService.getAllEvents();
-
-        res.status(200).send(fetchedEvents);
-    } catch (e) {
-        res.status(404).send(e.message);
+        res.status(500).send({ msg: e.message });
     }
 });
 
@@ -45,14 +47,8 @@ eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
 
 eventRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
     try {
-        // Type match request body into Event interface when Salesforce fields are figured out
-        // const eventInfo: Event = req.body.event;
-        let name: string = req.body.name;
-        let isActive: boolean = req.body.isActive;
-
-        await EventService.create(name, isActive);
-
-        res.sendStatus(201);
+        const id: string = await EventService.create(req.body);
+        res.status(201).send({ id });
     } catch (e) {
         res.status(404).send(e.message);
     }
