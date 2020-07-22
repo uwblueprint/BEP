@@ -1,4 +1,5 @@
 import { FETCH_EVENTS } from "../actions/actionTypes";
+
 import { Event } from "../types/EventTypes";
 
 export interface EventsState {
@@ -19,7 +20,6 @@ export default function (
                 ...state,
                 list: action.payload.list,
             };
-
         default:
             return state;
     }

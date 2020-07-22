@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 'react-router-dom';
+import { ThemeProvider } from "@material-ui/core/styles";
+import theme from "../components/styling/Theme";
 import './App.css';
-
-import Login from '../components/Auth/SignIn';
-import EducatorDashboard from '../components/EducatorDashboard/EducatorDashboard';
-
-import TestSection from '../components/Requests/TestSection';
+import EducatorDashboard from '../pages/EducatorDashboard/EducatorDashboard';
+import Login from '../pages/Auth/SignIn';
 
 interface IProps extends RouteProps {
   component: any;
@@ -43,15 +42,16 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Router>
-        <React.Fragment>
-          <Switch>
-            <Route exact path="/" component={Login} />
-            <Route exact path="/educator-dashboard" component={EducatorDashboard} />
-            <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
-          </Switch>
-        </React.Fragment>
-      </Router>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <React.Fragment>
+            <Switch>
+              <Route exact path="/" component={Login} />
+              <Route exact path="/educator-dashboard" component={EducatorDashboard} />
+            </Switch>
+          </React.Fragment>
+        </Router>
+      </ThemeProvider>
     )
   }
 }
