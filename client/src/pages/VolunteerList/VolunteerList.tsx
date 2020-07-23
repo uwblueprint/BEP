@@ -27,6 +27,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import { Grid } from "@material-ui/core";
+import { Checkbox } from "@material-ui/core";
 
 class VolunteerList extends React.Component<
   {
@@ -48,17 +49,30 @@ class VolunteerList extends React.Component<
     loadingRef: any;
     loadedAllVolunteers: boolean;
     lastVolunteerListLength: number;
+    filters: {
+      searchBar: Set<string>;
+      activities: Set<string>;
+      expertiseAreas: Set<string>;
+      training: Set<string>;
+      grades: Set<string>;
+    };
+    filteredVolunteers: Volunteer[];
   }
 > {
   constructor(props: any) {
     super(props);
 
-    const { history, user } = props;
+    const { history, user, volunteers } = props;
 
     if (user) {
       // whatever the redirect route is supposed to be
       history.push("/volunteer-list");
     }
+
+    this.createUpdateFilter = this.createUpdateFilter.bind(this);
+    this.filterSingleField = this.filterSingleField.bind(this);
+    this.fetchVolunteers = this.fetchVolunteers.bind(this);
+    this.filterAllFields = this.filterAllFields.bind(this);
 
     this.state = {
       prevY: 0,
@@ -68,11 +82,18 @@ class VolunteerList extends React.Component<
       loadingRef: React.createRef(),
       loadedAllVolunteers: false,
       lastVolunteerListLength: 0,
+      filters: {
+        searchBar: new Set(),
+        activities: new Set(),
+        expertiseAreas: new Set(),
+        training: new Set(),
+        grades: new Set(),
+      },
+      filteredVolunteers: volunteers,
     };
   }
 
   handleObserver(entities: any, observer: IntersectionObserver) {
-    console.log("HERE2");
     const y = entities[0].boundingClientRect.y;
     const newPage = this.state.page + 1;
     if (this.state.prevY > y) {
@@ -82,22 +103,128 @@ class VolunteerList extends React.Component<
       }
 
       if (!this.state.loadedAllVolunteers) {
-        console.log("HERE");
         if (this.props.volunteers.length > 1)
           this.setState({
             // Keep track of last volunteer length to determine if any new volunteers are loaded.
             lastVolunteerListLength: this.props.volunteers.length,
           });
 
-        this.props.fetchVolunteers(
-          this.state.offset,
-          newPage * this.state.offset
-        );
+        this.fetchVolunteers(this.state.offset, newPage * this.state.offset);
 
         this.setState({ page: newPage });
       }
     }
     this.setState({ prevY: y });
+  }
+
+  createUpdateFilter(picklistName: string) {
+    const updateFilter = (
+      event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>
+    ) => {
+      const newFilter: string = event.target.value as string;
+
+      console.log(picklistName);
+      console.log(newFilter);
+
+      const filters = this.state.filters;
+
+      switch (picklistName) {
+        case "activities":
+          filters.activities.add(newFilter);
+          break;
+        case "expertiseAreas":
+          filters.expertiseAreas.add(newFilter);
+          break;
+        case "training":
+          filters.training.add(newFilter);
+          break;
+        case "grades":
+          filters.grades.add(newFilter);
+          break;
+      }
+
+      this.setState({
+        filters,
+        filteredVolunteers: this.filterSingleField(
+          this.state.filteredVolunteers,
+          picklistName,
+          newFilter
+        ),
+      });
+    };
+
+    return updateFilter.bind(this);
+  }
+
+  filterSearchBar = (volunteer: Volunteer, filter: string): boolean =>
+    volunteer.firstName.includes(filter) ||
+    volunteer.lastName.includes(filter) ||
+    volunteer.employerName.includes(filter) ||
+    volunteer.jobTitle.includes(filter);
+
+  filterActivities = (volunteer: Volunteer, filter: string) =>
+    volunteer.volunteerDesiredExternalActivities.includes(filter) ||
+    volunteer.volunteerDesiredInternalActivities.includes(filter);
+
+  filterExpertiseAreas = (volunteer: Volunteer, filter: string) =>
+    volunteer.expertiseAreas.includes(filter);
+
+  filterTraining = (volunteer: Volunteer, filter: string) =>
+    volunteer.postSecondaryTraining.includes(filter);
+
+  filterGrades = (volunteer: Volunteer, filter: string) =>
+    volunteer.grades.includes(filter);
+
+  getFilterFunction = (fieldName: string) => {
+    switch (fieldName) {
+      case "searchBar": // Filter by name, company, and job title.
+        return this.filterSearchBar;
+      case "activities":
+        return this.filterActivities;
+      case "expertiseAreas":
+        return this.filterExpertiseAreas;
+      case "training":
+        return this.filterTraining;
+      case "grades":
+        return this.filterGrades;
+    }
+
+    return (volunteer: Volunteer, filter: string) => true;
+  };
+
+  filterSingleField(
+    volunteers: Volunteer[],
+    fieldName: string,
+    filter: string
+  ) {
+    let filterFunction = this.getFilterFunction(fieldName);
+
+    return volunteers.filter((volunteer: Volunteer) =>
+      filterFunction(volunteer, filter)
+    );
+  }
+
+  filterAllFields(volunteers: Volunteer[]) {
+    const newVolunteers = volunteers.filter((volunteer: Volunteer) => {
+      var pass = true;
+      for (let [fieldName, filterList] of Object.entries(this.state.filters)) {
+        const filterFunction = this.getFilterFunction(fieldName);
+        filterList.forEach((filter: string) => {
+          if (pass && !filterFunction(volunteer, filter)) pass = false;
+        });
+        if (!pass) return false;
+      }
+      return true;
+    });
+    return newVolunteers;
+  }
+
+  fetchVolunteers(limit: number, offset: number) {
+    this.props.fetchVolunteers(limit, offset).then(() => {
+      this.setState({
+        filteredVolunteers: this.filterAllFields(this.props.volunteers),
+      });
+    });
   }
 
   componentDidMount() {
@@ -109,7 +236,7 @@ class VolunteerList extends React.Component<
       UserPicklistType.postSecondaryTraining,
     ];
 
-    this.props.fetchVolunteers(
+    this.fetchVolunteers(
       this.state.offset,
       this.state.page * this.state.offset
     );
@@ -143,27 +270,41 @@ class VolunteerList extends React.Component<
         <VolunteerCard {...volunteer} />
       </Grid>
     );
+
     return (
       <div>
         <Grid container direction="row">
-          {Object.entries(this.props.picklists).map((entry) => (
-            <Grid item sm={3}>
-              <FormControl style={{ minWidth: 160 }}>
-                <InputLabel shrink={false} focused={false}>
-                  {entry[1].displayName}
-                </InputLabel>
-                <Select key={entry[0]}>
-                  {entry[1].list.map((option) => (
-                    <MenuItem key={option}>{option}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          ))}
+          {Object.entries(this.props.picklists).map((entry) => {
+            // Display picklists.
+            const entryKey = entry[0];
+            const picklistName = entry[1].displayName;
+            const picklist = entry[1].list;
+            return (
+              <Grid item sm={3} key={entryKey}>
+                <FormControl style={{ minWidth: 160 }}>
+                  <InputLabel shrink={false} focused={false}>
+                    {picklistName}
+                  </InputLabel>
+                  <Select
+                    key={entryKey}
+                    value=""
+                    onChange={this.createUpdateFilter(entryKey)}
+                  >
+                    {picklist.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        <Checkbox checked={false} />
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            );
+          })}
 
           <Grid item sm={1} />
           <Grid item container xs={12} sm={10} spacing={2}>
-            {this.props.volunteers.map((volunteer) =>
+            {this.state.filteredVolunteers.map((volunteer) =>
               createVolunteerCard(volunteer)
             )}
           </Grid>
