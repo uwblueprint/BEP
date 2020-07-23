@@ -28,6 +28,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import { Grid } from "@material-ui/core";
 import { Checkbox } from "@material-ui/core";
+import volunteersReducers from "../../data/reducers/volunteersReducers";
 
 /* Components */
 import VolunteerCard from "./VolunteerCard";
@@ -222,13 +223,19 @@ class VolunteerList extends React.Component<
       }
       return true;
     });
+
+    console.log(volunteers);
     return newVolunteers;
   }
 
   fetchVolunteers(limit: number, offset: number) {
     this.props.fetchVolunteers(limit, offset).then(() => {
       this.setState({
-        filteredVolunteers: this.filterAllFields(this.props.volunteers),
+        filteredVolunteers: this.state.filteredVolunteers.concat(
+          this.filterAllFields(
+            this.props.volunteers.slice(this.state.page * this.state.offset)
+          )
+        ),
       });
     });
   }
