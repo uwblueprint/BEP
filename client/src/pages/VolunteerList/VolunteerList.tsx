@@ -328,9 +328,13 @@ const mapStateToProps = (state: any) => {
     picklists: {
       activities: {
         displayName: "Activities",
-        list: getExternalActivitesPicklist(state.userPicklists).concat(
-          getInternalActivitesPicklist(state.userPicklists)
-        ),
+        list: [
+          ...new Set( // Ensure list only has unique elements
+            getExternalActivitesPicklist(state.userPicklists).concat(
+              getInternalActivitesPicklist(state.userPicklists)
+            )
+          ),
+        ],
       },
       expertiseAreas: {
         displayName: "Areas of Expertise",
