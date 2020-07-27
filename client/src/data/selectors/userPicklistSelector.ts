@@ -8,27 +8,19 @@ const getPicklistData = (picklistType: UserPicklistType) => (
   state[UserPicklistType[picklistType]]
     ? state[UserPicklistType[picklistType]]
     : [];
-export const getExternalActivitesPicklist = createSelector(
-  [getPicklistData(UserPicklistType.volunteerDesiredExternalActivities)],
-  (picklist) => picklist
-);
 
-export const getInternalActivitesPicklist = createSelector(
-  [getPicklistData(UserPicklistType.volunteerDesiredInternalActivities)],
+const createPicklistSelector = (picklistType: UserPicklistType) => createSelector(
+  [getPicklistData(picklistType)],
   (picklist) => picklist
 );
+export const getExternalActivitesPicklist = createPicklistSelector(UserPicklistType.volunteerDesiredExternalActivities)
 
-export const getExpertiesAreasPicklist = createSelector(
-  [getPicklistData(UserPicklistType.expertiseAreas)],
-  (picklist) => picklist
-);
+export const getInternalActivitesPicklist = createPicklistSelector(UserPicklistType.volunteerDesiredInternalActivities)
 
-export const getGradesPicklist = createSelector(
-  [getPicklistData(UserPicklistType.grades)],
-  (picklist) => picklist
-);
+export const getExpertiesAreasPicklist = createPicklistSelector(UserPicklistType.expertiseAreas)
 
-export const getPostSecondaryTrainingPicklist = createSelector(
-  [getPicklistData(UserPicklistType.postSecondaryTraining)],
-  (picklist) => picklist
-);
+export const getGradesPicklist = createPicklistSelector(UserPicklistType.grades)
+
+export const getPostSecondaryTrainingPicklist = createPicklistSelector(UserPicklistType.postSecondaryTraining)
+
+export const getLocationsPicklist = createPicklistSelector(UserPicklistType.locations)

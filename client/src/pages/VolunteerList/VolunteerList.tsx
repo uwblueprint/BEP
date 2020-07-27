@@ -12,8 +12,7 @@ import {
   getExternalActivitesPicklist,
   getInternalActivitesPicklist,
   getExpertiesAreasPicklist,
-  getGradesPicklist,
-  getPostSecondaryTrainingPicklist,
+  getLocationsPicklist,
 } from "../../data/selectors/userPicklistSelector";
 
 /* Types */
@@ -23,12 +22,20 @@ import { UserPicklistType } from "../../data/types/userPicklistTypes";
 /* Components */
 import VolunteerCard from "./VolunteerCard";
 import Select from "../../components/Select";
+import Button from "../../components/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import { Grid } from "@material-ui/core";
 import { Checkbox } from "@material-ui/core";
-import volunteersReducers from "../../data/reducers/volunteersReducers";
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import SearchIcon from "@material-ui/icons/Search";
+
+/*Styles*/
+import { outlineTextFieldStyle } from "../../components/styling/TextField";
+
+type Filter = { name: string; active: boolean };
 
 class VolunteerList extends React.Component<
   {
@@ -36,8 +43,7 @@ class VolunteerList extends React.Component<
     picklists: {
       activities: { displayName: string; list: string[] };
       expertiseAreas: { displayName: string; list: string[] };
-      training: { displayName: string; list: string[] };
-      grades: { displayName: string; list: string[] };
+      locations: { displayName: string; list: string[] };
     };
     fetchVolunteers: any;
     fetchPicklists: any;
@@ -50,12 +56,11 @@ class VolunteerList extends React.Component<
     loadingRef: any;
     loadedAllVolunteers: boolean;
     lastVolunteerListLength: number;
+    searchBar: string;
     filters: {
-      searchBar: Set<string>;
-      activities: Set<string>;
-      expertiseAreas: Set<string>;
-      training: Set<string>;
-      grades: Set<string>;
+      activities: Map<string, boolean>;
+      expertiseAreas: Map<string, boolean>;
+      locations: Map<string, boolean>;
     };
     filteredVolunteers: Volunteer[];
   }
@@ -63,17 +68,28 @@ class VolunteerList extends React.Component<
   constructor(props: any) {
     super(props);
 
-    const { history, user, volunteers } = props;
+    const { history, user, volunteers, picklists } = props;
 
     if (user) {
       // whatever the redirect route is supposed to be
       history.push("/volunteer-list");
     }
 
+    this.getFilters = this.getFilters.bind(this);
+    this.createUpdateMultipleFilters = this.createUpdateMultipleFilters.bind(
+      this
+    );
     this.createUpdateFilter = this.createUpdateFilter.bind(this);
+    this.clearFilters = this.clearFilters.bind(this);
+    this.createHandleFilterButtonClick = this.createHandleFilterButtonClick.bind(
+      this
+    );
+    this.createHandleSelectFilter = this.createHandleSelectFilter.bind(this);
+    this.handleSearchFormSubmit = this.handleSearchFormSubmit.bind(this);
     this.filterSingleField = this.filterSingleField.bind(this);
-    this.fetchVolunteers = this.fetchVolunteers.bind(this);
     this.filterAllFields = this.filterAllFields.bind(this);
+    this.fetchVolunteers = this.fetchVolunteers.bind(this);
+    this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
 
     this.state = {
       prevY: 0,
@@ -83,12 +99,11 @@ class VolunteerList extends React.Component<
       loadingRef: React.createRef(),
       loadedAllVolunteers: false,
       lastVolunteerListLength: 0,
+      searchBar: "",
       filters: {
-        searchBar: new Set(),
-        activities: new Set(),
-        expertiseAreas: new Set(),
-        training: new Set(),
-        grades: new Set(),
+        activities: new Map(),
+        expertiseAreas: new Map(),
+        locations: new Map(),
       },
       filteredVolunteers: volunteers,
     };
@@ -118,50 +133,120 @@ class VolunteerList extends React.Component<
     this.setState({ prevY: y });
   }
 
-  createUpdateFilter(picklistName: string) {
-    const updateFilter = (
-      event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>
-    ) => {
-      const newFilter: string = event.target.value as string;
-
-      console.log(picklistName);
-      console.log(newFilter);
-
-      const filters = this.state.filters;
-
-      switch (picklistName) {
-        case "activities":
-          filters.activities.add(newFilter);
-          break;
-        case "expertiseAreas":
-          filters.expertiseAreas.add(newFilter);
-          break;
-        case "training":
-          filters.training.add(newFilter);
-          break;
-        case "grades":
-          filters.grades.add(newFilter);
-          break;
-      }
-
-      this.setState({
-        filters,
-        filteredVolunteers: this.filterSingleField(
-          this.state.filteredVolunteers,
-          picklistName,
-          newFilter
-        ),
-      });
-    };
-
-    return updateFilter.bind(this);
+  getFilters(picklistName: string) {
+    const filters = this.state.filters;
+    switch (picklistName) {
+      case "activities":
+        return filters.activities;
+      case "expertiseAreas":
+        return filters.expertiseAreas;
+      case "locations":
+        return filters.locations;
+    }
+    return new Map<string, boolean>();
   }
 
-  filterSearchBar = (volunteer: Volunteer, filter: string): boolean =>
-    volunteer.firstName.includes(filter) ||
-    volunteer.lastName.includes(filter) ||
-    volunteer.employerName.includes(filter) ||
-    volunteer.jobTitle.includes(filter);
+  createUpdateMultipleFilters(picklistName: string) {
+    const filters = this.state.filters;
+    const picklistFilters = this.getFilters(picklistName);
+
+    return (selectedFilters: string[]) => {
+      selectedFilters.forEach((filterName: string) =>
+        picklistFilters.set(filterName, !picklistFilters.get(filterName))
+      );
+
+      this.setState({
+        filters: {
+          ...filters,
+          [picklistName]: picklistFilters,
+        },
+        filteredVolunteers: this.filterAllFields(this.props.volunteers),
+      });
+    };
+  }
+
+  createUpdateFilter(picklistName: string) {
+    const filters = this.state.filters;
+    const picklistFilters = this.getFilters(picklistName);
+
+    return (selectedFilter: string) => {
+      picklistFilters.set(selectedFilter, !picklistFilters.get(selectedFilter));
+
+      this.setState({
+        filters: {
+          ...filters,
+          [picklistName]: picklistFilters,
+        },
+        filteredVolunteers: this.filterAllFields(this.props.volunteers),
+      });
+    };
+  }
+
+  clearFilters() {
+    let filters = this.state.filters;
+    Object.entries(filters).forEach(([picklistName, filterMap]) => {
+      [...filterMap.keys()].forEach((key) => {
+        filterMap.set(key, false);
+      });
+      filters = { ...filters, [picklistName]: filterMap };
+    });
+
+    console.log("HERE");
+    this.setState({
+      filters,
+    });
+    this.setState({
+      filteredVolunteers: this.filterAllFields(this.props.volunteers),
+    });
+  }
+
+  createHandleSelectFilter(picklistName: string) {
+    const handleSelectFilter = (
+      event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>
+    ) => {
+      const selectedFilters: string[] = event.target.value as string[];
+      this.createUpdateMultipleFilters(picklistName)(selectedFilters);
+    };
+
+    return handleSelectFilter.bind(this);
+  }
+
+  createHandleFilterButtonClick(picklistName: string) {
+    const handletFilterButtonClick = (
+      event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+      const selectedFilter: string = event.currentTarget.value;
+      this.createUpdateFilter(picklistName)(selectedFilter);
+    };
+
+    return handletFilterButtonClick.bind(this);
+  }
+
+  handleSearchFormSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const searchBarValue = this.state.searchBar;
+    this.setState({
+      filteredVolunteers: this.filterAllFields(this.props.volunteers),
+    });
+  }
+
+  handleSearchBarChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    console.log(event.target.value);
+    this.setState({ searchBar: event.target.value });
+  }
+
+  filterSearchBar = (volunteer: Volunteer, filter: string): boolean => {
+    filter = filter.toLowerCase();
+    return (
+      filter.length === 0 || // ignore search bar input if input is empty.
+      volunteer.firstName.toLowerCase().includes(filter) ||
+      volunteer.lastName.toLowerCase().includes(filter) ||
+      volunteer.employerName.toLowerCase().includes(filter) ||
+      volunteer.jobTitle.toLowerCase().includes(filter)
+    );
+  };
 
   filterActivities = (volunteer: Volunteer, filter: string) =>
     volunteer.volunteerDesiredExternalActivities.includes(filter) ||
@@ -170,11 +255,8 @@ class VolunteerList extends React.Component<
   filterExpertiseAreas = (volunteer: Volunteer, filter: string) =>
     volunteer.expertiseAreas.includes(filter);
 
-  filterTraining = (volunteer: Volunteer, filter: string) =>
-    volunteer.postSecondaryTraining.includes(filter);
-
-  filterGrades = (volunteer: Volunteer, filter: string) =>
-    volunteer.grades.includes(filter);
+  filterLocations = (volunteer: Volunteer, filter: string) =>
+    volunteer.locations.includes(filter);
 
   getFilterFunction = (fieldName: string) => {
     switch (fieldName) {
@@ -184,10 +266,8 @@ class VolunteerList extends React.Component<
         return this.filterActivities;
       case "expertiseAreas":
         return this.filterExpertiseAreas;
-      case "training":
-        return this.filterTraining;
-      case "grades":
-        return this.filterGrades;
+      case "locations":
+        return this.filterLocations;
     }
 
     return (volunteer: Volunteer, filter: string) => true;
@@ -206,19 +286,34 @@ class VolunteerList extends React.Component<
   }
 
   filterAllFields(volunteers: Volunteer[]) {
+    console.log(this.state.filters);
     const newVolunteers = volunteers.filter((volunteer: Volunteer) => {
       var pass = true;
-      for (let [fieldName, filterList] of Object.entries(this.state.filters)) {
+
+      // Apply filters from picklists
+      for (let [fieldName, filterMap] of Object.entries(this.state.filters)) {
         const filterFunction = this.getFilterFunction(fieldName);
-        filterList.forEach((filter: string) => {
-          if (pass && !filterFunction(volunteer, filter)) pass = false;
+        [...filterMap.entries()].forEach(([filter, isActive]) => {
+          if (pass && isActive && !filterFunction(volunteer, filter))
+            pass = false;
         });
         if (!pass) return false;
       }
+
+      // Apply search bar filter
+      const filterFunction = this.getFilterFunction("searchBar");
+      const searchString: string = this.state.searchBar;
+      if (
+        pass &&
+        searchString.length > 0 &&
+        !filterFunction(volunteer, searchString)
+      )
+        pass = false;
+
+      if (!pass) return false;
       return true;
     });
 
-    console.log(volunteers);
     return newVolunteers;
   }
 
@@ -239,8 +334,7 @@ class VolunteerList extends React.Component<
       UserPicklistType.expertiseAreas,
       UserPicklistType.volunteerDesiredExternalActivities,
       UserPicklistType.volunteerDesiredInternalActivities,
-      UserPicklistType.grades,
-      UserPicklistType.postSecondaryTraining,
+      UserPicklistType.locations,
     ];
 
     this.fetchVolunteers(
@@ -248,8 +342,32 @@ class VolunteerList extends React.Component<
       this.state.page * this.state.offset
     );
 
+    const createFilters = (filterNames: string[]): Array<[string, boolean]> => {
+      return filterNames.map((item: string) => [item, false]);
+    };
+
     picklistTypes.forEach((type: UserPicklistType) => {
-      this.props.fetchPicklists(type);
+      this.props.fetchPicklists(type).then(() => {
+        const picklists = this.props.picklists;
+        const filters = this.state.filters;
+
+        if (type === UserPicklistType.expertiseAreas) {
+          filters.expertiseAreas = new Map(
+            createFilters(picklists.expertiseAreas.list)
+          );
+        } else if (
+          type === UserPicklistType.volunteerDesiredExternalActivities ||
+          type === UserPicklistType.volunteerDesiredInternalActivities
+        ) {
+          picklists.activities.list.forEach((acitivity) =>
+            filters.activities.set(acitivity, false)
+          );
+        } else if (type === UserPicklistType.locations) {
+          filters.locations = new Map(createFilters(picklists.locations.list));
+        }
+
+        this.setState({ filters });
+      });
     });
 
     if (this.state.loadingRef) {
@@ -272,6 +390,7 @@ class VolunteerList extends React.Component<
   }
 
   render() {
+    let filtersSelected = false;
     const createVolunteerCard = (volunteer: Volunteer) => (
       <Grid item xs={12} key={volunteer.email}>
         <VolunteerCard {...volunteer} />
@@ -281,39 +400,120 @@ class VolunteerList extends React.Component<
     return (
       <div>
         <Grid container direction="row">
-          {Object.entries(this.props.picklists).map((entry) => {
-            // Display picklists.
-            const entryKey = entry[0];
-            const picklistName = entry[1].displayName;
-            const picklist = entry[1].list;
-            return (
-              <Grid item sm={3} key={entryKey}>
-                <FormControl style={{ minWidth: 160 }}>
-                  <InputLabel shrink={false} focused={false}>
-                    {picklistName}
-                  </InputLabel>
-                  <Select
-                    key={entryKey}
-                    value=""
-                    onChange={this.createUpdateFilter(entryKey)}
-                  >
-                    {picklist.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        <Checkbox checked={false} />
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            );
-          })}
-
           <Grid item sm={1} />
-          <Grid item container xs={12} sm={10} spacing={2}>
-            {this.state.filteredVolunteers.map((volunteer) =>
-              createVolunteerCard(volunteer)
-            )}
+          <Grid item container xs={12} sm={10} direction="row">
+            <form
+              style={{ width: "100%" }}
+              onSubmit={this.handleSearchFormSubmit}
+            >
+              <Grid item container xs={12} direction="row">
+                <Grid item xs={10}>
+                  <TextField
+                    id="search-bar"
+                    placeholder="Search Volunteers"
+                    value={this.state.searchBar}
+                    fullWidth
+                    onChange={this.handleSearchBarChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <Button type="submit">Search</Button>
+                </Grid>
+              </Grid>
+            </form>
+
+            <Grid item container xs={12} direction="row">
+              {Object.entries(this.props.picklists).map((entry) => {
+                // Display picklists.
+                const picklistName: string = entry[0];
+                const picklistDisplayName = entry[1].displayName;
+                let picklist = new Map<string, boolean>();
+
+                switch (picklistName) {
+                  case "activities":
+                    picklist = this.state.filters.activities;
+                    break;
+                  case "expertiseAreas":
+                    picklist = this.state.filters.expertiseAreas;
+                    break;
+                  case "locations":
+                    picklist = this.state.filters.locations;
+                    break;
+                }
+
+                return (
+                  <Grid item sm={3} key={picklistName}>
+                    <FormControl style={{ minWidth: 160 }}>
+                      <InputLabel shrink={false} focused={false}>
+                        {picklistDisplayName}
+                      </InputLabel>
+                      <Select
+                        key={picklistName}
+                        value={[]}
+                        onChange={this.createHandleSelectFilter(picklistName)}
+                        multiple
+                      >
+                        {Array.from(picklist.entries(), (entry) => entry).map(
+                          ([option, isSelected]) => (
+                            <MenuItem key={option} value={option}>
+                              <Checkbox checked={isSelected} />
+                              {option}
+                            </MenuItem>
+                          )
+                        )}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                );
+              })}
+            </Grid>
+            <Grid item container xs={12} direction="row">
+              <Grid item container xs={10} direction="row">
+                {Object.entries(this.state.filters).map((entry) => {
+                  const picklistName = entry[0];
+                  const filterMap = entry[1];
+                  const filterButtons: Array<JSX.Element> = [];
+                  Array.from(filterMap.entries(), (entry) => entry).forEach(
+                    ([filterName, isSelected]) => {
+                      if (isSelected) {
+                        filtersSelected = true;
+                        filterButtons.push(
+                          <Button
+                            key={filterName}
+                            onClick={this.createHandleFilterButtonClick(
+                              picklistName
+                            )}
+                            value={filterName}
+                          >
+                            {filterName}
+                          </Button>
+                        );
+                      }
+                    }
+                  );
+
+                  return filterButtons;
+                })}
+              </Grid>
+              {filtersSelected && (
+                <Grid item xs={2}>
+                  <Button onClick={this.clearFilters}>Clear All</Button>
+                </Grid>
+              )}
+            </Grid>
+
+            <Grid item container xs={12} spacing={2}>
+              {this.state.filteredVolunteers.map((volunteer) =>
+                createVolunteerCard(volunteer)
+              )}
+            </Grid>
           </Grid>
           <Grid item sm={1} />
         </Grid>
@@ -341,13 +541,9 @@ const mapStateToProps = (state: any) => {
         displayName: "Areas of Expertise",
         list: getExpertiesAreasPicklist(state.userPicklists),
       },
-      training: {
-        displayName: "Training",
-        list: getPostSecondaryTrainingPicklist(state.userPicklists),
-      },
-      grades: {
-        displayName: "Grade Levels",
-        list: getGradesPicklist(state.userPicklists),
+      locations: {
+        displayName: "Locations",
+        list: getLocationsPicklist(state.userPicklists),
       },
     },
   };
