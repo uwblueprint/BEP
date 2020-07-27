@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from '@material-ui/core/styles';
 import { Grid } from "@material-ui/core";
 import Button from "../Button"
+import { eventNames } from 'process';
 
 
 const styles = {
@@ -65,6 +66,7 @@ class EducatorDashboard extends React.Component<{ events: Event[]; fetchEvents: 
 
     render() {
         const { events } = this.props;
+        console.log(events);
 
 
         // var test = events.filter(event => event.isActive == true).map((event) => (
