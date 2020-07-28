@@ -34,6 +34,7 @@ eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) =>
     }
 });
 
+
 eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
     const limit: number = req.query.limit as any;
     const offset: number = req.query.offset as any;
@@ -42,6 +43,20 @@ eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);
+    }
+
+eventRouter.get('/applications', async (req: Express.Request, res: Express.Response) => {
+    const name: string = req.query.name as string;
+
+    try {
+        if (name !== undefined) {
+            const applications = await EventService.getApplications(name);
+            res.status(200).send(applications);
+        } else {
+            throw Error(`Invalid query parameters. Please set "name" parameter`);
+        }
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
     }
 });
 
