@@ -4,6 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { Event } from "../../data/types/EventTypes"
 import { connect } from "react-redux";
 import { fetchEventsService } from "../../data/services/eventsServices"
+import {changeFilter} from "../../data/actions/eventsActions"
 import { getFilteredEvents } from "../../data/selectors/eventsSelector";
 import Typography from "@material-ui/core/Typography";
 import Button from "../../components/Button"
@@ -12,30 +13,30 @@ import { AnyARecord } from 'dns';
 
 
 type EventProps = {
-    
-    
     eventsFilter: any
 }
   
   interface StateProps {
-    events: Event[]
+    events: Event[],
   }
        
   interface DispatchProps {
-    fetchEvents: any
+    fetchEvents: any,
+    changeFilter: any
   }
    
   type Props = StateProps & DispatchProps & EventProps
 
 const mapStateToProps = (state: any) : StateProps=> ({
-    events: getFilteredEvents(state.events)
+    events: getFilteredEvents(state.events),
 })
 
 const mapDispatchToProps = (dispatch: any):DispatchProps => ({
-    fetchEvents: (limit: number, offset: number, filter: any) => dispatch(fetchEventsService(limit, offset, filter))
+    fetchEvents: (limit: number, offset: number) => dispatch(fetchEventsService(limit, offset)),
+    changeFilter: (filter: string) => dispatch(changeFilter(filter))
 })
 
-const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents }: Props) => {
+const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter }: Props) => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [isEventActive, setisEventActive] = useState(true)
@@ -45,6 +46,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents }: Props) => 
     useEffect(() => {
         console.log(startDate)
         console.log(endDate)
+        fetchEvents(5,0)
 
     }, [startDate]);
 
@@ -53,13 +55,8 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents }: Props) => 
         <React.Fragment>
             <Typography variant="h3" component="h2">Your Opportunities</Typography>
             <div>
-
-
-                <Button onClick={() => fetchEvents(5,0,"ACTIVE")}>SHOW ACTIVE</Button>
-                <Button onClick={() => fetchEvents(5,0,"PAST")}>SHOW PAST</Button>
-
-                <Button onClick={() => setisEventActive(true)}>Current</Button>
-                <Button onClick={() => setisEventActive(false)}>Past</Button>
+                <Button onClick={() => changeFilter("ACTIVE")}>Current</Button>
+                <Button onClick={() => changeFilter("PAST")}>Past</Button>
 
 
                 <div>

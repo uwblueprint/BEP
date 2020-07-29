@@ -7,15 +7,18 @@ const getEventsData = (state: EventsState) => {
     return state.list ? state.list : []
 }
 
+const getActiveEventsData = (state: EventsState) => {return state.activeList ? state.activeList : []}
+const getPastEventsData = (state: EventsState) => {return state.pastList ? state.pastList : []}
+
 export const getFilteredEvents = createSelector(
-    [getEventsStatus, getEventsData],
-    (eventsFilter, events) => {
+    [getEventsStatus, getActiveEventsData, getPastEventsData, getEventsData],
+    (eventsFilter, activeEvents, pastEvents, allEvents) => {
         switch (eventsFilter) {
             case 'ACTIVE':
-                return events.filter(t => t.isActive)
+                return activeEvents;
             case 'PAST':
-                return events.filter(t => !t.isActive)
+                return pastEvents;
         }
-        return events
+        return allEvents
     }
 )

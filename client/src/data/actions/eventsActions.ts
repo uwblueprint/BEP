@@ -1,13 +1,17 @@
-import { FETCH_EVENTS } from "./actionTypes";
+import { FETCH_EVENTS, CHANGE_EVENTS_FILTER } from "./actionTypes";
 
 // export const fetchEvents = (events: any[]) => ({
 //     type: FETCH_EVENTS,
 //     payload: { list: events }
 // })
 
-export const fetchEvents = (events: any[], filter: any) => ({
+export const fetchEvents = (events: any[]) => ({
     type: FETCH_EVENTS,
     payload: { list: events },
+})
+
+export const changeFilter = (filter: any) => ({
+    type: CHANGE_EVENTS_FILTER,
     filter
 })
 
