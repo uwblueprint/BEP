@@ -11,21 +11,31 @@ import EventCard from "./EventCard"
 import { AnyARecord } from 'dns';
 
 
-const mapStateToProps = (state: any) => ({
+type EventProps = {
+    
+    
+    eventsFilter: any
+}
+  
+  interface StateProps {
+    events: Event[]
+  }
+       
+  interface DispatchProps {
+    fetchEvents: any
+  }
+   
+  type Props = StateProps & DispatchProps & EventProps
+
+const mapStateToProps = (state: any) : StateProps=> ({
     events: getFilteredEvents(state.events)
 })
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: any):DispatchProps => ({
     fetchEvents: (limit: number, offset: number, filter: any) => dispatch(fetchEventsService(limit, offset, filter))
 })
 
-type EventProps = {
-    fetchEvents: any
-    events: Event[]
-    eventsFilter: any
-}
-
-const EducatorDashboard = ({ events, fetchEvents }: EventProps) => {
+const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents }: Props) => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [isEventActive, setisEventActive] = useState(true)
@@ -44,6 +54,9 @@ const EducatorDashboard = ({ events, fetchEvents }: EventProps) => {
             <Typography variant="h3" component="h2">Your Opportunities</Typography>
             <div>
 
+
+                <Button onClick={() => fetchEvents(5,0,"ACTIVE")}>SHOW ACTIVE</Button>
+                <Button onClick={() => fetchEvents(5,0,"PAST")}>SHOW PAST</Button>
 
                 <Button onClick={() => setisEventActive(true)}>Current</Button>
                 <Button onClick={() => setisEventActive(false)}>Past</Button>
@@ -92,7 +105,11 @@ const EducatorDashboard = ({ events, fetchEvents }: EventProps) => {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EducatorDashboard);
+
+  
+
+
+export default connect<StateProps, DispatchProps, EventProps>(mapStateToProps, mapDispatchToProps)(EducatorDashboard);
 
         // var displayEvents = events.map((event, index) => (
         //     <EventCard key={index} event={event} />

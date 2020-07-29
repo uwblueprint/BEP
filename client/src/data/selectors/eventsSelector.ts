@@ -16,5 +16,6 @@ export const getFilteredEvents = createSelector(
             case 'PAST':
                 return events.filter(t => !t.isActive)
         }
+        return events
     }
 )
