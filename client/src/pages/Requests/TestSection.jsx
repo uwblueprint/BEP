@@ -8,9 +8,7 @@ import { fetchTestService } from '../../data/services/testServices';
 import { getTests } from '../../data/selectors/testSelector';
 
 /* Components and Styling */
-import Button, {ContainedButton} from '../../components/Button'
-import { withStyles } from '@material-ui/core/styles';
-import { containedButtonStyle } from '../../components/styling/Button';
+import { ContainedButton } from '../../components/index';
 
 const mapStateToProps = state => ({
     users: getTests(state),
@@ -50,4 +48,4 @@ class TestSection extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(containedButtonStyle)(TestSection));
+export default connect(mapStateToProps, mapDispatchToProps)(TestSection);
