@@ -21,21 +21,23 @@ import { UserPicklistType } from "../../data/types/userPicklistTypes";
 
 /* Components */
 import VolunteerCard from "./VolunteerCard";
-import Select from "../../components/Select";
-import Button from "../../components/Button";
+import {
+  ContainedSelect,
+  ContainedButton,
+  DarkContainedButton,
+  TextButton,
+  ExpandMoreIcon,
+  WhiteCloseIcon,
+  PageHeaderTypography,
+  BlueSearchIcon,
+} from "../../components/index";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import { Grid } from "@material-ui/core";
 import { Checkbox } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
+import { OutlinedTextField } from "../../components/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import SearchIcon from "@material-ui/icons/Search";
-
-/*Styles*/
-import { outlineTextFieldStyle } from "../../components/styling/TextField";
-
-type Filter = { name: string; active: boolean };
 
 /* Components */
 import VolunteerCard from "./VolunteerCard";
@@ -397,6 +399,7 @@ class VolunteerList extends React.Component<
 
   render() {
     let filtersSelected = false;
+
     const createVolunteerCard = (volunteer: Volunteer) => (
       <Grid item xs={12} key={volunteer.email}>
         <VolunteerCard {...volunteer} />
@@ -412,9 +415,12 @@ class VolunteerList extends React.Component<
               style={{ width: "100%" }}
               onSubmit={this.handleSearchFormSubmit}
             >
-              <Grid item container xs={12} direction="row">
-                <Grid item xs={10}>
-                  <TextField
+              <Grid item xs={12}>
+                <PageHeaderTypography>Browse Volunteers</PageHeaderTypography>
+              </Grid>
+              <Grid item container xs={12} spacing={2} direction="row">
+                <Grid item xs={11}>
+                  <OutlinedTextField
                     id="search-bar"
                     placeholder="Search Volunteers"
                     value={this.state.searchBar}
@@ -423,19 +429,26 @@ class VolunteerList extends React.Component<
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <SearchIcon />
+                          <BlueSearchIcon />
                         </InputAdornment>
                       ),
                     }}
                   />
                 </Grid>
-                <Grid item xs={2}>
-                  <Button type="submit">Search</Button>
+                <Grid
+                  item
+                  container
+                  xs={1}
+                  alignItems="flex-start"
+                  justify="flex-end"
+                  direction="row"
+                >
+                  <ContainedButton type="submit">Search</ContainedButton>
                 </Grid>
               </Grid>
             </form>
 
-            <Grid item container xs={12} direction="row">
+            <Grid item container xs={12} spacing={1} direction="row">
               {Object.entries(this.props.picklists).map((entry) => {
                 // Display picklists.
                 const picklistName: string = entry[0];
@@ -455,16 +468,18 @@ class VolunteerList extends React.Component<
                 }
 
                 return (
-                  <Grid item sm={3} key={picklistName}>
+                  <Grid item sm={6} md={2} key={picklistName}>
                     <FormControl style={{ minWidth: 160 }}>
                       <InputLabel shrink={false} focused={false}>
                         {picklistDisplayName}
                       </InputLabel>
-                      <Select
+                      <ContainedSelect
                         key={picklistName}
                         value={[]}
                         onChange={this.createHandleSelectFilter(picklistName)}
                         multiple
+                        disableUnderline={true}
+                        IconComponent={ExpandMoreIcon}
                       >
                         {Array.from(picklist.entries(), (entry) => entry).map(
                           ([option, isSelected]) => (
@@ -474,14 +489,14 @@ class VolunteerList extends React.Component<
                             </MenuItem>
                           )
                         )}
-                      </Select>
+                      </ContainedSelect>
                     </FormControl>
                   </Grid>
                 );
               })}
             </Grid>
             <Grid item container xs={12} direction="row">
-              <Grid item container xs={10} direction="row">
+              <Grid item container xs={10} spacing={1} direction="row">
                 {Object.entries(this.state.filters).map((entry) => {
                   const picklistName = entry[0];
                   const filterMap = entry[1];
@@ -491,15 +506,18 @@ class VolunteerList extends React.Component<
                       if (isSelected) {
                         filtersSelected = true;
                         filterButtons.push(
-                          <Button
-                            key={filterName}
-                            onClick={this.createHandleFilterButtonClick(
-                              picklistName
-                            )}
-                            value={filterName}
-                          >
-                            {filterName}
-                          </Button>
+                          <Grid item>
+                            <DarkContainedButton
+                              key={filterName}
+                              onClick={this.createHandleFilterButtonClick(
+                                picklistName
+                              )}
+                              value={filterName}
+                            >
+                              {filterName}
+                              <WhiteCloseIcon />
+                            </DarkContainedButton>
+                          </Grid>
                         );
                       }
                     }
@@ -510,7 +528,7 @@ class VolunteerList extends React.Component<
               </Grid>
               {filtersSelected && (
                 <Grid item xs={2}>
-                  <Button onClick={this.clearFilters}>Clear All</Button>
+                  <TextButton onClick={this.clearFilters}>Clear All</TextButton>
                 </Grid>
               )}
             </Grid>
