@@ -88,37 +88,36 @@ export const getEventInfo = async (eventName: string): Promise<Event> => {
     return eventInfo;
 };
 
-export const getPastEvents = async (limit: number, offset: number): Promise<Event> => {
-    let pastEvents: Event;
-    const isActiveEvent: boolean = false;
+export const getAllEvents = async (limit: number, offset: number): Promise<Event> => {
+    let allevents: Event;
     await conn.query(
-        `SELECT ${eventFields} FROM ${eventApi} WHERE isActive__c=${isActiveEvent} LIMIT ${limit} OFFSET ${offset}`,
+        `SELECT ${eventFields} FROM ${eventApi} LIMIT ${limit} OFFSET ${offset}`,
         function (err, result) {
             if (err) {
                 return console.error(err);
             }
-            pastEvents = result.records.map(record => salesforceEventToEventModel(record));
+            allevents = result.records.map(record => salesforceEventToEventModel(record));
         }
     );
 
-    return pastEvents;
+    return allevents;
 };
 
-export const getActiveEvents = async (limit: number, offset: number): Promise<Event> => {
-    let activeEvents: Event;
-    const isActiveEvent: boolean = true;
-    await conn.query(
-        `SELECT ${eventFields} FROM ${eventApi} WHERE isActive__c=${isActiveEvent} LIMIT ${limit} OFFSET ${offset}`,
-        function (err, result) {
-            if (err) {
-                return console.error(err);
-            }
-            activeEvents = result.records.map(record => salesforceEventToEventModel(record));
-        }
-    );
+// export const getActiveEvents = async (limit: number, offset: number): Promise<Event> => {
+//     let activeEvents: Event;
+//     const isActiveEvent: boolean = true;
+//     await conn.query(
+//         `SELECT ${eventFields} FROM ${eventApi} WHERE isActive__c=${isActiveEvent} LIMIT ${limit} OFFSET ${offset}`,
+//         function (err, result) {
+//             if (err) {
+//                 return console.error(err);
+//             }
+//             activeEvents = result.records.map(record => salesforceEventToEventModel(record));
+//         }
+//     );
 
-    return activeEvents;
-};
+//     return activeEvents;
+// };
 
 // let eventInfo: Event = conn
 //     .sobject(eventApi)

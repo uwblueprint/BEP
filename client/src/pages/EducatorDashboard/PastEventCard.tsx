@@ -35,7 +35,6 @@ function getDate(props: any) {
     var eventStartDate = startDate.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
     var eventEndDate = endDate.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
 
-
     if (eventStartDate === eventEndDate) {
         var date = eventStartDate
     } else {
@@ -49,6 +48,8 @@ function getDate(props: any) {
 export default function EventCard(props: any) {
     console.log(props);
     const classes = useStyles();
+
+
 
 
     return (

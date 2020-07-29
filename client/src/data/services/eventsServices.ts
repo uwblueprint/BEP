@@ -1,10 +1,10 @@
 import { get } from "../../utils/EventsApiUtils";
 import { fetchEvents } from "../actions/eventsActions";
 
-export function fetchEventsService(isActive: boolean, limit: number, offset: number) {
+export function fetchEventsService(limit: number, offset: number, filter: string) {
     return (dispatch: any) => {
-        return get(isActive, limit, offset).then((res: any) => {
-            dispatch(fetchEvents(res.data));
+        return get(limit, offset).then((res: any) => {
+            dispatch(fetchEvents(res.data, filter));
             return res;
         });
     };

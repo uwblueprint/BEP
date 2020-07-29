@@ -1,49 +1,95 @@
 import React, { useEffect, useState } from 'react';
+import DatePicker from "react-datepicker"
+import 'react-datepicker/dist/react-datepicker.css'
 import { Event } from "../../data/types/EventTypes"
 import { connect } from "react-redux";
 import { fetchEventsService } from "../../data/services/eventsServices"
-import { getEvents } from "../../data/selectors/eventsSelector";
+import { getFilteredEvents } from "../../data/selectors/eventsSelector";
 import Typography from "@material-ui/core/Typography";
 import Button from "../../components/Button"
 import EventCard from "./EventCard"
+import { AnyARecord } from 'dns';
+
 
 const mapStateToProps = (state: any) => ({
-    events: getEvents(state.events),
+    events: getFilteredEvents(state.events)
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-    fetchEvents: (isActive: boolean, limit: number, offset: number) => dispatch(fetchEventsService(isActive, limit, offset))
+    fetchEvents: (limit: number, offset: number, filter: any) => dispatch(fetchEventsService(limit, offset, filter))
 })
 
 type EventProps = {
     fetchEvents: any
     events: Event[]
+    eventsFilter: any
 }
 
 const EducatorDashboard = ({ events, fetchEvents }: EventProps) => {
-    const [isActive, setIsActive] = useState(true)
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const [isEventActive, setisEventActive] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
     const tests = events
 
     useEffect(() => {
-        console.log(isActive)
-        fetchEvents(isActive, 2, 0)
-    }, [isActive]);
+        console.log(startDate)
+        console.log(endDate)
+
+    }, [startDate]);
 
     // console.log(this.props.active)
     return (
         <React.Fragment>
             <Typography variant="h3" component="h2">Your Opportunities</Typography>
             <div>
-                <Button onClick={() => setIsActive(true)}>Current</Button>
-                <Button onClick={() => setIsActive(false)}>Past</Button>
-                {tests.map((event, index) => (
-                    <EventCard key={index} event={event} active={isActive} />
+
+
+                <Button onClick={() => setisEventActive(true)}>Current</Button>
+                <Button onClick={() => setisEventActive(false)}>Past</Button>
+
+
+                <div>
+                    <DatePicker
+                        selected={startDate}
+                        onChange={(date: any) => setStartDate(date)}
+                        placeholderText='Start Date'
+                        startDate={startDate}
+                        endDate={endDate}
+
+                    />
+                </div>
+                <div>
+                    <DatePicker
+                        selected={endDate}
+                        onChange={(date: any) => setEndDate(date)}
+                        placeholderText='End Date'
+                        startDate={startDate}
+                        endDate={endDate}
+                        minDate={startDate}
+
+
+                    />
+                </div>
+
+                {/* {isEventActive ? tests.map((event, index) => (<EventCard key={index} event={event} active={isEventActive} />)) :
+                    tests.map((event, index) => (<PastEventCard key={index} event={event} active={isEventActive} />))}
+                {isLoading ? tests.map((event, index) => (
+                    <EventCard key={index} event={event} active={isEventActive} />
+                )) : <div>Loading</div>}
+                {console.log(isLoading)} */}
+
+                {tests.filter(events => (events.startDate < events.endDate)).map((event, index) => (
+                    <div>
+                        <EventCard key={index} event={event} active={isEventActive} />
+                    </div>
+
                 ))}
 
-                {console.log('hello')}
             </div>
         </React.Fragment>
     )
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EducatorDashboard);
