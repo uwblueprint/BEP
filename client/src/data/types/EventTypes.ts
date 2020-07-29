@@ -8,4 +8,6 @@
 export interface Event {
     eventName: string;
     isActive: boolean;
+    startDate: Date;
+    endDate: Date;
 }

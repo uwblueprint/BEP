@@ -18,28 +18,30 @@ export const eventRouter = Express.Router();
 
 // GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
 
-eventRouter.get('/', async (req: Express.Request, res: Express.Response) => {
+eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
     // const id: number = parseInt(req.params.id, 10);
     const name: string = req.query.name as string;
-    const isEventActive: string = req.query.isEventActive as string;
-    const limit: number = req.query.limit as any;
-    const offset: number = req.query.offset as any;
 
     try {
         if (name !== undefined) {
             const fetchedEvent = await EventService.getEventInfo(name);
             res.status(200).send(fetchedEvent);
-        } else if (isEventActive === 'true') {
-            const fetchedActiveEvents = await EventService.getActiveEvents(limit ? limit : 10, offset ? offset : 0);
-            res.status(200).send(fetchedActiveEvents);
-        } else if (isEventActive === 'false') {
-            const fetchedPastEvents = await EventService.getPastEvents(limit ? limit : 10, offset ? offset : 0);
-            res.status(200).send(fetchedPastEvents);
         } else {
-            throw Error(`Invalid query parameters. Either set "isEventActive" parameter or put eventName.`);
+            throw Error(`Invalid query parameters. Put eventName.`);
         }
     } catch (e) {
         res.status(500).send({ msg: e.message });
+    }
+});
+
+eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
+    const limit: number = req.query.limit as any;
+    const offset: number = req.query.offset as any;
+    try {
+        const fetchedEvents = await EventService.getAllEvents(limit, offset);
+        res.status(200).send(fetchedEvents);
+    } catch (e) {
+        res.status(404).send(e.message);
     }
 });
 
