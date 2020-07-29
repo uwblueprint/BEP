@@ -1,15 +1,19 @@
-import { FETCH_EVENTS } from "../actions/actionTypes";
+import { FETCH_EVENTS, CHANGE_EVENTS_FILTER } from "../actions/actionTypes";
 import { Event } from "../types/EventTypes";
 
 export interface EventsState {
     list: Event[];
     eventsFilter: string;
+    activeList:Event[];
+    pastList: Event[];
 
 }
 
 const initialState: EventsState = {
     list: [],
-    eventsFilter: "ACTIVE"
+    eventsFilter: "ACTIVE",
+    activeList:[],
+    pastList:[],
 }
 
 export default function eventsFilter(
@@ -21,8 +25,14 @@ export default function eventsFilter(
             return {
                 ...state,
                 list: action.payload.list,
-                eventsFilter: action.filter,
+                activeList: action.payload.list.filter((t:Event) => t.isActive),
+                pastList: action.payload.list.filter((t:Event) => !t.isActive),
             }
+        case CHANGE_EVENTS_FILTER:
+            return {
+                ...state,
+                eventsFilter: action.filter
+            } 
         default:
             return state;
     }
