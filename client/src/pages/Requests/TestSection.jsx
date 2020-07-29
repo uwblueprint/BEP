@@ -8,7 +8,7 @@ import { fetchTestService } from '../../data/services/testServices';
 import { getTests } from '../../data/selectors/testSelector';
 
 /* Components and Styling */
-import Button from '../../components/Button'
+import Button, {ContainedButton} from '../../components/Button'
 import { withStyles } from '@material-ui/core/styles';
 import { containedButtonStyle } from '../../components/styling/Button';
 
@@ -39,8 +39,8 @@ class TestSection extends React.Component {
         ))
         return (
             <div>
-                <Button variant="contained" className={classes.button}>hello</Button>
-                
+                {/* <Button variant="contained" className={classes.button}>hello</Button> */}
+                <ContainedButton>HELLO</ContainedButton>
                 <div>test query is fetching data from the test backend API:</div>
                 <div>
                     {test}
