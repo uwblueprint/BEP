@@ -21,7 +21,7 @@ export default function eventsFilter(
             return {
                 ...state,
                 list: action.payload.list,
-                eventsFilter: []
+                eventsFilter: action.filter,
             }
         default:
             return state;
