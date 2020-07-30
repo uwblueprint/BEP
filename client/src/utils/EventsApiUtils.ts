@@ -10,10 +10,13 @@ const get = (limit: number, offset: number) => {
     return axios.request(config);
 };
 
-const getApplications = () => {
+const getApplications = async (eventName: string) => {
     const config: AxiosRequestConfig = {
-        url: `${baseURL}api/events/`
-    }
+        url: `${baseURL}api/events/applications/?name=${eventName}`,
+        method: "get"
+    };
+
+    return await axios.request(config)
 }
 
 const getSchoolInfo = () => {
@@ -22,4 +25,4 @@ const getSchoolInfo = () => {
     }
 }
 
-export { get };
+export { get, getApplications };

@@ -5,7 +5,13 @@ import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link'
 import Card from '@material-ui/core/Card'
+import Dialog from '@material-ui/core/Dialog'
 import Button from '../Button'
+import { findAllByTestId } from '@testing-library/react';
+
+export interface DialogProps {
+    open: boolean;
+}
 
 const useStyles = makeStyles((theme) => ({
     retract: {
@@ -22,35 +28,48 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ContactCard = (props: any) => {
-    console.log(props.props)
+    console.log(props)
     const classes = useStyles()
-   
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true)
+    }
+
+    const handleClickClose = () => {
+        setOpen(false)
+    }   
+
     return (
     <Card className={classes.card}>
     <Grid container spacing={2}>
         <Grid item xs={9}>
             <Typography variant="h5" component="h2">
-                props.user.name           
+                {props.info.applicant.applicantName}      
             </Typography>
             <Typography variant="subtitle1" component="h1">
-                props.user.job -- props.user.pronouns       
+                {props.info.applicant.job} -- {props.info.applicant.personalPronouns}
             </Typography>
         </Grid>
         <Grid item xs={3}>
-            {props.props.type == "invitations" ? 
+            {props.info.type == "invitations" ? 
             <Typography variant="body1" component="h2" className={classes.retract}>
                     Retract Invitations
             </Typography> :
             <Grid container spacing={10}>
             <Grid item xs={1}>
-                <Button>
+                <Button >
                     Decline
                 </Button>
             </Grid>
              <Grid item xs={5}>
-                <Button>
+                <Button onClick={handleClickOpen}>
                     Accept
                 </Button>
+                <Dialog aria-labelledby="simple-dialog-title" open={open}>
+                    <Typography>Dialog Content</Typography>
+                    <Button onClick={handleClickClose}>Close</Button>
+                </Dialog>
              </Grid>
              </Grid>}
         </Grid>
@@ -59,7 +78,7 @@ const ContactCard = (props: any) => {
                 SECTORS
             </Typography>
             <Typography variant="body1" component="h2">
-                props.user.sectors
+                {props.info.applicant.sectors}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -67,7 +86,7 @@ const ContactCard = (props: any) => {
                 AREAS OF EXPERTISE
             </Typography>
             <Typography variant="body1" component="h2">
-                props.user.areasofexpertise
+                {props.info.applicant.areasOfExpertise}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -75,7 +94,7 @@ const ContactCard = (props: any) => {
                 LINKEDIN URL
             </Typography>
             <Typography variant="body1" component="h2">
-                props.user.linkedinurl
+                {props.info.applicant.linkedinUrl}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -83,11 +102,9 @@ const ContactCard = (props: any) => {
                 EMPLOYMENT STATUS
             </Typography>
             <Typography variant="body1" component="h2">
-                props.user.employmentstatus
+                {props.info.applicant.employmentStatus}
             </Typography>
         </Grid>
-
-
     </Grid>
     </Card>
     )

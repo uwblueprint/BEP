@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import { TableRow } from '@material-ui/core';
 import ContactCard from './ContactCard'
-import axios from 'axios';
+import { getApplications } from '../../utils/EventsApiUtils'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,38 +50,51 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-
-
-
 const EventPage = (props: any) => {
   console.log(props)
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [applications, setApplications] = React.useState({events: []});
-  const [invitations, setInvitations] = React.useState({invitations: []})
+  const [applications, setApplications] = React.useState([]);
+  const [invitations, setInvitations] = React.useState([])
 
 
-  const applicationProps = {
-    type: "applications",
-  };
+  var displayApplications = applications.map((applicant) => {
+    var applicationProps = {
+        type: "applications",
+        applicant
+    };
+    return <ContactCard info={applicationProps} />
+});
 
   const invitationProps = {
       type: "invitations",
   };
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const result = await getApplications("Event test 5");
+      console.log("This is the result of useEffect", result.data.applications)
+      setApplications(result.data.applications)
+    }
+    fetchdata();
+
+  }, []);
 
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 
+  const applicationsLabel = `Applications  ${applications.length}`
+
   return (
     <React.Fragment>
       <Typography variant="h2">props.event.title</Typography>
     <div className={classes.root}>
       <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Event Details" {...a11yProps(0)} />
-          <Tab label="Applications" {...a11yProps(1)} />
+        <Tabs value={value} onChange={handleChange} aria-label="Simple Tabs">
+          <Tab label = "Event Details" {...a11yProps(0)} />
+          <Tab label={applicationsLabel} {...a11yProps(1)} />
           <Tab label="Invitations" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
@@ -220,7 +233,11 @@ const EventPage = (props: any) => {
         </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <ContactCard props={applicationProps}  />
+        {applications.length == 0 ? 
+        <Typography>
+          There are currently no applications for this oppurtunity. {'\n'}
+        </ Typography> 
+      : displayApplications}
       </TabPanel>
       <TabPanel value={value} index={2}>
       <ContactCard props={invitationProps}  />
