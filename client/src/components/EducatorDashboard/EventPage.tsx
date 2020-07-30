@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import { TableRow } from '@material-ui/core';
-import ContactCard from './ContactCard'
+import ContactCard from './ApplicantCard'
 import { getApplications } from '../../utils/EventsApiUtils'
 
 interface TabPanelProps {
@@ -60,15 +60,10 @@ const EventPage = (props: any) => {
 
   var displayApplications = applications.map((applicant) => {
     var applicationProps = {
-        type: "applications",
         applicant
     };
     return <ContactCard info={applicationProps} />
 });
-
-  const invitationProps = {
-      type: "invitations",
-  };
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -240,7 +235,7 @@ const EventPage = (props: any) => {
       : displayApplications}
       </TabPanel>
       <TabPanel value={value} index={2}>
-      <ContactCard props={invitationProps}  />
+      {/* <ContactCard props={invitationProps}  /> */}
       </TabPanel>
     </div>
     </React.Fragment>

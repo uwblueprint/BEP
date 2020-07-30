@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ContactCard = (props: any) => {
+const ApplicantCard = (props: any) => {
     console.log(props)
     const classes = useStyles()
     const [open, setOpen] = React.useState(false);
@@ -52,10 +52,6 @@ const ContactCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid item xs={3}>
-            {props.info.type == "invitations" ? 
-            <Typography variant="body1" component="h2" className={classes.retract}>
-                    Retract Invitations
-            </Typography> :
             <Grid container spacing={10}>
             <Grid item xs={1}>
                 <Button >
@@ -67,11 +63,12 @@ const ContactCard = (props: any) => {
                     Accept
                 </Button>
                 <Dialog aria-labelledby="simple-dialog-title" open={open}>
-                    <Typography>Dialog Content</Typography>
-                    <Button onClick={handleClickClose}>Close</Button>
+                    <Typography>Are you sure you want to accept {props.info.applicant.applicantName} for this event?</Typography>
+                    <Button onClick={handleClickClose}>Accept</Button>
+                    <Button onClick={handleClickClose}>Decline</Button>
                 </Dialog>
              </Grid>
-             </Grid>}
+             </Grid>
         </Grid>
         <Grid item xs={6}>
             <Typography variant="body1" component="h2">
@@ -110,4 +107,4 @@ const ContactCard = (props: any) => {
     )
 }
 
-export default ContactCard
+export default ApplicantCard
