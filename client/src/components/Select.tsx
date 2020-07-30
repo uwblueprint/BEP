@@ -12,6 +12,12 @@ const containedSelectStyle = (theme: Theme) =>
       active: {
         backgroundColor: theme.palette.secondary.light,
       },
+      // "&:before": {
+      //   backgroundColor: theme.palette.secondary.light, // updated backgroundColor
+      // },
+      // "&:after": {
+      //   backgroundColor: theme.palette.secondary.light, // updated backgroundColor
+      // },
     },
   });
 
