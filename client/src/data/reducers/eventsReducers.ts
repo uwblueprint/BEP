@@ -4,7 +4,7 @@ import { Event } from "../types/EventTypes";
 export interface EventsState {
     list: Event[];
     eventsFilter: string;
-    activeList:Event[];
+    activeList: Event[];
     pastList: Event[];
 
 }
@@ -12,8 +12,8 @@ export interface EventsState {
 const initialState: EventsState = {
     list: [],
     eventsFilter: "ACTIVE",
-    activeList:[],
-    pastList:[],
+    activeList: [],
+    pastList: [],
 }
 
 export default function eventsFilter(
@@ -25,14 +25,14 @@ export default function eventsFilter(
             return {
                 ...state,
                 list: action.payload.list,
-                activeList: action.payload.list.filter((t:Event) => t.isActive),
-                pastList: action.payload.list.filter((t:Event) => !t.isActive),
+                activeList: action.payload.list.filter((t: Event) => t.isActive),
+                pastList: action.payload.list.filter((t: Event) => !t.isActive),
             }
         case CHANGE_EVENTS_FILTER:
             return {
                 ...state,
                 eventsFilter: action.filter
-            } 
+            }
         default:
             return state;
     }

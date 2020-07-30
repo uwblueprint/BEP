@@ -112,25 +112,30 @@ export default function EventCard(props: any) {
 
                     </Grid>
                 </CardContent>
-                <CardContent>
-                    <Grid container spacing={0}>
-                        <Grid item xs={3}>
-                            <Typography variant="subtitle2" className={classes.tag} >
-                                Posting expires on {props.event.postingExpiry}
-                            </Typography>
+
+                {props.event.isActive ?
+                    <CardContent>
+                        <Grid container spacing={0}>
+                            <Grid item xs={3}>
+                                <Typography variant="subtitle2" className={classes.tag} >
+                                    Posting expires on {props.event.postingExpiry}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Typography variant="subtitle2" className={classes.tag}>
+                                    Applications Received {props.event.applicationsReceived}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Typography variant="subtitle2" className={classes.tag}>
+                                    Invitations Sent {props.event.invitationsSent}
+                                </Typography>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="subtitle2" className={classes.tag}>
-                                Applications Received {props.event.applicationsReceived}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Typography variant="subtitle2" className={classes.tag}>
-                                Invitations Sent {props.event.invitationsSent}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </CardContent>
+                    </CardContent>
+                    : []
+                }
+
 
 
             </Card>
