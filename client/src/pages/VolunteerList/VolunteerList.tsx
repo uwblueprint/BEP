@@ -29,11 +29,15 @@ import {
   ExpandMoreIcon,
   WhiteCloseIcon,
   PageHeaderTypography,
+  PageHeader,
+  PageBody,
   BlueSearchIcon,
 } from "../../components/index";
+import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import { Grid } from "@material-ui/core";
 import { Checkbox } from "@material-ui/core";
 import { OutlinedTextField } from "../../components/TextField";
@@ -401,139 +405,149 @@ class VolunteerList extends React.Component<
     );
 
     return (
-      <div>
-        <Grid container direction="row">
-          <Grid item sm={1} />
-          <Grid item container xs={12} sm={10} direction="row">
-            <form
-              style={{ width: "100%" }}
-              onSubmit={this.handleSearchFormSubmit}
-            >
-              <Grid item xs={12}>
-                <PageHeaderTypography>Browse Volunteers</PageHeaderTypography>
-              </Grid>
-              <Grid item container xs={12} spacing={2} direction="row">
-                <Grid item xs={11}>
-                  <OutlinedTextField
-                    id="search-bar"
-                    placeholder="Search Volunteers"
-                    value={this.state.searchBar}
-                    fullWidth
-                    onChange={this.handleSearchBarChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <BlueSearchIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid
-                  item
-                  container
-                  xs={1}
-                  alignItems="flex-start"
-                  justify="flex-end"
-                  direction="row"
+      <div style={{ height: "100vh" }}>
+        <Grid container direction="row" style={{ height: "100%" }}>
+          <Grid item container xs={12} direction="row">
+            <PageHeader>
+              <PageHeaderTypography>Browse Volunteers</PageHeaderTypography>
+            </PageHeader>
+
+            <PageBody>
+              <Grid container spacing={2} direction="column">
+                <form
+                  style={{ width: "100%" }}
+                  onSubmit={this.handleSearchFormSubmit}
                 >
-                  <ContainedButton type="submit">Search</ContainedButton>
-                </Grid>
-              </Grid>
-            </form>
-
-            <Grid item container xs={12} spacing={1} direction="row">
-              {Object.entries(this.props.picklists).map((entry) => {
-                // Display picklists.
-                const picklistName: string = entry[0];
-                const picklistDisplayName = entry[1].displayName;
-                let picklist = new Map<string, boolean>();
-
-                switch (picklistName) {
-                  case "activities":
-                    picklist = this.state.filters.activities;
-                    break;
-                  case "expertiseAreas":
-                    picklist = this.state.filters.expertiseAreas;
-                    break;
-                  case "locations":
-                    picklist = this.state.filters.locations;
-                    break;
-                }
-
-                return (
-                  <Grid item sm={6} md={2} key={picklistName}>
-                    <FormControl style={{ minWidth: 160 }}>
-                      <InputLabel shrink={false} focused={false}>
-                        {picklistDisplayName}
-                      </InputLabel>
-                      <ContainedSelect
-                        key={picklistName}
-                        value={[]}
-                        onChange={this.createHandleSelectFilter(picklistName)}
-                        multiple
-                        disableUnderline={true}
-                        IconComponent={ExpandMoreIcon}
-                      >
-                        {Array.from(picklist.entries(), (entry) => entry).map(
-                          ([option, isSelected]) => (
-                            <MenuItem key={option} value={option}>
-                              <Checkbox checked={isSelected} />
-                              {option}
-                            </MenuItem>
-                          )
-                        )}
-                      </ContainedSelect>
-                    </FormControl>
+                  <Grid item container direction="row">
+                    <Grid item xs={11}>
+                      <OutlinedTextField
+                        id="search-bar"
+                        placeholder="Search Volunteers"
+                        value={this.state.searchBar}
+                        fullWidth
+                        onChange={this.handleSearchBarChange}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <BlueSearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      container
+                      xs={1}
+                      alignItems="flex-start"
+                      justify="flex-end"
+                      direction="row"
+                    >
+                      <ContainedButton type="submit">Search</ContainedButton>
+                    </Grid>
                   </Grid>
-                );
-              })}
-            </Grid>
-            <Grid item container xs={12} direction="row">
-              <Grid item container xs={10} spacing={1} direction="row">
-                {Object.entries(this.state.filters).map((entry) => {
-                  const picklistName = entry[0];
-                  const filterMap = entry[1];
-                  const filterButtons: Array<JSX.Element> = [];
-                  Array.from(filterMap.entries(), (entry) => entry).forEach(
-                    ([filterName, isSelected]) => {
-                      if (isSelected) {
-                        filtersSelected = true;
-                        filterButtons.push(
-                          <Grid item>
-                            <DarkContainedButton
-                              key={filterName}
-                              onClick={this.createHandleFilterButtonClick(
-                                picklistName
-                              )}
-                              value={filterName}
-                            >
-                              {filterName}
-                              <WhiteCloseIcon />
-                            </DarkContainedButton>
-                          </Grid>
-                        );
-                      }
+                </form>
+                <Grid item container spacing={1} direction="row">
+                  {Object.entries(this.props.picklists).map((entry) => {
+                    // Display picklists.
+                    const picklistName: string = entry[0];
+                    const picklistDisplayName = entry[1].displayName;
+                    let picklist = new Map<string, boolean>();
+
+                    switch (picklistName) {
+                      case "activities":
+                        picklist = this.state.filters.activities;
+                        break;
+                      case "expertiseAreas":
+                        picklist = this.state.filters.expertiseAreas;
+                        break;
+                      case "locations":
+                        picklist = this.state.filters.locations;
+                        break;
                     }
-                  );
 
-                  return filterButtons;
-                })}
-              </Grid>
-              {filtersSelected && (
-                <Grid item xs={2}>
-                  <TextButton onClick={this.clearFilters}>Clear All</TextButton>
+                    return (
+                      <Grid item sm={6} md={2} key={picklistName}>
+                        <FormControl style={{ minWidth: 160 }}>
+                          <ContainedSelect
+                            key={picklistName}
+                            value={[]}
+                            onChange={this.createHandleSelectFilter(
+                              picklistName
+                            )}
+                            multiple
+                            disableUnderline={true}
+                            IconComponent={ExpandMoreIcon}
+                            displayEmpty={true}
+                            renderValue={() => (
+                              <Typography align="center">
+                                {picklistDisplayName}
+                              </Typography>
+                            )}
+                          >
+                            {Array.from(
+                              picklist.entries(),
+                              (entry) => entry
+                            ).map(([option, isSelected]) => (
+                              <MenuItem key={option} value={option}>
+                                <Checkbox checked={isSelected} />
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </ContainedSelect>
+                        </FormControl>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
-              )}
-            </Grid>
+                <Grid item container direction="row">
+                  <Grid item container xs={10} spacing={1} direction="row">
+                    {Object.entries(this.state.filters).map((entry) => {
+                      const picklistName = entry[0];
+                      const filterMap = entry[1];
+                      const filterButtons: Array<JSX.Element> = [];
+                      Array.from(filterMap.entries(), (entry) => entry).forEach(
+                        ([filterName, isSelected]) => {
+                          if (isSelected) {
+                            filtersSelected = true;
+                            filterButtons.push(
+                              <Grid item>
+                                <DarkContainedButton
+                                  key={filterName}
+                                  onClick={this.createHandleFilterButtonClick(
+                                    picklistName
+                                  )}
+                                  value={filterName}
+                                >
+                                  {filterName}
+                                  <WhiteCloseIcon />
+                                </DarkContainedButton>
+                              </Grid>
+                            );
+                          }
+                        }
+                      );
 
-            <Grid item container xs={12} spacing={2}>
-              {this.state.filteredVolunteers.map((volunteer) =>
-                createVolunteerCard(volunteer)
-              )}
-            </Grid>
+                      return filterButtons;
+                    })}
+                  </Grid>
+                  {filtersSelected && (
+                    <Grid item xs={2}>
+                      <TextButton onClick={this.clearFilters}>
+                        Clear All
+                      </TextButton>
+                    </Grid>
+                  )}
+                </Grid>
+
+                <Grid item container spacing={2}>
+                  {this.state.filteredVolunteers.map((volunteer) =>
+                    createVolunteerCard(volunteer)
+                  )}
+                </Grid>
+              </Grid>
+            </PageBody>
           </Grid>
-          <Grid item sm={1} />
         </Grid>
         <div ref={this.state.loadingRef} />
       </div>

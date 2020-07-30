@@ -5,11 +5,28 @@ import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 const containedSelectStyle = (theme: Theme) =>
   createStyles({
     root: {
+      // color: theme.palette.background.default,
+      // color: theme.palette.secondary.light,
+   
+    },
+    select: {
+      // "&:focus": {
+      //   backgroundColor: theme.palette.background.default,
+      // },
+
       backgroundColor: theme.palette.background.default,
-      "&$selected": {
-        // this is to refer to the prop provided by M-UI
-        backgroundColor: theme.palette.secondary.light, // updated backgroundColor
+      focused: {
+        backgroundColor: theme.palette.secondary.light,
       },
+      active: {
+        backgroundColor: theme.palette.secondary.light,
+      },
+      // "&:before": {
+      //   backgroundColor: theme.palette.secondary.light, // updated backgroundColor
+      // },
+      // "&:after": {
+      //   backgroundColor: theme.palette.secondary.light, // updated backgroundColor
+      // },
     },
   });
 

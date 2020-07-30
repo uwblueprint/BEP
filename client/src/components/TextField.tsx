@@ -5,7 +5,7 @@ import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 const outlinedTextFieldStyle = (theme: Theme) =>
   createStyles({
     root: {
-      height: "100%",
+      backgroundColor: theme.palette.primary.light,
     },
   });
 
@@ -14,7 +14,11 @@ const MaterialTextField: React.FunctionComponent<any> = (props) => (
 );
 
 const OutlinedTextField = withStyles(outlinedTextFieldStyle)((props: any) => (
-  <TextField className={props.classes.root} variant="outlined" {...props}>
+  <TextField
+    inputProps={{ style: { height: "40px", padding: "0" } }}
+    variant="outlined"
+    {...props}
+  >
     {props.children}
   </TextField>
 ));
