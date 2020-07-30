@@ -45,10 +45,19 @@ const PageBodyGutter = withStyles(pageBodyGutterStyle)((props: any) => (
 ));
 
 const PageHeader = withStyles(pageHeaderStyle)((props: any) => (
-  <Grid container direction="row">
+  <Grid container direction="row" {...props}>
     <PageHeaderGutter sm={1} />
-    <Grid item xs={12} sm={10} {...props}>
-      {props.children}
+    <Grid
+      item
+      container
+      xs={12}
+      sm={10}
+      direction="column"
+      alignItems="flex-start"
+      justify="flex-end"
+    >
+      <PageHeaderTypography>{props.header}</PageHeaderTypography>
+      <Grid item xs={2} />
     </Grid>
     <PageHeaderGutter sm={1} />
   </Grid>

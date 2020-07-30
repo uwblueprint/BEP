@@ -408,9 +408,7 @@ class VolunteerList extends React.Component<
       <div style={{ height: "100vh" }}>
         <Grid container direction="row" style={{ height: "100%" }}>
           <Grid item container xs={12} direction="row">
-            <PageHeader>
-              <PageHeaderTypography>Browse Volunteers</PageHeaderTypography>
-            </PageHeader>
+            <PageHeader header="Browse Volunteers"/>
 
             <PageBody>
               <Grid container spacing={2} direction="column">
