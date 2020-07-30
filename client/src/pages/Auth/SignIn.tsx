@@ -1,6 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
+import { Button, Link, TextField } from '../../components/index';
+
 class SignIn extends React.Component {
   constructor(props:any) {
     super(props);
@@ -30,18 +32,20 @@ class SignIn extends React.Component {
 
   render() {
     return (
-        <form>
+        <form >
             <div>
                 <h4>BEP</h4>
             </div>
             <div>
                 Email
                 <br />
-                Password
+                <TextField label="Password"/>
                 <br />
-                <button type="submit" onClick={this.handleSubmit}>
-                    Log In
-                </button>
+                <Link href='#'>Forgot Password?</Link>
+                <br />
+                <Button onClick={this.handleSubmit}>
+                    Login
+                </Button>
             </div>
         </form>
     );
