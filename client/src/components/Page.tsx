@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
 import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { PageHeaderTypography } from "./Typography";
+import Typography from "@material-ui/core/Typography";
 
 const pageHeaderStyle = (theme: Theme) =>
   createStyles({
@@ -33,7 +33,7 @@ const pageHeaderGutterStyle = (theme: Theme) =>
   });
 
 const PageHeaderGutter = withStyles(pageHeaderGutterStyle)((props: any) => (
-  <Grid item sm={1} {...props}>
+  <Grid item {...props}>
     {props.children}
   </Grid>
 ));
@@ -45,20 +45,31 @@ const PageBodyGutter = withStyles(pageBodyGutterStyle)((props: any) => (
 ));
 
 const PageHeader = withStyles(pageHeaderStyle)((props: any) => (
-  <Grid container direction="row" {...props}>
+  <Grid
+    container
+    direction="row"
+    justify="flex-start"
+    alignItems="flex-end"
+    {...props}
+  >
     <PageHeaderGutter sm={1} />
-    <Grid
+    <Grid item xs={10} sm={10} style={{ height: "40%" }}>
+      {/* <Grid
       item
       container
       xs={12}
       sm={10}
       direction="column"
-      alignItems="flex-start"
       justify="flex-end"
+      alignItems="flex-start"
     >
-      <PageHeaderTypography>{props.header}</PageHeaderTypography>
-      <Grid item xs={2} />
+      <Grid item style={{ height: "100%" }} /> */}
+      <Typography variant="h1" style={{ paddingBottom: "10px" }} {...props}>
+        {props.header}
+      </Typography>
     </Grid>
+    {/* <Grid item style={{ height: "100%" }} />
+    </Grid> */}
     <PageHeaderGutter sm={1} />
   </Grid>
 ));
