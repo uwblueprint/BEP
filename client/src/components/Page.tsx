@@ -54,22 +54,10 @@ const PageHeader = withStyles(pageHeaderStyle)((props: any) => (
   >
     <PageHeaderGutter sm={1} />
     <Grid item xs={10} sm={10} style={{ height: "40%" }}>
-      {/* <Grid
-      item
-      container
-      xs={12}
-      sm={10}
-      direction="column"
-      justify="flex-end"
-      alignItems="flex-start"
-    >
-      <Grid item style={{ height: "100%" }} /> */}
       <Typography variant="h1" style={{ paddingBottom: "10px" }} {...props}>
         {props.header}
       </Typography>
     </Grid>
-    {/* <Grid item style={{ height: "100%" }} />
-    </Grid> */}
     <PageHeaderGutter sm={1} />
   </Grid>
 ));
