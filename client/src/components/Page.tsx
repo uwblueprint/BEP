@@ -58,6 +58,8 @@ const PageHeader = withStyles(pageHeaderStyle)((props: any) => (
         {props.header}
       </Typography>
     </Grid>
+    {/* <Grid item style={{ height: "100%" }} />
+    </Grid> */}
     <PageHeaderGutter sm={1} />
   </Grid>
 ));

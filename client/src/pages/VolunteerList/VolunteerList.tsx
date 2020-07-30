@@ -414,7 +414,7 @@ class VolunteerList extends React.Component<
       <div style={{ height: "100vh" }}>
         <Grid container direction="row" style={{ height: "100%" }}>
           <Grid item container xs={12} direction="row">
-            <PageHeader header="Browse Volunteers"/>
+            <PageHeader header="Browse Volunteers" />
 
             <PageBody>
               <Grid container spacing={2} direction="column">
@@ -515,9 +515,8 @@ class VolunteerList extends React.Component<
                           if (isSelected) {
                             filtersSelected = true;
                             filterButtons.push(
-                              <Grid item>
+                              <Grid item key={filterName}>
                                 <DarkContainedButton
-                                  key={filterName}
                                   onClick={this.createHandleFilterButtonClick(
                                     picklistName
                                   )}
@@ -536,7 +535,14 @@ class VolunteerList extends React.Component<
                     })}
                   </Grid>
                   {filtersSelected && (
-                    <Grid item xs={2}>
+                    <Grid
+                      item
+                      container
+                      xs={2}
+                      alignItems="flex-start"
+                      justify="flex-end"
+                      direction="row"
+                    >
                       <TextButton onClick={this.clearFilters}>
                         Clear All
                       </TextButton>
