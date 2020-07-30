@@ -1,8 +1,22 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
+import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 
-const MaterialTextField: React.FunctionComponent<any> = (props) => (
-  <TextField {...props}>{props.children}</TextField>
-);
+const outlinedTextFieldStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      backgroundColor: theme.palette.primary.light,
+    },
+  });
 
-export default MaterialTextField;
+const OutlinedTextField = withStyles(outlinedTextFieldStyle)((props: any) => (
+  <TextField
+    inputProps={{ style: { height: "40px", padding: "0" } }}
+    variant="outlined"
+    {...props}
+  >
+    {props.children}
+  </TextField>
+));
+
+export { OutlinedTextField, TextField };
