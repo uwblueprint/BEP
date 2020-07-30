@@ -1,10 +1,11 @@
-import Button from './Button';
-import Link from './Link';
-import TextField from './TextField';
-import Select from './Select';
+import { ContainedButton, DarkContainedButton, TextButton, Button } from "./Button";
+import Link from "./Link";
+import { OutlinedTextField, TextField } from "./TextField";
+import { ContainedSelect, Select } from "./Select";
+import { PageHeader, PageBody, PageBodyGutter, PageHeaderGutter } from "./Page";
 
-
-export { Button };
+export { ContainedButton, DarkContainedButton, TextButton, Button };
 export { Link };
-export { TextField };
-export { Select };
+export { OutlinedTextField, TextField };
+export { ContainedSelect, Select };
+export { PageHeader, PageBody, PageBodyGutter, PageHeaderGutter };

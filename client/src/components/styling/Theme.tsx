@@ -11,11 +11,12 @@ const theme = createMuiTheme({
     },
     secondary: {
       // blues
-      light: "#E5F5FF",
+      light: "#D9F0FF",
       main: "#0A79BF",
+      dark: "#07598C",
     },
     background: {
-      default: "#E5E5E5",
+      default: "#F7FAFC",
     },
     warning: {
       // reds
@@ -23,10 +24,19 @@ const theme = createMuiTheme({
     },
     text: {
       primary: "#000000", // Black
-      secondary: fade("#000000", 0.5),
-      
+      secondary: "#043859", // Dark blue
     },
   },
+  typography: {
+    h1: {
+      fontFamily: "Avenir",
+      fontStyle: "normal",
+      // fontWeight: "800",
+      fontSize: "36px",
+      lineHeight: "49px",
+    }
+  }
+
 });
 
 export default theme;
