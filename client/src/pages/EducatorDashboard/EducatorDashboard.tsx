@@ -5,15 +5,12 @@ import { fetchEventsService } from "../../data/services/eventsServices"
 import { changeFilter } from "../../data/actions/eventsActions"
 import { getFilteredEvents } from "../../data/selectors/eventsSelector";
 import Typography from "@material-ui/core/Typography";
-import Button from "../../components/Button"
 import EventCard from "./EventCard"
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 
@@ -76,16 +73,10 @@ function a11yProps(index: any) {
     };
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-    },
-}));
-
 const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter }: Props) => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
+    const [retrievedData, setRetrievedData] = useState(false);
     const [page, setPage] = useState<number>(0);
     const [prevY, setPrevY] = useState<number>(0);
     const [lastEventListLength, setLastEventListLength] = useState<number>(0);
@@ -93,16 +84,16 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
     const [offset, setOffset] = useState<number>(10);
     const [loadingRef, setLoadingRef] = useState(React.createRef());
     const [observer, setObserver] = useState<IntersectionObserver | null>(null);
-    const [value, setValue] = useState(0)
+    const [tabValue, setTabValue] = useState(0)
 
     useEffect(() => {
-        console.log(startDate)
         fetchEvents(5, 0)
+        setRetrievedData(true)
 
     }, [startDate]);
 
-    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setValue(newValue);
+    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setTabValue(newValue);
     };
 
 
@@ -147,17 +138,18 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
 
     return (
         <React.Fragment>
-            <Typography variant="h3" component="h2">Your Opportunities</Typography>
+            {console.log(retrievedData)}
+            <Typography variant="h3">Your Opportunities</Typography>
 
             <div>
                 <AppBar position="static">
-                    <Tabs value={value} indicatorColor="secondary" onChange={handleChange} aria-label="simple tabs example">
+                    <Tabs value={tabValue} indicatorColor="secondary" onChange={handleTabChange} aria-label="simple tabs example">
 
                         <Tab onClick={() => changeFilter("ACTIVE")} label="CURRENT" {...a11yProps(0)} />
                         <Tab onClick={() => changeFilter("PAST")} label="PAST" {...a11yProps(1)} />
                     </Tabs>
                 </AppBar>
-                <TabPanel value={value} index={1}>
+                <TabPanel value={tabValue} index={1}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             placeholder="Start date"
@@ -179,15 +171,18 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
             </div>
             <div>
 
-                {events.length == 0
-                    ? <div>
+                {events.length !== 0 && retrievedData
+                    ? events
+                        .filter((event, index) =>
+                            (new Date(event.startDate) > new Date('2019-07-01T21:11:54')) //test
+                        )
+                        .map((event, index) =>
+                            <EventCard key={index} event={event} />
+                        ) :
+                    <div>
                         <p>You do not currently have any listed opportunities.
                             Click 'Create Opportunity' to get started!</p>
                     </div>
-                    : events
-                        .map((event, index) => (
-                            <EventCard key={index} event={event} />
-                        ))
                 }
 
             </div>
@@ -197,59 +192,3 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
 }
 
 export default connect<StateProps, DispatchProps, EventProps>(mapStateToProps, mapDispatchToProps)(EducatorDashboard);
-
-        // var displayEvents = events.map((event, index) => (
-        //     <EventCard key={index} event={event} />
-// import * as React from 'react';
-
-// import DisplayEvents from "./DisplayEvents"
-// import Typography from "@material-ui/core/Typography";
-// import Button from "../../components/Button"
-
-
-// interface IState {
-//     isEventActive?: boolean;
-// }
-
-
-// class EducatorDashboard extends React.Component<{}, IState>{
-//     constructor(props: any) {
-//         super(props);
-//         this.state = {
-//             isEventActive: true
-//         }
-//     }
-
-
-//     fetchActiveEvents = () => {
-//         this.setState({
-//             isEventActive: true
-//         })
-//     }
-
-//     fetchPastEvents = () => {
-//         this.setState({
-//             isEventActive: false
-//         })
-//     }
-
-//     render() {
-//         console.log("rendering Educator Dashboard")
-
-
-//         return (
-//             <React.Fragment>
-//                 <Typography variant="h3" component="h2">Your Opportunities</Typography>
-//                 <div>
-//                     <Button onClick={this.fetchActiveEvents}>Current</Button>
-//                     <Button onClick={this.fetchPastEvents}>Past</Button>
-//                 </div>
-//                 <div>
-//                     <DisplayEvents active={this.state.isEventActive} />
-//                 </div>
-//             </React.Fragment>
-//         );
-//     }
-// }
-
-// export default EducatorDashboard;

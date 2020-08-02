@@ -10,4 +10,5 @@ export interface Event {
     isActive: boolean;
     startDate: Date;
     endDate: Date;
+    hoursCommitment: number
 }
