@@ -18,23 +18,6 @@ export const eventRouter = Express.Router();
 
 // GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
 
-eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
-    // const id: number = parseInt(req.params.id, 10);
-    const name: string = req.query.name as string;
-
-    try {
-        if (name !== undefined) {
-            const fetchedEvent = await EventService.getEventInfo(name);
-            res.status(200).send(fetchedEvent);
-        } else {
-            throw Error(`Invalid query parameters. Put eventName.`);
-        }
-    } catch (e) {
-        res.status(500).send({ msg: e.message });
-    }
-});
-
-
 eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
     const limit: number = req.query.limit as any;
     const offset: number = req.query.offset as any;
@@ -44,9 +27,12 @@ eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
     } catch (e) {
         res.status(404).send(e.message);
     }
+});
 
 eventRouter.get('/applications', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.query.name as string;
+
+    console.log("Hit applications endpoint")
 
     try {
         if (name !== undefined) {
@@ -65,6 +51,8 @@ eventRouter.get('/applications', async (req: Express.Request, res: Express.Respo
 eventRouter.get('/invitations', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.query.name as string;
 
+    console.log("Hit invitations endpoint")
+
     try {
         if (name !== undefined) {
             const invitations = await EventService.getInvitations(name);
@@ -78,6 +66,25 @@ eventRouter.get('/invitations', async (req: Express.Request, res: Express.Respon
         res.status(500).send({ msg: e.message });
     }
 });
+
+eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
+    // const id: number = parseInt(req.params.id, 10);
+    //const name: string = req.query.name as string;
+
+    const name: string = req.params.name as string
+
+    try {
+        if (name !== undefined) {
+            const fetchedEvent = await EventService.getEventInfo(name);
+            res.status(200).send(fetchedEvent);
+        } else {
+            throw Error(`Invalid query parameters. Put eventName.`);
+        }
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
+    }
+});
+
 
 // POST requests/
 

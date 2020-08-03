@@ -11,7 +11,7 @@ const eventApplicantApi: string = 'EventApplicants__r';
 const eventInvitationApi: string = 'EventInvitations__r';
 const eventFields: string =
     'Name, isActive__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
-    'startDate__c, endDate__c, startTime__c, endTime__c, postingExpiry__c, applicationsReceived__c, ' +
+    'startDate__c, endDate__c, postingExpiry__c, applicationsReceived__c, ' +
     'invitationsSent__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, schoolName__c, schoolAddress__c, ' +
     'schoolTransportation__c, contactEmail__c, contactName__c, contactPhone__c, contactPosition__c';
 
@@ -184,7 +184,7 @@ export const getApplications = async (eventName: string): Promise<EventApplicant
 
 export const getInvitations = async (eventName: string): Promise<EventInvitationInterface> => {
     let invitations: EventInvitationInterface
-    console.log(eventName)
+    console.log("This is the event Name:" , eventName)
 
     await conn.query(
         `SELECT (SELECT ${eventInvitationFields} FROM ${eventInvitationApi}) FROM ${eventApi} WHERE Name='${eventName}'`,

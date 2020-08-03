@@ -11,7 +11,7 @@ import ApplicantCard from './ApplicantCard'
 import { getApplications, getInvitations } from '../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
-import Button from '../Button'
+import Button from '../../components/Button'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,13 +56,19 @@ const useStyles = makeStyles((theme: Theme) => ({
 const EventPage = (props: any) => {
   console.log(props)
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState([]);
   const [invitations, setInvitations] = React.useState([])
-
   const [publicEvent, setPublicEvent] = React.useState({
     checked: true
   });
+
+  //Date checking
+  // let eventStartDate = props.event.startDate
+  let eventStartDate = new Date('2020-07-01T21:11:54') //Date for testing
+  let today: Date = new Date()
+
+  let pastEvent: boolean = today > eventStartDate ? true : false
 
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
@@ -115,6 +121,7 @@ const EventPage = (props: any) => {
       {/* Hide tabs if the event is in the past */}
       <Typography variant="h2">props.event.title</Typography>
     <div className={classes.root}>
+      {props.date}
       <AppBar position="static" color="transparent" elevation={0}>
         <Tabs value={value} onChange={handleChange} aria-label="Simple Tabs">
           <Tab label = "Event Details" {...a11yProps(0)} />

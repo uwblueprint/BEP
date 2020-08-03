@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link'
 import Card from '@material-ui/core/Card'
 import Dialog from '@material-ui/core/Dialog'
-import Button from '../Button'
+import Button from '../../components/Button'
 import { findAllByTestId } from '@testing-library/react';
 
 export interface DialogProps {
@@ -27,71 +27,51 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ApplicantCard = (props: any) => {
+const InviteCard = (props: any) => {
     console.log(props)
     const classes = useStyles()
-    const [acceptOpen, setAcceptOpen] = React.useState(false);
-    const [denyOpen, setDenyOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
 
-    const handleClickOpenAccept = () => {
-        setAcceptOpen(true)
+    const handleClickOpen = () => {
+        setOpen(true)
     }
 
-    const handleClickCloseAccept = () => {
-        setAcceptOpen(false)
+    const handleClickClose = () => {
+        setOpen(false)
     }
     
-    const handleClickOpenDeny = () => {
-        setDenyOpen(true)
-    }
-
-    const handleClickCloseDeny = () => {
-        setDenyOpen(false)
-    }
+    
 
     return (
     <Card className={classes.card}>
     <Grid container spacing={2}>
         <Grid item xs={9}>
             <Typography variant="h5" component="h2">
-                {props.info.applicant.applicantName}      
+                {props.info.invite.invitationName}      
             </Typography>
             <Typography variant="subtitle1" component="h1">
-                {props.info.applicant.job} -- {props.info.applicant.personalPronouns}
+                {props.info.invite.job} -- {props.info.invite.personalPronouns}
             </Typography>
         </Grid>
         <Grid item xs={3}>
-            <Grid container spacing={10}>
-            <Grid item xs={1}>
-                <Button onClick={handleClickOpenDeny}>
-                    Decline
-                </Button>
-                <Dialog aria-labelledby="simple-dialog-title" open={denyOpen} >
-                    <Typography>Are you sure you want to decline {props.info.applicant.applicantName} for this event?</Typography>
+            <Button onClick={handleClickOpen}>
+            <Typography variant="body2" component="h5" className={classes.retract}>
+                    Retract Invitations
+            </Typography>
+            </Button> 
+            <Dialog aria-labelledby="simple-dialog-title" open={open} >
+                    <Typography>Are you sure you want to retract your invitation to {props.info.invite.invitationName}</Typography>
                     <Typography>You cannot change your decision after this</Typography>
-                    <Button onClick={handleClickCloseAccept}>Accept</Button>
-                    <Button onClick={handleClickCloseDeny}>Decline</Button>
+                    <Button onClick={handleClickClose}>Accept</Button>
+                    <Button onClick={handleClickClose}>Decline</Button>
                 </Dialog>
-            </Grid>
-             <Grid item xs={5}>
-                <Button onClick={handleClickOpenAccept}>
-                    Accept
-                </Button>
-                <Dialog aria-labelledby="simple-dialog-title" open={acceptOpen}>
-                    <Typography>Are you sure you want to accept {props.info.applicant.applicantName} for this event?</Typography>
-                    <Typography>You cannot change your decision after this</Typography>
-                    <Button onClick={handleClickCloseAccept}>Accept</Button>
-                    <Button onClick={handleClickCloseDeny}>Decline</Button>
-                </Dialog>
-             </Grid>
-             </Grid>
         </Grid>
         <Grid item xs={6}>
             <Typography variant="body1" component="h2">
                 SECTORS
             </Typography>
             <Typography variant="body1" component="h2">
-                {props.info.applicant.sectors}
+                {props.info.invite.sectors}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -99,7 +79,7 @@ const ApplicantCard = (props: any) => {
                 AREAS OF EXPERTISE
             </Typography>
             <Typography variant="body1" component="h2">
-                {props.info.applicant.areasOfExpertise}
+                {props.info.invite.areasOfExpertise}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -107,7 +87,7 @@ const ApplicantCard = (props: any) => {
                 LINKEDIN URL
             </Typography>
             <Typography variant="body1" component="h2">
-                {props.info.applicant.linkedinUrl}
+                {props.info.invite.linkedinUrl}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -115,7 +95,7 @@ const ApplicantCard = (props: any) => {
                 EMPLOYMENT STATUS
             </Typography>
             <Typography variant="body1" component="h2">
-                {props.info.applicant.employmentStatus}
+                {props.info.invite.employmentStatus}
             </Typography>
         </Grid>
     </Grid>
@@ -123,4 +103,4 @@ const ApplicantCard = (props: any) => {
     )
 }
 
-export default ApplicantCard
+export default InviteCard
