@@ -11,8 +11,9 @@ import ApplicantCard from './ApplicantCard'
 import { getApplications, getInvitations } from '../../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
-import Button from '../../../components/Button'
+import { Button } from '../../../components/Button'
 import EventSection from './EventSection'
+import { ContainedButton, PageHeaderGutter, PageHeader, PageBody } from '../../../components/index';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -121,21 +122,24 @@ const EventPage = (props: any) => {
     <React.Fragment>
     {pastEvent ? 
         <React.Fragment>
-          <Grid container spacing={1}>
-              <Grid item xs={10}>
-                <Typography variant="h2">props.event.title</Typography>
-              </Grid>
-              <Grid item xs={2}>
+                <PageHeader header="props.event.title" />
                 <Button>
                   Duplicate Event
                 </Button>
-              </Grid>
+          <div style={{ height: "100vh" }}>
+          <Grid container style={{ height:"100%" }}>
+            <PageBody>
+              <EventSection /> 
+            </PageBody>
           </Grid>
-          <EventSection />  
+          </div>
         </React.Fragment> :
     <React.Fragment>
-    <Typography variant="h2">props.event.title</Typography>
-    <div className={classes.root}>
+    <div style={{ height: "100vh" }}>
+      <Grid container style={{ height:"100%" }}>
+        <PageHeader header="props.event.title" />
+        <PageBody>
+          <div className={classes.root}>
       {props.date}
       <AppBar position="static" color="transparent" elevation={0}>
         <Tabs value={value} onChange={handleChange} aria-label="Simple Tabs">
@@ -188,6 +192,9 @@ const EventPage = (props: any) => {
         </ Typography> 
       : displayInvitations}
       </TabPanel>
+    </div>
+        </PageBody>
+      </Grid>
     </div>
     </React.Fragment>}
     </React.Fragment>

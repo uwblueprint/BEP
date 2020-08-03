@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link'
 import Card from '@material-ui/core/Card'
 import Dialog from '@material-ui/core/Dialog'
-import Button from '../../../components/Button'
+import { Button } from '../../../components/Button'
 import { findAllByTestId } from '@testing-library/react';
 
 export interface DialogProps {

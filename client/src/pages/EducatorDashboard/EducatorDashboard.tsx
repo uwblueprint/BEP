@@ -107,7 +107,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
             );
 
             //Observe the bottom div of the page
-            observer.observe(loadingRef.current);
+            //observer.observe(loadingRef.current);
             setObserver(observer);
         }
 
@@ -197,7 +197,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                             )}
                 </div>
 
-                <div ref={loadingRef} />
+                {/* <div ref={loadingRef} /> */}
 
             </PageBody>
         </React.Fragment >
