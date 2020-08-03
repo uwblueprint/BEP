@@ -8,10 +8,11 @@ import helmet from "helmet";
 import express from 'express';
 import session from 'express-session';
 import jsforce from 'jsforce';
-import { userRouter } from './users/UserRouter';
-import { userPicklistRouter } from './users/UserPicklistRouter';
-import { eventRouter } from './users/EventRouter';
-import { inviteRouter } from './users/VolunteerInviteRouter';
+import { userRouter } from './api/users/UserRouter';
+import { employerRouter } from './api/employers/EmployerRouter';
+import { userPicklistRouter } from './api/users/picklists/UserPicklistRouter';
+import { eventRouter } from './api/users/EventRouter';
+import { inviteRouter } from './api/users/VolunteerInviteRouter';
 import { requestsRouter } from './requests/requests.router';
 import {verifyWebToken} from './middleware/jwt'
 import { authRouter } from './auth/authRouter'
@@ -83,6 +84,7 @@ class BackendServer extends Server {
         this.app.use("/api/auth", authRouter)
         this.app.use("/api/requests", requestsRouter);
         this.app.use("/api/users/picklists", userPicklistRouter);
+        this.app.use("/api/employers", employerRouter);
 
         //If in development, do not mount JWT auth middleware to users route
         if (process.env.NODE_ENV == 'production') {

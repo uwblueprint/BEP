@@ -1,4 +1,4 @@
-import { conn } from '../server';
+import { conn } from '../../../server';
 
 const siteUser: string = 'SiteUser__c';
 

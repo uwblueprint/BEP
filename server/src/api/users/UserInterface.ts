@@ -33,7 +33,7 @@ export const isUser = (obj: any): boolean => {
         typeof obj.followedPrograms.every(item => typeof item === 'string') &&
         typeof obj.isSubscribed === 'boolean' &&
         typeof obj.password === 'string' &&
-        typeof obj.phoneNumber === 'number' &&
+        typeof obj.phoneNumber === 'string' &&
         typeof obj.preferredPronouns === 'string' &&
         typeof obj.userType === 'number'
     );
