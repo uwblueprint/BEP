@@ -7,8 +7,10 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import { TableRow } from '@material-ui/core';
-import ContactCard from './ApplicantCard'
-import { getApplications } from '../../utils/EventsApiUtils'
+import ApplicantCard from './ApplicantCard'
+import { getApplications, getInvitations } from '../../utils/EventsApiUtils'
+import InviteCard from './InviteCard';
+import Switch from '@material-ui/core/Switch'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,22 +59,46 @@ const EventPage = (props: any) => {
   const [applications, setApplications] = React.useState([]);
   const [invitations, setInvitations] = React.useState([])
 
+  const [publicEvent, setPublicEvent] = React.useState({
+    checked: true
+  });
+
+  const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
+  };
+
 
   var displayApplications = applications.map((applicant) => {
     var applicationProps = {
         applicant
     };
-    return <ContactCard info={applicationProps} />
+    return <ApplicantCard info={applicationProps} />
 });
+
+  var displayInvitations = invitations.map((invite) => {
+    var invitationProps = {
+      invite
+    }
+    return <InviteCard info={invitationProps} />
+  });
 
   useEffect(() => {
     const fetchdata = async () => {
       const result = await getApplications("Event test 5");
-      console.log("This is the result of useEffect", result.data.applications)
+      console.log("This is the Event Card info", result.data.applications)
       setApplications(result.data.applications)
     }
     fetchdata();
 
+  }, []);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const result = await getInvitations("Event test 5");
+      console.log("This is the Invitation card info", result.data.invitations)
+      setInvitations(result.data.invitations)
+    }
+    fetchdata()
   }, []);
 
 
@@ -81,20 +107,42 @@ const EventPage = (props: any) => {
   };
 
   const applicationsLabel = `Applications  ${applications.length}`
+  const invitationsLabel = `Invitations  ${invitations.length}`
 
   return (
     <React.Fragment>
+      {/* Hide tabs if the event is in the past */}
       <Typography variant="h2">props.event.title</Typography>
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" color="transparent" elevation={0}>
         <Tabs value={value} onChange={handleChange} aria-label="Simple Tabs">
           <Tab label = "Event Details" {...a11yProps(0)} />
           <Tab label={applicationsLabel} {...a11yProps(1)} />
-          <Tab label="Invitations" {...a11yProps(2)} />
+          <Tab label={invitationsLabel} {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
         <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={1}>
+                <Switch
+                  checked={publicEvent.checked}
+                  onChange={(event) => handleSwitchPublic(event)}
+                  name="checked"
+                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+              />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography>
+                Make posting visible to the public: {publicEvent.checked ? "ON" : "OFF"}
+              </Typography>
+              <Typography>
+                Enabling this feature will allow volunteers to discover your posting on the oppurtunities page.
+              </Typography>
+            <Grid item xs={3}>
+            </Grid>
+            </Grid>
+          </Grid>
           <Typography>Event Details</Typography>
           <Grid container spacing={2}>
             <Grid item xs={6}>
@@ -235,7 +283,11 @@ const EventPage = (props: any) => {
       : displayApplications}
       </TabPanel>
       <TabPanel value={value} index={2}>
-      {/* <ContactCard props={invitationProps}  /> */}
+      {applications.length == 0 ? 
+        <Typography>
+          There are currently no invitations for this oppurtunity. {'\n'}
+        </ Typography> 
+      : displayInvitations}
       </TabPanel>
     </div>
     </React.Fragment>

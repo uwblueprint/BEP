@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ContactCard = (props: any) => {
+const InviteCard = (props: any) => {
     console.log(props)
     const classes = useStyles()
     const [open, setOpen] = React.useState(false);
@@ -38,30 +38,40 @@ const ContactCard = (props: any) => {
 
     const handleClickClose = () => {
         setOpen(false)
-    }   
+    }
+    
+    
 
     return (
     <Card className={classes.card}>
     <Grid container spacing={2}>
         <Grid item xs={9}>
             <Typography variant="h5" component="h2">
-                {props.info.applicant.applicantName}      
+                {props.info.invite.invitationName}      
             </Typography>
             <Typography variant="subtitle1" component="h1">
-                {props.info.applicant.job} -- {props.info.applicant.personalPronouns}
+                {props.info.invite.job} -- {props.info.invite.personalPronouns}
             </Typography>
         </Grid>
         <Grid item xs={3}>
-            <Typography variant="body1" component="h2" className={classes.retract}>
+            <Button onClick={handleClickOpen}>
+            <Typography variant="body2" component="h5" className={classes.retract}>
                     Retract Invitations
-            </Typography> 
+            </Typography>
+            </Button> 
+            <Dialog aria-labelledby="simple-dialog-title" open={open} >
+                    <Typography>Are you sure you want to retract your invitation to {props.info.invite.invitationName}</Typography>
+                    <Typography>You cannot change your decision after this</Typography>
+                    <Button onClick={handleClickClose}>Accept</Button>
+                    <Button onClick={handleClickClose}>Decline</Button>
+                </Dialog>
         </Grid>
         <Grid item xs={6}>
             <Typography variant="body1" component="h2">
                 SECTORS
             </Typography>
             <Typography variant="body1" component="h2">
-                {props.info.applicant.sectors}
+                {props.info.invite.sectors}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -69,7 +79,7 @@ const ContactCard = (props: any) => {
                 AREAS OF EXPERTISE
             </Typography>
             <Typography variant="body1" component="h2">
-                {props.info.applicant.areasOfExpertise}
+                {props.info.invite.areasOfExpertise}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -77,7 +87,7 @@ const ContactCard = (props: any) => {
                 LINKEDIN URL
             </Typography>
             <Typography variant="body1" component="h2">
-                {props.info.applicant.linkedinUrl}
+                {props.info.invite.linkedinUrl}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -85,7 +95,7 @@ const ContactCard = (props: any) => {
                 EMPLOYMENT STATUS
             </Typography>
             <Typography variant="body1" component="h2">
-                {props.info.applicant.employmentStatus}
+                {props.info.invite.employmentStatus}
             </Typography>
         </Grid>
     </Grid>
@@ -93,4 +103,4 @@ const ContactCard = (props: any) => {
     )
 }
 
-export default ContactCard
+export default InviteCard

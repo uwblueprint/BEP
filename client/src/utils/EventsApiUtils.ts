@@ -19,10 +19,19 @@ const getApplications = async (eventName: string) => {
     return await axios.request(config)
 }
 
+const getInvitations = async (eventName: string) => {
+    const config: AxiosRequestConfig = {
+        url: `${baseURL}api/events/invitations/?name=${eventName}`,
+        method: "get"
+    };
+
+    return await axios.request(config)
+}
+
 const getSchoolInfo = () => {
     const config: AxiosRequestConfig = {
         url: `${baseURL}api/events/`
     }
 }
 
-export { get, getApplications };
+export { get, getApplications, getInvitations };

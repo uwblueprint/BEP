@@ -30,15 +30,24 @@ const useStyles = makeStyles((theme) => ({
 const ApplicantCard = (props: any) => {
     console.log(props)
     const classes = useStyles()
-    const [open, setOpen] = React.useState(false);
+    const [acceptOpen, setAcceptOpen] = React.useState(false);
+    const [denyOpen, setDenyOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true)
+    const handleClickOpenAccept = () => {
+        setAcceptOpen(true)
     }
 
-    const handleClickClose = () => {
-        setOpen(false)
-    }   
+    const handleClickCloseAccept = () => {
+        setAcceptOpen(false)
+    }
+    
+    const handleClickOpenDeny = () => {
+        setDenyOpen(true)
+    }
+
+    const handleClickCloseDeny = () => {
+        setDenyOpen(false)
+    }
 
     return (
     <Card className={classes.card}>
@@ -54,18 +63,25 @@ const ApplicantCard = (props: any) => {
         <Grid item xs={3}>
             <Grid container spacing={10}>
             <Grid item xs={1}>
-                <Button >
+                <Button onClick={handleClickOpenDeny}>
                     Decline
                 </Button>
+                <Dialog aria-labelledby="simple-dialog-title" open={denyOpen} >
+                    <Typography>Are you sure you want to decline {props.info.applicant.applicantName} for this event?</Typography>
+                    <Typography>You cannot change your decision after this</Typography>
+                    <Button onClick={handleClickCloseAccept}>Accept</Button>
+                    <Button onClick={handleClickCloseDeny}>Decline</Button>
+                </Dialog>
             </Grid>
              <Grid item xs={5}>
-                <Button onClick={handleClickOpen}>
+                <Button onClick={handleClickOpenAccept}>
                     Accept
                 </Button>
-                <Dialog aria-labelledby="simple-dialog-title" open={open}>
+                <Dialog aria-labelledby="simple-dialog-title" open={acceptOpen}>
                     <Typography>Are you sure you want to accept {props.info.applicant.applicantName} for this event?</Typography>
-                    <Button onClick={handleClickClose}>Accept</Button>
-                    <Button onClick={handleClickClose}>Decline</Button>
+                    <Typography>You cannot change your decision after this</Typography>
+                    <Button onClick={handleClickCloseAccept}>Accept</Button>
+                    <Button onClick={handleClickCloseDeny}>Decline</Button>
                 </Dialog>
              </Grid>
              </Grid>
