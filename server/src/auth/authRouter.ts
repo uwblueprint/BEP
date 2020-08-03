@@ -1,8 +1,8 @@
 import * as jwt from "jsonwebtoken";
 import * as Express from "express";
-import * as UserService from "./../users/UserService";
+import * as UserService from "./../api/users/UserService";
 import * as bcrypt from "bcrypt";
-import UserInterface, { UserType } from "src/users/UserInterface";
+import UserInterface, { UserType } from "./../api/users/UserInterface";
 
 const BCRYPT_ROUNDS = 4
 

@@ -3,7 +3,7 @@
  */
 
 import Application from './VolunteerAppInterface';
-import { conn } from '../server';
+import { conn } from '../../server';
 // import * as express from 'express';
 
 

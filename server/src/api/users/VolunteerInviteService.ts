@@ -1,5 +1,5 @@
 import Invite from './VolunteerInviteInterface';
-import { conn } from '../server';
+import { conn } from '../../server';
 
 const inviteApi: string = "invite__c";
 
