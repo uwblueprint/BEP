@@ -8,10 +8,10 @@ import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import { TableRow } from '@material-ui/core';
 import ApplicantCard from './ApplicantCard'
-import { getApplications, getInvitations } from '../../utils/EventsApiUtils'
+import { getApplications, getInvitations } from '../../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
-import Button from '../../components/Button'
+import Button from '../../../components/Button'
 import EventSection from './EventSection'
 
 interface TabPanelProps {
