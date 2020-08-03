@@ -12,6 +12,7 @@ import { getApplications, getInvitations } from '../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
 import Button from '../../components/Button'
+import EventSection from './EventSection'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,16 +64,16 @@ const EventPage = (props: any) => {
     checked: true
   });
 
-  //Date checking
-  // let eventStartDate = props.event.startDate
-  let eventStartDate = new Date('2020-07-01T21:11:54') //Date for testing
-  let today: Date = new Date()
-
-  let pastEvent: boolean = today > eventStartDate ? true : false
-
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
   };
+
+  //Date checking
+  // let eventStartDate = props.event.startDate
+  let eventStartDate = new Date('2021-07-01T21:11:54') //Date for testing
+  let today: Date = new Date()
+
+  let pastEvent: boolean = today > eventStartDate ? true : false
 
 
   var displayApplications = applications.map((applicant) => {
@@ -118,8 +119,22 @@ const EventPage = (props: any) => {
 
   return (
     <React.Fragment>
-      {/* Hide tabs if the event is in the past */}
-      <Typography variant="h2">props.event.title</Typography>
+    {pastEvent ? 
+        <React.Fragment>
+          <Grid container spacing={1}>
+              <Grid item xs={10}>
+                <Typography variant="h2">props.event.title</Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Button>
+                  Duplicate Event
+                </Button>
+              </Grid>
+          </Grid>
+          <EventSection />  
+        </React.Fragment> :
+    <React.Fragment>
+    <Typography variant="h2">props.event.title</Typography>
     <div className={classes.root}>
       {props.date}
       <AppBar position="static" color="transparent" elevation={0}>
@@ -130,161 +145,32 @@ const EventPage = (props: any) => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <Box>
-          <Grid container spacing={2}>
-            <Grid item xs={1}>
-                <Switch
-                  checked={publicEvent.checked}
-                  onChange={(event) => handleSwitchPublic(event)}
-                  name="checked"
-                  inputProps={{ 'aria-label': 'secondary checkbox' }}
-              />
-            </Grid>
-            <Grid item xs={9}>
-              <Typography>
-                Make posting visible to the public: {publicEvent.checked ? "ON" : "OFF"}
-              </Typography>
-              <Typography>
-                Enabling this feature will allow volunteers to discover your posting on the oppurtunities page.
-              </Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <Button color="default">
-                Edit Opportunity
-              </Button>
-            </Grid>
-          </Grid>
-          <Typography>Event Details</Typography>
-          <Grid container spacing={2} >
-            <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
-                  ACTIVITY TYPE
-              </Typography>
-              <Typography>
-                  props.event.eventtype
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
-                  PREFERRED SECTOR
-              </Typography>
-              <Typography>
-                  props.event.prefferedsector
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                  DATE(S) OF EVENTS
-              </Typography>
-              <Typography>
-                  props.event.datesofevent
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                  GRADES OF PARTICIPATING STUDENTS
-              </Typography>
-              <Typography>
-                  props.event.grades
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
-                HOURS OF COMMITMENT
-              </Typography>
-              <Typography>
-                  props.event.hoursofcommitment
-              </Typography>
+        <React.Fragment>
+            <Grid container spacing={2}>
+              <Grid item xs={1}>
+                  <Switch
+                    checked={publicEvent.checked}
+                    onChange={(event) => handleSwitchPublic(event)}
+                    name="checked"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
               </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
-                NUMBER OF STUDENTS
-              </Typography>
-              <Typography>
-                  props.events.numberofstudents
-              </Typography>
+              <Grid item xs={9}>
+                <Typography>
+                  Make posting visible to the public: {publicEvent.checked ? "ON" : "OFF"}
+                </Typography>
+                <Typography>
+                  Enabling this feature will allow volunteers to discover your posting on the oppurtunities page.
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Button color="default">
+                  Edit Opportunity
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
-                NUMBER OF VOLUNTEERS NEEDED
-              </Typography>
-              <Typography>
-                props.events.numberofstudents
-              </Typography>
-            </Grid>
-            </Grid>
-        </Box>
-        <Box>
-          <Typography>School Details</Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                SCHOOL
-              </Typography>
-              <Typography>
-                props.events.numberofstudents
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                ADDRESS
-              </Typography>
-              <Typography>
-                props.events.numberofstudents
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                TRANSPORTATION
-              </Typography>
-              <Typography>
-                props.events.numberofstudents
-              </Typography>
-            </Grid>
-          </Grid>
-        </Box>
-        <Box>
-          <Typography>Contact Details</Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                Educator
-              </Typography>
-              <Typography>
-                props.events.numberofstudents
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                Position
-              </Typography>
-              <Typography>
-                props.events.numberofstudents
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                Phone Number
-              </Typography>
-              <Typography>
-                props.events.numberofstudents
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
-                Email Address
-              </Typography>
-              <Typography>
-                props.events.numberofstudents
-              </Typography>
-            </Grid>
-          </Grid>
-        </Box>
-        <Box>
-          <Typography>
-              Confirmed Volunteers
-          </Typography>
-        </Box>
+        <EventSection />
+      </React.Fragment>
       </TabPanel>
       <TabPanel value={value} index={1}>
         {applications.length == 0 ? 
@@ -303,6 +189,7 @@ const EventPage = (props: any) => {
       : displayInvitations}
       </TabPanel>
     </div>
+    </React.Fragment>}
     </React.Fragment>
   );
 }
