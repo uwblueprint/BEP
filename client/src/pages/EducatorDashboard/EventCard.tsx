@@ -29,12 +29,8 @@ const useStyles = makeStyles((theme) => ({
 
 function getDate(props: any) {
 
-    let startDate = new Date(props.event.startDate);
-    let endDate = new Date(props.event.endDate);
-
-    var eventStartDate = startDate.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
-    var eventEndDate = endDate.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
-
+    var eventStartDate = new Date(props.event.startDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
+    var eventEndDate = new Date(props.event.endDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
 
     if (eventStartDate === eventEndDate) {
         var date = eventStartDate
@@ -43,7 +39,6 @@ function getDate(props: any) {
     }
 
     return date
-
 }
 
 export default function EventCard(props: any) {
@@ -116,9 +111,9 @@ export default function EventCard(props: any) {
                 {props.event.isActive ?
                     <CardContent>
                         <Grid container spacing={0}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <Typography variant="subtitle2" className={classes.tag} >
-                                    Posting expires on {props.event.postingExpiry}
+                                    Posting expires on {(new Date(props.event.postingExpiry)).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')}
                                 </Typography>
                             </Grid>
                             <Grid item xs={3}>
@@ -133,7 +128,7 @@ export default function EventCard(props: any) {
                             </Grid>
                         </Grid>
                     </CardContent>
-                    : []
+                    : null
                 }
 
 

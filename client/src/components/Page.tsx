@@ -53,7 +53,7 @@ const PageHeader = withStyles(pageHeaderStyle)((props: any) => (
     {...props}
   >
     <PageHeaderGutter sm={1} />
-    <Grid item xs={10} sm={10} style={{ height: "40%" }}>
+    <Grid item xs={10} sm={10} >
       <Typography variant="h1" style={{ paddingBottom: "10px" }} {...props}>
         {props.header}
       </Typography>

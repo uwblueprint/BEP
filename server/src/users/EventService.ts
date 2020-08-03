@@ -9,7 +9,7 @@ import { conn } from '../server';
 const eventApi: string = 'Event__c';
 const eventFields: string =
     'Name, isActive__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
-    'startDate__c, endDate__c, startTime__c, endTime__c, postingExpiry__c, applicationsReceived__c, ' +
+    'startDate__c, endDate__c, postingExpiry__c, applicationsReceived__c, ' +
     'invitationsSent__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c';
 
 /**
@@ -32,8 +32,6 @@ const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
         startDate__c: event.startDate,
         endDate__c: event.endDate,
         postingExpiry__c: event.postingExpiry,
-        endTime__c: event.endTime,
-        startTime__c: event.startTime,
         applicationsReceived__c: event.applicationsReceived,
         invitationsSent__c: event.invitationsSent,
         numberOfStudents__c: event.numberOfStudents,
@@ -54,8 +52,6 @@ const salesforceEventToEventModel = (record: any): Event => {
         startDate: record.startDate__c,
         endDate: record.endDate__c,
         postingExpiry: record.postingExpiry__c,
-        endTime: record.endTime__c,
-        startTime: record.startTime__c,
         applicationsReceived: record.applicationsReceived__c,
         invitationsSent: record.invitationsSent__c,
         numberOfStudents: record.numberOfStudents__c,
@@ -102,59 +98,6 @@ export const getAllEvents = async (limit: number, offset: number): Promise<Event
 
     return allevents;
 };
-
-// export const getActiveEvents = async (limit: number, offset: number): Promise<Event> => {
-//     let activeEvents: Event;
-//     const isActiveEvent: boolean = true;
-//     await conn.query(
-//         `SELECT ${eventFields} FROM ${eventApi} WHERE isActive__c=${isActiveEvent} LIMIT ${limit} OFFSET ${offset}`,
-//         function (err, result) {
-//             if (err) {
-//                 return console.error(err);
-//             }
-//             activeEvents = result.records.map(record => salesforceEventToEventModel(record));
-//         }
-//     );
-
-//     return activeEvents;
-// };
-
-// let eventInfo: Event = conn
-//     .sobject(eventApi)
-//     .find({
-//     },
-//         eventFields
-//     )
-//     .execute(function (err: Error, record: any) {
-//         var events = new Array()
-//         if (err) {
-//             return console.error(err);
-//         }
-//         record.forEach(item => {
-//             let event: Event = {
-//                 eventName: item.Name,
-//                 isActive: false,
-//                 activityType: item.activityType__c,
-//                 gradeOfStudents: item.gradeOfStudents__c,
-//                 preferredSector: item.preferredSector__c,
-//                 startDate: item.startDate__c,
-//                 endDate: item.endDate__c,
-//                 postingExpiry: item.postingExpiry__c,
-//                 endTime: item.endTime__c,
-//                 startTime: item.startTime__c,
-//                 applicationsReceived: item.applicationsReceived__c,
-//                 invitationsSent: item.invitationsSent__c,
-//                 numberOfStudents: item.numberOfStudents__c,
-//                 numberOfVolunteers: item.numberOfVolunteers__c,
-//                 hoursCommitment: item.hoursCommitment__c
-//             }
-//             events.push(event)
-//         })
-//         return events
-//     });
-// console.log(eventInfo);
-// return eventInfo;
-// };
 
 export const update = async (id: string, event: Event): Promise<Event> => {
     let updatedEvent: Event = conn
