@@ -13,6 +13,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
+import { ContainedButton, PageHeaderGutter, PageHeader, PageBody } from '../../components/index';
+
 
 type EventProps = {
     eventsFilter: any
@@ -76,6 +78,7 @@ function a11yProps(index: any) {
 const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter }: Props) => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
+    const [isPastEvent, setIsPastEvent] = useState(false)
     const [retrievedData, setRetrievedData] = useState(false);
     const [page, setPage] = useState<number>(0);
     const [prevY, setPrevY] = useState<number>(0);
@@ -87,8 +90,28 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
     const [tabValue, setTabValue] = useState(0)
 
     useEffect(() => {
-        fetchEvents(5, 0)
+        fetchEvents(offset, page * offset)
         setRetrievedData(true)
+
+        if (loadingRef) {
+            // Options
+            var options = {
+                root: null, // Page as root
+                rootMargin: "0px",
+                threshold: 1.0,
+            };
+            // Create an observer
+            const observer = new IntersectionObserver(
+                handleObserver, //callback
+                options
+            );
+
+            //Observe the bottom div of the page
+            observer.observe(loadingRef.current);
+            setObserver(observer);
+        }
+
+
 
     }, [startDate]);
 
@@ -117,38 +140,24 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
         setPrevY(y);
     }
 
-    if (loadingRef) {
-        // Options
-        var options = {
-            root: null, // Page as root
-            rootMargin: "0px",
-            threshold: 1.0,
-        };
-        // Create an observer
-        const observer = new IntersectionObserver(
-            handleObserver, //callback
-            options
-        );
 
-        //Observe the bottom div of the page
-        // observer.observe(loadingRef.current);
-        // setObserver(observer);
-    }
 
 
     return (
         <React.Fragment>
-            {console.log(retrievedData)}
-            <Typography variant="h3">Your Opportunities</Typography>
-
+            <PageHeader header="Your Opportunities" />
             <div>
                 <AppBar position="static">
                     <Tabs value={tabValue} indicatorColor="secondary" onChange={handleTabChange} aria-label="simple tabs example">
 
-                        <Tab onClick={() => changeFilter("ACTIVE")} label="CURRENT" {...a11yProps(0)} />
-                        <Tab onClick={() => changeFilter("PAST")} label="PAST" {...a11yProps(1)} />
+                        <Tab onClick={() => changeFilter("ACTIVE") && setIsPastEvent(false)} label="CURRENT" {...a11yProps(0)} />
+                        <Tab onClick={() => changeFilter("PAST") && setIsPastEvent(true)} label="PAST" {...a11yProps(1)} />
                     </Tabs>
                 </AppBar>
+            </div>
+
+            <PageBody>
+
                 <TabPanel value={tabValue} index={1}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
@@ -159,6 +168,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                         />
                     </MuiPickersUtilsProvider>
 
+
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             placeholder="End date"
@@ -168,25 +178,28 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                         />
                     </MuiPickersUtilsProvider>
                 </TabPanel>
-            </div>
-            <div>
+                <div>
 
-                {events.length !== 0 && retrievedData
-                    ? events
-                        .filter((event, index) =>
-                            (new Date(event.startDate) > new Date('2019-07-01T21:11:54')) //test
-                        )
-                        .map((event, index) =>
-                            <EventCard key={index} event={event} />
-                        ) :
-                    <div>
-                        <p>You do not currently have any listed opportunities.
-                            Click 'Create Opportunity' to get started!</p>
-                    </div>
-                }
+                    {events.length == 0 && retrievedData ?
+                        <div>
+                            <p>You do not currently have any listed opportunities.
+                                Click 'Create Opportunity' to get started!</p>
+                        </div> :
 
-            </div>
+                        isPastEvent
+                            ? events.filter((event, index) =>
+                                new Date(event.startDate) > new Date(startDate || "0") &&
+                                new Date(event.endDate) < new Date(endDate || Date.now())
+                            ).map((event, index) =>
+                                <EventCard key={index} event={event} />
+                            ) : events.map((event, index) =>
+                                <EventCard key={index} event={event} />
+                            )}
+                </div>
 
+                <div ref={loadingRef} />
+
+            </PageBody>
         </React.Fragment >
     )
 }

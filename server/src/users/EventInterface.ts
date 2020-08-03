@@ -8,8 +8,6 @@ export default interface EventInterface {
     startDate: Date;
     endDate: Date;
     postingExpiry: Date;
-    startTime: Date;
-    endTime: Date;
     applicationsReceived: number;
     invitationsSent: number;
     numberOfStudents: number;
