@@ -51,7 +51,26 @@ eventRouter.get('/applications', async (req: Express.Request, res: Express.Respo
     try {
         if (name !== undefined) {
             const applications = await EventService.getApplications(name);
-            res.status(200).send(applications);
+            res.status(200).json({
+                    applications
+                });
+        } else {
+            throw Error(`Invalid query parameters. Please set "name" parameter`);
+        }
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
+    }
+});
+
+eventRouter.get('/invitations', async (req: Express.Request, res: Express.Response) => {
+    const name: string = req.query.name as string;
+
+    try {
+        if (name !== undefined) {
+            const invitations = await EventService.getInvitations(name);
+            res.status(200).json({
+                    invitations
+                });
         } else {
             throw Error(`Invalid query parameters. Please set "name" parameter`);
         }

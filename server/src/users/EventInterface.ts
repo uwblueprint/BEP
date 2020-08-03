@@ -31,3 +31,13 @@ export interface EventApplicantInterface {
     areasOfExpertise: string;
     employmentStatus: string;
 }
+
+export interface EventInvitationInterface {
+    invitationName: string;
+    personalPronouns: string;
+    job: string;
+    sectors: string;
+    linkedinUrl: string;
+    areasOfExpertise: string;
+    employmentStatus: string;
+}

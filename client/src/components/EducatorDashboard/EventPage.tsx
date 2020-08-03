@@ -10,7 +10,8 @@ import { TableRow } from '@material-ui/core';
 import ApplicantCard from './ApplicantCard'
 import { getApplications, getInvitations } from '../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
-import Switch from '@material-ui/core/Switch'
+import Switch from '@material-ui/core/Switch';
+import Button from '../Button'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -18,7 +19,7 @@ interface TabPanelProps {
   value: any;
 }
 
-function TabPanel(props: TabPanelProps) {
+const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -38,7 +39,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-function a11yProps(index: any) {
+const a11yProps = (index: any) => {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
@@ -139,12 +140,15 @@ const EventPage = (props: any) => {
               <Typography>
                 Enabling this feature will allow volunteers to discover your posting on the oppurtunities page.
               </Typography>
-            <Grid item xs={3}>
             </Grid>
+            <Grid item xs={2}>
+              <Button color="default">
+                Edit Opportunity
+              </Button>
             </Grid>
           </Grid>
           <Typography>Event Details</Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} >
             <Grid item xs={6}>
               <Typography variant="body1" component="h2">
                   ACTIVITY TYPE
@@ -279,6 +283,7 @@ const EventPage = (props: any) => {
         {applications.length == 0 ? 
         <Typography>
           There are currently no applications for this oppurtunity. {'\n'}
+          Get started by browsing applications to accept an application!
         </ Typography> 
       : displayApplications}
       </TabPanel>
@@ -286,6 +291,7 @@ const EventPage = (props: any) => {
       {applications.length == 0 ? 
         <Typography>
           There are currently no invitations for this oppurtunity. {'\n'}
+          Get started by browsing volunteers and send an invitation! 
         </ Typography> 
       : displayInvitations}
       </TabPanel>

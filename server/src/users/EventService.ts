@@ -2,12 +2,13 @@
  * Data Model Interfaces
  */
 
-import Event, { EventApplicantInterface } from './EventInterface';
+import Event, { EventApplicantInterface, EventInvitationInterface } from './EventInterface';
 import { conn } from '../server';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
 const eventApplicantApi: string = 'EventApplicants__r';
+const eventInvitationApi: string = 'EventInvitations__r';
 const eventFields: string =
     'Name, isActive__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
     'startDate__c, endDate__c, startTime__c, endTime__c, postingExpiry__c, applicationsReceived__c, ' +
@@ -15,6 +16,7 @@ const eventFields: string =
     'schoolTransportation__c, contactEmail__c, contactName__c, contactPhone__c, contactPosition__c';
 
 const eventApplicantFields: string = 'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c';
+const eventInvitationFields: string = 'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c';
 
 /**
  * Service Methods
@@ -94,6 +96,20 @@ const salesforceApplicantToEventAppliantModel = (record: any): EventApplicantInt
     return applicant
 }
 
+const salesforceInvitationToEventInvitationModel = (record: any): EventInvitationInterface => {
+    const invitation: EventInvitationInterface = {
+        invitationName: record.Name,
+        personalPronouns: record.personalPronouns__c,
+        job: record.job__c,
+        sectors: record.sectors__c,
+        linkedinUrl: record.linkedInUrl__c,
+        areasOfExpertise: record.areasOfExpertise__c,
+        employmentStatus: record.employmentStatus__c,
+    }
+
+    return invitation
+}
+
 
 
 // Basic query for now to retrieve a user based on first name (should be changed to ID in future)
@@ -165,6 +181,25 @@ export const getApplications = async (eventName: string): Promise<EventApplicant
     console.log(applications)
     return applications
 };
+
+export const getInvitations = async (eventName: string): Promise<EventInvitationInterface> => {
+    let invitations: EventInvitationInterface
+    console.log(eventName)
+
+    await conn.query(
+        `SELECT (SELECT ${eventInvitationFields} FROM ${eventInvitationApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
+        function(err, result) {
+            if (err) {
+                return console.error(err)
+            }
+            console.log(result.records[0].EventInvitations__r.records)
+
+            invitations = result.records[0].EventInvitations__r.records.map(record => salesforceInvitationToEventInvitationModel(record));
+        }
+    );
+    console.log(invitations)
+    return invitations
+}
 
 // let eventInfo: Event = conn
 //     .sobject(eventApi)
