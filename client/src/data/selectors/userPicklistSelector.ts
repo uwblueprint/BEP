@@ -24,3 +24,5 @@ export const getGradesPicklist = createPicklistSelector(UserPicklistType.grades)
 export const getPostSecondaryTrainingPicklist = createPicklistSelector(UserPicklistType.postSecondaryTraining)
 
 export const getLocationsPicklist = createPicklistSelector(UserPicklistType.locations)
+
+export const getLanguagesPicklist = createPicklistSelector(UserPicklistType.languages)

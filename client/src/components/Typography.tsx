@@ -1,18 +1,38 @@
 import React from "react";
-import MaterialTypography, {
-  TypographyProps,
-} from "@material-ui/core/Typography";
+import Typography, { TypographyProps } from "@material-ui/core/Typography";
 import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 
-const h1Style = (theme: Theme) =>
+const whiteTextStyle = (theme: Theme) =>
   createStyles({
     root: {
-      background: theme.palette.secondary.main,
+      color: theme.palette.primary.light,
     },
   });
 
-const PageHeaderTypography: React.FunctionComponent<TypographyProps> = (props) => (
-  <MaterialTypography variant="h1" {...props}>{props.children}</MaterialTypography>
-);
+const blackTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      color: theme.palette.text.primary,
+    },
+  });
 
-export { PageHeaderTypography };
+const secondaryMainTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      color: theme.palette.secondary.main,
+    },
+  });
+
+const WhiteTextTypography = withStyles(whiteTextStyle)((props: any) => (
+  <Typography {...props}>{props.children}</Typography>
+));
+
+const BlackTextTypography = withStyles(blackTextStyle)((props: any) => (
+  <Typography {...props}>{props.children}</Typography>
+));
+
+const SecondaryMainTextTypography = withStyles(secondaryMainTextStyle)((props: any) => (
+  <Typography {...props}>{props.children}</Typography>
+));
+
+export { WhiteTextTypography, BlackTextTypography, SecondaryMainTextTypography };

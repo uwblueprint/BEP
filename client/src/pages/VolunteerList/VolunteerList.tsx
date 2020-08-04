@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 import { connect } from "react-redux";
 
@@ -13,6 +14,9 @@ import {
   getInternalActivitesPicklist,
   getExpertiesAreasPicklist,
   getLocationsPicklist,
+  getPostSecondaryTrainingPicklist,
+  getGradesPicklist,
+  getLanguagesPicklist,
 } from "../../data/selectors/userPicklistSelector";
 
 /* Types */
@@ -26,12 +30,16 @@ import {
   ContainedButton,
   DarkContainedButton,
   TextButton,
-  ExpandMoreIcon,
+  BlackExpandMoreIcon,
+  SecondaryMainExpandMoreIcon,
   WhiteCloseIcon,
   PageHeader,
   PageBody,
   BlueSearchIcon,
-  OutlinedCheckbox
+  OutlinedCheckbox,
+  WhiteTextTypography,
+  BlackTextTypography,
+  SecondaryMainTextTypography,
 } from "../../components/index";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -40,12 +48,6 @@ import { Grid } from "@material-ui/core";
 import { OutlinedTextField } from "../../components/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
-/* Components */
-import VolunteerCard from "./VolunteerCard";
-import Select from "../../components/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import { Grid } from "@material-ui/core";
-
 class VolunteerList extends React.Component<
   {
     volunteers: Volunteer[];
@@ -53,6 +55,9 @@ class VolunteerList extends React.Component<
       activities: { displayName: string; list: string[] };
       expertiseAreas: { displayName: string; list: string[] };
       locations: { displayName: string; list: string[] };
+      training: { displayName: string; list: string[] };
+      languages: { displayName: string; list: string[] };
+      grades: { displayName: string; list: string[] };
     };
     fetchVolunteers: any;
     fetchPicklists: any;
@@ -70,6 +75,9 @@ class VolunteerList extends React.Component<
       activities: Map<string, boolean>;
       expertiseAreas: Map<string, boolean>;
       locations: Map<string, boolean>;
+      training: Map<string, boolean>;
+      languages: Map<string, boolean>;
+      grades: Map<string, boolean>;
     };
     filteredVolunteers: Volunteer[];
   }
@@ -113,6 +121,9 @@ class VolunteerList extends React.Component<
         activities: new Map(),
         expertiseAreas: new Map(),
         locations: new Map(),
+        training: new Map(),
+        languages: new Map(),
+        grades: new Map(),
       },
       filteredVolunteers: volunteers,
     };
@@ -151,6 +162,12 @@ class VolunteerList extends React.Component<
         return filters.expertiseAreas;
       case "locations":
         return filters.locations;
+      case "training":
+        return filters.training;
+      case "languages":
+        return filters.languages;
+      case "grades":
+        return filters.grades;
     }
     return new Map<string, boolean>();
   }
@@ -267,6 +284,13 @@ class VolunteerList extends React.Component<
   filterLocations = (volunteer: Volunteer, filter: string) =>
     volunteer.locations.includes(filter);
 
+  filterTraining = (volunteer: Volunteer, filter: string) =>
+    volunteer.postSecondaryTraining.includes(filter);
+  filterLanguages = (volunteer: Volunteer, filter: string) =>
+    volunteer.languages.includes(filter);
+  filterGrades = (volunteer: Volunteer, filter: string) =>
+    volunteer.grades.includes(filter);
+
   getFilterFunction = (fieldName: string) => {
     switch (fieldName) {
       case "searchBar": // Filter by name, company, and job title.
@@ -277,6 +301,12 @@ class VolunteerList extends React.Component<
         return this.filterExpertiseAreas;
       case "locations":
         return this.filterLocations;
+      case "training":
+        return this.filterTraining;
+      case "languages":
+        return this.filterLanguages;
+      case "grades":
+        return this.filterGrades;
     }
 
     return (volunteer: Volunteer, filter: string) => true;
@@ -343,6 +373,9 @@ class VolunteerList extends React.Component<
       UserPicklistType.volunteerDesiredExternalActivities,
       UserPicklistType.volunteerDesiredInternalActivities,
       UserPicklistType.locations,
+      UserPicklistType.postSecondaryTraining,
+      UserPicklistType.languages,
+      UserPicklistType.grades,
     ];
 
     this.fetchVolunteers(
@@ -372,6 +405,12 @@ class VolunteerList extends React.Component<
           );
         } else if (type === UserPicklistType.locations) {
           filters.locations = new Map(createFilters(picklists.locations.list));
+        } else if (type === UserPicklistType.postSecondaryTraining) {
+          filters.training = new Map(createFilters(picklists.training.list));
+        } else if (type === UserPicklistType.languages) {
+          filters.languages = new Map(createFilters(picklists.languages.list));
+        } else if (type === UserPicklistType.grades) {
+          filters.grades = new Map(createFilters(picklists.grades.list));
         }
 
         this.setState({ filters });
@@ -447,7 +486,7 @@ class VolunteerList extends React.Component<
                     </Grid>
                   </Grid>
                 </form>
-                <Grid item container spacing={1} direction="row">
+                <Grid item container spacing={4} direction="row">
                   {Object.entries(this.props.picklists).map((entry) => {
                     // Display picklists.
                     const picklistName: string = entry[0];
@@ -464,39 +503,75 @@ class VolunteerList extends React.Component<
                       case "locations":
                         picklist = this.state.filters.locations;
                         break;
+                      case "training":
+                        picklist = this.state.filters.training;
+                        break;
+                      case "languages":
+                        picklist = this.state.filters.languages;
+                        break;
+                      case "grades":
+                        picklist = this.state.filters.grades;
+                        break;
                     }
 
                     return (
-                      <Grid item sm={6} md={2} key={picklistName}>
+                      <div key={picklistName}>
                         <FormControl style={{ minWidth: 160 }}>
                           <ContainedSelect
                             key={picklistName}
+                            id={picklistName}
                             value={[]}
                             onChange={this.createHandleSelectFilter(
                               picklistName
                             )}
                             multiple
                             disableUnderline={true}
-                            IconComponent={ExpandMoreIcon}
+                            IconComponent={() =>
+                              document.activeElement &&
+                              document.activeElement.id === picklistName ? (
+                                <SecondaryMainExpandMoreIcon />
+                              ) : (
+                                <BlackExpandMoreIcon />
+                              )
+                            }
                             displayEmpty={true}
-                            renderValue={() => (
-                              <Typography align="center">
-                                {picklistDisplayName}
-                              </Typography>
-                            )}
+                            renderValue={() => {
+                              return document.activeElement &&
+                                document.activeElement.id === picklistName ? (
+                                <SecondaryMainTextTypography
+                                  align="center"
+                                  variant="body1"
+                                  style={{ fontWeight: "800" }}
+                                >
+                                  {picklistDisplayName}
+                                </SecondaryMainTextTypography>
+                              ) : (
+                                <BlackTextTypography
+                                  align="center"
+                                  variant="body1"
+                                  style={{ fontWeight: "800" }}
+                                >
+                                  {picklistDisplayName}
+                                </BlackTextTypography>
+                              );
+                            }}
                           >
                             {Array.from(
                               picklist.entries(),
                               (entry) => entry
                             ).map(([option, isSelected]) => (
-                              <MenuItem key={option} value={option}>
+                              <MenuItem
+                                key={option}
+                                value={option}
+                                id={picklistName}
+                              >
                                 <OutlinedCheckbox checked={isSelected} />
                                 {option}
                               </MenuItem>
                             ))}
                           </ContainedSelect>
                         </FormControl>
-                      </Grid>
+                      </div>
                     );
                   })}
                 </Grid>
@@ -511,15 +586,19 @@ class VolunteerList extends React.Component<
                           if (isSelected) {
                             filtersSelected = true;
                             filterButtons.push(
-                              <Grid item key={filterName}>
+                              <Grid item container key={filterName}>
                                 <DarkContainedButton
                                   onClick={this.createHandleFilterButtonClick(
                                     picklistName
                                   )}
                                   value={filterName}
                                 >
-                                  {filterName}
-                                  <WhiteCloseIcon />
+                                  <WhiteTextTypography variant="button">
+                                    {filterName}
+                                  </WhiteTextTypography>
+                                  <WhiteCloseIcon
+                                    style={{ width: "10px", height: "10px" }}
+                                  />
                                 </DarkContainedButton>
                               </Grid>
                             );
@@ -580,8 +659,20 @@ const mapStateToProps = (state: any) => {
         list: getExpertiesAreasPicklist(state.userPicklists),
       },
       locations: {
-        displayName: "Locations",
+        displayName: "Location",
         list: getLocationsPicklist(state.userPicklists),
+      },
+      training: {
+        displayName: "Level of Training",
+        list: getPostSecondaryTrainingPicklist(state.userPicklists),
+      },
+      languages: {
+        displayName: "Language",
+        list: getLanguagesPicklist(state.userPicklists),
+      },
+      grades: {
+        displayName: "Audience Grade Level",
+        list: getGradesPicklist(state.userPicklists),
       },
     },
   };

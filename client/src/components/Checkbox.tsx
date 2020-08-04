@@ -4,7 +4,7 @@ import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 const outlinedCheckboxStyle = (theme: Theme) =>
   createStyles({
     root: {
-      color: theme.palette.secondary.main,
+      color: theme.palette.secondary.contrastText,
     },
   });
 
