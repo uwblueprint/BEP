@@ -1,10 +1,9 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Event } from "../../data/types/EventTypes"
 import { connect } from "react-redux";
 import { fetchEventsService } from "../../data/services/eventsServices"
 import { changeFilter } from "../../data/actions/eventsActions"
 import { getFilteredEvents } from "../../data/selectors/eventsSelector";
-import Typography from "@material-ui/core/Typography";
 import EventCard from "./EventCard"
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -13,7 +12,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import { ContainedButton, PageHeaderGutter, PageHeader, PageBody } from '../../components/index';
+import { PageHeader, PageBody } from '../../components/index';
 
 
 type EventProps = {
@@ -80,51 +79,24 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [isPastEvent, setIsPastEvent] = useState(false)
     const [retrievedData, setRetrievedData] = useState(false);
+    const [tabValue, setTabValue] = useState(0)
+
     const [page, setPage] = useState<number>(0);
     const [prevY, setPrevY] = useState<number>(0);
     const [lastEventListLength, setLastEventListLength] = useState<number>(0);
-    const [loadedAllEvents, setLoadedAllEvents] = useState<boolean>();
-    const [offset, setOffset] = useState<number>(10);
-    const [loadingRef, setLoadingRef] = useState(React.createRef());
-    const [observer, setObserver] = useState<IntersectionObserver | null>(null);
-    const [tabValue, setTabValue] = useState(0)
+    const [loadedAllEvents, setLoadedAllEvents] = useState<boolean>(false);
+    const [offset, setOffset] = useState<number>(5);
 
-    useEffect(() => {
-        fetchEvents(offset, page * offset)
-        setRetrievedData(true)
+    const loadingRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
-        if (loadingRef) {
-            // Options
-            var options = {
-                root: null, // Page as root
-                rootMargin: "0px",
-                threshold: 1.0,
-            };
-            // Create an observer
-            const observer = new IntersectionObserver(
-                handleObserver, //callback
-                options
-            );
-
-            //Observe the bottom div of the page
-            observer.observe(loadingRef.current);
-            setObserver(observer);
-        }
-
-
-
-    }, [startDate]);
-
-    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setTabValue(newValue);
-    };
-
-
-    const handleObserver = (entities: any, observer: IntersectionObserver) => {
+    const handleObserver = useCallback((entities: any, observer: IntersectionObserver) => {
+        console.log("observer")
         const y = entities[0].boundingClientRect.y;
         const newPage = page + 1;
+
         if (prevY > y) {
             if (lastEventListLength === events.length) {
+                console.log("no new events are available")
                 // If no new events are available, prevent additional calls to backend.
                 setLoadedAllEvents(true);
             }
@@ -133,15 +105,48 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                 if (events.length > 1)
                     setLastEventListLength(events.length);
 
-                fetchEvents(offset, newPage * offset);
+                fetchEvents(offset, offset * newPage);
                 setPage(newPage);
             }
         }
-        setPrevY(y);
-    }
+        setPrevY(y)
 
+    }, [page, prevY, lastEventListLength, loadedAllEvents])
 
+    useEffect(() => {
 
+        console.log("Loading Ref")
+
+        var options = {
+            root: null, // Page as root
+            rootMargin: "0px",
+            threshold: 1.0,
+        };
+        // Create an observer
+        const observer = new IntersectionObserver(
+            handleObserver, //callback
+            options
+        );
+
+        //Observe the bottom div of the page
+        if (loadingRef) {
+            observer.observe(loadingRef.current)
+        }
+
+        return () => observer.unobserve(loadingRef.current)
+
+    }, [loadingRef, handleObserver])
+
+    useEffect(() => {
+        console.log("fetching data")
+        fetchEvents(offset, page * offset)
+        setRetrievedData(true)
+
+    }, [])
+
+    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setTabValue(newValue);
+    };
 
     return (
         <React.Fragment>
@@ -155,6 +160,8 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                     </Tabs>
                 </AppBar>
             </div>
+
+            {console.log("hello")}
 
             <PageBody>
 

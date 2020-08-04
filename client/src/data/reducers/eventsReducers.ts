@@ -24,9 +24,9 @@ export default function eventsFilter(
         case FETCH_EVENTS:
             return {
                 ...state,
-                list: action.payload.list,
-                activeList: action.payload.list.filter((t: Event) => t.isActive),
-                pastList: action.payload.list.filter((t: Event) => !t.isActive),
+                list: state.list.concat(action.payload.list),
+                activeList: state.activeList.concat(action.payload.list.filter((t: Event) => t.isActive)),
+                pastList: state.pastList.concat(action.payload.list.filter((t: Event) => !t.isActive))
             }
         case CHANGE_EVENTS_FILTER:
             return {
