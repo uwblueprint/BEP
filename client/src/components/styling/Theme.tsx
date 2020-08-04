@@ -36,6 +36,12 @@ const theme = createMuiTheme({
       fontSize: "36px",
       lineHeight: "49px",
     },
+    h2: {
+      fontStyle: "normal",
+      fontWeight: 800,
+      fontSize: "24px",
+      lineHeight: "33px",
+    },
     h3: {
       fontSize: "48px",
       letterSpacing: 0,
@@ -73,10 +79,10 @@ const theme = createMuiTheme({
       fontWeight: "normal",
     },
     subtitle1: {
-      fontSize: "13px",
-      letterSpacing: "0.5px",
-      fontWeight: 700,
-      lineHeight: "24px",
+      fontStyle: "normal",
+      fontWeight: 800,
+      fontSize: "12px",
+      lineHeight: "16px",
       textTransform: "uppercase",
       opacity: 0.5,
     },

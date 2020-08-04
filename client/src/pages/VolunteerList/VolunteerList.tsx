@@ -486,7 +486,13 @@ class VolunteerList extends React.Component<
                     </Grid>
                   </Grid>
                 </form>
-                <Grid item container spacing={4} direction="row">
+                <Grid
+                  item
+                  container
+                  spacing={4}
+                  direction="row"
+                  justify="space-between"
+                >
                   {Object.entries(this.props.picklists).map((entry) => {
                     // Display picklists.
                     const picklistName: string = entry[0];
@@ -515,7 +521,7 @@ class VolunteerList extends React.Component<
                     }
 
                     return (
-                      <div key={picklistName}>
+                      <Grid item key={picklistName}>
                         <FormControl style={{ minWidth: 160 }}>
                           <ContainedSelect
                             key={picklistName}
@@ -571,7 +577,7 @@ class VolunteerList extends React.Component<
                             ))}
                           </ContainedSelect>
                         </FormControl>
-                      </div>
+                      </Grid>
                     );
                   })}
                 </Grid>
@@ -586,7 +592,7 @@ class VolunteerList extends React.Component<
                           if (isSelected) {
                             filtersSelected = true;
                             filterButtons.push(
-                              <Grid item container key={filterName}>
+                              <Grid item key={filterName}>
                                 <DarkContainedButton
                                   onClick={this.createHandleFilterButtonClick(
                                     picklistName

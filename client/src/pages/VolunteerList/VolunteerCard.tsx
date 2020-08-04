@@ -1,13 +1,10 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-
-import { Volunteer } from "../../data/types/userTypes";
+import { Link, SecondaryMainTextTypography } from "../../components/index";
 
 const useStyles = makeStyles({
   root: {
@@ -31,32 +28,44 @@ export default function VolunteerCard(props: any) {
   const bull = <span className={classes.bullet}>•</span>;
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} elevation={0}>
       <CardContent>
-        <Typography variant="h5" component="h2">
-          {props.firstName} {props.lastName}
-        </Typography>
-        <Typography className={classes.pos} color="textSecondary">
-          {props.jobTitle} {props.employer ? `at ${props.employer.name}` : ""} —
-          ({props.preferredPronouns})
-        </Typography>
-        <Grid container direction="row">
+        <Grid container spacing={3} direction="row">
+          <Grid item xs={12}>
+            <Typography variant="h2">
+              {props.firstName} {props.lastName}
+            </Typography>
+            <Typography variant="body2" style={{ opacity: 0.8 }}>
+              {props.jobTitle}{" "}
+              {props.employer ? `at ${props.employer.name}` : ""} — (
+              {props.preferredPronouns})
+            </Typography>
+          </Grid>
+
           <Grid item xs={6}>
-            <Typography>SECTORS</Typography>
+            <Typography variant="subtitle1">Sectors</Typography>
             <Typography>
               {props.employer ? props.employer.sectors.join(", ") : ""}
             </Typography>
           </Grid>
           <Grid item xs={6}>
-            <Typography>AREAS OF EXPERTISE</Typography>
+            <Typography variant="subtitle1">Areas of Expertise</Typography>
             <Typography>{props.expertiseAreas.join(", ")}</Typography>
           </Grid>
           <Grid item xs={6}>
-            <Typography>LINKEDIN URL</Typography>
-            <Typography>{props.linkedIn}</Typography>
+            <Typography variant="subtitle1">LinkedIn URL</Typography>
+            <Link target="_blank" href={props.linkedIn}>
+              <SecondaryMainTextTypography>
+                {
+                  props.linkedIn
+                    .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
+                    .split("/")[0] // Remove protocol and 'www'
+                }
+              </SecondaryMainTextTypography>
+            </Link>
           </Grid>
           <Grid item xs={6}>
-            <Typography>EMPLOYMENT STATUS</Typography>
+            <Typography variant="subtitle1">Employment Status</Typography>
             <Typography>{props.employmentStatus}</Typography>
           </Grid>
         </Grid>
