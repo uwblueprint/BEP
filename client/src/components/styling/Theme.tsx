@@ -94,6 +94,14 @@ const theme = createMuiTheme({
       textTransform: "lowercase",
     },
     button: {
+      fontStyle: "normal",
+      fontWeight: 800,
+      fontSize: "16px",
+      lineHeight: "22px",
+      textTransform: "capitalize",
+    },
+    caption: {
+      fontStyle: "normal",
       fontWeight: "normal",
       fontSize: "12px",
       lineHeight: "16px",

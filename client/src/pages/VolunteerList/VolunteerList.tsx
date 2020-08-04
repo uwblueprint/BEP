@@ -458,32 +458,29 @@ class VolunteerList extends React.Component<
                   onSubmit={this.handleSearchFormSubmit}
                 >
                   <Grid item container direction="row">
-                    <Grid item xs={11}>
-                      <OutlinedTextField
-                        id="search-bar"
-                        placeholder="Search Volunteers"
-                        value={this.state.searchBar}
-                        fullWidth
-                        onChange={this.handleSearchBarChange}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <BlueSearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                    <Grid
-                      item
-                      container
-                      xs={1}
-                      alignItems="flex-start"
-                      justify="flex-end"
-                      direction="row"
+                    <OutlinedTextField
+                      id="search-bar"
+                      placeholder="Search Volunteers"
+                      value={this.state.searchBar}
+                      fullWidth
+                      onChange={this.handleSearchBarChange}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <BlueSearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                      inputProps={{ style: { height: "40px", padding: "0" } }}
+                      style={{ width: "90%" }}
+                    />
+
+                    <ContainedButton
+                      type="submit"
+                      style={{ width: "8%", marginLeft: "2%" }}
                     >
-                      <ContainedButton type="submit">Search</ContainedButton>
-                    </Grid>
+                      Search
+                    </ContainedButton>
                   </Grid>
                 </form>
                 <Grid
@@ -599,11 +596,15 @@ class VolunteerList extends React.Component<
                                   )}
                                   value={filterName}
                                 >
-                                  <WhiteTextTypography variant="button">
+                                  <WhiteTextTypography variant="caption">
                                     {filterName}
                                   </WhiteTextTypography>
                                   <WhiteCloseIcon
-                                    style={{ width: "10px", height: "10px" }}
+                                    style={{
+                                      width: "15px",
+                                      height: "15px",
+                                      marginLeft: "5px",
+                                    }}
                                   />
                                 </DarkContainedButton>
                               </Grid>
