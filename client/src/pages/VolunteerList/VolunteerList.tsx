@@ -28,18 +28,15 @@ import {
   TextButton,
   ExpandMoreIcon,
   WhiteCloseIcon,
-  PageHeaderTypography,
   PageHeader,
   PageBody,
   BlueSearchIcon,
+  OutlinedCheckbox
 } from "../../components/index";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { Grid } from "@material-ui/core";
-import { Checkbox } from "@material-ui/core";
 import { OutlinedTextField } from "../../components/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
@@ -197,7 +194,6 @@ class VolunteerList extends React.Component<
       filters = { ...filters, [picklistName]: filterMap };
     });
 
-    console.log("HERE");
     this.setState({
       filters,
     });
@@ -239,7 +235,6 @@ class VolunteerList extends React.Component<
   handleSearchBarChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
-    console.log(event.target.value);
     this.setState({ searchBar: event.target.value });
   }
 
@@ -249,7 +244,9 @@ class VolunteerList extends React.Component<
       filter.length === 0 || // ignore search bar input if input is empty.
       volunteer.firstName.toLowerCase().includes(filter) ||
       volunteer.lastName.toLowerCase().includes(filter) ||
-      volunteer.employerName.toLowerCase().includes(filter) ||
+      (volunteer.employer !== undefined &&
+        volunteer.employer !== null &&
+        volunteer.employer.name.toLowerCase().includes(filter)) ||
       volunteer.jobTitle.toLowerCase().includes(filter)
     );
   };
@@ -292,7 +289,6 @@ class VolunteerList extends React.Component<
   }
 
   filterAllFields(volunteers: Volunteer[]) {
-    console.log(this.state.filters);
     const newVolunteers = volunteers.filter((volunteer: Volunteer) => {
       var pass = true;
 
@@ -409,9 +405,9 @@ class VolunteerList extends React.Component<
         <Grid container direction="row" style={{ height: "100%" }}>
           <Grid item container xs={12} direction="row">
             <PageHeader header="Browse Volunteers" />
-
             <PageBody>
-              <Grid container spacing={2} direction="column">
+              <Grid container spacing={4} direction="column">
+                <Grid item xs={12}></Grid>
                 <form
                   style={{ width: "100%" }}
                   onSubmit={this.handleSearchFormSubmit}
@@ -488,7 +484,7 @@ class VolunteerList extends React.Component<
                               (entry) => entry
                             ).map(([option, isSelected]) => (
                               <MenuItem key={option} value={option}>
-                                <Checkbox checked={isSelected} />
+                                <OutlinedCheckbox checked={isSelected} />
                                 {option}
                               </MenuItem>
                             ))}

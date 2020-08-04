@@ -9,6 +9,7 @@ import { ContainedSelect } from "./Select";
 import { ExpandMoreIcon, WhiteCloseIcon, BlueSearchIcon } from "./Icons";
 import { PageHeaderTypography } from "./Typography";
 import { PageHeader, PageBody, PageBodyGutter, PageHeaderGutter } from "./Page";
+import Checkbox, { OutlinedCheckbox } from "./Checkbox";
 
 export { Button, ContainedButton, DarkContainedButton, TextButton };
 export { Link };
@@ -17,3 +18,4 @@ export { ContainedSelect };
 export { ExpandMoreIcon, WhiteCloseIcon, BlueSearchIcon };
 export { PageHeaderTypography };
 export { PageHeader, PageBody, PageBodyGutter, PageHeaderGutter };
+export { Checkbox, OutlinedCheckbox };

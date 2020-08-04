@@ -31,7 +31,6 @@ const employerModelToSalesforceEmployer = (employer: Employer): any => {
 
 // Map Saleforce record fields to user model fields.
 const salesforceEmployerToEmployerModel = (record: any): Employer => {
-    console.log(record);
     const employer: Employer = {
         address: record.address__c,
         city: record.city__c,
