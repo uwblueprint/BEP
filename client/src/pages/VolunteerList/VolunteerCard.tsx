@@ -37,23 +37,19 @@ export default function VolunteerCard(props: any) {
           {props.firstName} {props.lastName}
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          {props.jobTitle} at {props.employerName} — ({props.preferredPronouns})
+          {props.jobTitle} {props.employer ? `at ${props.employer.name}` : ""} —
+          ({props.preferredPronouns})
         </Typography>
         <Grid container direction="row">
           <Grid item xs={6}>
             <Typography>SECTORS</Typography>
             <Typography>
-              {props.volunteerDesiredExternalActivities[0]}
+              {props.employer ? props.employer.sectors.join(", ") : ""}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography>AREAS OF EXPERTISE</Typography>
-            <Typography>
-              {props.expertiseAreas.reduce(
-                (acc: string, area: string) => acc + area,
-                ""
-              )}
-            </Typography>
+            <Typography>{props.expertiseAreas.join(", ")}</Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography>LINKEDIN URL</Typography>

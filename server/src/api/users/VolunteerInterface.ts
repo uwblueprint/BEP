@@ -28,19 +28,7 @@ export default interface VolunteerInterface extends UserInterface {
     shareWithEmployer: boolean;
     volunteerDesiredExternalActivities: string[];
     volunteerDesiredInternalActivities: string[];
-
-    // employer?: {
-    //     address: string;
-    //     city: string;
-    //     name: string;
-    //     postalCode: string;
-    //     sector: string;
-    //     shareActivity: boolean;
-    //     size: string;
-    //     socialMedia: string[]; // lookup table (?)
-    //     phone: number;
-    //     website: string;
-    // }[];
+    
     // professionalAssociations?: {
     //     name: string;
     //     shareActivity: boolean;

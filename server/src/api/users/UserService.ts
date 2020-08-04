@@ -192,7 +192,9 @@ export const getVolunteers = async (limit: number, offset: number): Promise<User
                 return console.error(err);
             }
             volunteerPromises = result.records.map(record =>
-                salesforceUserToUserModel(record).then(res => volunteers.concat(res))
+                salesforceUserToUserModel(record).then(res => {
+                    volunteers.push(res);
+                })
             );
         }
     );
