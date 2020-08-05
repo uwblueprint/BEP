@@ -17,9 +17,9 @@ const eventFields: string =
     'invitationsSent__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, schoolName__c, schoolAddress__c, ' +
     'schoolTransportation__c, contactEmail__c, contactName__c, contactPhone__c, contactPosition__c';
 
-const eventApplicantFields: string = 'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, accepted__c, denied__c';
+const eventApplicantFields: string = 'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, applicantCompany__c, accepted__c, denied__c';
 const eventInvitationFields: string = 'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c';
-const eventVolunteerFields: string = 'Name, job__c, volunteerPersonalPronouns__c, volunteerCompany__c'
+const eventVolunteerFields: string = 'Name, volunteerJob__c, volunteerPersonalPronouns__c, volunteerCompany__c'
 
 /**
  * Service Methods
@@ -95,7 +95,8 @@ const salesforceApplicantToEventAppliantModel = (record: any): EventApplicantInt
         areasOfExpertise: record.areasOfExpertise__c,
         employmentStatus: record.employmentStatus__c,
         accepted: record.accepted__c,
-        denied: record.denied__c
+        denied: record.denied__c,
+        company: record.applicantCompany__c
     }
 
     return applicant
@@ -118,9 +119,9 @@ const salesforceInvitationToEventInvitationModel = (record: any): EventInvitatio
 const salesforceEventVolunteerToEventVolunteerModel = (record: any): EventVolunteerInterface => {
     const volunteer: EventVolunteerInterface = {
         volunteerName: record.Name,
-        job: record.job__c,
-        company: record.volunteerPersonalPronouns__c,
-        personalPronouns: record.volunteerCompany__c,
+        job: record.volunteerJob__c,
+        company: record.volunteerCompany__c,
+        personalPronouns: record.volunteerPersonalPronouns__c,
     }
 
     return volunteer
@@ -198,6 +199,72 @@ export const getApplications = async (eventName: string): Promise<EventApplicant
     return applications
 };
 
+export const acceptApplicant = async (eventName: string, applicantName: string, accept: boolean): Promise<void> => {
+    let applicantId: string;
+    let applicantJob: string;
+    let applicantPersonalPronouns: string;
+    let applicantCompany: string;
+    let eventId: string;
+    console.log(eventName);
+
+        await conn.query(
+            `SELECT Id, (SELECT ${eventApplicantFields} FROM ${eventApplicantApi} WHERE Name='${applicantName}') FROM ${eventApi} WHERE Name='${eventName}'`,
+            function (err, result) {
+                if (err) {
+                    return console.error(err);
+                }
+                eventId = result.records[0].Id
+                let data = result.records[0].EventApplicants__r.records[0];
+                console.log("This is the result", data);
+                applicantId = data.Id
+                console.log("This is the applicantID", applicantId)
+                applicantJob = data.job__c;
+                applicantPersonalPronouns = data.personalPronouns__c;
+                applicantCompany = data.applicantCompany__c;
+                console.log("this is the applicantCompany", applicantCompany)
+            }
+        );
+
+        if (accept) {
+            await conn.sobject('EventApplicant__c').update({
+                Id: applicantId,
+                accepted__c: true,
+                denied__c: false
+            }, function(err, ret) {
+                if (err || !ret.success) { return console.error(err, ret); }
+                console.log('Updated Successfully : ' + ret.id);
+            })
+
+            //Add to confirmed volunteers
+
+            await conn.sobject('EventVolunteer__c').create({
+                Name: applicantName,
+                volunteerJob__c: applicantJob,
+                volunteerCompany__c: applicantCompany,
+                volunteerPersonalPronouns__c: applicantPersonalPronouns,
+                EventVolunteer__c: eventId
+            }, function(err, ret) {
+                if (err || !ret.success) { 
+                    // handle exception
+                    return console.error(err, ret); 
+                }
+                console.log("Created record id : " + ret.id);
+            });
+
+        } else {
+            await conn.sobject('EventApplicant__c').update({
+                Id: applicantId,
+                accepted__c: false,
+                denied__c: true
+            }, function(err, ret) {
+                if (err || !ret.success) { return console.error(err, ret); }
+                console.log('Updated Successfully : ' + ret.id);
+            })
+        }
+
+
+}
+
 export const getInvitations = async (eventName: string): Promise<EventInvitationInterface> => {
     let invitations: EventInvitationInterface
     console.log("This is the event Name:" , eventName)
@@ -222,7 +289,7 @@ export const getVolunteers = async (eventName: string): Promise<EventVolunteerIn
     console.log("This is the event Name:", eventName)
 
     await conn.query(
-        `SELECT (SELECT ${eventVolunteerFields} FROM ${eventVolunteerApi}) FROM ${eventApi} WHERE Name='${eventName}`,
+        `SELECT (SELECT ${eventVolunteerFields} FROM ${eventVolunteerApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
         function(err, result) {
             if (err) {
             return console.error(err)

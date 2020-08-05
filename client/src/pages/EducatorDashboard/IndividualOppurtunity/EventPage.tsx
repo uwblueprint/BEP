@@ -88,6 +88,7 @@ const EventPage = (props: any) => {
 });
 
   var displayInvitations = invitations.map((invite) => {
+    console.log("This is a single invite", invite)
     var invitationProps = {
       invite
     }
@@ -96,8 +97,8 @@ const EventPage = (props: any) => {
 
   useEffect(() => {
     const fetchdata = async () => {
-      const result = await getApplications("Event test 5");
-      console.log("This is the Event Card info", result.data.applications)
+      const result = await getApplications(eventData.eventName);
+      console.log("This is the Applicant Card info", result.data.applications)
       setApplications(result.data.applications)
     }
     fetchdata();
@@ -106,7 +107,7 @@ const EventPage = (props: any) => {
 
   useEffect(() => {
     const fetchdata = async () => {
-      const result = await getInvitations("Event test 5");
+      const result = await getInvitations(eventData.eventName);
       console.log("This is the Invitation card info", result.data.invitations)
       setInvitations(result.data.invitations)
     }
@@ -180,7 +181,7 @@ const EventPage = (props: any) => {
       </React.Fragment>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {applications.length == 0 ? 
+        {applications.length === 0 ? 
         <Typography>
           There are currently no applications for this oppurtunity. {'\n'}
           Get started by browsing applications to accept an application!
@@ -188,7 +189,7 @@ const EventPage = (props: any) => {
       : displayApplications}
       </TabPanel>
       <TabPanel value={value} index={2}>
-      {applications.length == 0 ? 
+      {invitations.length === 0 ? 
         <Typography>
           There are currently no invitations for this oppurtunity. {'\n'}
           Get started by browsing volunteers and send an invitation! 

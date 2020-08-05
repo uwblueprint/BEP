@@ -9,6 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import { Button, ContainedButton } from '../../../components/Button'
+import { updateApplicantStatus } from '../../../utils/EventsApiUtils'
 
 export interface DialogProps {
     open: boolean;
@@ -40,11 +41,14 @@ const ApplicantCard = (props: any) => {
     //Press "Yes" when opening dialog box for confirming applicant acceptance
     const handleAcceptConfirm = () => {
         setAcceptOpen(false)
+        //Accept the Applicant
+
     }
 
     //Press "Yes" when opening dialog box for confirming applicant rejection
     const handleDeclineConfirm = () => {
         setDenyOpen(false)
+        //Reject the Applicant
     }
 
     //Press "No" on either dialog box

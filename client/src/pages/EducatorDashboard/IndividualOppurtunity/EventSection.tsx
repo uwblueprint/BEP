@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import ConfirmedVolunteerCard from './ConfirmedVolunteerCard'
 import Divider from '@material-ui/core/Divider';
+import { getVolunteers } from '../../../utils/EventsApiUtils';
+
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -17,7 +19,24 @@ const EventSection = (props: any) => {
 
   const classes = useStyles()
 
-  console.log("Line 20:" , props.event)
+  const [volunteers, setVolunteers] = React.useState([])
+
+  useEffect(() => {
+    const fetchdata = async () => {
+     const result =  await getVolunteers(props.event.eventName)
+     console.log("This is the Volunteer Card info lalala", result)
+     setVolunteers(result.data.volunteers)
+    }
+    fetchdata()
+  }, []);
+
+  var displayVolunteers = volunteers.map((volunteer) => {
+    console.log("This is a single volunteer", volunteer)
+    var volunteerProps = {
+      volunteer
+    }
+    return <ConfirmedVolunteerCard info={volunteerProps} />
+  });
   
     return (
       <Box>
@@ -162,9 +181,14 @@ const EventSection = (props: any) => {
             <Typography variant="h6" classes={{
               root: classes.root,
             }}>
-                Confirmed Volunteers {props.event.confirmedVolunteers} / {props.event.numberOfVolunteers}
+                Confirmed Volunteers {volunteers.length} / {props.event.numberOfVolunteers}
+
             </Typography>
-            <ConfirmedVolunteerCard />
+            {volunteers.length === 0 ? 
+          <Typography>
+              Volunteers that have been confirmed for this oppurtunity will show up here.
+          </ Typography> 
+      : displayVolunteers}
           </Box>
         </Box>
     )

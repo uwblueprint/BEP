@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: 700,
         // margin: `${theme.spacing(4)}px auto`,
         padding: theme.spacing(1),
+        margin: '10px',
         borderRadius: 10
     },
     root: {
@@ -23,12 +24,14 @@ const useStyles = makeStyles((theme) => ({
 const ConfirmedVolunteerCard = (props: any) => {
     const classes = useStyles()
 
+    console.log(props)
+
     return (
         <Card className={classes.card}>
             <Typography variant="h4" classes={{
                 root: classes.retract,
-            }}>props.volunteer.name</Typography>
-            <Typography variant="body1">props.volunteer.job at props.volunteer.company -- (props.volunteer.personalpronouns)</Typography>
+            }}>{props.info.volunteer.volunteerName}</Typography>
+            <Typography variant="body1">{props.info.volunteer.job} at {props.info.volunteer.company} -- ({props.info.volunteer.personalPronouns})</Typography>
         </Card>
     )
 

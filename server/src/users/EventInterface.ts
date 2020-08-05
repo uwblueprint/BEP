@@ -32,6 +32,7 @@ export interface EventApplicantInterface {
     employmentStatus: string;
     accepted: boolean;
     denied: boolean;
+    company: string;
 }
 
 export interface EventInvitationInterface {
