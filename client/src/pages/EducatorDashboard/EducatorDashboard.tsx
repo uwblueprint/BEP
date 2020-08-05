@@ -1,10 +1,9 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Event } from "../../data/types/EventTypes"
 import { connect } from "react-redux";
 import { fetchEventsService } from "../../data/services/eventsServices"
 import { changeFilter } from "../../data/actions/eventsActions"
 import { getFilteredEvents } from "../../data/selectors/eventsSelector";
-import Typography from "@material-ui/core/Typography";
 import EventCard from "./EventCard"
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -13,7 +12,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import { ContainedButton, PageHeaderGutter, PageHeader, PageBody } from '../../components/index';
+import { PageHeader, PageBody } from '../../components/index';
 import { Link } from 'react-router-dom'
 
 

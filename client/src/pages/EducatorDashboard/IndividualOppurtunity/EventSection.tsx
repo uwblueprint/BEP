@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
-import ConfirmedVolunteerCard from './ConfirmedVolunteerCard'
 import Divider from '@material-ui/core/Divider';
-import { getVolunteers } from '../../../utils/EventsApiUtils';
 
 
 const useStyles = makeStyles(() => ({
@@ -18,6 +16,9 @@ const useStyles = makeStyles(() => ({
 const EventSection = (props: any) => {
 
   const classes = useStyles()
+
+  var eventStartDate = new Date(props.event.startDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
+  var eventEndDate = new Date(props.event.endDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
   
     return (
       <Box>
@@ -48,7 +49,7 @@ const EventSection = (props: any) => {
                     DATE(S) OF EVENTS
                 </Typography>
                 <Typography>
-                    {props.event.startDate}
+                    {eventStartDate} to {eventEndDate}
                 </Typography>
               </Grid>
               <Grid item xs={6}>

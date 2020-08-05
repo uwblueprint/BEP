@@ -6,14 +6,13 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
-import { TableRow } from '@material-ui/core';
 import ApplicantCard from './ApplicantCard'
 import { getApplications, getInvitations, getVolunteers } from '../../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
 import { DarkContainedButton, ContainedButton } from '../../../components/Button'
 import EventSection from './EventSection'
-import { PageHeaderGutter, PageHeader, PageBody } from '../../../components/index';
+import { PageHeader, PageBody } from '../../../components/index';
 import ConfirmedVolunteerCard from './ConfirmedVolunteerCard';
 
 interface TabPanelProps {
@@ -67,6 +66,9 @@ const EventPage = (props: any) => {
   });
   const [volunteers, setVolunteers] = React.useState([])
 
+  const eventData = props.location.state.event
+  console.log("This is the event data", eventData)
+
   useEffect(() => {
     const fetchdata = async () => {
      const result =  await getVolunteers(eventData.eventName)
@@ -74,7 +76,7 @@ const EventPage = (props: any) => {
      setVolunteers(result.data.volunteers)
     }
     fetchdata()
-  }, []);
+  }, [eventData.eventName]);
 
   var displayVolunteers = volunteers.map((volunteer) => {
     console.log("This is a single volunteer", volunteer)
@@ -87,9 +89,6 @@ const EventPage = (props: any) => {
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
   };
-
-  const eventData = props.location.state.event
-  console.log("This is the event data", eventData)
 
   //Date checking
   // let eventStartDate = props.event.startDate
@@ -143,7 +142,7 @@ const EventPage = (props: any) => {
     }
     fetchdata();
 
-  }, []);
+  }, [eventData.eventName]);
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -152,7 +151,7 @@ const EventPage = (props: any) => {
       setInvitations(result.data.invitations)
     }
     fetchdata()
-  }, []);
+  }, [eventData.eventName]);
 
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
