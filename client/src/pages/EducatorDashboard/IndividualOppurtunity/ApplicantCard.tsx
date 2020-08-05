@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
@@ -32,19 +32,26 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+//create your forceUpdate hoo
+
 const ApplicantCard = (props: any) => {
     console.log("These are the applicant Card Props", props)
     const classes = useStyles()
     const [acceptOpen, setAcceptOpen] = React.useState(false);
     const [denyOpen, setDenyOpen] = React.useState(false);
 
-    const buttonEnabled = (props.info.applicant.accepted === true || props.info.applicant.accepted === true) ? false : true;
+    const [buttonEnabled, setButtonEnabled] = React.useState(props.info.enabled)
+
+    console.log("This is the buttonEnable", props.info.enabled)
+    console.log("This is the Accepted", props.info.applicant.accepted)
+    console.log("This is the denied", props.info.applicant.denied)
 
     //Press "Yes" when opening dialog box for confirming applicant acceptance
     const handleAcceptConfirm = () => {
         setAcceptOpen(false)
         //Accept the Applicant
         updateApplicantStatus(props.info.eventName, props.info.applicant.applicantName, "accept")
+        setButtonEnabled(false)
     }
 
     //Press "Yes" when opening dialog box for confirming applicant rejection
@@ -52,6 +59,7 @@ const ApplicantCard = (props: any) => {
         setDenyOpen(false)
         //Reject the Applicant
         updateApplicantStatus(props.info.eventName, props.info.applicant.applicantName, "deny")
+        setButtonEnabled(false)
     }
 
     //Press "No" on either dialog box
@@ -77,14 +85,14 @@ const ApplicantCard = (props: any) => {
             <Typography variant="h5" component="h2">
                 {props.info.applicant.applicantName}      
             </Typography>
-            <Typography variant="subtitle1" component="h1">
+            <Typography variant="body1" component="h1">
                 {props.info.applicant.job} -- {props.info.applicant.personalPronouns}
             </Typography>
         </Grid>
         <Grid item xs={3}>
             <Grid container spacing={10}>
             <Grid item xs={1}>
-                <Button onClick={handleOpenDeclineConfirm} disabled={buttonEnabled}>
+                <Button onClick={handleOpenDeclineConfirm} disabled={!buttonEnabled}>
                     Decline
                 </Button>
                 <Dialog 
@@ -104,7 +112,7 @@ const ApplicantCard = (props: any) => {
                 </Dialog>
             </Grid>
              <Grid item xs={5}>
-                <ContainedButton onClick={handleOpenAcceptConfirm} disabled={buttonEnabled}>
+                <ContainedButton onClick={handleOpenAcceptConfirm} disabled={!buttonEnabled}>
                     Accept
                 </ContainedButton>
                 <Dialog 
@@ -126,7 +134,7 @@ const ApplicantCard = (props: any) => {
              </Grid>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
+            <Typography variant="subtitle1" component="h2">
                 SECTORS
             </Typography>
             <Typography variant="body1" component="h2">
@@ -134,7 +142,7 @@ const ApplicantCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
+            <Typography variant="subtitle1" component="h2">
                 AREAS OF EXPERTISE
             </Typography>
             <Typography variant="body1" component="h2">
@@ -142,7 +150,7 @@ const ApplicantCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
+            <Typography variant="subtitle1" component="h2">
                 LINKEDIN URL
             </Typography>
             <Typography variant="body1" component="h2">
@@ -150,7 +158,7 @@ const ApplicantCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
+            <Typography variant="subtitle1" component="h2">
                 EMPLOYMENT STATUS
             </Typography>
             <Typography variant="body1" component="h2">

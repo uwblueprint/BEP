@@ -2,8 +2,6 @@ import React from 'react'
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box';
-import Link from '@material-ui/core/Link'
 import Card from '@material-ui/core/Card'
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -12,8 +10,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog'
 
 import { ContainedButton, Button } from '../../../components/Button'
-import { findAllByTestId } from '@testing-library/react';
-import { SSL_OP_NETSCAPE_CHALLENGE_BUG } from 'constants';
 
 export interface DialogProps {
     open: boolean;
@@ -62,7 +58,7 @@ const InviteCard = (props: any) => {
             <Typography variant="h5" component="h2">
                 {props.info.invite.invitationName}      
             </Typography>
-            <Typography variant="subtitle1" component="h1">
+            <Typography variant="body1" component="h1">
                 {props.info.invite.job} -- {props.info.invite.personalPronouns}
             </Typography>
         </Grid>
@@ -89,7 +85,7 @@ const InviteCard = (props: any) => {
                 </Dialog>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
+            <Typography variant="subtitle1" component="h2">
                 SECTORS
             </Typography>
             <Typography variant="body1" component="h2">
@@ -97,7 +93,7 @@ const InviteCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
+            <Typography variant="subtitle1" component="h2">
                 AREAS OF EXPERTISE
             </Typography>
             <Typography variant="body1" component="h2">
@@ -105,7 +101,7 @@ const InviteCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
+            <Typography variant="subtitle1" component="h2">
                 LINKEDIN URL
             </Typography>
             <Typography variant="body1" component="h2">
@@ -113,7 +109,7 @@ const InviteCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="body1" component="h2">
+            <Typography variant="subtitle1" component="h2">
                 EMPLOYMENT STATUS
             </Typography>
             <Typography variant="body1" component="h2">

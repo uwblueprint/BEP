@@ -8,12 +8,13 @@ import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import { TableRow } from '@material-ui/core';
 import ApplicantCard from './ApplicantCard'
-import { getApplications, getInvitations } from '../../../utils/EventsApiUtils'
+import { getApplications, getInvitations, getVolunteers } from '../../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
 import { DarkContainedButton, ContainedButton } from '../../../components/Button'
 import EventSection from './EventSection'
 import { PageHeaderGutter, PageHeader, PageBody } from '../../../components/index';
+import ConfirmedVolunteerCard from './ConfirmedVolunteerCard';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -59,10 +60,28 @@ const EventPage = (props: any) => {
   console.log("These are the event props", props)
   const classes = useStyles();
   const [value, setValue] = React.useState<number>(0);
-  const [applications, setApplications] = React.useState([]);
-  const [invitations, setInvitations] = React.useState([])
+  const [applications, setApplications] = React.useState<any>([]);
+  const [invitations, setInvitations] = React.useState<any>([])
   const [publicEvent, setPublicEvent] = React.useState({
     checked: true
+  });
+  const [volunteers, setVolunteers] = React.useState([])
+
+  useEffect(() => {
+    const fetchdata = async () => {
+     const result =  await getVolunteers(eventData.eventName)
+     console.log("This is the Volunteer Card info lalala", result)
+     setVolunteers(result.data.volunteers)
+    }
+    fetchdata()
+  }, []);
+
+  var displayVolunteers = volunteers.map((volunteer) => {
+    console.log("This is a single volunteer", volunteer)
+    var volunteerProps = {
+      volunteer
+    }
+    return <ConfirmedVolunteerCard info={volunteerProps} />
   });
 
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,16 +99,35 @@ const EventPage = (props: any) => {
   let pastEvent: boolean = today > eventStartDate ? true : false
 
 
-  var displayApplications = applications.map((applicant) => {
+  var displayApplications = applications.map((applicant: any) => {
 
-    var applicationProps = {
+    var buttonEnabled: boolean;
+    var applicationProps: any;
+
+    if (volunteers.length === eventData.numberOfVolunteers) {
+      buttonEnabled = false
+
+      applicationProps = {
         eventName: eventData.eventName,
-        applicant
+        applicant,
+        enabled: buttonEnabled
     };
     return <ApplicantCard info={applicationProps} />
+
+    } else {
+
+    buttonEnabled = (applicant.accepted === true || applicant.denied === true) ? false : true;
+
+    applicationProps = {
+        eventName: eventData.eventName,
+        applicant,
+        enabled: buttonEnabled
+    };
+    return <ApplicantCard info={applicationProps} />
+  }
 });
 
-  var displayInvitations = invitations.map((invite) => {
+  var displayInvitations = invitations.map((invite: any) => {
     console.log("This is a single invite", invite)
     var invitationProps = {
       invite
@@ -135,7 +173,20 @@ const EventPage = (props: any) => {
           <div style={{ height: "100vh" }}>
           <Grid container style={{ height:"100%" }}>
             <PageBody>
-              <EventSection event={eventData} /> 
+              <EventSection event={eventData} />
+              <React.Fragment>
+            <Typography variant="h6" classes={{
+              root: classes.root,
+            }}>
+                Confirmed Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
+
+            </Typography>
+            {volunteers.length === 0 ? 
+          <Typography>
+              Volunteers that have been confirmed for this oppurtunity will show up here.
+          </ Typography> 
+      : displayVolunteers}
+        </React.Fragment> 
             </PageBody>
           </Grid>
           </div>
@@ -180,9 +231,23 @@ const EventPage = (props: any) => {
               </Grid>
             </Grid>
         <EventSection event={eventData} />
+        <React.Fragment>
+            <Typography variant="h6" classes={{
+              root: classes.root,
+            }}>
+                Confirmed Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
+
+            </Typography>
+            {volunteers.length === 0 ? 
+          <Typography>
+              Volunteers that have been confirmed for this oppurtunity will show up here.
+          </ Typography> 
+      : displayVolunteers}
+        </React.Fragment>
       </React.Fragment>
       </TabPanel>
       <TabPanel value={value} index={1}>
+        {volunteers.length === eventData.numberOfVolunteers ? <Typography variant="body1">The positions for this oppurtunity have been filled</Typography> : null}
         {applications.length === 0 ? 
         <Typography>
           There are currently no applications for this oppurtunity. {'\n'}

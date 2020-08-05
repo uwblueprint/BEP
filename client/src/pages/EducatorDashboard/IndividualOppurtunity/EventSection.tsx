@@ -18,25 +18,6 @@ const useStyles = makeStyles(() => ({
 const EventSection = (props: any) => {
 
   const classes = useStyles()
-
-  const [volunteers, setVolunteers] = React.useState([])
-
-  useEffect(() => {
-    const fetchdata = async () => {
-     const result =  await getVolunteers(props.event.eventName)
-     console.log("This is the Volunteer Card info lalala", result)
-     setVolunteers(result.data.volunteers)
-    }
-    fetchdata()
-  }, []);
-
-  var displayVolunteers = volunteers.map((volunteer) => {
-    console.log("This is a single volunteer", volunteer)
-    var volunteerProps = {
-      volunteer
-    }
-    return <ConfirmedVolunteerCard info={volunteerProps} />
-  });
   
     return (
       <Box>
@@ -178,17 +159,6 @@ const EventSection = (props: any) => {
           </Box>
           <Box>
           <Divider />
-            <Typography variant="h6" classes={{
-              root: classes.root,
-            }}>
-                Confirmed Volunteers {volunteers.length} / {props.event.numberOfVolunteers}
-
-            </Typography>
-            {volunteers.length === 0 ? 
-          <Typography>
-              Volunteers that have been confirmed for this oppurtunity will show up here.
-          </ Typography> 
-      : displayVolunteers}
           </Box>
         </Box>
     )
