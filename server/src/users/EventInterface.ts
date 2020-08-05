@@ -20,6 +20,8 @@ export default interface EventInterface {
     contactEmail: string;
     contactPhone: number;
     contactPosition: string;
+    applicantNumber: number;
+    invitationNumber: number;
 }
 
 export interface EventApplicantInterface {
