@@ -195,14 +195,14 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                                 <Link to={{
                                     pathname: "/event-page",
                                     state: {event}
-                                }}>
+                                }} style={{ textDecoration: 'none' }}>
                                     <EventCard key={index} event={event} />
                                 </Link>
                             ) : events.map((event, index) =>
                                 <Link to={{
                                     pathname: "/event-page",
                                     state: {event}
-                                }}>
+                                }} style={{ textDecoration: 'none' }}>
                                     <EventCard key={index} event={event} />
                                 </Link>
                             )}
