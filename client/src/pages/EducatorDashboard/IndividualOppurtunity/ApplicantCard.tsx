@@ -33,22 +33,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ApplicantCard = (props: any) => {
-    console.log(props)
+    console.log("These are the applicant Card Props", props)
     const classes = useStyles()
     const [acceptOpen, setAcceptOpen] = React.useState(false);
     const [denyOpen, setDenyOpen] = React.useState(false);
+
+    const buttonEnabled = (props.info.applicant.accepted === true || props.info.applicant.accepted === true) ? false : true;
 
     //Press "Yes" when opening dialog box for confirming applicant acceptance
     const handleAcceptConfirm = () => {
         setAcceptOpen(false)
         //Accept the Applicant
-
+        updateApplicantStatus(props.info.eventName, props.info.applicant.applicantName, "accept")
     }
 
     //Press "Yes" when opening dialog box for confirming applicant rejection
     const handleDeclineConfirm = () => {
         setDenyOpen(false)
         //Reject the Applicant
+        updateApplicantStatus(props.info.eventName, props.info.applicant.applicantName, "deny")
     }
 
     //Press "No" on either dialog box
@@ -81,7 +84,7 @@ const ApplicantCard = (props: any) => {
         <Grid item xs={3}>
             <Grid container spacing={10}>
             <Grid item xs={1}>
-                <Button onClick={handleOpenDeclineConfirm}>
+                <Button onClick={handleOpenDeclineConfirm} disabled={buttonEnabled}>
                     Decline
                 </Button>
                 <Dialog 
@@ -101,7 +104,7 @@ const ApplicantCard = (props: any) => {
                 </Dialog>
             </Grid>
              <Grid item xs={5}>
-                <ContainedButton onClick={handleOpenAcceptConfirm}>
+                <ContainedButton onClick={handleOpenAcceptConfirm} disabled={buttonEnabled}>
                     Accept
                 </ContainedButton>
                 <Dialog 

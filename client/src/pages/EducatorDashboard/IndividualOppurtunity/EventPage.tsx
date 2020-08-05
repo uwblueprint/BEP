@@ -81,7 +81,9 @@ const EventPage = (props: any) => {
 
 
   var displayApplications = applications.map((applicant) => {
+
     var applicationProps = {
+        eventName: eventData.eventName,
         applicant
     };
     return <ApplicantCard info={applicationProps} />
