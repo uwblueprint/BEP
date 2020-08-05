@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Event } from "../../data/types/EventTypes"
 import { connect } from "react-redux";
 import { fetchEventsService } from "../../data/services/eventsServices"
@@ -11,8 +12,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container';
 import { PageHeader, PageBody } from '../../components/index';
+import Typography from "@material-ui/core/Typography";
+
 
 
 type EventProps = {
@@ -30,14 +34,25 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps & EventProps
 
-const mapStateToProps = (state: any): StateProps => ({
-    events: getFilteredEvents(state.events),
-})
+const useStyles = makeStyles((theme) => ({
+    tabs: {
+        backgroundColor: theme.palette.primary.light,
+        boxShadow: '0',
+        paddingTop: '2em'
+    },
+    dateFilter: {
+        paddingTop: "2em",
+        display: "flex",
+        flexDirection: "row"
+    },
+    dateFilterText: {
+        padding: "4px 0px"
+    },
+    dateFilterBoxes: {
+        padding: "0px 10px"
+    }
 
-const mapDispatchToProps = (dispatch: any): DispatchProps => ({
-    fetchEvents: (limit: number, offset: number) => dispatch(fetchEventsService(limit, offset)),
-    changeFilter: (filter: string) => dispatch(changeFilter(filter))
-})
+}));
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -57,8 +72,8 @@ function TabPanel(props: TabPanelProps) {
             {...other}
         >
             {value === index && (
-                <Container>
-                    <Box>
+                <Container >
+                    <Box >
                         {children}
                     </Box>
                 </Container>
@@ -75,6 +90,8 @@ function a11yProps(index: any) {
 }
 
 const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter }: Props) => {
+    const classes = useStyles();
+
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [isPastEvent, setIsPastEvent] = useState(false)
@@ -85,7 +102,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
     const [prevY, setPrevY] = useState<number>(0);
     const [lastEventListLength, setLastEventListLength] = useState<number>(0);
     const [loadedAllEvents, setLoadedAllEvents] = useState<boolean>(false);
-    const [offset, setOffset] = useState<number>(5);
+    const [offset, setOffset] = useState<number>(10);
 
     const loadingRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
@@ -149,66 +166,100 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
     };
 
     return (
-        <React.Fragment>
-            <PageHeader header="Your Opportunities" />
-            <div>
-                <AppBar position="static">
-                    <Tabs value={tabValue} indicatorColor="secondary" onChange={handleTabChange} aria-label="simple tabs example">
+        <div style={{ height: "100vh" }}>
+            <Grid container style={{ height: "100%" }}>
 
-                        <Tab onClick={() => changeFilter("ACTIVE") && setIsPastEvent(false)} label="CURRENT" {...a11yProps(0)} />
-                        <Tab onClick={() => changeFilter("PAST") && setIsPastEvent(true)} label="PAST" {...a11yProps(1)} />
-                    </Tabs>
-                </AppBar>
-            </div>
+                <PageHeader header="Your Opportunities" />
 
-            {console.log("hello")}
+                <Grid sm={2} />
 
-            <PageBody>
-
-                <TabPanel value={tabValue} index={1}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <KeyboardDatePicker
-                            placeholder="Start date"
-                            value={startDate}
-                            onChange={date => setStartDate(date)}
-                            format="yyyy/MM/dd"
-                        />
-                    </MuiPickersUtilsProvider>
+                <Grid item xs={10} sm={8} >
 
 
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <KeyboardDatePicker
-                            placeholder="End date"
-                            value={endDate}
-                            onChange={date => setEndDate(date)}
-                            format="yyyy/MM/dd"
-                        />
-                    </MuiPickersUtilsProvider>
-                </TabPanel>
-                <div>
+                    <AppBar elevation={0} position="static" color="transparent">
+                        <Tabs className={classes.tabs} value={tabValue} onChange={handleTabChange} aria-label="Simple Tabs">
 
-                    {events.length == 0 && retrievedData ?
-                        <div>
-                            <p>You do not currently have any listed opportunities.
+                            <Tab onClick={() => changeFilter("ACTIVE") && setIsPastEvent(false)} label="CURRENT" {...a11yProps(0)} />
+                            <Tab onClick={() => changeFilter("PAST") && setIsPastEvent(true)} label="PAST" {...a11yProps(1)} />
+                        </Tabs>
+                    </AppBar>
+                </Grid>
+                <Grid sm={2} />
+
+
+                <PageBody>
+
+                    <TabPanel value={tabValue} index={1}>
+                        <div className={classes.dateFilter}>
+                            <Typography variant="body1" className={classes.dateFilterText}>
+                                Filter by date:
+                            </Typography>
+
+                            <div className={classes.dateFilterBoxes}>
+
+                                <MuiPickersUtilsProvider utils={DateFnsUtils} >
+                                    <KeyboardDatePicker
+                                        placeholder="Start date"
+                                        value={startDate}
+                                        onChange={date => setStartDate(date)}
+                                        format="yyyy/MM/dd"
+                                    />
+                                </MuiPickersUtilsProvider>
+                            </div>
+
+                            <Typography variant="body1" className={classes.dateFilterText} >
+                                to
+                            </Typography>
+
+                            <div className={classes.dateFilterBoxes}>
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <KeyboardDatePicker
+                                        placeholder="End date"
+                                        value={endDate}
+                                        onChange={date => setEndDate(date)}
+                                        format="yyyy/MM/dd"
+                                    />
+                                </MuiPickersUtilsProvider>
+                            </div>
+
+                        </div>
+
+                    </TabPanel>
+                    <div>
+
+                        {events.length == 0 && retrievedData ?
+                            <div>
+                                <p>You do not currently have any listed opportunities.
                                 Click 'Create Opportunity' to get started!</p>
-                        </div> :
+                            </div> :
 
-                        isPastEvent
-                            ? events.filter((event, index) =>
-                                new Date(event.startDate) > new Date(startDate || "0") &&
-                                new Date(event.endDate) < new Date(endDate || Date.now())
-                            ).map((event, index) =>
-                                <EventCard key={index} event={event} />
-                            ) : events.map((event, index) =>
-                                <EventCard key={index} event={event} />
-                            )}
-                </div>
+                            isPastEvent
+                                ? events.filter((event, index) =>
+                                    new Date(event.startDate) > new Date(startDate || "0") &&
+                                    new Date(event.endDate) < new Date(endDate || Date.now())
+                                ).map((event, index) =>
+                                    <EventCard key={index} event={event} />
+                                ) : events.map((event, index) =>
+                                    <EventCard key={index} event={event} />
+                                )}
+                    </div>
 
-                <div ref={loadingRef} />
+                    <div ref={loadingRef} />
 
-            </PageBody>
-        </React.Fragment >
+                </PageBody>
+            </Grid>
+        </div>
+
     )
 }
+
+const mapStateToProps = (state: any): StateProps => ({
+    events: getFilteredEvents(state.events),
+})
+
+const mapDispatchToProps = (dispatch: any): DispatchProps => ({
+    fetchEvents: (limit: number, offset: number) => dispatch(fetchEventsService(limit, offset)),
+    changeFilter: (filter: string) => dispatch(changeFilter(filter))
+})
 
 export default connect<StateProps, DispatchProps, EventProps>(mapStateToProps, mapDispatchToProps)(EducatorDashboard);

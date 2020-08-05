@@ -32,6 +32,13 @@ const pageHeaderGutterStyle = (theme: Theme) =>
     },
   });
 
+const appBarStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      backgroundColor: theme.palette.primary.light,
+    },
+  });
+
 const PageHeaderGutter = withStyles(pageHeaderGutterStyle)((props: any) => (
   <Grid item {...props}>
     {props.children}
@@ -52,24 +59,26 @@ const PageHeader = withStyles(pageHeaderStyle)((props: any) => (
     alignItems="flex-end"
     {...props}
   >
-    <PageHeaderGutter sm={1} />
-    <Grid item xs={10} sm={10} >
-      <Typography variant="h1" style={{ paddingBottom: "10px" }} {...props}>
+    <PageHeaderGutter sm={2} />
+    <Grid item xs={10} sm={8} >
+      <Typography variant="h1" {...props} style={{ height: "70%", maxWidth: 1000, margin: 0 }}>
         {props.header}
       </Typography>
     </Grid>
-    <PageHeaderGutter sm={1} />
+    <PageHeaderGutter sm={2} />
   </Grid>
 ));
 
 const PageBody = withStyles(pageBodyStyle)((props: any) => (
   <Grid container direction="row" style={{ height: "100%" }}>
-    <PageBodyGutter sm={1} />
-    <Grid item xs={12} sm={10} {...props}>
+    <PageBodyGutter sm={2} />
+    <Grid item xs={10} sm={8} {...props}>
       {props.children}
     </Grid>
-    <PageBodyGutter sm={1} />
+    <PageBodyGutter sm={2} />
   </Grid>
 ));
+
+
 
 export { PageHeader, PageBody, PageBodyGutter, PageHeaderGutter };

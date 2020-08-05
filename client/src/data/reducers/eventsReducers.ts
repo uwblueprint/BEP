@@ -16,6 +16,8 @@ const initialState: EventsState = {
     pastList: [],
 }
 
+let today: Date = new Date()
+
 export default function eventsFilter(
     state: EventsState = initialState,
     action: { type: string; payload: any; filter: any }
@@ -25,8 +27,8 @@ export default function eventsFilter(
             return {
                 ...state,
                 list: state.list.concat(action.payload.list),
-                activeList: state.activeList.concat(action.payload.list.filter((t: Event) => t.isActive)),
-                pastList: state.pastList.concat(action.payload.list.filter((t: Event) => !t.isActive))
+                activeList: state.activeList.concat(action.payload.list.filter((t: Event) => new Date(t.endDate) >= today)),
+                pastList: state.pastList.concat(action.payload.list.filter((t: Event) => new Date(t.endDate) < today))
             }
         case CHANGE_EVENTS_FILTER:
             return {

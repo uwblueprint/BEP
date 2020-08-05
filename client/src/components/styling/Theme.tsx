@@ -29,14 +29,13 @@ const theme = createMuiTheme({
   },
   typography: {
     h1: {
-      fontFamily: "Avenir",
       fontStyle: "normal",
-      // fontWeight: "800",
-      fontSize: "36px",
+      fontSize: "40px",
       lineHeight: "49px",
+      fontWeight: 'bold'
     },
     h3: {
-      fontSize: '48px',
+      fontSize: '40px',
       letterSpacing: 0,
       lineHeight: '72px',
       fontWeight: 'normal',

@@ -8,17 +8,14 @@ import Grid from "@material-ui/core/Grid";
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        minWidth: 275,
-        padding: theme.spacing(0, 3),
     },
     card: {
-        maxWidth: 1000,
         margin: `${theme.spacing(7)}px auto`,
         padding: theme.spacing(3),
         borderRadius: 5
     },
     tag: {
-        padding: '0px 5px',
+        padding: '0px 3px',
         margin: '2px',
         textAlign: 'center',
         borderRadius: 10,
@@ -111,7 +108,7 @@ export default function EventCard(props: any) {
                 {props.event.isActive ?
                     <CardContent>
                         <Grid container spacing={0}>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 <Typography variant="subtitle2" className={classes.tag} >
                                     Posting expires on {(new Date(props.event.postingExpiry)).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')}
                                 </Typography>
