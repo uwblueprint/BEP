@@ -96,7 +96,7 @@ const EventSection = (props: any) => {
                   SCHOOL
                 </Typography>
                 <Typography>
-                  props.events.numberofstudents
+                  {props.event.schoolName}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
@@ -104,7 +104,7 @@ const EventSection = (props: any) => {
                   ADDRESS
                 </Typography>
                 <Typography>
-                  props.events.numberofstudents
+                  {props.event.schoolAddress}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
@@ -112,7 +112,7 @@ const EventSection = (props: any) => {
                   TRANSPORTATION
                 </Typography>
                 <Typography>
-                  props.events.numberofstudents
+                  {props.event.schoolTransportation}
                 </Typography>
               </Grid>
             </Grid>
@@ -128,7 +128,7 @@ const EventSection = (props: any) => {
                   Educator
                 </Typography>
                 <Typography>
-                  props.events.numberofstudents
+                  {props.event.contactName}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
@@ -136,7 +136,7 @@ const EventSection = (props: any) => {
                   Position
                 </Typography>
                 <Typography>
-                  props.events.numberofstudents
+                  {props.event.contactPosition}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
@@ -144,7 +144,7 @@ const EventSection = (props: any) => {
                   Phone Number
                 </Typography>
                 <Typography>
-                  props.events.numberofstudents
+                  {props.event.contactPhone}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
@@ -152,7 +152,7 @@ const EventSection = (props: any) => {
                   Email Address
                 </Typography>
                 <Typography>
-                  props.events.numberofstudents
+                  {props.event.contactEmail}
                 </Typography>
               </Grid>
             </Grid>
@@ -162,7 +162,7 @@ const EventSection = (props: any) => {
             <Typography variant="h6" classes={{
               root: classes.root,
             }}>
-                Confirmed Volunteers props.events.confirmedvolunteers / props.events.numberofvolunteersneeded
+                Confirmed Volunteers {props.event.confirmedVolunteers} / {props.event.numberOfVolunteers}
             </Typography>
             <ConfirmedVolunteerCard />
           </Box>
