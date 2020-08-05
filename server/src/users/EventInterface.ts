@@ -30,6 +30,8 @@ export interface EventApplicantInterface {
     linkedinUrl: string;
     areasOfExpertise: string;
     employmentStatus: string;
+    accepted: boolean;
+    denied: boolean;
 }
 
 export interface EventInvitationInterface {
@@ -40,4 +42,11 @@ export interface EventInvitationInterface {
     linkedinUrl: string;
     areasOfExpertise: string;
     employmentStatus: string;
+}
+
+export interface EventVolunteerInterface {
+    volunteerName: string;
+    job: string;
+    company: string;
+    personalPronouns: string;
 }

@@ -2,21 +2,24 @@
  * Data Model Interfaces
  */
 
-import Event, { EventApplicantInterface, EventInvitationInterface } from './EventInterface';
+import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
 import { conn } from '../server';
+import e from 'express';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
 const eventApplicantApi: string = 'EventApplicants__r';
 const eventInvitationApi: string = 'EventInvitations__r';
+const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
     'Name, isActive__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
     'startDate__c, endDate__c, postingExpiry__c, applicationsReceived__c, ' +
     'invitationsSent__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, schoolName__c, schoolAddress__c, ' +
     'schoolTransportation__c, contactEmail__c, contactName__c, contactPhone__c, contactPosition__c';
 
-const eventApplicantFields: string = 'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c';
+const eventApplicantFields: string = 'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, accepted__c, denied__c';
 const eventInvitationFields: string = 'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c';
+const eventVolunteerFields: string = 'Name, job__c, volunteerPersonalPronouns__c, volunteerCompany__c'
 
 /**
  * Service Methods
@@ -91,6 +94,8 @@ const salesforceApplicantToEventAppliantModel = (record: any): EventApplicantInt
         linkedinUrl: record.linkedInUrl__c,
         areasOfExpertise: record.areasOfExpertise__c,
         employmentStatus: record.employmentStatus__c,
+        accepted: record.accepted__c,
+        denied: record.denied__c
     }
 
     return applicant
@@ -108,6 +113,17 @@ const salesforceInvitationToEventInvitationModel = (record: any): EventInvitatio
     }
 
     return invitation
+}
+
+const salesforceEventVolunteerToEventVolunteerModel = (record: any): EventVolunteerInterface => {
+    const volunteer: EventVolunteerInterface = {
+        volunteerName: record.Name,
+        job: record.job__c,
+        company: record.volunteerPersonalPronouns__c,
+        personalPronouns: record.volunteerCompany__c,
+    }
+
+    return volunteer
 }
 
 
@@ -199,6 +215,26 @@ export const getInvitations = async (eventName: string): Promise<EventInvitation
     );
     console.log(invitations)
     return invitations
+}
+
+export const getVolunteers = async (eventName: string): Promise<EventVolunteerInterface> => {
+    let volunteers: EventVolunteerInterface
+    console.log("This is the event Name:", eventName)
+
+    await conn.query(
+        `SELECT (SELECT ${eventVolunteerFields} FROM ${eventVolunteerApi}) FROM ${eventApi} WHERE Name='${eventName}`,
+        function(err, result) {
+            if (err) {
+            return console.error(err)
+            }
+            console.log(result.records[0].EventVolunteers__r.records)
+
+            volunteers = result.records[0].EventVolunteers__r.records.map(record => salesforceEventVolunteerToEventVolunteerModel(record));
+        }
+    );
+    console.log(volunteers)
+
+    return volunteers
 }
 
 // let eventInfo: Event = conn
