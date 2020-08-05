@@ -14,6 +14,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import { ContainedButton, PageHeaderGutter, PageHeader, PageBody } from '../../components/index';
+import { Link } from 'react-router-dom'
 
 
 type EventProps = {
@@ -191,9 +192,19 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                                 new Date(event.startDate) > new Date(startDate || "0") &&
                                 new Date(event.endDate) < new Date(endDate || Date.now())
                             ).map((event, index) =>
-                                <EventCard key={index} event={event} />
+                                <Link to={{
+                                    pathname: "/event-page",
+                                    state: {event}
+                                }}>
+                                    <EventCard key={index} event={event} />
+                                </Link>
                             ) : events.map((event, index) =>
-                                <EventCard key={index} event={event} />
+                                <Link to={{
+                                    pathname: "/event-page",
+                                    state: {event}
+                                }}>
+                                    <EventCard key={index} event={event} />
+                                </Link>
                             )}
                 </div>
 

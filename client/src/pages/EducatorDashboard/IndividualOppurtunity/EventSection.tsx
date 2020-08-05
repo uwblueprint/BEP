@@ -1,79 +1,98 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
+import ConfirmedVolunteerCard from './ConfirmedVolunteerCard'
+import Divider from '@material-ui/core/Divider';
+
+const useStyles = makeStyles(() => ({
+  root: {
+      paddingTop: '10px'
+  }
+}));
 
 
 const EventSection = (props: any) => {
+
+  const classes = useStyles()
+
+  console.log("Line 20:" , props.event)
   
     return (
       <Box>
           <Box>
-            <Typography>Event Details</Typography>
+          <Divider />
+            <Typography variant="h6" classes={{
+              root: classes.root,
+            }}>Event Details</Typography>
             <Grid container spacing={2} >
               <Grid item xs={6}>
-                <Typography variant="body1" component="h2">
+                <Typography variant="subtitle1" component="h1">
                     ACTIVITY TYPE
                 </Typography>
                 <Typography>
-                    props.event.eventtype
+                    {props.event.activityType}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body1" component="h2">
+                <Typography variant="subtitle1" component="h1">
                     PREFERRED SECTOR
                 </Typography>
                 <Typography>
-                    props.event.prefferedsector
+                    {props.event.preferredSector}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                     DATE(S) OF EVENTS
                 </Typography>
                 <Typography>
-                    props.event.datesofevent
+                    {props.event.startDate}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                     GRADES OF PARTICIPATING STUDENTS
                 </Typography>
                 <Typography>
-                    props.event.grades
+                    {props.event.gradeOfStudents}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body1" component="h2">
+                <Typography variant="subtitle1" component="h1">
                   HOURS OF COMMITMENT
                 </Typography>
                 <Typography>
-                    props.event.hoursofcommitment
+                    {props.event.hoursCommitment}
                 </Typography>
                 </Grid>
               <Grid item xs={6}>
-                <Typography variant="body1" component="h2">
+                <Typography variant="subtitle1" component="h1">
                   NUMBER OF STUDENTS
                 </Typography>
                 <Typography>
-                    props.events.numberofstudents
+                    {props.event.numberOfStudents}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body1" component="h2">
+                <Typography variant="subtitle1" component="h1">
                   NUMBER OF VOLUNTEERS NEEDED
                 </Typography>
                 <Typography>
-                  props.events.numberofstudents
+                  {props.event.numberOfVolunteers}
                 </Typography>
               </Grid>
               </Grid>
           </Box>
           <Box>
-            <Typography>School Details</Typography>
+          <Divider />
+            <Typography variant="h6" classes={{
+                root: classes.root,
+              }}>School Details</Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                   SCHOOL
                 </Typography>
                 <Typography>
@@ -81,7 +100,7 @@ const EventSection = (props: any) => {
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                   ADDRESS
                 </Typography>
                 <Typography>
@@ -89,7 +108,7 @@ const EventSection = (props: any) => {
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                   TRANSPORTATION
                 </Typography>
                 <Typography>
@@ -99,10 +118,13 @@ const EventSection = (props: any) => {
             </Grid>
           </Box>
           <Box>
-            <Typography>Contact Details</Typography>
+          <Divider />
+            <Typography variant="h6" classes={{
+              root: classes.root,
+            }}> Details </Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                   Educator
                 </Typography>
                 <Typography>
@@ -110,7 +132,7 @@ const EventSection = (props: any) => {
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                   Position
                 </Typography>
                 <Typography>
@@ -118,7 +140,7 @@ const EventSection = (props: any) => {
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                   Phone Number
                 </Typography>
                 <Typography>
@@ -126,7 +148,7 @@ const EventSection = (props: any) => {
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-              <Typography variant="body1" component="h2">
+              <Typography variant="subtitle1" component="h1">
                   Email Address
                 </Typography>
                 <Typography>
@@ -136,9 +158,13 @@ const EventSection = (props: any) => {
             </Grid>
           </Box>
           <Box>
-            <Typography>
-                Confirmed Volunteers
+          <Divider />
+            <Typography variant="h6" classes={{
+              root: classes.root,
+            }}>
+                Confirmed Volunteers props.events.confirmedvolunteers / props.events.numberofvolunteersneeded
             </Typography>
+            <ConfirmedVolunteerCard />
           </Box>
         </Box>
     )

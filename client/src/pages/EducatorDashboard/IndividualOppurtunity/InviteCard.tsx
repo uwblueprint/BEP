@@ -5,9 +5,15 @@ import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link'
 import Card from '@material-ui/core/Card'
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog'
-import { Button } from '../../../components/Button'
+
+import { ContainedButton, Button } from '../../../components/Button'
 import { findAllByTestId } from '@testing-library/react';
+import { SSL_OP_NETSCAPE_CHALLENGE_BUG } from 'constants';
 
 export interface DialogProps {
     open: boolean;
@@ -24,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
         margin: `${theme.spacing(4)}px auto`,
         padding: theme.spacing(4),
         borderRadius: 10
+    },
+    root: {
+        paddingLeft: '25px',
     }
 }));
 
@@ -34,6 +43,10 @@ const InviteCard = (props: any) => {
 
     const handleClickOpen = () => {
         setOpen(true)
+    }
+
+    const handleClickAcceptClose = () => {
+        setOpen(false)
     }
 
     const handleClickClose = () => {
@@ -59,11 +72,20 @@ const InviteCard = (props: any) => {
                     Retract Invitations
             </Typography>
             </Button> 
-            <Dialog aria-labelledby="simple-dialog-title" open={open} >
-                    <Typography>Are you sure you want to retract your invitation to {props.info.invite.invitationName}</Typography>
-                    <Typography>You cannot change your decision after this</Typography>
-                    <Button onClick={handleClickClose}>Accept</Button>
-                    <Button onClick={handleClickClose}>Decline</Button>
+            <Dialog 
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"  
+                    open={open}>
+                    <DialogTitle>Are you sure you want to retract your invitation to {props.info.invite.invitationName}</DialogTitle>
+                <DialogContent classes={{
+                    root: classes.root,
+                }}>
+                    <DialogContentText>You cannot change your decision after this</DialogContentText>
+                </DialogContent>
+                    <DialogActions>
+                    <ContainedButton onClick={handleClickAcceptClose}>Yes</ContainedButton>
+                    <Button onClick={handleClickClose}>No</Button>
+                    </DialogActions>
                 </Dialog>
         </Grid>
         <Grid item xs={6}>

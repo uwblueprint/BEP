@@ -11,9 +11,9 @@ import ApplicantCard from './ApplicantCard'
 import { getApplications, getInvitations } from '../../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
-import { Button } from '../../../components/Button'
+import { DarkContainedButton, ContainedButton } from '../../../components/Button'
 import EventSection from './EventSection'
-import { ContainedButton, PageHeaderGutter, PageHeader, PageBody } from '../../../components/index';
+import { PageHeaderGutter, PageHeader, PageBody } from '../../../components/index';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const EventPage = (props: any) => {
-  console.log(props)
+  console.log("These are the event props", props)
   const classes = useStyles();
   const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState([]);
@@ -69,9 +69,12 @@ const EventPage = (props: any) => {
     setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
   };
 
+  const eventData = props.location.state.event
+  console.log("This is the event data", eventData)
+
   //Date checking
   // let eventStartDate = props.event.startDate
-  let eventStartDate = new Date('2021-07-01T21:11:54') //Date for testing
+  let eventStartDate = new Date(eventData.startDate) //Date for testing
   let today: Date = new Date()
 
   let pastEvent: boolean = today > eventStartDate ? true : false
@@ -122,14 +125,14 @@ const EventPage = (props: any) => {
     <React.Fragment>
     {pastEvent ? 
         <React.Fragment>
-                <PageHeader header="props.event.title" />
-                <Button>
+                <PageHeader header={eventData.eventName} />
+                <DarkContainedButton>
                   Duplicate Event
-                </Button>
+                </DarkContainedButton>
           <div style={{ height: "100vh" }}>
           <Grid container style={{ height:"100%" }}>
             <PageBody>
-              <EventSection /> 
+              <EventSection event={eventData} /> 
             </PageBody>
           </Grid>
           </div>
@@ -137,7 +140,7 @@ const EventPage = (props: any) => {
     <React.Fragment>
     <div style={{ height: "100vh" }}>
       <Grid container style={{ height:"100%" }}>
-        <PageHeader header="props.event.title" />
+        <PageHeader header={eventData.eventName} />
         <PageBody>
           <div className={classes.root}>
       {props.date}
@@ -168,12 +171,12 @@ const EventPage = (props: any) => {
                 </Typography>
               </Grid>
               <Grid item xs={2}>
-                <Button color="default">
+                <ContainedButton>
                   Edit Opportunity
-                </Button>
+                </ContainedButton>
               </Grid>
             </Grid>
-        <EventSection />
+        <EventSection event={eventData} />
       </React.Fragment>
       </TabPanel>
       <TabPanel value={value} index={1}>
