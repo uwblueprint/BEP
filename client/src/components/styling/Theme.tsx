@@ -29,8 +29,9 @@ const theme = createMuiTheme({
     },
   },
   typography: {
+    // fontFamily: '"Lato", sans-serif',
     h1: {
-      fontFamily: "Arial",
+      fontFamily: 'Arial',
       fontStyle: "normal",
       // fontWeight: "800",
       fontSize: "36px",

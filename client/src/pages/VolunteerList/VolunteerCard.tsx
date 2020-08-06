@@ -44,18 +44,20 @@ export default function VolunteerCard(props: any) {
 
           <Grid item xs={6}>
             <Typography variant="subtitle1">Sectors</Typography>
-            <Typography>
+            <Typography variant="body1">
               {props.employer ? props.employer.sectors.join(", ") : ""}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1">Areas of Expertise</Typography>
-            <Typography>{props.expertiseAreas.join(", ")}</Typography>
+            <Typography variant="body1">
+              {props.expertiseAreas.join(", ")}
+            </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1">LinkedIn URL</Typography>
             <Link target="_blank" href={props.linkedIn}>
-              <SecondaryMainTextTypography>
+              <SecondaryMainTextTypography variant="body1">
                 {
                   props.linkedIn
                     .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
@@ -66,7 +68,7 @@ export default function VolunteerCard(props: any) {
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1">Employment Status</Typography>
-            <Typography>{props.employmentStatus}</Typography>
+            <Typography variant="body1">{props.employmentStatus}</Typography>
           </Grid>
         </Grid>
       </CardContent>
