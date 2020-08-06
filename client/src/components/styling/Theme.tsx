@@ -83,7 +83,23 @@ const theme = createMuiTheme({
       letterSpacing: '0.5px',
       fontWeight: 500,
       lineHeight: '24px',
-      textTransform: 'lowercase'
+    }
+  }, overrides: {
+    MuiTab: {
+      root: {
+        textTransform: 'none'
+      }
+    }, MuiIconButton: {
+      root: {
+        color: '#0A79BF'
+      }
+    }, MuiContainer: {
+      root: {
+        padding: 0,
+        '@media (min-width: 0px)': {
+          padding: 0
+        }
+      }
     }
   }
 });

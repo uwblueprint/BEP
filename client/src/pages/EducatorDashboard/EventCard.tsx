@@ -21,6 +21,11 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 10,
         background: '#F7FAFC'
     },
+    textHighlight: {
+        paddingLeft: '1em',
+        color: '#0A79BF',
+        fontWeight: 700
+    }
 
 }));
 
@@ -115,12 +120,12 @@ export default function EventCard(props: any) {
                             </Grid>
                             <Grid item xs={3}>
                                 <Typography variant="subtitle2" className={classes.tag}>
-                                    Applications Received {props.event.applicationsReceived}
+                                    Applications Received <span className={classes.textHighlight}>{props.event.applicantNumber}</span>
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>
                                 <Typography variant="subtitle2" className={classes.tag}>
-                                    Invitations Sent {props.event.invitationsSent}
+                                    Invitations Sent <span className={classes.textHighlight}>{props.event.invitationNumber}</span>
                                 </Typography>
                             </Grid>
                         </Grid>

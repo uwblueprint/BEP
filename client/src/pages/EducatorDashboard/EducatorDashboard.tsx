@@ -54,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+// TAB PANEL CODE FROM MATERIAL UI - may want to reuse this or create a global tab component
+
 interface TabPanelProps {
     children?: React.ReactNode;
     index: any;
@@ -92,22 +94,23 @@ function a11yProps(index: any) {
 const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter }: Props) => {
     const classes = useStyles();
 
+    //State variables for educator dashboard
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [isPastEvent, setIsPastEvent] = useState(false)
     const [retrievedData, setRetrievedData] = useState(false);
     const [tabValue, setTabValue] = useState(0)
 
+    // State variables for infinite scroll functionality
     const [page, setPage] = useState<number>(0);
     const [prevY, setPrevY] = useState<number>(0);
     const [lastEventListLength, setLastEventListLength] = useState<number>(0);
     const [loadedAllEvents, setLoadedAllEvents] = useState<boolean>(false);
-    const [offset, setOffset] = useState<number>(10);
+    const offset = 10;
 
     const loadingRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
     const handleObserver = useCallback((entities: any, observer: IntersectionObserver) => {
-        console.log("observer")
         const y = entities[0].boundingClientRect.y;
         const newPage = page + 1;
 
@@ -132,8 +135,6 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
 
     useEffect(() => {
 
-        console.log("Loading Ref")
-
         var options = {
             root: null, // Page as root
             rootMargin: "0px",
@@ -155,11 +156,14 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
     }, [loadingRef, handleObserver])
 
     useEffect(() => {
-        console.log("fetching data")
-        fetchEvents(offset, page * offset)
-        setRetrievedData(true)
+        // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
+        // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
+        (async function test() {
+            await fetchEvents(offset, page * offset)
+            setRetrievedData(true)
+        })();
 
-    }, [])
+    }, []);
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setTabValue(newValue);
@@ -179,8 +183,8 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                     <AppBar elevation={0} position="static" color="transparent">
                         <Tabs className={classes.tabs} value={tabValue} onChange={handleTabChange} aria-label="Simple Tabs">
 
-                            <Tab onClick={() => changeFilter("ACTIVE") && setIsPastEvent(false)} label="CURRENT" {...a11yProps(0)} />
-                            <Tab onClick={() => changeFilter("PAST") && setIsPastEvent(true)} label="PAST" {...a11yProps(1)} />
+                            <Tab onClick={() => changeFilter("ACTIVE") && setIsPastEvent(false)} label="Current" {...a11yProps(0)} />
+                            <Tab onClick={() => changeFilter("PAST") && setIsPastEvent(true)} label="Past" {...a11yProps(1)} />
                         </Tabs>
                     </AppBar>
                 </Grid>
