@@ -90,8 +90,6 @@ const EventPage = (props: any) => {
     setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
   };
 
-  //Date checking
-  // let eventStartDate = props.event.startDate
   let eventStartDate = new Date(eventData.startDate) //Date for testing
   let today: Date = new Date()
 
@@ -248,18 +246,24 @@ const EventPage = (props: any) => {
       <TabPanel value={value} index={1}>
         {volunteers.length === eventData.numberOfVolunteers ? <Typography variant="body1">The positions for this oppurtunity have been filled</Typography> : null}
         {applications.length === 0 ? 
+        <React.Fragment>
         <Typography>
           There are currently no applications for this oppurtunity. {'\n'}
-          Get started by browsing applications to accept an application!
-        </ Typography> 
+          Get started by browsing volunteer applications to accept an application!
+        </ Typography>
+        <ContainedButton>Browse Volunteers</ContainedButton> 
+        </React.Fragment>
       : displayApplications}
       </TabPanel>
       <TabPanel value={value} index={2}>
       {invitations.length === 0 ? 
+      <React.Fragment>
         <Typography>
           There are currently no invitations for this oppurtunity. {'\n'}
           Get started by browsing volunteers and send an invitation! 
         </ Typography> 
+        <ContainedButton>Browse Volunteers</ContainedButton>
+        </React.Fragment> 
       : displayInvitations}
       </TabPanel>
     </div>
