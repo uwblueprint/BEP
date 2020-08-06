@@ -110,7 +110,7 @@ export default function EventCard(props: any) {
                     </Grid>
                 </CardContent>
 
-                {props.event.isActive ?
+                {!props.isPastEvent ?
                     <CardContent>
                         <Grid container spacing={0}>
                             <Grid item xs={3}>

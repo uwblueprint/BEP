@@ -242,9 +242,9 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                                     new Date(event.startDate) > new Date(startDate || "0") &&
                                     new Date(event.endDate) < new Date(endDate || Date.now())
                                 ).map((event, index) =>
-                                    <EventCard key={index} event={event} />
+                                    <EventCard key={index} event={event} isPastEvent={isPastEvent} />
                                 ) : events.map((event, index) =>
-                                    <EventCard key={index} event={event} />
+                                    <EventCard key={index} event={event} isPastEvent={isPastEvent} />
                                 )}
                     </div>
 
