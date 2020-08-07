@@ -13,8 +13,7 @@ const eventInvitationApi: string = 'EventInvitations__r';
 const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
     'Name, isActive__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
-    'startDate__c, endDate__c, postingExpiry__c, applicationsReceived__c, ' +
-    'invitationsSent__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, schoolName__c, schoolAddress__c, ' +
+    'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, schoolName__c, schoolAddress__c, ' +
     'schoolTransportation__c, contactEmail__c, contactName__c, contactPhone__c, contactPosition__c, ApplicantNumber__c, invitationNumber__c';
 
 const eventApplicantFields: string = 'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, applicantCompany__c, accepted__c, denied__c';

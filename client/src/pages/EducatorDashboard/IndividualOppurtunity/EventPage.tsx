@@ -12,8 +12,9 @@ import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
 import { DarkContainedButton, ContainedButton } from '../../../components/Button'
 import EventSection from './EventSection'
-import { PageHeader, PageBody } from '../../../components/index';
+import { PageHeader, PageBody } from '../../../components/Page';
 import ConfirmedVolunteerCard from './ConfirmedVolunteerCard';
+import { Link } from 'react-router-dom'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -162,16 +163,26 @@ const EventPage = (props: any) => {
   return (
     <React.Fragment>
     {pastEvent ? 
-        <React.Fragment>
-                <PageHeader header={eventData.eventName} />
-                <DarkContainedButton>
-                  Duplicate Event
-                </DarkContainedButton>
-          <div style={{ height: "100vh" }}>
-          <Grid container style={{ height:"100%" }}>
+        <div style={{ height: "100vh" }}>
+            <Grid container style={{ height: "100%" }}>
+                <PageHeader>
+                    <Grid container spacing={2}>
+                      <Grid item xs={9}>
+                        <Link to="/educator-dashboard">{`<`}Back</Link>
+                        <Typography variant="h1">{eventData.eventName}</Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <DarkContainedButton>
+                          Duplicate Details
+                        </DarkContainedButton>
+                      </Grid>
+
+                    </Grid>
+                </PageHeader>
             <PageBody>
               <EventSection event={eventData} />
-              <React.Fragment>
+            </PageBody>
+              <PageBody>
             <Typography variant="h6" classes={{
               root: classes.root,
             }}>
@@ -182,16 +193,15 @@ const EventPage = (props: any) => {
           <Typography>
               Volunteers that have been confirmed for this oppurtunity will show up here.
           </ Typography> 
-      : displayVolunteers}
-        </React.Fragment> 
+      : displayVolunteers} 
             </PageBody>
-          </Grid>
-          </div>
-        </React.Fragment> :
-    <React.Fragment>
-    <div style={{ height: "100vh" }}>
-      <Grid container style={{ height:"100%" }}>
-        <PageHeader header={eventData.eventName} />
+      </Grid>
+      </div> :
+        <div style={{ height: "100vh" }}>
+        <Grid container style={{ height: "100%" }}>
+        <PageHeader>
+            <Typography variant="h1">{eventData.eventName}</Typography>
+        </PageHeader>
         <PageBody>
           <div className={classes.root}>
       {props.date}
@@ -269,8 +279,7 @@ const EventPage = (props: any) => {
     </div>
         </PageBody>
       </Grid>
-    </div>
-    </React.Fragment>}
+    </div>}
     </React.Fragment>
   );
 }
