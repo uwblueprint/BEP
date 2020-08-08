@@ -168,7 +168,8 @@ const EventPage = (props: any) => {
                 <PageHeader>
                     <Grid container spacing={2}>
                       <Grid item xs={9}>
-                        <Link to="/educator-dashboard">{`<`}Back</Link>
+                        <Link to="/educator-dashboard">{`<`} Back</Link>
+                        <br></br>
                         <Typography variant="h1">{eventData.eventName}</Typography>
                       </Grid>
                       <Grid item xs={3}>
@@ -176,22 +177,19 @@ const EventPage = (props: any) => {
                           Duplicate Details
                         </DarkContainedButton>
                       </Grid>
-
                     </Grid>
                 </PageHeader>
             <PageBody>
               <EventSection event={eventData} />
-            </PageBody>
-              <PageBody>
             <Typography variant="h6" classes={{
               root: classes.root,
             }}>
-                Confirmed Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
+                Attended Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
 
             </Typography>
             {volunteers.length === 0 ? 
           <Typography>
-              Volunteers that have been confirmed for this oppurtunity will show up here.
+              There were no volunteers confirmed for this event.
           </ Typography> 
       : displayVolunteers} 
             </PageBody>
@@ -200,18 +198,22 @@ const EventPage = (props: any) => {
         <div style={{ height: "100vh" }}>
         <Grid container style={{ height: "100%" }}>
         <PageHeader>
-            <Typography variant="h1">{eventData.eventName}</Typography>
-        </PageHeader>
-        <PageBody>
+        <Grid container spacing={2}>
+           <Grid item xs={9}>
+             <Link to="/educator-dashboard">{`<`} Back</Link>
+               <Typography variant="h1">{eventData.eventName}</Typography>
+                  </Grid>
+          </Grid>
+          </PageHeader>
+          <PageBody>
+          <AppBar position="static" color="transparent" elevation={0}>
+            <Tabs value={value} onChange={handleChange} aria-label="Simple Tabs">
+              <Tab label = "Event Details" {...a11yProps(0)} />
+              <Tab label={applicationsLabel} {...a11yProps(1)} />
+              <Tab label={invitationsLabel} {...a11yProps(2)} />
+            </Tabs>
+          </AppBar>
           <div className={classes.root}>
-      {props.date}
-      <AppBar position="static" color="transparent" elevation={0}>
-        <Tabs value={value} onChange={handleChange} aria-label="Simple Tabs">
-          <Tab label = "Event Details" {...a11yProps(0)} />
-          <Tab label={applicationsLabel} {...a11yProps(1)} />
-          <Tab label={invitationsLabel} {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
       <TabPanel value={value} index={0}>
         <React.Fragment>
             <Grid container spacing={2}>
