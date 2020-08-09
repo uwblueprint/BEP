@@ -40,12 +40,14 @@ export default function VolunteerCard(props: any) {
           <Grid item xs={4}>
             <Typography>LINKEDIN URL</Typography>
             <Typography>
-              {/*props.volunteerDesiredExternalActivities[0]*/}
+              {props.linkedIn}
             </Typography>
           </Grid>
           <Grid item xs={4}>
             <Typography>EMAIL</Typography>
-            {/*<Typography>{props.expertiseAreas[0]}</Typography>*/}
+            <Typography>
+              {props.email}
+            </Typography>
           </Grid>
         </Grid>
       </CardContent>

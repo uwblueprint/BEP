@@ -40,12 +40,12 @@ export default function VolunteerCard(props: any) {
         <Grid container direction="row">
           <Grid item xs={4}>
             <Typography>EMPLOYMENT STATUS</Typography>
-            <Typography>{/*props.expertiseAreas[0]*/}</Typography>
+            <Typography>{props.employmentStatus}</Typography>
           </Grid>
           <Grid item xs={4}>
             <Typography>ORGANIZATION SECTOR</Typography>
             <Typography>
-              {/*props.volunteerDesiredExternalActivities[0]*/}
+              {props.orgSector}
             </Typography>
           </Grid>
         </Grid>
@@ -53,11 +53,11 @@ export default function VolunteerCard(props: any) {
         <Grid container direction="row">
           <Grid item xs={4}>
             <Typography>AREAS OF EXPERTISE</Typography>
-            <Typography>{/*props.expertiseAreas[0]*/}</Typography>
+            <Typography>{props.expertiseAreas.join(", ")}</Typography>
           </Grid>
           <Grid item xs={4}>
             <Typography>POST SECONDARY TRAINING</Typography>
-            <Typography>{/*props.postSecondaryTraining[0]*/}</Typography>
+            <Typography>{props.postSecondaryTraining.join(", ")}</Typography>
           </Grid>
         </Grid>
       </CardContent>
