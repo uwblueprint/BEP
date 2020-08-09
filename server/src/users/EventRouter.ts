@@ -38,8 +38,8 @@ eventRouter.get('/applications', async (req: Express.Request, res: Express.Respo
         if (name !== undefined) {
             const applications = await EventService.getApplications(name);
             res.status(200).json({
-                applications
-            });
+                    applications
+                });
         } else {
             throw Error(`Invalid query parameters. Please set "name" parameter`);
         }
@@ -58,7 +58,7 @@ eventRouter.patch('/applications/updatestate', async (req: Express.Request, res:
     } else if (type === "deny") {
         EventService.acceptApplicant(eventName, applicantName, false)
     } else {
-        res.status(400).send({ msg: "Bad Request" })
+        res.status(400).send({msg: "Bad Request"})
     }
 })
 
@@ -71,8 +71,8 @@ eventRouter.get('/invitations', async (req: Express.Request, res: Express.Respon
         if (name !== undefined) {
             const invitations = await EventService.getInvitations(name);
             res.status(200).json({
-                invitations
-            });
+                    invitations
+                });
         } else {
             throw Error(`Invalid query parameters. Please set "name" parameter`);
         }
@@ -90,8 +90,8 @@ eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Respons
         if (name !== undefined) {
             const volunteers = await EventService.getVolunteers(name);
             res.status(200).json({
-                volunteers
-            });
+                    volunteers
+                });
         } else {
             throw Error(`Invalid query parameters. Please set "name" parameter`);
         }

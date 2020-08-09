@@ -19,7 +19,6 @@ const textButtonStyle = (theme: Theme) =>
   createStyles({
     root: {
       background: theme.palette.background.default,
-      color: 'yellow'
     },
   });
 

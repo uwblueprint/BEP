@@ -4,6 +4,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../components/styling/Theme";
 import './App.css';
 import EducatorDashboard from '../pages/EducatorDashboard/EducatorDashboard';
+import EventPage from '../pages/EducatorDashboard/IndividualOppurtunity/EventPage'
 import Login from '../pages/Auth/SignIn';
 
 interface IProps extends RouteProps {
@@ -48,6 +49,7 @@ export default class App extends React.Component {
             <Switch>
               <Route exact path="/" component={Login} />
               <Route exact path="/educator-dashboard" component={EducatorDashboard} />
+              <Route path="/event-page" component={EventPage} />
             </Switch>
           </React.Fragment>
         </Router>

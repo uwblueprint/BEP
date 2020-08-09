@@ -4,7 +4,7 @@
 
 import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
 import { conn } from '../server';
-import e from 'express'
+import e from 'express';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
@@ -13,9 +13,8 @@ const eventInvitationApi: string = 'EventInvitations__r';
 const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
     'Name, isActive__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
-    'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, ' +
-    'schoolName__c, schoolAddress__c, schoolTransportation__c, contactEmail__c, contactName__c, ' +
-    'contactPhone__c, contactPosition__c, ApplicantNumber__c, invitationNumber__c';
+    'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, schoolName__c, schoolAddress__c, ' +
+    'schoolTransportation__c, contactEmail__c, contactName__c, contactPhone__c, contactPosition__c, ApplicantNumber__c, invitationNumber__c';
 
 const eventApplicantFields: string = 'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, applicantCompany__c, accepted__c, denied__c';
 const eventInvitationFields: string = 'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c';
@@ -189,71 +188,71 @@ export const acceptApplicant = async (eventName: string, applicantName: string, 
     let eventId: string;
     console.log(eventName);
 
-    await conn.query(
-        `SELECT Id, (SELECT ${eventApplicantFields} FROM ${eventApplicantApi} WHERE Name='${applicantName}') FROM ${eventApi} WHERE Name='${eventName}'`,
-        function (err, result) {
-            if (err) {
-                return console.error(err);
+        await conn.query(
+            `SELECT Id, (SELECT ${eventApplicantFields} FROM ${eventApplicantApi} WHERE Name='${applicantName}') FROM ${eventApi} WHERE Name='${eventName}'`,
+            function (err, result) {
+                if (err) {
+                    return console.error(err);
+                }
+                eventId = result.records[0].Id
+                let data = result.records[0].EventApplicants__r.records[0];
+                console.log("This is the result", data);
+                applicantId = data.Id
+                console.log("This is the applicantID", applicantId)
+                applicantJob = data.job__c;
+                applicantPersonalPronouns = data.personalPronouns__c;
+                applicantCompany = data.applicantCompany__c;
+                console.log("this is the applicantCompany", applicantCompany)
             }
-            eventId = result.records[0].Id
-            let data = result.records[0].EventApplicants__r.records[0];
-            console.log("This is the result", data);
-            applicantId = data.Id
-            console.log("This is the applicantID", applicantId)
-            applicantJob = data.job__c;
-            applicantPersonalPronouns = data.personalPronouns__c;
-            applicantCompany = data.applicantCompany__c;
-            console.log("this is the applicantCompany", applicantCompany)
+        );
+
+        if (accept) {
+            await conn.sobject('EventApplicant__c').update({
+                Id: applicantId,
+                accepted__c: true,
+                denied__c: false
+            }, function(err, ret) {
+                if (err || !ret.success) { return console.error(err, ret); }
+                console.log('Updated Successfully : ' + ret.id);
+            })
+
+            //Add to confirmed volunteers
+
+            await conn.sobject('EventVolunteer__c').create({
+                Name: applicantName,
+                volunteerJob__c: applicantJob,
+                volunteerCompany__c: applicantCompany,
+                volunteerPersonalPronouns__c: applicantPersonalPronouns,
+                EventVolunteer__c: eventId
+            }, function(err, ret) {
+                if (err || !ret.success) { 
+                    // handle exception
+                    return console.error(err, ret); 
+                }
+                console.log("Created record id : " + ret.id);
+            });
+
+        } else {
+            await conn.sobject('EventApplicant__c').update({
+                Id: applicantId,
+                accepted__c: false,
+                denied__c: true
+            }, function(err, ret) {
+                if (err || !ret.success) { return console.error(err, ret); }
+                console.log('Updated Successfully : ' + ret.id);
+            })
         }
-    );
-
-    if (accept) {
-        await conn.sobject('EventApplicant__c').update({
-            Id: applicantId,
-            accepted__c: true,
-            denied__c: false
-        }, function (err, ret) {
-            if (err || !ret.success) { return console.error(err, ret); }
-            console.log('Updated Successfully : ' + ret.id);
-        })
-
-        //Add to confirmed volunteers
-
-        await conn.sobject('EventVolunteer__c').create({
-            Name: applicantName,
-            volunteerJob__c: applicantJob,
-            volunteerCompany__c: applicantCompany,
-            volunteerPersonalPronouns__c: applicantPersonalPronouns,
-            EventVolunteer__c: eventId
-        }, function (err, ret) {
-            if (err || !ret.success) {
-                // handle exception
-                return console.error(err, ret);
-            }
-            console.log("Created record id : " + ret.id);
-        });
-
-    } else {
-        await conn.sobject('EventApplicant__c').update({
-            Id: applicantId,
-            accepted__c: false,
-            denied__c: true
-        }, function (err, ret) {
-            if (err || !ret.success) { return console.error(err, ret); }
-            console.log('Updated Successfully : ' + ret.id);
-        })
-    }
 
 
 }
 
 export const getInvitations = async (eventName: string): Promise<EventInvitationInterface> => {
     let invitations: EventInvitationInterface
-    console.log("This is the event Name:", eventName)
+    console.log("This is the event Name:" , eventName)
 
     await conn.query(
         `SELECT (SELECT ${eventInvitationFields} FROM ${eventInvitationApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
-        function (err, result) {
+        function(err, result) {
             if (err) {
                 return console.error(err)
             }
@@ -272,9 +271,9 @@ export const getVolunteers = async (eventName: string): Promise<EventVolunteerIn
 
     await conn.query(
         `SELECT (SELECT ${eventVolunteerFields} FROM ${eventVolunteerApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
-        function (err, result) {
+        function(err, result) {
             if (err) {
-                return console.error(err)
+            return console.error(err)
             }
             console.log(result.records[0].EventVolunteers__r.records)
 

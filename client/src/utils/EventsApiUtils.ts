@@ -10,4 +10,52 @@ const get = (limit: number, offset: number) => {
     return axios.request(config);
 };
 
-export { get };
+const getApplications = async (eventName: string) => {
+    const config: AxiosRequestConfig = {
+        url: `${baseURL}api/events/applications/?name=${eventName}`,
+        method: "get"
+    };
+
+    return await axios.request(config)
+}
+
+const getInvitations = async (eventName: string) => {
+    const config: AxiosRequestConfig = {
+        url: `${baseURL}api/events/invitations/?name=${eventName}`,
+        method: "get"
+    };
+
+    return await axios.request(config)
+}
+
+const getVolunteers = async (eventName: string) => {
+    const config: AxiosRequestConfig = {
+        url: `${baseURL}api/events/volunteers/?name=${eventName}`,
+        method: "get"
+    };
+
+    return await axios.request(config)
+}
+
+const updateApplicantStatus = async (eventName: string, applicantName: string, type: string) => {
+    const config: AxiosRequestConfig = {
+        url: `${baseURL}api/events/applications/updatestate`,
+        method: "patch",
+        data: {
+            event_name: eventName,
+            applicant_name: applicantName,
+            type:type
+        }
+    }
+
+    return await axios.request(config)
+}
+
+const getSchoolInfo = async () => {
+    const config: AxiosRequestConfig = {
+        url: `${baseURL}api/events/`
+    }
+    return await axios.request(config)
+}
+
+export { get, getApplications, getInvitations, getSchoolInfo, getVolunteers, updateApplicantStatus};

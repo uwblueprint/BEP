@@ -16,7 +16,7 @@ import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container';
 import { PageHeader, PageBody } from '../../components/index';
 import Typography from "@material-ui/core/Typography";
-
+import { Link } from 'react-router-dom'
 
 
 type EventProps = {
@@ -242,9 +242,19 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                                     new Date(event.startDate) > new Date(startDate || "0") &&
                                     new Date(event.endDate) < new Date(endDate || Date.now())
                                 ).map((event, index) =>
+                                    <Link to={{
+                                        pathname: "/event-page",
+                                        state: {event}
+                                    }} style={{ textDecoration: 'none' }}>
                                     <EventCard key={index} event={event} isPastEvent={isPastEvent} />
+                                    </Link>
                                 ) : events.map((event, index) =>
+                                    <Link to={{
+                                        pathname: "/event-page",
+                                        state: {event}
+                                    }} style={{ textDecoration: 'none' }}>
                                     <EventCard key={index} event={event} isPastEvent={isPastEvent} />
+                                    </Link>
                                 )}
                     </div>
 

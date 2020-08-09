@@ -1,7 +1,6 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
 import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 
 const pageHeaderStyle = (theme: Theme) =>
   createStyles({
@@ -18,67 +17,16 @@ const pageBodyStyle = (theme: Theme) =>
     },
   });
 
-const pageBodyGutterStyle = (theme: Theme) =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.background.default,
-    },
-  });
-
-const pageHeaderGutterStyle = (theme: Theme) =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.primary.light,
-    },
-  });
-
-const appBarStyle = (theme: Theme) =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.primary.light,
-    },
-  });
-
-const PageHeaderGutter = withStyles(pageHeaderGutterStyle)((props: any) => (
-  <Grid item {...props}>
-    {props.children}
-  </Grid>
-));
-
-const PageBodyGutter = withStyles(pageBodyGutterStyle)((props: any) => (
-  <Grid item {...props}>
-    {props.children}
-  </Grid>
-));
-
 const PageHeader = withStyles(pageHeaderStyle)((props: any) => (
-  <Grid
-    container
-    direction="row"
-    justify="flex-start"
-    alignItems="flex-end"
-    {...props}
-  >
-    <PageHeaderGutter sm={2} />
-    <Grid item xs={10} sm={8} >
-      <Typography variant="h1" {...props} style={{ height: "70%", maxWidth: 1000, margin: 0 }}>
-        {props.header}
-      </Typography>
-    </Grid>
-    <PageHeaderGutter sm={2} />
+  <Grid item style={{ height: "25%", padding: "0px 12%", width: "100%" }} {...props}>
+    {props.children}
   </Grid>
 ));
 
 const PageBody = withStyles(pageBodyStyle)((props: any) => (
-  <Grid container direction="row" style={{ height: "100%" }}>
-    <PageBodyGutter sm={2} />
-    <Grid item xs={10} sm={8} {...props}>
-      {props.children}
-    </Grid>
-    <PageBodyGutter sm={2} />
+  <Grid item style={{ height: "75%", padding: "0px 12%", width: "100%" }} {...props}>
+    {props.children}
   </Grid>
 ));
 
-
-
-export { PageHeader, PageBody, PageBodyGutter, PageHeaderGutter };
+export { PageHeader, PageBody };
