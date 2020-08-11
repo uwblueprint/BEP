@@ -8,6 +8,8 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
 //import { Volunteer } from "../../data/types/userTypes";
+import './Profile.css'
+
 
 const useStyles = makeStyles({
   root: {
@@ -33,20 +35,20 @@ export default function VolunteerCard(props: any) {
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Typography variant="h5" component="h2">
+        <Typography variant="h5" component="h2"  className='profile-card-title'>
           Contact Information
         </Typography>
         <Grid container direction="row">
           <Grid item xs={4}>
-            <Typography>LINKEDIN URL</Typography>
+            <Typography  className='profile-card-section-title'>LINKEDIN URL</Typography>
             <Typography>
-              {props.linkedIn}
+              <a href={props.linkedIn}>{props.linkedIn}</a>
             </Typography>
           </Grid>
           <Grid item xs={4}>
-            <Typography>EMAIL</Typography>
+            <Typography className='profile-card-section-title'>EMAIL</Typography>
             <Typography>
-              {props.email}
+              <a href={props.email}>{props.email}</a>
             </Typography>
           </Grid>
         </Grid>

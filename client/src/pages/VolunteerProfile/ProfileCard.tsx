@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
 //import { Volunteer } from "../../data/types/userTypes";
+import './Profile.css'
 
 const useStyles = makeStyles({
   root: {
@@ -33,31 +34,31 @@ export default function VolunteerCard(props: any) {
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Typography variant="h5" component="h2">
+        <Typography variant="h5" component="h2" className='profile-card-title'>
           Profile
         </Typography>
 
         <Grid container direction="row">
           <Grid item xs={4}>
-            <Typography>EMPLOYMENT STATUS</Typography>
-            <Typography>{props.employmentStatus}</Typography>
+            <Typography className='profile-card-section-title'>EMPLOYMENT STATUS</Typography>
+            <Typography className='profile-card-section-content'>{props.employmentStatus}</Typography>
           </Grid>
           <Grid item xs={4}>
-            <Typography>ORGANIZATION SECTOR</Typography>
-            <Typography>
+            <Typography className='profile-card-section-title'>ORGANIZATION SECTOR</Typography>
+            <Typography className='profile-card-section-content'>
               {props.orgSector}
             </Typography>
           </Grid>
         </Grid>
 
-        <Grid container direction="row">
+        <Grid container direction="row" style={{margin: '16px 0'}}>
           <Grid item xs={4}>
-            <Typography>AREAS OF EXPERTISE</Typography>
-            <Typography>{props.expertiseAreas.join(", ")}</Typography>
+            <Typography className='profile-card-section-title'>AREAS OF EXPERTISE</Typography>
+            <Typography className='profile-card-section-content'>{props.expertiseAreas.join(", ")}</Typography>
           </Grid>
           <Grid item xs={4}>
-            <Typography>POST SECONDARY TRAINING</Typography>
-            <Typography>{props.postSecondaryTraining.join(", ")}</Typography>
+            <Typography className='profile-card-section-title'>POST SECONDARY TRAINING</Typography>
+            <Typography className='profile-card-section-content'>{props.postSecondaryTraining.join(", ")}</Typography>
           </Grid>
         </Grid>
       </CardContent>
