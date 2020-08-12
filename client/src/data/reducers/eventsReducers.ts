@@ -16,7 +16,7 @@ const initialState: EventsState = {
     pastList: [],
 }
 
-let today: Date = new Date()
+const today: Date = new Date()
 
 export default function eventsFilter(
     state: EventsState = initialState,
