@@ -48,8 +48,8 @@ export default class App extends React.Component {
           <React.Fragment>
             <Switch>
               <Route exact path="/" component={Login} />
-              <Route exact path="/educator-dashboard" component={EducatorDashboard} />
-              <Route path="/event-page" component={EventPage} />
+              <Route exact path="/events" component={EducatorDashboard} />
+              <Route path="/event/:name" component={EventPage} />
             </Switch>
           </React.Fragment>
         </Router>

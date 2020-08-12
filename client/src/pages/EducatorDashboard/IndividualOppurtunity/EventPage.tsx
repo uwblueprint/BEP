@@ -57,7 +57,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const EventPage = (props: any) => {
-  console.log("These are the event props", props)
   const classes = useStyles();
   const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState<any>([]);
@@ -68,19 +67,16 @@ const EventPage = (props: any) => {
   const [volunteers, setVolunteers] = React.useState([])
 
   const eventData = props.location.state.event
-  console.log("This is the event data", eventData)
 
   useEffect(() => {
     const fetchdata = async () => {
      const result =  await getVolunteers(eventData.eventName)
-     console.log("This is the Volunteer Card info lalala", result)
      setVolunteers(result.data.volunteers)
     }
     fetchdata()
   }, [eventData.eventName]);
 
   var displayVolunteers = volunteers.map((volunteer) => {
-    console.log("This is a single volunteer", volunteer)
     var volunteerProps = {
       volunteer
     }
@@ -114,7 +110,7 @@ const EventPage = (props: any) => {
 
     } else {
 
-    buttonEnabled = (applicant.accepted === true || applicant.denied === true) ? false : true;
+    buttonEnabled = !(applicant.accepted || applicant.denied)
 
     applicationProps = {
         eventName: eventData.eventName,
@@ -126,7 +122,6 @@ const EventPage = (props: any) => {
 });
 
   var displayInvitations = invitations.map((invite: any) => {
-    console.log("This is a single invite", invite)
     var invitationProps = {
       invite
     }
@@ -136,7 +131,6 @@ const EventPage = (props: any) => {
   useEffect(() => {
     const fetchdata = async () => {
       const result = await getApplications(eventData.eventName);
-      console.log("This is the Applicant Card info", result.data.applications)
       setApplications(result.data.applications)
     }
     fetchdata();
@@ -146,7 +140,6 @@ const EventPage = (props: any) => {
   useEffect(() => {
     const fetchdata = async () => {
       const result = await getInvitations(eventData.eventName);
-      console.log("This is the Invitation card info", result.data.invitations)
       setInvitations(result.data.invitations)
     }
     fetchdata()
@@ -168,7 +161,7 @@ const EventPage = (props: any) => {
                 <PageHeader>
                     <Grid container spacing={2}>
                       <Grid item xs={9}>
-                        <Link to="/educator-dashboard">{`<`} Back</Link>
+                        <Link to="/events">{`<`} Back</Link>
                         <br></br>
                         <Typography variant="h1">{eventData.eventName}</Typography>
                       </Grid>
@@ -200,7 +193,7 @@ const EventPage = (props: any) => {
         <PageHeader>
         <Grid container spacing={2}>
            <Grid item xs={9}>
-             <Link to="/educator-dashboard">{`<`} Back</Link>
+             <Link to="/events">{`<`} Back</Link>
                <Typography variant="h1">{eventData.eventName}</Typography>
                   </Grid>
           </Grid>

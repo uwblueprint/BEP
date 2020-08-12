@@ -39,18 +39,3 @@ export default function eventsFilter(
             return state;
     }
 }
-
-// export default function eventsFilter(
-//     state: EventsState = initialState,
-//     action: { type: string; payload: any }
-// ) {
-//     switch (action.type) {
-//         case FETCH_EVENTS:
-//             return {
-//                 ...state,
-//                 list: action.payload.list,
-//             };
-//         default:
-//             return state;
-//     }
-// }

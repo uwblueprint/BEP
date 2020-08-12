@@ -16,8 +16,6 @@ export const eventRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET requests/:id currently using the Name field (first name) since don't know how to actually grab object id in salesforce
-
 eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
     const limit: number = req.query.limit as any;
     const offset: number = req.query.offset as any;
@@ -32,10 +30,8 @@ eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
 eventRouter.get('/applications', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.query.name as string;
 
-    console.log("Hit applications endpoint")
-
     try {
-        if (name !== undefined) {
+        if (name) {
             const applications = await EventService.getApplications(name);
             res.status(200).json({
                     applications
@@ -65,10 +61,8 @@ eventRouter.patch('/applications/updatestate', async (req: Express.Request, res:
 eventRouter.get('/invitations', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.query.name as string;
 
-    console.log("Hit invitations endpoint")
-
     try {
-        if (name !== undefined) {
+        if (name) {
             const invitations = await EventService.getInvitations(name);
             res.status(200).json({
                     invitations
@@ -84,10 +78,8 @@ eventRouter.get('/invitations', async (req: Express.Request, res: Express.Respon
 eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.query.name as string;
 
-    console.log("Hit volunteers endpoint")
-
     try {
-        if (name !== undefined) {
+        if (name) {
             const volunteers = await EventService.getVolunteers(name);
             res.status(200).json({
                     volunteers
@@ -107,7 +99,7 @@ eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) =>
     const name: string = req.params.name as string
 
     try {
-        if (name !== undefined) {
+        if (name) {
             const fetchedEvent = await EventService.getEventInfo(name);
             res.status(200).send(fetchedEvent);
         } else {
@@ -134,7 +126,6 @@ eventRouter.post('/create', async (req: Express.Request, res: Express.Response) 
 
 eventRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
-        console.log(req.body);
         const id: string = req.params.id;
         await EventService.update(id, req.body);
 
