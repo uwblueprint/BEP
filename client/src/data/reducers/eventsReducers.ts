@@ -16,12 +16,11 @@ const initialState: EventsState = {
     pastList: [],
 }
 
-const today: Date = new Date()
-
 export default function eventsFilter(
     state: EventsState = initialState,
     action: { type: string; payload: any; filter: any }
 ) {
+    let today: Date = new Date()
     switch (action.type) {
         case FETCH_EVENTS:
             return {
