@@ -4,7 +4,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../components/styling/Theme";
 import './App.css';
 import EducatorDashboard from '../pages/EducatorDashboard/EducatorDashboard';
-import EventPage from '../pages/EducatorDashboard/IndividualOppurtunity/EventPage'
+import EventPage from '../pages/EducatorDashboard/IndividualOpportunity/EventPage'
 import Login from '../pages/Auth/SignIn';
 
 interface IProps extends RouteProps {
