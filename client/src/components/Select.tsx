@@ -12,12 +12,10 @@ const containedSelectStyle = (theme: Theme) =>
       active: {
         backgroundColor: theme.palette.secondary.light,
       },
-      // "&:before": {
-      //   backgroundColor: theme.palette.secondary.light, // updated backgroundColor
-      // },
-      // "&:after": {
-      //   backgroundColor: theme.palette.secondary.light, // updated backgroundColor
-      // },
+
+      "& .MuiSelect-select.MuiSelect-select": {
+        paddingRight: "4px",
+      },
     },
   });
 
@@ -31,6 +29,7 @@ const ContainedSelect = withStyles(containedSelectStyle)((props: any) => (
       },
       style: { width: "50%", height: "50%" },
     }}
+    className={props.classes.select}
     {...props}
   >
     {props.children}

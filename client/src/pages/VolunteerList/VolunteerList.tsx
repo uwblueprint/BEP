@@ -500,9 +500,8 @@ class VolunteerList extends React.Component<
               <Grid
                 item
                 container
-                spacing={4}
+                spacing={7}
                 direction="row"
-                // justify="space-between"
               >
                 {Object.entries(this.props.picklists).map((entry) => {
                   // Display picklists.
@@ -533,7 +532,7 @@ class VolunteerList extends React.Component<
 
                   return (
                     <Grid item key={picklistName}>
-                      <FormControl style={{ minWidth: 160 }}>
+                      <FormControl>
                         <ContainedSelect
                           key={picklistName}
                           id={picklistName}
@@ -551,23 +550,34 @@ class VolunteerList extends React.Component<
                           }
                           displayEmpty={true}
                           renderValue={() => {
-                            return document.activeElement &&
-                              document.activeElement.id === picklistName ? (
-                              <SecondaryMainTextTypography
-                                align="center"
-                                variant="body1"
-                                style={{ fontWeight: "800" }}
-                              >
-                                {picklistDisplayName}
-                              </SecondaryMainTextTypography>
-                            ) : (
-                              <BlackTextTypography
-                                align="center"
-                                variant="body1"
-                                style={{ fontWeight: "800" }}
-                              >
-                                {picklistDisplayName}
-                              </BlackTextTypography>  
+                            return (
+                              document.activeElement && (
+                                <Grid
+                                  container
+                                  direction="row"
+                                  justify="flex-end"
+                                  alignItems="center"
+                                >
+                                  <Grid item>
+                                    {document.activeElement.id ===
+                                    picklistName ? (
+                                      <SecondaryMainTextTypography
+                                        align="center"
+                                        variant="button"
+                                      >
+                                        {picklistDisplayName}
+                                      </SecondaryMainTextTypography>
+                                    ) : (
+                                      <BlackTextTypography
+                                        align="center"
+                                        variant="button"
+                                      >
+                                        {picklistDisplayName}
+                                      </BlackTextTypography>
+                                    )}
+                                  </Grid>
+                                </Grid>
+                              )
                             );
                           }}
                         >
