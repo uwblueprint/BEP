@@ -50,7 +50,7 @@ export default class App extends React.Component {
           <Switch>
             <Route exact path="/" component={Login}/>
             <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
-            <PrivateRoute component={VolunteerList} exact path="/volunteer-list" isLoggedIn={true} />
+            <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={true} />
           </Switch>
         </React.Fragment>
       </Router>
