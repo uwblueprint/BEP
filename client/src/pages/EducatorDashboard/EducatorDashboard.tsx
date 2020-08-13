@@ -110,7 +110,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
 
     const loadingRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
-    const handleObserver = useCallback((entities: any, observer: IntersectionObserver) => {
+    const handleObserver = useCallback((entities: any) => {
         const y = entities[0].boundingClientRect.y;
         const newPage = page + 1;
 
@@ -131,7 +131,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
         }
         setPrevY(y)
 
-    }, [page, prevY, lastEventListLength, loadedAllEvents])
+    }, [page, prevY, lastEventListLength, loadedAllEvents, events.length, fetchEvents])
 
     useEffect(() => {
 
@@ -159,11 +159,11 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
         // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
         // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
         (async function test() {
-            await fetchEvents(offset, page * offset)
+            await fetchEvents(offset, 0)
             setRetrievedData(true)
         })();
 
-    }, []);
+    }, [fetchEvents]);
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setTabValue(newValue);
@@ -173,7 +173,11 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
         <div style={{ height: "100vh" }}>
             <Grid container style={{ height: "100%" }}>
 
-                <PageHeader header="Your Opportunities" />
+                <PageHeader>
+                    <Typography variant="h1">Your Opportunities</Typography>
+                </PageHeader>
+
+
 
                 <Grid sm={2} />
 
@@ -189,6 +193,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                     </AppBar>
                 </Grid>
                 <Grid sm={2} />
+
 
 
                 <PageBody>
@@ -231,7 +236,7 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                     </TabPanel>
                     <div>
 
-                        {events.length == 0 && retrievedData ?
+                        {events.length === 0 && retrievedData ?
                             <div>
                                 <p>You do not currently have any listed opportunities.
                                 Click 'Create Opportunity' to get started!</p>
@@ -244,16 +249,16 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                                 ).map((event, index) =>
                                     <Link to={{
                                         pathname: `/event/${event.eventName}`,
-                                        state: {event}
+                                        state: { event }
                                     }} style={{ textDecoration: 'none' }}>
-                                    <EventCard key={index} event={event} isPastEvent={isPastEvent} />
+                                        <EventCard key={index} event={event} isPastEvent={isPastEvent} />
                                     </Link>
                                 ) : events.map((event, index) =>
                                     <Link to={{
                                         pathname: `/event/${event.eventName}`,
-                                        state: {event}
+                                        state: { event }
                                     }} style={{ textDecoration: 'none' }}>
-                                    <EventCard key={index} event={event} isPastEvent={isPastEvent} />
+                                        <EventCard key={index} event={event} isPastEvent={isPastEvent} />
                                     </Link>
                                 )}
                     </div>

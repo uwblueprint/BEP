@@ -31,22 +31,21 @@ const useStyles = makeStyles((theme) => ({
 
 function getDate(props: any) {
 
+    var date
     var eventStartDate = new Date(props.event.startDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
     var eventEndDate = new Date(props.event.endDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
 
     if (eventStartDate === eventEndDate) {
-        var date = eventStartDate
+        date = eventStartDate
     } else {
-        var date = `${eventStartDate} to ${eventEndDate}`
+        date = `${eventStartDate} to ${eventEndDate}`
     }
 
     return date
 }
 
 export default function EventCard(props: any) {
-    console.log(props);
     const classes = useStyles();
-
 
     return (
         <div className={classes.root}>
