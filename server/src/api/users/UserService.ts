@@ -4,10 +4,10 @@
 
 import { conn } from '../../server';
 import Educator, { isEducator } from './EducatorInterface';
-import User, { isUser, UserType } from './UserInterface';
-import Volunteer, { isVolunteer } from './VolunteerInterface';
 import Employer from '../employers/EmployerInterface';
 import * as EmployerService from '../employers/EmployerService';
+import User, { isUser, UserType } from './UserInterface';
+import Volunteer, { isVolunteer } from './VolunteerInterface';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 
 const siteUser: string = 'SiteUser__c';

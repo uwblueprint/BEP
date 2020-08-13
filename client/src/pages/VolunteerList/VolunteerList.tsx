@@ -448,121 +448,131 @@ class VolunteerList extends React.Component<
     return (
       <div style={{ height: "100vh" }}>
         <Grid container direction="row" style={{ height: "100%" }}>
-          <Grid item container xs={12} direction="row">
-            <PageHeader header="Browse Volunteers" />
-            <PageBody>
-              <Grid container spacing={4} direction="column">
-                <Grid item xs={12}></Grid>
-                <form
-                  style={{ width: "100%" }}
-                  onSubmit={this.handleSearchFormSubmit}
-                >
-                  <Grid item container direction="row">
-                    <OutlinedTextField
-                      id="search-bar"
-                      placeholder="Search Volunteers"
-                      value={this.state.searchBar}
-                      fullWidth
-                      onChange={this.handleSearchBarChange}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <BlueSearchIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                      inputProps={{ style: { height: "40px", padding: "0" } }}
-                      style={{ width: "90%" }}
-                    />
+          <PageHeader>
+            <Grid
+              item
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="flex-end"
+              style={{ height: "100%", width: "100%" }}
+            >
+              <Grid item>
+                <Typography variant="h1" style={{ marginBottom: "20%" }}>
+                  Browse Volunteers
+                </Typography>
+              </Grid>
+            </Grid>
+          </PageHeader>
+          <PageBody>
+            <Grid container spacing={4} direction="column">
+              <Grid item xs={12}></Grid>
+              <form
+                style={{ width: "100%" }}
+                onSubmit={this.handleSearchFormSubmit}
+              >
+                <Grid item container direction="row">
+                  <OutlinedTextField
+                    id="search-bar"
+                    placeholder="Search Volunteers"
+                    value={this.state.searchBar}
+                    fullWidth
+                    onChange={this.handleSearchBarChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <BlueSearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    inputProps={{ style: { height: "40px", padding: "0" } }}
+                    style={{ width: "90%" }}
+                  />
 
-                    <ContainedButton
-                      type="submit"
-                      style={{ width: "8%", marginLeft: "2%" }}
-                    >
-                      Search
-                    </ContainedButton>
-                  </Grid>
-                </form>
-                <Grid
-                  item
-                  container
-                  spacing={4}
-                  direction="row"
-                  justify="space-between"
-                >
-                  {Object.entries(this.props.picklists).map((entry) => {
-                    // Display picklists.
-                    const picklistName: string = entry[0];
-                    const picklistDisplayName = entry[1].displayName;
-                    let picklist = new Map<string, boolean>();
+                  <ContainedButton
+                    type="submit"
+                    style={{ width: "8%", marginLeft: "2%" }}
+                  >
+                    Search
+                  </ContainedButton>
+                </Grid>
+              </form>
+              <Grid
+                item
+                container
+                spacing={4}
+                direction="row"
+                // justify="space-between"
+              >
+                {Object.entries(this.props.picklists).map((entry) => {
+                  // Display picklists.
+                  const picklistName: string = entry[0];
+                  const picklistDisplayName = entry[1].displayName;
+                  let picklist = new Map<string, boolean>();
 
-                    switch (picklistName) {
-                      case "activities":
-                        picklist = this.state.filters.activities;
-                        break;
-                      case "expertiseAreas":
-                        picklist = this.state.filters.expertiseAreas;
-                        break;
-                      case "locations":
-                        picklist = this.state.filters.locations;
-                        break;
-                      case "training":
-                        picklist = this.state.filters.training;
-                        break;
-                      case "languages":
-                        picklist = this.state.filters.languages;
-                        break;
-                      case "grades":
-                        picklist = this.state.filters.grades;
-                        break;
-                    }
+                  switch (picklistName) {
+                    case "activities":
+                      picklist = this.state.filters.activities;
+                      break;
+                    case "expertiseAreas":
+                      picklist = this.state.filters.expertiseAreas;
+                      break;
+                    case "locations":
+                      picklist = this.state.filters.locations;
+                      break;
+                    case "training":
+                      picklist = this.state.filters.training;
+                      break;
+                    case "languages":
+                      picklist = this.state.filters.languages;
+                      break;
+                    case "grades":
+                      picklist = this.state.filters.grades;
+                      break;
+                  }
 
-                    return (
-                      <Grid item key={picklistName}>
-                        <FormControl style={{ minWidth: 160 }}>
-                          <ContainedSelect
-                            key={picklistName}
-                            id={picklistName}
-                            value={[]}
-                            onChange={this.createHandleSelectFilter(
-                              picklistName
-                            )}
-                            multiple
-                            disableUnderline={true}
-                            IconComponent={() =>
-                              document.activeElement &&
+                  return (
+                    <Grid item key={picklistName}>
+                      <FormControl style={{ minWidth: 160 }}>
+                        <ContainedSelect
+                          key={picklistName}
+                          id={picklistName}
+                          value={[]}
+                          onChange={this.createHandleSelectFilter(picklistName)}
+                          multiple
+                          disableUnderline={true}
+                          IconComponent={() =>
+                            document.activeElement &&
+                            document.activeElement.id === picklistName ? (
+                              <SecondaryMainExpandMoreIcon />
+                            ) : (
+                              <BlackExpandMoreIcon />
+                            )
+                          }
+                          displayEmpty={true}
+                          renderValue={() => {
+                            return document.activeElement &&
                               document.activeElement.id === picklistName ? (
-                                <SecondaryMainExpandMoreIcon />
-                              ) : (
-                                <BlackExpandMoreIcon />
-                              )
-                            }
-                            displayEmpty={true}
-                            renderValue={() => {
-                              return document.activeElement &&
-                                document.activeElement.id === picklistName ? (
-                                <SecondaryMainTextTypography
-                                  align="center"
-                                  variant="body1"
-                                  style={{ fontWeight: "800" }}
-                                >
-                                  {picklistDisplayName}
-                                </SecondaryMainTextTypography>
-                              ) : (
-                                <BlackTextTypography
-                                  align="center"
-                                  variant="body1"
-                                  style={{ fontWeight: "800" }}
-                                >
-                                  {picklistDisplayName}
-                                </BlackTextTypography>
-                              );
-                            }}
-                          >
-                            {Array.from(
-                              picklist.entries(),
-                              (entry) => entry
-                            ).map(([option, isSelected]) => (
+                              <SecondaryMainTextTypography
+                                align="center"
+                                variant="body1"
+                                style={{ fontWeight: "800" }}
+                              >
+                                {picklistDisplayName}
+                              </SecondaryMainTextTypography>
+                            ) : (
+                              <BlackTextTypography
+                                align="center"
+                                variant="body1"
+                                style={{ fontWeight: "800" }}
+                              >
+                                {picklistDisplayName}
+                              </BlackTextTypography>  
+                            );
+                          }}
+                        >
+                          {Array.from(picklist.entries(), (entry) => entry).map(
+                            ([option, isSelected]) => (
                               <MenuItem
                                 key={option}
                                 value={option}
@@ -571,75 +581,75 @@ class VolunteerList extends React.Component<
                                 <OutlinedCheckbox checked={isSelected} />
                                 {option}
                               </MenuItem>
-                            ))}
-                          </ContainedSelect>
-                        </FormControl>
-                      </Grid>
+                            )
+                          )}
+                        </ContainedSelect>
+                      </FormControl>
+                    </Grid>
+                  );
+                })}
+              </Grid>
+              <Grid item container direction="row">
+                <Grid item container xs={10} spacing={1} direction="row">
+                  {Object.entries(this.state.filters).map((entry) => {
+                    const picklistName = entry[0];
+                    const filterMap = entry[1];
+                    const filterButtons: Array<JSX.Element> = [];
+                    Array.from(filterMap.entries(), (entry) => entry).forEach(
+                      ([filterName, isSelected]) => {
+                        if (isSelected) {
+                          filtersSelected = true;
+                          filterButtons.push(
+                            <Grid item key={filterName}>
+                              <DarkContainedButton
+                                onClick={this.createHandleFilterButtonClick(
+                                  picklistName
+                                )}
+                                value={filterName}
+                              >
+                                <WhiteTextTypography variant="caption">
+                                  {filterName}
+                                </WhiteTextTypography>
+                                <WhiteCloseIcon
+                                  style={{
+                                    width: "15px",
+                                    height: "15px",
+                                    marginLeft: "5px",
+                                  }}
+                                />
+                              </DarkContainedButton>
+                            </Grid>
+                          );
+                        }
+                      }
                     );
+
+                    return filterButtons;
                   })}
                 </Grid>
-                <Grid item container direction="row">
-                  <Grid item container xs={10} spacing={1} direction="row">
-                    {Object.entries(this.state.filters).map((entry) => {
-                      const picklistName = entry[0];
-                      const filterMap = entry[1];
-                      const filterButtons: Array<JSX.Element> = [];
-                      Array.from(filterMap.entries(), (entry) => entry).forEach(
-                        ([filterName, isSelected]) => {
-                          if (isSelected) {
-                            filtersSelected = true;
-                            filterButtons.push(
-                              <Grid item key={filterName}>
-                                <DarkContainedButton
-                                  onClick={this.createHandleFilterButtonClick(
-                                    picklistName
-                                  )}
-                                  value={filterName}
-                                >
-                                  <WhiteTextTypography variant="caption">
-                                    {filterName}
-                                  </WhiteTextTypography>
-                                  <WhiteCloseIcon
-                                    style={{
-                                      width: "15px",
-                                      height: "15px",
-                                      marginLeft: "5px",
-                                    }}
-                                  />
-                                </DarkContainedButton>
-                              </Grid>
-                            );
-                          }
-                        }
-                      );
-
-                      return filterButtons;
-                    })}
+                {filtersSelected && (
+                  <Grid
+                    item
+                    container
+                    xs={2}
+                    alignItems="flex-start"
+                    justify="flex-end"
+                    direction="row"
+                  >
+                    <TextButton onClick={this.clearFilters}>
+                      Clear All
+                    </TextButton>
                   </Grid>
-                  {filtersSelected && (
-                    <Grid
-                      item
-                      container
-                      xs={2}
-                      alignItems="flex-start"
-                      justify="flex-end"
-                      direction="row"
-                    >
-                      <TextButton onClick={this.clearFilters}>
-                        Clear All
-                      </TextButton>
-                    </Grid>
-                  )}
-                </Grid>
-
-                <Grid item container spacing={2}>
-                  {this.state.filteredVolunteers.map((volunteer) =>
-                    createVolunteerCard(volunteer)
-                  )}
-                </Grid>
+                )}
               </Grid>
-            </PageBody>
-          </Grid>
+
+              <Grid item container spacing={4}>
+                {this.state.filteredVolunteers.map((volunteer) =>
+                  createVolunteerCard(volunteer)
+                )}
+              </Grid>
+            </Grid>
+          </PageBody>
         </Grid>
         <div ref={this.state.loadingRef} />
       </div>

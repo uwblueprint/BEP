@@ -51,7 +51,7 @@ employerRouter.put('/', async (req: Express.Request, res: Express.Response) => {
         const id: string = req.body.id;
         await EmployerService.update(req.body);
 
-        res.status(200).send({ id: id });
+        res.status(200).send({ id });
     } catch (e) {
         res.status(500).send({ msg: e.message });
     }
@@ -61,7 +61,7 @@ employerRouter.put('/', async (req: Express.Request, res: Express.Response) => {
 
 employerRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
-        let id: string = req.params.id;
+        const id: string = req.params.id;
         await EmployerService.remove(id);
 
         res.sendStatus(200);

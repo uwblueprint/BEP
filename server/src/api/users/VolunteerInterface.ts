@@ -1,5 +1,5 @@
 import UserInterface, { UserType } from './UserInterface';
-import EmployerInterface, { isEmployer } from '../employers/EmployerInterface';
+import EmployerInterface from '../employers/EmployerInterface';
 
 export default interface VolunteerInterface extends UserInterface {
     careerDescription: string;

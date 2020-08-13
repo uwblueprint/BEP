@@ -13,7 +13,7 @@ const employerFields: string =
 
 // Map fields of employer model to Salesforce fields.
 const employerModelToSalesforceEmployer = (employer: Employer): any => {
-    let salesforceEmployer: any = {
+    const salesforceEmployer: any = {
         address__c: employer.address,
         city__c: employer.city,
         Id: employer.id,

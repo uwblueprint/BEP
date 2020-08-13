@@ -1,4 +1,4 @@
-export default interface employerInterface {
+export default interface EmployerInterface {
     address: string;
     city: string;
     id: string;
