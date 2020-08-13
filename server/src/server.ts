@@ -11,8 +11,8 @@ import jsforce from 'jsforce';
 import { userRouter } from './api/users/UserRouter';
 import { employerRouter } from './api/employers/EmployerRouter';
 import { userPicklistRouter } from './api/users/picklists/UserPicklistRouter';
-import { eventRouter } from './api/users/EventRouter';
-import { inviteRouter } from './api/users/VolunteerInviteRouter';
+import { eventRouter } from './users/EventRouter';
+import { inviteRouter } from './users/VolunteerInviteRouter';
 import { requestsRouter } from './requests/requests.router';
 import {verifyWebToken} from './middleware/jwt'
 import { authRouter } from './auth/authRouter'

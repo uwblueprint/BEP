@@ -3,7 +3,7 @@
  */
 
 import Event from './EventInterface';
-import { conn } from '../../server';
+import { conn } from '../server';
 // import * as express from 'express';
 
 
