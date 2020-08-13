@@ -248,14 +248,14 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                                     new Date(event.endDate) < new Date(endDate || Date.now())
                                 ).map((event, index) =>
                                     <Link to={{
-                                        pathname: `/event/${event.eventName}`,
+                                        pathname: `/events/${event.eventName}`,
                                         state: { event }
                                     }} style={{ textDecoration: 'none' }}>
                                         <EventCard key={index} event={event} isPastEvent={isPastEvent} />
                                     </Link>
                                 ) : events.map((event, index) =>
                                     <Link to={{
-                                        pathname: `/event/${event.eventName}`,
+                                        pathname: `/events/${event.eventName}`,
                                         state: { event }
                                     }} style={{ textDecoration: 'none' }}>
                                         <EventCard key={index} event={event} isPastEvent={isPastEvent} />

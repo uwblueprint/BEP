@@ -49,7 +49,7 @@ export default class App extends React.Component {
             <Switch>
               <Route exact path="/" component={Login} />
               <Route exact path="/events" component={EducatorDashboard} />
-              <Route path="/event/:name" component={EventPage} />
+              <Route path="/events/:name" component={EventPage} />
             </Switch>
           </React.Fragment>
         </Router>
