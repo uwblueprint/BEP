@@ -1,0 +1,13 @@
+language: node_js
+
+node_js:
+  "stable"
+
+before install:
+  cd server
+
+before_script:
+  npm install
+  
+script:
+  npm run build
