@@ -11,7 +11,6 @@ const outlinedTextFieldStyle = (theme: Theme) =>
 
 const OutlinedTextField = withStyles(outlinedTextFieldStyle)((props: any) => (
   <TextField
-    inputProps={{ style: { height: "40px", padding: "0" } }}
     variant="outlined"
     {...props}
   >

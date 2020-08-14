@@ -24,7 +24,7 @@ const PageHeader = withStyles(pageHeaderStyle)((props: any) => (
 ));
 
 const PageBody = withStyles(pageBodyStyle)((props: any) => (
-  <Grid item style={{ height: "75%", padding: "0px 12%", width: "100%" }} {...props}>
+  <Grid item style={{ minHeight: "75%", padding: "0px 12%", width: "100%" }} {...props}>
     {props.children}
   </Grid>
 ));

@@ -1,6 +1,5 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import Button from "../../components/Button";
 import Typography from "@material-ui/core/Typography";
 import ProfileCard from "./ProfileCard"
 import ContactCard from "./ContactCard"
@@ -13,7 +12,6 @@ class VolunteerProfile extends React.Component {
             <div>
                 <Grid container direction = "row">
                     <Typography className='profile-name'>Anne Boelyn</Typography>
-                    <Button>Request</Button>
                 </Grid>
                 <Grid>
                 <Typography className='profile-title'>Product Manager at VoiceHero</Typography>

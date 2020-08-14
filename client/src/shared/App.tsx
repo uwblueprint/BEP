@@ -6,7 +6,7 @@ import './App.css';
 
 import Login from '../pages/Auth/SignIn';
 import TestSection from '../pages/Requests/TestSection';
-import VolunteerProfile from '../pages/VolunteerProfile/VolunteerProfile';
+import VolunteerList from '../pages/VolunteerList/VolunteerList';
 
 interface IProps extends RouteProps {
   component: any;
@@ -46,14 +46,14 @@ export default class App extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <Router>
-          <React.Fragment>
-            <Switch>
-              <Route exact path="/" component={Login}/>
-              <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
-              <PrivateRoute component={VolunteerProfile} exact path="/volunteer-profile" isLoggedIn={true} />
-            </Switch>
-          </React.Fragment>
-        </Router>
+        <React.Fragment>
+          <Switch>
+            <Route exact path="/" component={Login}/>
+            <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
+            <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={true} />
+          </Switch>
+        </React.Fragment>
+      </Router>
       </ThemeProvider>
     )
   }
