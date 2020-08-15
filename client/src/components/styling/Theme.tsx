@@ -29,14 +29,79 @@ const theme = createMuiTheme({
   },
   typography: {
     h1: {
-      fontFamily: "Avenir",
       fontStyle: "normal",
-      // fontWeight: "800",
-      fontSize: "36px",
+      fontSize: "40px",
       lineHeight: "49px",
+      fontWeight: 'bold'
+    },
+    h3: {
+      fontSize: '40px',
+      letterSpacing: 0,
+      lineHeight: '72px',
+      fontWeight: 'normal',
+    },
+    h4: {
+      fontSize: '34px',
+      letterSpacing: '0.25px',
+      lineHeight: '72px',
+      fontWeight: 'bold',
+    },
+    h5: {
+      fontSize: '24px',
+      letterSpacing: 0,
+      lineHeight: '36px',
+      fontWeight: 'normal',
+    },
+    h6: {
+      fontSize: '20px',
+      letterSpacing: '0.25px',
+      lineHeight: '30px',
+      fontWeight: 500,
+    },
+    body1: {
+      fontSize: '16px',
+      letterSpacing: '0.5px',
+      lineHeight: '22px',
+      fontWeight: 500,
+    },
+    body2: {
+      fontSize: '16px',
+      letterSpacing: '0.5px',
+      lineHeight: '24px',
+      fontWeight: 'normal',
+    },
+    subtitle1: {
+      fontSize: '13px',
+      letterSpacing: '0.5px',
+      fontWeight: 700,
+      lineHeight: '24px',
+      textTransform: 'uppercase',
+      opacity: 0.5
+    },
+    subtitle2: {
+      fontSize: '13px',
+      letterSpacing: '0.5px',
+      fontWeight: 500,
+      lineHeight: '24px',
+    }
+  }, overrides: {
+    MuiTab: {
+      root: {
+        textTransform: 'none'
+      }
+    }, MuiIconButton: {
+      root: {
+        color: '#0A79BF'
+      }
+    }, MuiContainer: {
+      root: {
+        padding: 0,
+        '@media (min-width: 0px)': {
+          padding: 0
+        }
+      }
     }
   }
-
 });
 
 export default theme;

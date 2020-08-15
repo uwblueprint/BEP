@@ -3,27 +3,27 @@ import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 're
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../components/styling/Theme";
 import './App.css';
-
+import EducatorDashboard from '../pages/EducatorDashboard/EducatorDashboard';
+import EventPage from '../pages/EducatorDashboard/IndividualOpportunity/EventPage'
 import Login from '../pages/Auth/SignIn';
-import TestSection from '../pages/Requests/TestSection';
 
 interface IProps extends RouteProps {
   component: any;
   isLoggedIn: boolean;
 }
 
-const PrivateRoute = (props:IProps) => {
-  const {component: Component, isLoggedIn, ...rest} = props;
+const PrivateRoute = (props: IProps) => {
+  const { component: Component, isLoggedIn, ...rest } = props;
   return (
     <Route {...rest} render={routeProps => (
       // replace true with check for login
       isLoggedIn ?
         <Component {...routeProps} />
-      : <Redirect 
+        : <Redirect
           to={{
-            pathname:"/",
-            state: {from:routeProps.location}
-          }} 
+            pathname: "/",
+            state: { from: routeProps.location }
+          }}
         />
     )} />
   );
@@ -47,8 +47,9 @@ export default class App extends React.Component {
         <Router>
           <React.Fragment>
             <Switch>
-              <Route exact path="/" component={Login}/>
-              <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
+              <Route exact path="/" component={Login} />
+              <Route exact path="/events" component={EducatorDashboard} />
+              <Route path="/events/:name" component={EventPage} />
             </Switch>
           </React.Fragment>
         </Router>
