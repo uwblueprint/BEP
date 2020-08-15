@@ -31,6 +31,7 @@ const theme = createMuiTheme({
   typography: {
     // fontFamily: '"Lato", sans-serif',
     h1: {
+      fontFamily: 'Arial',
       fontStyle: "normal",
       fontSize: "40px",
       lineHeight: "49px",
@@ -119,19 +120,51 @@ const theme = createMuiTheme({
       root: {
         textTransform: 'none'
       }
-    }, MuiIconButton: {
+    },
+    MuiIconButton: {
       root: {
         color: '#0A79BF'
       }
-    }, MuiContainer: {
+    },
+    MuiContainer: {
       root: {
         padding: 0,
         '@media (min-width: 0px)': {
           padding: 0
         }
       }
+    },
+    MuiPickersToolbar: {
+      toolbar: {
+        backgroundColor: "#0A79BF",
+      },
+    },
+    MuiButton: {
+      textPrimary: {
+        color: "#0A79BF",
+      },
+    },
+    MuiPickersDay: {
+      daySelected: {
+        color: "#0A79BF",
+      },
+    },
+    MuiInputBase: {
+      input: {
+        padding: "8px 12px"
+      }
+    },
+    MuiInput: {
+      underline: {
+        '&:before': {
+          background: "#fff",
+          border: "1px solid #e5e5e5",
+          borderRadius: "2px",
+          padding: "8px"
+        }
+      }
     }
-  }
+  },
 });
 
 export default theme;

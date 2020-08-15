@@ -17,6 +17,10 @@ import Container from '@material-ui/core/Container';
 import { PageHeader, PageBody } from '../../components/index';
 import Typography from "@material-ui/core/Typography";
 import { Link } from 'react-router-dom'
+import { createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
+
+
 
 
 type EventProps = {
@@ -41,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: '2em'
     },
     dateFilter: {
-        paddingTop: "2em",
+        paddingTop: "3em",
         display: "flex",
         flexDirection: "row"
     },
@@ -49,10 +53,13 @@ const useStyles = makeStyles((theme) => ({
         padding: "4px 0px"
     },
     dateFilterBoxes: {
-        padding: "0px 10px"
+        padding: "0px 10px",
+        width: "15vw"
     }
 
 }));
+
+
 
 // TAB PANEL CODE FROM MATERIAL UI - may want to reuse this or create a global tab component
 
@@ -174,29 +181,31 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
             <Grid container style={{ height: "100%" }}>
 
                 <PageHeader>
-                    <Typography variant="h1">Your Opportunities</Typography>
+                    <Grid
+                        item
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-end"
+                        style={{ height: "100%", width: "100%" }}
+                    >
+
+                        <Typography variant="h1" style={{ marginTop: "5%" }}>
+                            Your Opportunities
+                            </Typography>
+
+                        <AppBar elevation={0} position="static" color="transparent">
+                            <Tabs className={classes.tabs} value={tabValue} onChange={handleTabChange} aria-label="Simple Tabs">
+
+                                <Tab onClick={() => changeFilter("ACTIVE") && setIsPastEvent(false)} label="Current" {...a11yProps(0)} />
+                                <Tab onClick={() => changeFilter("PAST") && setIsPastEvent(true)} label="Past" {...a11yProps(1)} />
+                            </Tabs>
+                        </AppBar>
+                    </Grid>
                 </PageHeader>
 
-
-
-                <Grid sm={2} />
-
-                <Grid item xs={10} sm={8} >
-
-
-                    <AppBar elevation={0} position="static" color="transparent">
-                        <Tabs className={classes.tabs} value={tabValue} onChange={handleTabChange} aria-label="Simple Tabs">
-
-                            <Tab onClick={() => changeFilter("ACTIVE") && setIsPastEvent(false)} label="Current" {...a11yProps(0)} />
-                            <Tab onClick={() => changeFilter("PAST") && setIsPastEvent(true)} label="Past" {...a11yProps(1)} />
-                        </Tabs>
-                    </AppBar>
-                </Grid>
-                <Grid sm={2} />
-
-
-
                 <PageBody>
+
 
                     <TabPanel value={tabValue} index={1}>
                         <div className={classes.dateFilter}>

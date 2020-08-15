@@ -53,7 +53,7 @@ export default function EventCard(props: any) {
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography variant="h4">
+                            <Typography variant="h2">
                                 {props.event.eventName}
                             </Typography>
                         </Grid>
