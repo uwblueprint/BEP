@@ -24,4 +24,4 @@ const post = (url, body) => {
     return axios.request(config);
 }
 
-export { post, get };
+export { post, get, baseURL };

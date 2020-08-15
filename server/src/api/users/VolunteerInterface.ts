@@ -1,4 +1,5 @@
 import UserInterface, { UserType } from './UserInterface';
+import EmployerInterface from '../employers/EmployerInterface';
 
 export default interface VolunteerInterface extends UserInterface {
     careerDescription: string;
@@ -10,7 +11,7 @@ export default interface VolunteerInterface extends UserInterface {
 
     jobTitle: string;
     department: string;
-    employerName: string;
+    employer: EmployerInterface;
     employmentStatus: string;
     expertiseAreas: string[];
     extraDescription: string;
@@ -24,21 +25,10 @@ export default interface VolunteerInterface extends UserInterface {
     postSecondaryTraining: string[];
     professionalAssociations: string[];
     reasonsForVolunteering: string[];
+    shareWithEmployer: boolean;
     volunteerDesiredExternalActivities: string[];
     volunteerDesiredInternalActivities: string[];
-
-    // employer?: {
-    //     address: string;
-    //     city: string;
-    //     name: string;
-    //     postalCode: string;
-    //     sector: string;
-    //     shareActivity: boolean;
-    //     size: string;
-    //     socialMedia: string[]; // lookup table (?)
-    //     phone: number;
-    //     website: string;
-    // }[];
+    
     // professionalAssociations?: {
     //     name: string;
     //     shareActivity: boolean;
@@ -60,7 +50,7 @@ export const isVolunteer = (obj: any): boolean => {
             obj.coopPlacementTime === undefined) &&
         typeof obj.jobTitle === 'string' &&
         typeof obj.department === 'string' &&
-        typeof obj.employerName === 'string' &&
+        // isEmployer(obj.employer) &&
         typeof obj.employmentStatus === 'string' &&
         Array.isArray(obj.expertiseAreas) &&
         obj.expertiseAreas.every(item => typeof item === 'string') &&

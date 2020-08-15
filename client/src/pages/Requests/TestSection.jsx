@@ -52,7 +52,7 @@ class TestSection extends React.Component {
               style={{ height: "100%", width: "100%" }}
             >
               <Grid item>
-                <Typography variant="h1" style={{ marginBottom: "30%" }}>
+                <Typography variant="h1" style={{ marginBottom: "20%" }}>
                   Test Page
                 </Typography>
               </Grid>
