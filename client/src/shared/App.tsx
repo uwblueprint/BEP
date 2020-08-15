@@ -6,6 +6,8 @@ import './App.css';
 import EducatorDashboard from '../pages/EducatorDashboard/EducatorDashboard';
 import EventPage from '../pages/EducatorDashboard/IndividualOpportunity/EventPage'
 import Login from '../pages/Auth/SignIn';
+import TestSection from '../pages/Requests/TestSection';
+import VolunteerList from '../pages/VolunteerList/VolunteerList';
 
 interface IProps extends RouteProps {
   component: any;
@@ -50,10 +52,12 @@ export default class App extends React.Component {
               <Route exact path="/" component={Login} />
               <Route exact path="/events" component={EducatorDashboard} />
               <Route path="/events/:name" component={EventPage} />
+              <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
+              <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={true} />
             </Switch>
           </React.Fragment>
         </Router>
-      </ThemeProvider>
+      </ThemeProvider >
     )
   }
 }
