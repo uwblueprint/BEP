@@ -1,11 +1,4 @@
 import { MailService } from './mailservice'
+import MailTypes from './MailTypes'
 
-let mailService = new MailService();
-
-//Test command
-mailService.sendMail( 
-    'fzmadhani@gmail.com',  
-    'Hello',  
-    'Hello from gmailService',
-    'html'
-); 
+export {MailService, MailTypes}
