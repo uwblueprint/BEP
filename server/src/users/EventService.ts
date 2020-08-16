@@ -4,7 +4,6 @@
 
 import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
 import { conn } from '../server';
-import e from 'express';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
