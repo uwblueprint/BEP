@@ -40,7 +40,7 @@ const theme = createMuiTheme({
     h2: {
       fontStyle: "normal",
       fontWeight: 800,
-      fontSize: "24px",
+      fontSize: "30px",
       lineHeight: "33px",
     },
     h3: {
@@ -92,11 +92,10 @@ const theme = createMuiTheme({
       letterSpacing: "0.5px",
       fontWeight: 500,
       lineHeight: "24px",
-      textTransform: "lowercase",
     },
     button: {
       fontStyle: "normal",
-      fontWeight: 800,
+      fontWeight: 700,
       fontSize: "16px",
       lineHeight: "22px",
       textTransform: "capitalize",
@@ -116,9 +115,21 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiTabs: {
+      flexContainer: {
+        margin: "1em 0em"
+      }
+    },
     MuiTab: {
       root: {
         textTransform: 'none'
+      }, textColorInherit: {
+        color: "black",
+        '&$selected': {
+          color: "#0A79BF",
+          backgroundColor: "#f2faff",
+          borderRadius: "2px"
+        }
       }
     },
     MuiIconButton: {
@@ -149,20 +160,25 @@ const theme = createMuiTheme({
         color: "#0A79BF",
       },
     },
-    MuiInputBase: {
-      input: {
-        padding: "8px 12px"
-      }
-    },
+    // MuiInputBase: {
+    //   input: {
+    //     padding: "8px 12px"
+    //   }, root: {
+    //     backgroundColor: "#fff",
+    //     border: "1px solid #e5e5e5",
+    //     borderRadius: "2px"
+    //   }
+    // },
     MuiInput: {
       underline: {
         '&:before': {
-          background: "#fff",
           border: "1px solid #e5e5e5",
           borderRadius: "2px",
-          padding: "8px"
+          padding: "8px",
+          content: "none"
         }
       }
+
     }
   },
 });

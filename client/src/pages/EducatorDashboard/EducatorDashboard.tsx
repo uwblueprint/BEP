@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     tabs: {
         backgroundColor: theme.palette.primary.light,
         boxShadow: '0',
-        paddingTop: '2em'
+        paddingTop: '13px'
     },
     dateFilter: {
         paddingTop: "3em",
@@ -50,13 +50,16 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: "row"
     },
     dateFilterText: {
-        padding: "4px 0px"
+        padding: "5px 0px",
     },
     dateFilterBoxes: {
         padding: "0px 10px",
-        width: "15vw"
+        width: "15vw",
+        backgroundColor: "#fff",
+        border: "1px solid #e5e5e5",
+        borderRadius: "2px",
+        margin: "0em 1em"
     }
-
 }));
 
 
@@ -196,9 +199,9 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
 
                         <AppBar elevation={0} position="static" color="transparent">
                             <Tabs className={classes.tabs} value={tabValue} onChange={handleTabChange} aria-label="Simple Tabs">
-
                                 <Tab onClick={() => changeFilter("ACTIVE") && setIsPastEvent(false)} label="Current" {...a11yProps(0)} />
                                 <Tab onClick={() => changeFilter("PAST") && setIsPastEvent(true)} label="Past" {...a11yProps(1)} />
+
                             </Tabs>
                         </AppBar>
                     </Grid>
@@ -213,17 +216,15 @@ const EducatorDashboard: React.SFC<Props> = ({ events, fetchEvents, changeFilter
                                 Filter by date:
                             </Typography>
 
-                            <div className={classes.dateFilterBoxes}>
 
-                                <MuiPickersUtilsProvider utils={DateFnsUtils} >
-                                    <KeyboardDatePicker
-                                        placeholder="Start date"
-                                        value={startDate}
-                                        onChange={date => setStartDate(date)}
-                                        format="yyyy/MM/dd"
-                                    />
-                                </MuiPickersUtilsProvider>
-                            </div>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} >
+                                <KeyboardDatePicker className={classes.dateFilterBoxes}
+                                    placeholder="Start date"
+                                    value={startDate}
+                                    onChange={date => setStartDate(date)}
+                                    format="yyyy/MM/dd"
+                                />
+                            </MuiPickersUtilsProvider>
 
                             <Typography variant="body1" className={classes.dateFilterText} >
                                 to
