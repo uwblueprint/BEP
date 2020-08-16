@@ -1,4 +1,4 @@
-import { MailService } from './mailservice'
-import MailTypes from './MailTypes'
+import { MailService } from './MailService'
+import MailType from './MailTypes'
 
-export {MailService, MailTypes}
+export { MailService, MailType }

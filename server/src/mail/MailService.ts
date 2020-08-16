@@ -1,6 +1,5 @@
 import * as nodemailer from 'nodemailer'
-import Mail from './MailTypes'
-import { reject } from 'bluebird';
+import MailType from './MailTypes'
 
 const accountInfo = {
     email: "",
@@ -18,7 +17,7 @@ export class MailService {
             `smtps://${this.email}:${this.password}@smtp.gmail.com`
         );
     }
-    sendMail(mail: Mail) {
+    sendMail(mail: MailType) {
         return new Promise<void> ( 
             (resolve: (msg: any) => void,  
               reject: (err: Error) => void) => { 
@@ -36,8 +35,8 @@ export class MailService {
               } 
           ); 
     }
-    generalSendMail(to: string, subject: string, content: string, html: string): Promise<void> { 
-        let options: Mail = { 
+    customSendMail(to: string, subject: string, content: string, html: string): Promise<void> { 
+        let options: MailType = { 
           from: this.email, 
           to: to, 
           subject: subject, 
@@ -49,8 +48,8 @@ export class MailService {
         return this.sendMail(options)
     }
 
-    composeMailWithoutRecipient(html: string, subject: string): Mail {
-        let options: Mail = {
+    composeMailWithoutRecipient(html: string, subject: string): MailType {
+        let options: MailType = {
             from: this.email,
             subject: subject,
             html: html
@@ -59,26 +58,37 @@ export class MailService {
         return options
     }
 
-    attachRecipient(mail: Mail, to: string): Mail {
+    attachRecipient(mail: MailType, to: string): MailType {
         mail.to = to
         return mail
     }
-
-    sendMailBulk(mail: Mail, recipients: string[]): Promise<void> {
+    //Pass in a mail object with an undefined recipient field, and a list of recipient emails
+    sendMailBulk(mail: MailType, recipients: string[]): Error {
         if (mail.to) {
-            return reject("Mail object specifies sender when it must be undefined")
+            return Error("Mail object specifies sender when it must be undefined")
         } else {
             recipients.forEach((recipient) => {
-                var mail = this.attachRecipient(mail, recipient)
-                this.sendMail(mail).then((msg) => {
+                var finalMail = this.attachRecipient(mail, recipient)
+                this.sendMail(finalMail).then((msg) => {
                     console.log(`Message sent to ${recipient}`, msg)
                 }).catch((e) => {
-                    console.log(`Error sending message to ${recipient}:`, e)
+                    return Error(`Error sending message to ${recipient}: ${e}`)
                 })
             })
         }
+        return null
     }
 
-    
+    sendUserMultipleEmails(mails: MailType[], recipient: string): Error {
+        mails.forEach((mail) => {
+            var finalMail = this.attachRecipient(mail, recipient)
+            this.sendMail(finalMail).then((msg) => {
+                console.log(`Message set to ${recipient}`, msg)
+            }).catch((e) => {
+                return Error(`Error sending message to ${recipient}: ${e}`)
+            });
+        })
+        return null
+    }  
 
 }

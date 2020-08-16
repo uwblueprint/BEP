@@ -1,4 +1,4 @@
-export default interface Mail {
+export default interface MailType {
     from?: string;
     to?: string;
     subject?: string;
