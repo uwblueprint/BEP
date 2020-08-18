@@ -160,15 +160,6 @@ const theme = createMuiTheme({
         color: "#0A79BF",
       },
     },
-    // MuiInputBase: {
-    //   input: {
-    //     padding: "8px 12px"
-    //   }, root: {
-    //     backgroundColor: "#fff",
-    //     border: "1px solid #e5e5e5",
-    //     borderRadius: "2px"
-    //   }
-    // },
     MuiInput: {
       underline: {
         '&:before': {
