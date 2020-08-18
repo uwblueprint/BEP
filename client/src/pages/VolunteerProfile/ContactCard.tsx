@@ -1,55 +1,51 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-
-//import { Volunteer } from "../../data/types/userTypes";
-import './Profile.css'
-
+import { Link, SecondaryMainTextTypography } from "../../components/index";
 
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
   },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
   title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
+    fontSize: 18,
+  }
 });
 
 export default function VolunteerCard(props: any) {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
-
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Typography variant="h5" component="h2"  className='profile-card-title'>
-          Contact Information
-        </Typography>
-        <Grid container direction="row">
-          <Grid item xs={4}>
-            <Typography  className='profile-card-section-title'>LINKEDIN URL</Typography>
-            <Typography>
-              <a href={props.linkedIn}>{props.linkedIn}</a>
-            </Typography>
+        <Grid container spacing={2} direction="column">
+          <Grid item xs={12}>
+            <Typography variant="h2" className={classes.title}>Contact Information</Typography>
           </Grid>
-          <Grid item xs={4}>
-            <Typography className='profile-card-section-title'>EMAIL</Typography>
-            <Typography>
-              <a href={props.email}>{props.email}</a>
-            </Typography>
+          <Grid container item direction="row" xs={12}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1">LinkedIn URL</Typography>
+              {
+                props.linkedIn ?
+                <Link target="_blank" href={props.linkedIn}>
+                  <SecondaryMainTextTypography variant = "body1">
+                    {props.linkedIn.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")}
+                  </SecondaryMainTextTypography>
+                </Link>
+                :
+                <Typography variant="body1">N/A</Typography>
+              }
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1">Email</Typography>
+              <Link target="_blank" href={"mailto:".concat(props.email)}>
+                <SecondaryMainTextTypography>
+                  {props.email}
+                </SecondaryMainTextTypography>
+              </Link>
+            </Grid>
           </Grid>
         </Grid>
       </CardContent>

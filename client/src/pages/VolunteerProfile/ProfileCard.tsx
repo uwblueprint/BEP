@@ -1,64 +1,48 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-
-//import { Volunteer } from "../../data/types/userTypes";
-import './Profile.css'
 
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
   },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
   title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
+    fontSize: 18,
   },
 });
 
 export default function VolunteerCard(props: any) {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
 
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Typography variant="h5" component="h2" className='profile-card-title'>
-          Profile
-        </Typography>
-
-        <Grid container direction="row">
-          <Grid item xs={4}>
-            <Typography className='profile-card-section-title'>EMPLOYMENT STATUS</Typography>
-            <Typography className='profile-card-section-content'>{props.employmentStatus}</Typography>
+        <Grid container spacing={2} direction="column"  >
+          <Grid item xs={12}>
+            <Typography variant="h2" className={classes.title}>Profile</Typography>
           </Grid>
-          <Grid item xs={4}>
-            <Typography className='profile-card-section-title'>ORGANIZATION SECTOR</Typography>
-            <Typography className='profile-card-section-content'>
-              {props.orgSector}
-            </Typography>
+          <Grid container item direction="row" xs={12}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1">Employment Status</Typography>
+              <Typography variant="body1">{props.employmentStatus}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1">Organization Sector</Typography>
+              <Typography variant="body1">{props.sectors ? props.sectors.join(", ") : "N/A"}</Typography>
+            </Grid>
           </Grid>
-        </Grid>
-
-        <Grid container direction="row" style={{margin: '16px 0'}}>
-          <Grid item xs={4}>
-            <Typography className='profile-card-section-title'>AREAS OF EXPERTISE</Typography>
-            <Typography className='profile-card-section-content'>{props.expertiseAreas.join(", ")}</Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography className='profile-card-section-title'>POST SECONDARY TRAINING</Typography>
-            <Typography className='profile-card-section-content'>{props.postSecondaryTraining.join(", ")}</Typography>
+          <Grid container item direction="row" xs={12}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1">Areas of Expertise</Typography>
+              <Typography variant="body1">{props.expertiseAreas.join(", ")}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1">Post Secondary Training</Typography>
+              <Typography variant="body1">{props.postSecondaryTraining.join(", ")}</Typography>
+            </Grid>
           </Grid>
         </Grid>
       </CardContent>

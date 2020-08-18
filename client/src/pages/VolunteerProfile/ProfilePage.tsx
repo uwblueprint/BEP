@@ -12,7 +12,7 @@ export default function ProfilePage(props: any) {
             employer = "VoiceHero"
             linkedIn = "https://www.linkedin.com/anneb"
             expertiseAreas = {["Admin/Business", "HR"]}
-            sectors = {["Admin/Business", "HR"]}
+            sectors = {["Information and Communication Technology"]}
             postSecondaryTraining = {["University", "Other"]}
         />
     );
