@@ -6,28 +6,42 @@ import ContactCard from "./ContactCard"
 import './Profile.css'
 
 
-class VolunteerProfile extends React.Component {
+class VolunteerProfile extends React.Component<
+{
+    email: string,
+    firstName: string,
+    lastName: string,
+    employmentStatus: string,
+    jobTitle: string,
+    linkedIn: string,
+    expertiseAreas: string[],
+    sectors: string[],
+    postSecondaryTraining: string[],
+    employer?: string,
+    description?: string
+}
+> {
     render() {
         return(
             <div>
                 <Grid container direction = "row">
-                    <Typography className='profile-name'>Anne Boelyn</Typography>
+        <Typography className='profile-name'>{this.props.firstName} {this.props.lastName}</Typography>
                 </Grid>
                 <Grid>
-                <Typography className='profile-title'>Product Manager at VoiceHero</Typography>
+                <Typography className='profile-title'>{this.props.jobTitle} {this.props.employer ? `at ${this.props.employer}` : ""}</Typography>
                 </Grid>
                 <Grid>
-                <Typography className='profile-description'>Descriptionas adsd asd asd asd asd asd as dasd asd asd asd asd as das as </Typography>
+                <Typography className='profile-description'> {this.props.description} </Typography>
                 </Grid>
                 <ProfileCard
-                    employmentStatus = "Full Time"
+                    employmentStatus = {this.props.employmentStatus}
                     orgSector = "Information and Communication Technology"
-                    expertiseAreas = {["Admin/Business", "HR"]}
-                    postSecondaryTraining = {["University", "Other"]}
+                    expertiseAreas = {this.props.expertiseAreas}
+                    postSecondaryTraining = {this.props.postSecondaryTraining}
                 />
                 <ContactCard
-                    linkedIn = "linkedin.com/anneb"
-                    email = "anne.boelyn@email.com"
+                    linkedIn = {this.props.linkedIn}
+                    email = {this.props.email}
                 />
             </div>
         );
