@@ -15,6 +15,10 @@ import EventSection from './EventSection'
 import { PageHeader, PageBody } from '../../../components/Page';
 import ConfirmedVolunteerCard from './ConfirmedVolunteerCard';
 import { Link } from 'react-router-dom'
+import CreateIcon from '@material-ui/icons/Create';
+import Card from '@material-ui/core/Card';
+import Container from '@material-ui/core/Container'
+import InfoIcon from '@material-ui/icons/Info';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,10 +54,29 @@ const a11yProps = (index: any) => {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
+  tabs: {
+    backgroundColor: theme.palette.primary.light,
+    boxShadow: '0',
+    paddingTop: '2em'
   },
+  card: {
+    margin: `${theme.spacing(2)}px auto`,
+    padding: theme.spacing(3),
+    borderRadius: 5,
+    height: 100,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    textAlign: "center"
+  },
+  noAppsDisc: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    textAlign: "center",
+    paddingTop: '100px',
+    alignItems: 'center'
+  }
 }));
 
 const EventPage = (props: any) => {
@@ -159,57 +182,80 @@ const EventPage = (props: any) => {
         <div style={{ height: "100vh" }}>
             <Grid container style={{ height: "100%" }}>
                 <PageHeader>
-                    <Grid container spacing={2}>
-                      <Grid item xs={9}>
-                        <Link to="/events">{`<`} Back</Link>
-                        <br></br>
-                        <Typography variant="h1">{eventData.eventName}</Typography>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <DarkContainedButton>
-                          Duplicate Details
-                        </DarkContainedButton>
-                      </Grid>
+                <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-end"
+                        style={{ height: "100%", width: "100%" }}
+                    >
+                        <Grid container spacing={4} direction="row" style={{marginBottom: "5%"}}>
+                          <Grid item style={{ width: "80%" }}>
+                          <Typography variant="body1" style={{paddingBottom: '10px'}}>
+                            <Link to="/events" style={{textDecoration: "none"}}>{`<`} Back </Link>
+                          </Typography>
+                            <Typography variant="h1">
+                                {eventData.eventName}
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{paddingTop: '50px'}}>
+                          <ContainedButton>
+                              Duplicate Details
+                          </ContainedButton>
+                        </Grid>
+                        </Grid>
+
                     </Grid>
                 </PageHeader>
             <PageBody>
               <EventSection event={eventData} />
-            <Typography variant="h6" classes={{
-              root: classes.root,
-            }}>
+            <Typography variant="h6">
                 Attended Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
 
             </Typography>
             {volunteers.length === 0 ? 
-          <Typography>
-              There were no volunteers confirmed for this event.
+          <Card className={classes.card}>
+          <Typography >
+              There were no volunteers confirmed for this event
           </ Typography> 
+        </Card>
       : displayVolunteers} 
             </PageBody>
       </Grid>
       </div> :
         <div style={{ height: "100vh" }}>
         <Grid container style={{ height: "100%" }}>
-        <PageHeader>
-        <Grid container spacing={2}>
-           <Grid item xs={9}>
-             <Link to="/events">{`<`} Back</Link>
-               <Typography variant="h1">{eventData.eventName}</Typography>
-                  </Grid>
-          </Grid>
-          </PageHeader>
-          <PageBody>
-          <AppBar position="static" color="transparent" elevation={0}>
-            <Tabs value={value} onChange={handleChange} aria-label="Simple Tabs">
-              <Tab label = "Event Details" {...a11yProps(0)} />
-              <Tab label={applicationsLabel} {...a11yProps(1)} />
-              <Tab label={invitationsLabel} {...a11yProps(2)} />
-            </Tabs>
-          </AppBar>
-          <div className={classes.root}>
+          <PageHeader>
+                    <Grid
+                        item
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-end"
+                        style={{ height: "100%", width: "100%" }}
+                    >
+                          <Grid item direction="column">
+                            <Typography variant="body1">
+                            <Link to="/events" style={{textDecoration: "none"}}>{`<`} Back </Link>
+                            </Typography>
+                            <Typography variant="h1" style={{ marginTop: "5%" }}>
+                                {eventData.eventName}
+                            </Typography>
+                          </Grid>
+
+                          <AppBar position="static" color="transparent" elevation={0}>
+                            <Tabs  className={classes.tabs} value={value} onChange={handleChange} aria-label="Simple Tabs">
+                              <Tab label = "Event Details" {...a11yProps(0)} />
+                              <Tab label={applicationsLabel} {...a11yProps(1)} />
+                              <Tab label={invitationsLabel} {...a11yProps(2)} />
+                            </Tabs>
+                          </AppBar>
+                    </Grid>
+                </PageHeader>
+  <PageBody>
       <TabPanel value={value} index={0}>
         <React.Fragment>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} direction="row">
               <Grid item xs={1}>
                   <Switch
                     checked={publicEvent.checked}
@@ -218,60 +264,65 @@ const EventPage = (props: any) => {
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                 />
               </Grid>
-              <Grid item xs={9}>
-                <Typography>
-                  Make posting visible to the public: {publicEvent.checked ? "ON" : "OFF"}
+              <Grid item xs={8}>
+                <Typography variant="body1" style={{fontSize: '18px'}}>
+                  Make posting visible to the public: <Typography variant="body1" style={{color: '#0A79BF', display: 'inline-block'}}>{publicEvent.checked ? "ON" : "OFF"}</Typography>
                 </Typography>
-                <Typography>
+                <Typography variant="body1" style={{fontSize: '12px'}}>
                   Enabling this feature will allow volunteers to discover your posting on the oppurtunities page.
                 </Typography>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
+                <Grid container  alignItems="flex-end" justify="flex-end">
                 <ContainedButton>
-                  Edit Opportunity
+                  <Typography variant="body1" style={{display: 'flex', alignItems: 'center'}}> <Typography><CreateIcon /> Edit Opportunity</Typography></Typography>
                 </ContainedButton>
+                </Grid>
               </Grid>
             </Grid>
         <EventSection event={eventData} />
         <React.Fragment>
-            <Typography variant="h6" classes={{
-              root: classes.root,
-            }}>
-                Confirmed Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
+            <Typography variant="h6" style={{fontSize: '24px'}}>
+                Confirmed Volunteers <Typography variant="body1" style={{opacity: '0.5', display: 'inline-block', fontSize: '24px'}}>{volunteers.length}/{eventData.numberOfVolunteers}</Typography>
 
             </Typography>
             {volunteers.length === 0 ? 
-          <Typography>
-              Volunteers that have been confirmed for this oppurtunity will show up here.
-          </ Typography> 
+            <Card className={classes.card}>
+              <Typography >
+                  Volunteers that have been confirmed for this oppurtunity will show up here.
+              </ Typography> 
+            </Card>
       : displayVolunteers}
         </React.Fragment>
       </React.Fragment>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {volunteers.length === eventData.numberOfVolunteers ? <Typography variant="body1">The positions for this oppurtunity have been filled</Typography> : null}
+        {volunteers.length === eventData.numberOfVolunteers ? <Typography variant="body1" style={{display: 'flex', alignItems: 'center'}}> <InfoIcon /> <Typography style={{paddingLeft: '10px'}}>The positions for this oppurtunity have been filled</Typography></Typography> : null}
         {applications.length === 0 ? 
         <React.Fragment>
-        <Typography>
-          There are currently no applications for this oppurtunity. {'\n'}
+        <Container className={classes.noAppsDisc}>
+        <Typography style={{paddingBottom: '20px'}}>
+          There are currently no applications for this oppurtunity. <br></br>
           Get started by browsing volunteer applications to accept an application!
-        </ Typography>
-        <ContainedButton>Browse Volunteers</ContainedButton> 
+        </Typography>
+        <ContainedButton style={{maxWidth: "175px"}}>Browse Volunteers</ContainedButton>
+        </Container> 
         </React.Fragment>
       : displayApplications}
       </TabPanel>
       <TabPanel value={value} index={2}>
       {invitations.length === 0 ? 
       <React.Fragment>
-        <Typography>
-          There are currently no invitations for this oppurtunity. {'\n'}
-          Get started by browsing volunteers and send an invitation! 
-        </ Typography> 
-        <ContainedButton>Browse Volunteers</ContainedButton>
+        <Container className={classes.noAppsDisc}>
+        <Typography style={{paddingBottom: '20px'}}>
+          There are currently no invitations for this oppurtunity. <br></br>
+          Get started by browsing volunteer applications to accept an application!
+        </Typography>
+        <ContainedButton style={{maxWidth: "175px"}}>Browse Volunteers</ContainedButton>
+        </Container> 
         </React.Fragment> 
       : displayInvitations}
       </TabPanel>
-    </div>
         </PageBody>
       </Grid>
     </div>}

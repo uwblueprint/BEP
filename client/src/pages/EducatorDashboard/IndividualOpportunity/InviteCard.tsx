@@ -16,19 +16,38 @@ export interface DialogProps {
 }
 
 const useStyles = makeStyles((theme) => ({
-    retract: {
-        color: 	"#FF0000",
-        fontWeight: "bold",
-        textDecoration: 'none'
-    },
     card: {
-        maxWidth: 800,
         margin: `${theme.spacing(4)}px auto`,
         padding: theme.spacing(4),
-        borderRadius: 10
+        borderRadius: 10,
     },
     root: {
-        paddingLeft: '25px',
+        paddingLeft: '25px'
+    },
+    title: {
+        fontSize: '18px',
+        fontWeight: 800
+    },
+    subtitle: {
+        fontSize: '16px',
+    },
+    fieldHeader: {
+        fontSize: '12px',
+        marginBottom: '8px'
+      },
+    fieldText: {
+        fontSize: '16px'
+    },
+    retract: {
+        color: '#A60000',
+        fontWeight: "bold"
+    },
+    dialogTitle: {
+        fontSize: '24px',
+        fontWeight: 800
+    },
+    dialogText: {
+        color: "black"
     }
 }));
 
@@ -62,7 +81,7 @@ const InviteCard = (props: any) => {
                 {props.info.invite.job} -- {props.info.invite.personalPronouns}
             </Typography>
         </Grid>
-        <Grid item xs={3}>
+        <Grid container xs={3} alignItems="flex-end" justify="flex-end" style={{paddingBottom: '50px'}}>
             <Button onClick={handleClickOpen}>
             <Typography variant="body2" component="h5" className={classes.retract}>
                     Retract Invitations
@@ -72,15 +91,15 @@ const InviteCard = (props: any) => {
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"  
                     open={open}>
-                    <DialogTitle>Are you sure you want to retract your invitation to {props.info.invite.invitationName}</DialogTitle>
+                    <DialogTitle><Typography variant="h1" className={classes.dialogTitle}>Are you sure you want to <Typography className={classes.dialogTitle} style={{color: "red", display: "inline"}}>retract</Typography> your invitation to {props.info.invite.invitationName}</Typography></DialogTitle>
                 <DialogContent classes={{
                     root: classes.root,
                 }}>
-                    <DialogContentText>You cannot change your decision after this</DialogContentText>
+                    <DialogContentText><Typography variant="body1" className={classes.dialogText}>You cannot change your decision after this</Typography></DialogContentText>
                 </DialogContent>
                     <DialogActions>
-                    <ContainedButton onClick={handleClickAcceptClose}>Yes</ContainedButton>
                     <Button onClick={handleClickClose}>No</Button>
+                    <ContainedButton onClick={handleClickAcceptClose}>Yes</ContainedButton>
                     </DialogActions>
                 </Dialog>
         </Grid>

@@ -16,23 +16,31 @@ export interface DialogProps {
 }
 
 const useStyles = makeStyles((theme) => ({
-    retract: {
-        color: 	"#FF0000",
-        fontWeight: "bold",
-        textDecoration: 'none'
-    },
     card: {
-        maxWidth: 800,
         margin: `${theme.spacing(4)}px auto`,
         padding: theme.spacing(4),
-        borderRadius: 10
+        borderRadius: 10,
     },
     root: {
         paddingLeft: '25px'
+    },
+    title: {
+        fontSize: '18px',
+        fontWeight: 800
+    },
+    subtitle: {
+        fontSize: '16px',
+    },
+    fieldHeader: {
+        fontSize: '12px',
+        marginBottom: '8px'
+      },
+    fieldText: {
+        fontSize: '16px'
     }
 }));
 
-//create your forceUpdate hoo
+//create your forceUpdate hoop
 
 const ApplicantCard = (props: any) => {
     console.log("These are the applicant Card Props", props)
@@ -82,15 +90,15 @@ const ApplicantCard = (props: any) => {
     <Card className={classes.card}>
     <Grid container spacing={2}>
         <Grid item xs={9}>
-            <Typography variant="h5" component="h2">
+            <Typography variant="h5" component="h2" className={classes.title}>
                 {props.info.applicant.applicantName}      
             </Typography>
-            <Typography variant="body1" component="h1">
+            <Typography variant="body1" component="h1" className={classes.subtitle}>
                 {props.info.applicant.job} -- {props.info.applicant.personalPronouns}
             </Typography>
         </Grid>
         <Grid item xs={3}>
-            <Grid container spacing={10}>
+            <Grid spacing={10} container  alignItems="flex-end" justify="flex-end" style={{paddingRight: '75px'}}>
             <Grid item xs={1}>
                 <Button onClick={handleOpenDeclineConfirm} disabled={!buttonEnabled}>
                     Decline
@@ -106,12 +114,12 @@ const ApplicantCard = (props: any) => {
                     <DialogContentText id="alert-dialog-description">You cannot change your decision after this</DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleStopConfirm}>No</Button>
                         <ContainedButton onClick={handleDeclineConfirm}>Yes</ContainedButton>
+                        <Button onClick={handleStopConfirm}>No</Button>
                     </DialogActions>
                 </Dialog>
             </Grid>
-             <Grid item xs={5}>
+             <Grid item xs={1}>
                 <ContainedButton onClick={handleOpenAcceptConfirm} disabled={!buttonEnabled}>
                     Accept
                 </ContainedButton>
@@ -126,42 +134,42 @@ const ApplicantCard = (props: any) => {
                     <DialogContentText id="alert-dialog-description">You cannot change your decision after this</DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleStopConfirm}>No</Button>
                         <ContainedButton onClick={handleAcceptConfirm}>Yes</ContainedButton>
+                        <Button onClick={handleStopConfirm}>No</Button>
                     </DialogActions>
                 </Dialog>
              </Grid>
              </Grid>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 SECTORS
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.applicant.sectors}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 AREAS OF EXPERTISE
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.applicant.areasOfExpertise}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 LINKEDIN URL
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.applicant.linkedinUrl}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 EMPLOYMENT STATUS
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.applicant.employmentStatus}
             </Typography>
         </Grid>
