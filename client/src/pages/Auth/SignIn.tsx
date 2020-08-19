@@ -81,12 +81,14 @@ class SignIn extends React.Component<{}, {password: string; email: string;}> {
                   <OutlinedTextField
                     id="email"
                     placeholder="e.g. name@email.com"
+                    type="email"
                     value={this.state.email}
                     onChange={this.handleChange}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start"/>
                       ),
+                      required: true
                     }}
                     inputProps={{ style: { height: "40px", padding: "0" } }}
                     style={{ width: "90%" }}
@@ -100,13 +102,14 @@ class SignIn extends React.Component<{}, {password: string; email: string;}> {
                   <OutlinedTextField
                     id="password"
                     type="password"
-                    placeholder="e.g. name@email.com"
+                    placeholder="Enter Password"
                     value={this.state.password}
                     onChange={this.handleChange}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start"/>
                       ),
+                      required: true
                     }}
                     inputProps={{ style: { height: "40px", padding: "0" } }}
                     style={{ width: "90%" }}
@@ -115,7 +118,7 @@ class SignIn extends React.Component<{}, {password: string; email: string;}> {
 
                   <ContainedButton
                     type="submit"
-                    style={{ width: "8%", marginLeft: "2%" }}
+                    style={{ width: "8%"}}
                   >
                     Login
                   </ContainedButton>
