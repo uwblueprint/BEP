@@ -14,6 +14,7 @@ export default function ProfilePage(props: any) {
             expertiseAreas = {["Admin/Business", "HR"]}
             sectors = {["Information and Communication Technology"]}
             postSecondaryTraining = {["University", "Other"]}
+            description="Volunteer description"
         />
     );
 }

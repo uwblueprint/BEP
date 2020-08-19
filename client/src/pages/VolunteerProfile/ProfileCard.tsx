@@ -31,17 +31,23 @@ export default function VolunteerCard(props: any) {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="subtitle1">Organization Sector</Typography>
-              <Typography variant="body1">{props.sectors ? props.sectors.join(", ") : "N/A"}</Typography>
+              <Typography variant="body1">
+                {props.sectors ? props.sectors.join(", ") : "N/A"}
+              </Typography>
             </Grid>
           </Grid>
           <Grid container item direction="row" xs={12}>
             <Grid item xs={6}>
               <Typography variant="subtitle1">Areas of Expertise</Typography>
-              <Typography variant="body1">{props.expertiseAreas.join(", ")}</Typography>
+              <Typography variant="body1">
+                {props.expertiseAreas.join(", ")}
+              </Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="subtitle1">Post Secondary Training</Typography>
-              <Typography variant="body1">{props.postSecondaryTraining.join(", ")}</Typography>
+              <Typography variant="body1">
+                {props.postSecondaryTraining.join(", ")}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
