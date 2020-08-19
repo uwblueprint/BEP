@@ -71,14 +71,14 @@ const InviteCard = (props: any) => {
     
 
     return (
-    <Card className={classes.card}>
+    <Card className={classes.card} elevation={0}>
     <Grid container spacing={2}>
         <Grid item xs={9}>
             <Typography variant="h5" component="h2">
                 {props.info.invite.invitationName}      
             </Typography>
             <Typography variant="body1" component="h1">
-                {props.info.invite.job} -- {props.info.invite.personalPronouns}
+                {props.info.invite.job} {`\u2013`} {props.info.invite.personalPronouns}
             </Typography>
         </Grid>
         <Grid container xs={3} alignItems="flex-end" justify="flex-end" style={{paddingBottom: '50px'}}>

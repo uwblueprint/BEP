@@ -36,7 +36,7 @@ const EventSection = (props: any) => {
   
     return (
       <div className={classes.root}>
-          <Card className={classes.card}>
+          <Card className={classes.card} elevation={0}>
             <Typography variant="h6" classes={{
               root: classes.root,
             }}>Event Details</Typography>
@@ -99,7 +99,7 @@ const EventSection = (props: any) => {
               </Grid>
               </Grid>
           </Card>
-          <Card className={classes.card}>
+          <Card className={classes.card} elevation={0}>
             <Typography variant="h6" classes={{
                 root: classes.root,
               }}>School Details</Typography>
@@ -130,7 +130,7 @@ const EventSection = (props: any) => {
               </Grid>
             </Grid>
           </Card>
-          <Card className={classes.card}>
+          <Card className={classes.card} elevation={0}>
             <Typography variant="h6" classes={{
               root: classes.root,
             }}> Details </Typography>

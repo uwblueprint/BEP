@@ -37,6 +37,13 @@ const useStyles = makeStyles((theme) => ({
       },
     fieldText: {
         fontSize: '16px'
+    },
+    dialogTitle: {
+        fontSize: '24px',
+        fontWeight: 800
+    },
+    dialogText: {
+        color: "black"
     }
 }));
 
@@ -87,14 +94,14 @@ const ApplicantCard = (props: any) => {
     }
 
     return (
-    <Card className={classes.card}>
+    <Card className={classes.card} elevation={0}>
     <Grid container spacing={2}>
         <Grid item xs={9}>
             <Typography variant="h5" component="h2" className={classes.title}>
                 {props.info.applicant.applicantName}      
             </Typography>
             <Typography variant="body1" component="h1" className={classes.subtitle}>
-                {props.info.applicant.job} -- {props.info.applicant.personalPronouns}
+                {props.info.applicant.job} {`\u2013`} {props.info.applicant.personalPronouns}
             </Typography>
         </Grid>
         <Grid item xs={3}>
@@ -107,15 +114,15 @@ const ApplicantCard = (props: any) => {
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description" 
                     open={denyOpen} >
-                    <DialogTitle id="alert-dialog-title">{`Are you sure you want to decline ${props.info.applicant.applicantName} for this event?`}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title"><Typography variant="h1" className={classes.dialogTitle}>Are you sure you want to <Typography className={classes.dialogTitle} style={{color: "red", display: "inline"}}>decline</Typography> {props.info.applicant.applicantName} for this event?</Typography></DialogTitle>
                     <DialogContent classes={{
                         root: classes.root,
                     }}>
-                    <DialogContentText id="alert-dialog-description">You cannot change your decision after this</DialogContentText>
+                    <DialogContentText id="alert-dialog-description"><Typography className={classes.dialogText}>You cannot change your decision after this</Typography></DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <ContainedButton onClick={handleDeclineConfirm}>Yes</ContainedButton>
                         <Button onClick={handleStopConfirm}>No</Button>
+                        <ContainedButton onClick={handleDeclineConfirm}>Yes</ContainedButton>
                     </DialogActions>
                 </Dialog>
             </Grid>
@@ -127,15 +134,15 @@ const ApplicantCard = (props: any) => {
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"  
                     open={acceptOpen}>
-                    <DialogTitle id="alert-dialog-title">{`Are you sure you want to accept ${props.info.applicant.applicantName} for this event?`}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title"><Typography variant="h1" className={classes.dialogTitle}>Are you sure you want to <Typography className={classes.dialogTitle} style={{color: "green", display: "inline"}}>accept</Typography> {props.info.applicant.applicantName} for this event?</Typography></DialogTitle>
                     <DialogContent classes={{
                         root: classes.root,
                     }}>
-                    <DialogContentText id="alert-dialog-description">You cannot change your decision after this</DialogContentText>
+                    <DialogContentText id="alert-dialog-description"><Typography className={classes.dialogText}>You cannot change your decision after this</Typography></DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <ContainedButton onClick={handleAcceptConfirm}>Yes</ContainedButton>
                         <Button onClick={handleStopConfirm}>No</Button>
+                        <ContainedButton onClick={handleAcceptConfirm}>Yes</ContainedButton>
                     </DialogActions>
                 </Dialog>
              </Grid>

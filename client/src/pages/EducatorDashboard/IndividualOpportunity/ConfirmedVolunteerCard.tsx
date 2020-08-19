@@ -26,11 +26,11 @@ const ConfirmedVolunteerCard = (props: any) => {
     console.log(props)
 
     return (
-        <Card className={classes.card}>
+        <Card className={classes.card} elevation={0}>
             <Typography variant="h4" classes={{
                 root: classes.retract,
             }}>{props.info.volunteer.volunteerName}</Typography>
-            <Typography variant="body1" className={classes.body} >{props.info.volunteer.job} at {props.info.volunteer.company} -- ({props.info.volunteer.personalPronouns})</Typography>
+            <Typography variant="body1" className={classes.body} >{props.info.volunteer.job} at {props.info.volunteer.company} {`\u2013`} ({props.info.volunteer.personalPronouns})</Typography>
         </Card>
     )
 

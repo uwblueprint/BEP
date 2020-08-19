@@ -209,7 +209,7 @@ const EventPage = (props: any) => {
                 </PageHeader>
             <PageBody>
               <EventSection event={eventData} />
-            <Typography variant="h6">
+            <Typography variant="h6" style={{fontSize: '24px'}}>
                 Attended Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
 
             </Typography>
@@ -275,7 +275,7 @@ const EventPage = (props: any) => {
               <Grid item xs={3}>
                 <Grid container  alignItems="flex-end" justify="flex-end">
                 <ContainedButton>
-                  <Typography variant="body1" style={{display: 'flex', alignItems: 'center'}}> <Typography><CreateIcon /> Edit Opportunity</Typography></Typography>
+                  <Typography variant="body1" style={{display: 'flex', alignItems: 'center', fontWeight: 800, fontSize: '16px', lineHeight: '22px'}}><CreateIcon style={{paddingRight: '10px', paddingBottom: '5px'}} />Edit Opportunity</Typography>
                 </ContainedButton>
                 </Grid>
               </Grid>
