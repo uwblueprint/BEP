@@ -18,7 +18,25 @@ const useStyles = makeStyles({
 });
 
 export default function EducatorRegistration() {
-  const [userEmail, setUserEmail] = useState<string>("");
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    schoolBoard: "",
+    schoolName: "",
+    position: "",
+    phoneNumber: 0,
+  });
+
+  const handleChange = (event: any) => {
+    const { name, value } = event.target;
+    setState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   return (
     <React.Fragment>
@@ -26,61 +44,80 @@ export default function EducatorRegistration() {
         <div>Register for an educator account</div>
         <BlackTextTypography>Account Information</BlackTextTypography>
         <OutlinedTextField
+          required
           placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+          name="email"
+          value={state.email}
+          onChange={handleChange}
         />
         <BlackTextTypography>Account Password</BlackTextTypography>
         <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+          placeholder="At least 8 characters"
+          name="password"
+          value={state.password}
+          onChange={handleChange}
         />
         <BlackTextTypography>Confirm Password</BlackTextTypography>
         <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+          placeholder="At least 8 characters"
+          name="confirmPassword"
+          value={state.confirmPassword}
+          onChange={handleChange}
         />
         <BlackTextTypography>First Name</BlackTextTypography>
         <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+          placeholder="Enter first name"
+          name="firstName"
+          value={state.firstName}
+          onChange={handleChange}
         />
         <BlackTextTypography>Last Name</BlackTextTypography>
         <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+          placeholder="Enter last name"
+          name="lastName"
+          value={state.lastName}
+          onChange={handleChange}
         />
         <BlackTextTypography>School Board</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+        <ContainedSelect
+          placeholder="Selected your school board"
+          name="schoolBoard"
+          value={state.schoolBoard}
+          onChange={handleChange}
         />
         <BlackTextTypography>School</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+        <ContainedSelect
+          value={state.schoolName}
+          name="schoolName"
+          placeholder="Select your school's name"
+          onChange={handleChange}
         />
         <BlackTextTypography>Position</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+        <ContainedSelect
+          placeholder="Select your position at the school"
+          name="position"
+          value={state.position}
+          onChange={handleChange}
         />
         <BlackTextTypography>Phone Number</BlackTextTypography>
         <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+          placeholder="At least 8 characters"
+          name="position"
+          value={state.phoneNumber}
+          onChange={handleChange}
         />
-        <BlackTextTypography>
+        {/* <BlackTextTypography>
           Which activities are you interested in?
         </BlackTextTypography>
         <OutlinedTextField
           placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
+          onChange={handleChange}
         />
         <BlackTextTypography>How did you hear about us</BlackTextTypography>
         <OutlinedTextField
           placeholder="e.g. name@email.com"
-          onChange={() => setUserEmail(userEmail)}
-        />
+          onChange={handleChange}
+        /> */}
       </PageBody>
     </React.Fragment>
   );

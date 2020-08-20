@@ -497,12 +497,7 @@ class VolunteerList extends React.Component<
                   </ContainedButton>
                 </Grid>
               </form>
-              <Grid
-                item
-                container
-                spacing={7}
-                direction="row"
-              >
+              <Grid item container spacing={7} direction="row">
                 {Object.entries(this.props.picklists).map((entry) => {
                   // Display picklists.
                   const picklistName: string = entry[0];
