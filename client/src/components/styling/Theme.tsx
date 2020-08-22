@@ -118,8 +118,19 @@ const theme = createMuiTheme({
     },
     MuiTab: {
       root: {
-        textTransform: 'none'
-      }
+        textTransform: "none",
+      },
+      textColorInherit: {
+        color: "black",
+        "&$selected": {
+          color: "#0A79BF",
+          backgroundColor: "#f2faff",
+          borderRadius: "2px",
+        },
+        flexContainer: {
+          margin: "1em 0em",
+        },
+      },
     },
     MuiIconButton: {
       root: {

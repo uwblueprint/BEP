@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   tabs: {
     backgroundColor: theme.palette.primary.light,
     boxShadow: '0',
-    paddingTop: '2em'
+    paddingTop: '13px'
   },
   card: {
     margin: `${theme.spacing(2)}px auto`,
@@ -214,7 +214,7 @@ const EventPage = (props: any) => {
 
             </Typography>
             {volunteers.length === 0 ? 
-          <Card className={classes.card}>
+          <Card className={classes.card} elevation={0}>
           <Typography >
               There were no volunteers confirmed for this event
           </ Typography> 
@@ -287,7 +287,7 @@ const EventPage = (props: any) => {
 
             </Typography>
             {volunteers.length === 0 ? 
-            <Card className={classes.card}>
+            <Card className={classes.card} elevation={0}>
               <Typography >
                   Volunteers that have been confirmed for this oppurtunity will show up here.
               </ Typography> 
