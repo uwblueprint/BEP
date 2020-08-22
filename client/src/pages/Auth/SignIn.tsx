@@ -1,25 +1,13 @@
+
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 import {
-  ContainedSelect,
   ContainedButton,
-  DarkContainedButton,
-  TextButton,
-  BlackExpandMoreIcon,
-  SecondaryMainExpandMoreIcon,
-  WhiteCloseIcon,
-  PageHeader,
   PageBody,
-  BlueSearchIcon,
-  OutlinedCheckbox,
   WhiteTextTypography,
-  BlackTextTypography,
-  SecondaryMainTextTypography,
 } from "../../components/index";
 
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { OutlinedTextField } from "../../components/TextField";
@@ -63,11 +51,20 @@ class SignIn extends React.Component<{}, {password: string; email: string;}> {
 
   render() {
     return (
-      <div style={{ height: "100vh" }}>
-        <Card elevation={0}>
-          <CardContent>
-
-           <form
+      <PageBody>
+        <div style={{ height: "100vh" }}>
+          <Grid container style={{height: "60vh"}}>
+            
+            <Grid item xs={4} style={{background: "#07598C", padding:"0 30px"}}>
+              <WhiteTextTypography variant="h5">Preparing youth for the future of work</WhiteTextTypography>
+              <WhiteTextTypography>It takes a village to raise a child. We're bringing Waterloo Region together to help our kids:</WhiteTextTypography>
+              <Typography>better understand the world of work</Typography>
+              <Typography>find a sense of purpose</Typography>
+              <Typography>connect with a rewarding career</Typography>
+            </Grid>
+            
+            <Grid item xs={4} style={{background:"white"}}>
+              <form
                 style={{ width: "100%" }}
                 onSubmit={this.handleSubmit}
               >
@@ -123,9 +120,10 @@ class SignIn extends React.Component<{}, {password: string; email: string;}> {
                     Login
                   </ContainedButton>
               </form>
-          </CardContent>
-        </Card>
-      </div>
+            </Grid>
+          </Grid>
+        </div>
+      </PageBody>
     );
   }
 }

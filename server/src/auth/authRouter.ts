@@ -4,13 +4,13 @@ import * as UserService from "./../api/users/UserService";
 import * as bcrypt from "bcrypt";
 import UserInterface, { UserType } from "./../api/users/UserInterface";
 
-const BCRYPT_ROUNDS = 4
+const BCRYPT_ROUNDS = 4;
 
 /**
  * Router Definition
  */
 
-export const authRouter = Express.Router()
+export const authRouter = Express.Router();
 
 /**
  * Controller Definitions
@@ -18,7 +18,7 @@ export const authRouter = Express.Router()
 
 authRouter.post("/register", async (req: Express.Request, res: Express.Response) => {
     try {
-        let firstName: string = req.body.firstName
+        let firstName: string = req.body.firstName;
         let email: string = req.body.email;
         let followedPrograms: string[] = req.body.followedPrograms;
         let isSubscribed: boolean = req.body.isSubscribed;
@@ -30,7 +30,7 @@ authRouter.post("/register", async (req: Express.Request, res: Express.Response)
 
 
         //Hash Password
-        const hash = await bcrypt.hash(password, BCRYPT_ROUNDS)
+        const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
         let user: UserInterface = {
             firstName: firstName,
@@ -58,7 +58,7 @@ authRouter.post("/register", async (req: Express.Request, res: Express.Response)
 
 
     } catch (e) {
-        res.status(404).send(e.message)
+        res.status(404).send(e.message);
     }
 });
 
@@ -68,8 +68,8 @@ authRouter.post('/login', async (req: Express.Request, res: Express.Response) =>
         let password: string = req.body.password;
 
         const fetchUser = await UserService.getUser(email)
-        let valid = false
-        if (fetchUser != undefined) {
+        let valid = false;
+        if (fetchUser !== undefined) {
             valid = await bcrypt.compare(password, fetchUser.password)
             console.log("The comparison was:" + valid)
         }
