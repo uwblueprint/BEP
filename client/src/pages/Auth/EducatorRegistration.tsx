@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { fetchPicklistsService } from "../../data/services/userPicklistServices";
-import { getEducatorDesiredActivities } from "../../data/selectors/userPicklistSelector";
+import {
+  getEducatorDesiredActivitiesPicklist,
+  getSchoolBoardPicklist,
+  getSchoolNamePicklist,
+  getPositionPicklist,
+  getIntroductionMethodPicklist,
+  getExpertiesAreasPicklist,
+} from "../../data/selectors/userPicklistSelector";
 import { UserPicklistType } from "../../data/types/userPicklistTypes";
 
 import {
@@ -22,16 +29,15 @@ const useStyles = makeStyles({
   },
 });
 
-interface Picklist {
-  educatorDesiredActivities: { displayName: string; list: string };
-  schoolBoard: { displayName: string; list: string };
-  schoolName: { displayName: string; list: string };
-  position: { displayName: string; list: string };
-  introductionMethod: { displayName: string; list: string };
-}
-
 interface StateProps {
-  picklists: Picklist[];
+  picklists: {
+    expertiseAreas: { displayName: string; list: string[] }; //TESTING
+    educatorDesiredActivities: { displayName: string; list: string[] };
+    schoolBoard: { displayName: string; list: string[] };
+    schoolName: { displayName: string; list: string[] };
+    position: { displayName: string; list: string[] };
+    introductionMethod: { displayName: string; list: string[] };
+  };
 }
 
 interface DispatchProps {
@@ -44,7 +50,8 @@ interface IEducator {
   confirmPassword: string;
   firstName: string;
   lastName: string;
-  fetchedPicklist: {
+  showPicklist: {
+    expertiseAreas: Map<string, boolean>;
     educatorDesiredActivities: Map<string, boolean>;
     schoolBoard: Map<string, boolean>;
     schoolName: Map<string, boolean>;
@@ -56,10 +63,7 @@ interface IEducator {
 
 type Props = DispatchProps & StateProps;
 
-const EducatorRegistration: React.SFC<Props> = ({
-  fetchPicklists,
-  picklists,
-}: Props) => {
+const EducatorRegistration: React.SFC<Props> = ({ fetchPicklists }: Props) => {
   const [state, setState] = useState<IEducator>({
     email: "",
     password: "",
@@ -67,7 +71,8 @@ const EducatorRegistration: React.SFC<Props> = ({
     firstName: "",
     lastName: "",
     phoneNumber: 0,
-    fetchedPicklist: {
+    showPicklist: {
+      expertiseAreas: new Map(),
       educatorDesiredActivities: new Map(),
       schoolBoard: new Map(),
       schoolName: new Map(),
@@ -78,6 +83,7 @@ const EducatorRegistration: React.SFC<Props> = ({
 
   useEffect(() => {
     const picklistTypes: UserPicklistType[] = [
+      UserPicklistType.expertiseAreas,
       UserPicklistType.educatorDesiredActivities,
       UserPicklistType.schoolBoard,
       UserPicklistType.schoolName,
@@ -138,12 +144,12 @@ const EducatorRegistration: React.SFC<Props> = ({
         <ContainedSelect
           placeholder="Selected your school board"
           name="schoolBoard"
-          value={state.fetchedPicklist.schoolBoard}
+          value={state.showPicklist.schoolBoard}
           onChange={handleChange}
         />
         <BlackTextTypography>School</BlackTextTypography>
         <ContainedSelect
-          value={state.fetchedPicklist.schoolName}
+          value={state.showPicklist.schoolName}
           name="schoolName"
           placeholder="Select your school's name"
           onChange={handleChange}
@@ -152,7 +158,7 @@ const EducatorRegistration: React.SFC<Props> = ({
         <ContainedSelect
           placeholder="Select your position at the school"
           name="position"
-          value={state.fetchedPicklist.position}
+          value={state.showPicklist.position}
           onChange={handleChange}
         />
         <BlackTextTypography>Phone Number</BlackTextTypography>
@@ -178,9 +184,29 @@ const EducatorRegistration: React.SFC<Props> = ({
 const mapStateToProps = (state: any) => {
   return {
     picklists: {
+      expertiseAreas: {
+        displayName: "Areas of Expertise",
+        list: getExpertiesAreasPicklist(state.userPicklists),
+      },
       educatorDesiredActivities: {
         displayName: "Educator Desired Activities",
-        list: getEducatorDesiredActivities(state.userPicklist),
+        list: getEducatorDesiredActivitiesPicklist(state.userPicklist),
+      },
+      schoolBoard: {
+        displayName: "School Board",
+        list: getSchoolBoardPicklist(state.userPicklist),
+      },
+      schoolName: {
+        displayName: "School Name",
+        list: getSchoolNamePicklist(state.userPicklist),
+      },
+      introductionMethod: {
+        displayName: "Introduction Method",
+        list: getIntroductionMethodPicklist(state.userPicklist),
+      },
+      position: {
+        displayName: "Position",
+        list: getPositionPicklist(state.userPicklist),
       },
     },
   };

@@ -18,18 +18,21 @@ export const getPicklist = async (picklistName: string): Promise<string[]> => {
     const picklistFields: string[] = [
         'coopPlacementMode__c',
         'coopPlacementTime__c',
-        'educatorDesiredActivities__c',
         'expertiseAreas__c',
         'followedPrograms__c',
         'grades__c',
-        'introductionMethod__c',
         'languages__c',
         'localPostSecondaryInstitutions__c',
         'locations__c',
         'postSecondaryTraining__c',
         'professionalAssociations__c',
         'volunteerDesiredExternalActivities__c',
-        'volunteerDesiredInternalActivities__c'
+        'volunteerDesiredInternalActivities__c',
+        'educatorDesiredActivities__c',
+        'introductionMethod__c',
+        'schoolName__c',
+        'schoolBoard__c',
+        'position__c'
     ];
     if (!picklistFields.includes(picklistName)) throw new Error(`${picklistName} is not a valid picklistType.`);
 

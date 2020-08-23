@@ -11,6 +11,7 @@ const getPicklistData = (picklistType: UserPicklistType) => (
 
 const createPicklistSelector = (picklistType: UserPicklistType) =>
   createSelector([getPicklistData(picklistType)], (picklist) => picklist);
+
 export const getExternalActivitesPicklist = createPicklistSelector(
   UserPicklistType.volunteerDesiredExternalActivities
 );
@@ -39,18 +40,22 @@ export const getLanguagesPicklist = createPicklistSelector(
   UserPicklistType.languages
 );
 
-export const getEducatorDesiredActivities = createPicklistSelector(
+export const getEducatorDesiredActivitiesPicklist = createPicklistSelector(
   UserPicklistType.educatorDesiredActivities
 );
 
-export const getSchoolBoard = createPicklistSelector(
+export const getSchoolBoardPicklist = createPicklistSelector(
   UserPicklistType.schoolBoard
 );
 
-export const getSchoolName = createPicklistSelector(
+export const getSchoolNamePicklist = createPicklistSelector(
   UserPicklistType.schoolName
 );
 
-export const getIntroductionMethod = createPicklistSelector(
+export const getIntroductionMethodPicklist = createPicklistSelector(
   UserPicklistType.introductionMethod
+);
+
+export const getPositionPicklist = createPicklistSelector(
+  UserPicklistType.position
 );
