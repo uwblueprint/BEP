@@ -14,11 +14,9 @@ export type UserPicklistState = {
 const initialState: UserPicklistState = {
   [UserPicklistType.coopPlacementMode]: [],
   [UserPicklistType.coopPlacementTime]: [],
-  [UserPicklistType.educatorDesiredActivities]: [],
   [UserPicklistType.expertiseAreas]: [],
   [UserPicklistType.followedPrograms]: [],
   [UserPicklistType.grades]: [],
-  [UserPicklistType.introductionMethod]: [],
   [UserPicklistType.languages]: [],
   [UserPicklistType.localPostSecondaryInstitutions]: [],
   [UserPicklistType.locations]: [],
@@ -26,6 +24,11 @@ const initialState: UserPicklistState = {
   [UserPicklistType.professionalAssociations]: [],
   [UserPicklistType.volunteerDesiredExternalActivities]: [],
   [UserPicklistType.volunteerDesiredInternalActivities]: [],
+  [UserPicklistType.educatorDesiredActivities]: [],
+  [UserPicklistType.introductionMethod]: [],
+  [UserPicklistType.schoolBoard]: [],
+  [UserPicklistType.schoolName]: [],
+  [UserPicklistType.position]: [],
 };
 
 export default function (

@@ -9,20 +9,48 @@ const getPicklistData = (picklistType: UserPicklistType) => (
     ? state[UserPicklistType[picklistType]]
     : [];
 
-const createPicklistSelector = (picklistType: UserPicklistType) => createSelector(
-  [getPicklistData(picklistType)],
-  (picklist) => picklist
+const createPicklistSelector = (picklistType: UserPicklistType) =>
+  createSelector([getPicklistData(picklistType)], (picklist) => picklist);
+export const getExternalActivitesPicklist = createPicklistSelector(
+  UserPicklistType.volunteerDesiredExternalActivities
 );
-export const getExternalActivitesPicklist = createPicklistSelector(UserPicklistType.volunteerDesiredExternalActivities)
 
-export const getInternalActivitesPicklist = createPicklistSelector(UserPicklistType.volunteerDesiredInternalActivities)
+export const getInternalActivitesPicklist = createPicklistSelector(
+  UserPicklistType.volunteerDesiredInternalActivities
+);
 
-export const getExpertiesAreasPicklist = createPicklistSelector(UserPicklistType.expertiseAreas)
+export const getExpertiesAreasPicklist = createPicklistSelector(
+  UserPicklistType.expertiseAreas
+);
 
-export const getGradesPicklist = createPicklistSelector(UserPicklistType.grades)
+export const getGradesPicklist = createPicklistSelector(
+  UserPicklistType.grades
+);
 
-export const getPostSecondaryTrainingPicklist = createPicklistSelector(UserPicklistType.postSecondaryTraining)
+export const getPostSecondaryTrainingPicklist = createPicklistSelector(
+  UserPicklistType.postSecondaryTraining
+);
 
-export const getLocationsPicklist = createPicklistSelector(UserPicklistType.locations)
+export const getLocationsPicklist = createPicklistSelector(
+  UserPicklistType.locations
+);
 
-export const getLanguagesPicklist = createPicklistSelector(UserPicklistType.languages)
+export const getLanguagesPicklist = createPicklistSelector(
+  UserPicklistType.languages
+);
+
+export const getEducatorDesiredActivities = createPicklistSelector(
+  UserPicklistType.educatorDesiredActivities
+);
+
+export const getSchoolBoard = createPicklistSelector(
+  UserPicklistType.schoolBoard
+);
+
+export const getSchoolName = createPicklistSelector(
+  UserPicklistType.schoolName
+);
+
+export const getIntroductionMethod = createPicklistSelector(
+  UserPicklistType.introductionMethod
+);

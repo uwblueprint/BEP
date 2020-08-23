@@ -1,11 +1,9 @@
 export enum UserPicklistType {
   coopPlacementMode = "coopPlacementMode",
   coopPlacementTime = "coopPlacementTime",
-  educatorDesiredActivities = "educatorDesiredActivities",
   expertiseAreas = "expertiseAreas",
   followedPrograms = "followedPrograms",
   grades = "grades",
-  introductionMethod = "introductionMethod",
   languages = "languages",
   localPostSecondaryInstitutions = "localPostSecondaryInstitutions",
   locations = "locations",
@@ -13,4 +11,9 @@ export enum UserPicklistType {
   professionalAssociations = "professionalAssociations",
   volunteerDesiredExternalActivities = "volunteerDesiredExternalActivities",
   volunteerDesiredInternalActivities = "volunteerDesiredInternalActivities",
+  educatorDesiredActivities = "educatorDesiredActivities",
+  schoolBoard = "schoolBoard",
+  schoolName = "schoolName",
+  position = "position",
+  introductionMethod = "introductionMethod",
 }
