@@ -1,5 +1,5 @@
 import { FETCH_EVENTS, CHANGE_EVENTS_FILTER } from "../actions/actionTypes";
-import { Event } from "../services/types/EventTypes";
+import { Event } from "../types/EventTypes";
 
 export interface EventsState {
   list: Event[];

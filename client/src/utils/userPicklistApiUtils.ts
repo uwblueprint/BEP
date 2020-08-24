@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
-import { UserPicklistType } from "../data/services/types/userPicklistTypes";
+import { UserPicklistType } from "../data/types/userPicklistTypes";
 
 const get = (picklistType: UserPicklistType) => {
   const config: AxiosRequestConfig = {

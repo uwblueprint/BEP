@@ -1,5 +1,5 @@
 import { FETCH_VOLUNTEERS } from "../actions/actionTypes";
-import { Volunteer } from "../services/types/userTypes";
+import { Volunteer } from "../types/userTypes";
 import { VolunteersAction } from "../actions/volunteersActions";
 
 export interface VolunteersPayload {

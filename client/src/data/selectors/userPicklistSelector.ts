@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { UserPicklistState } from "../reducers/userPicklistReducers";
-import { UserPicklistType } from "../services/types/userPicklistTypes";
+import { UserPicklistType } from "../types/userPicklistTypes";
 
 const getPicklistData = (picklistType: UserPicklistType) => (
   state: UserPicklistState

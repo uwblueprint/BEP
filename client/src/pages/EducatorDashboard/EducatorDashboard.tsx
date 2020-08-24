@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Event } from "../../data/services/types/EventTypes";
+import { Event } from "../../data/types/EventTypes";
 import { connect } from "react-redux";
 import { fetchEventsService } from "../../data/services/eventsServices";
 import { changeFilter } from "../../data/actions/eventsActions";
