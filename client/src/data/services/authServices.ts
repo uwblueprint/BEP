@@ -1,11 +1,11 @@
 import { login } from "../../utils/authApiUtils";
-import { postLogin } from "../actions/authActions";
-import { UserPicklistType } from "../types/userPicklistTypes";
+import { loginRequest } from "../actions/authActions";
 
-export function fetchPicklistsService(email: string, password: string) {
+export function loginService(email: string, password: string) {
   return (dispatch: any) => {
     return login(email, password).then((res: any) => {
-      dispatch(postLogin(res.data));
+      console.log("SUCCESS");
+      dispatch(loginRequest(res.data));
       return res;
     });
   };

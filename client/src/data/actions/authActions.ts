@@ -1,15 +1,15 @@
-import { FETCH_USER_PICKLIST } from "./actionTypes";
+import { LOGIN_REQUEST } from "./actionTypes";
 
-export interface UserPicklistsAction {
+export interface loginRequestAction {
   type: string;
   payload: any;
 }
 
-export const postLogin = (
+export const loginRequest = (
     data: any
-): UserPicklistsAction => {
+): loginRequestAction => {
   return {
-    type: FETCH_USER_PICKLIST,
+    type: LOGIN_REQUEST,
     payload: { data },
   };
 };

@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { connect } from "react-redux";
 
 import {
   ContainedButton,
@@ -13,7 +12,15 @@ import Grid from "@material-ui/core/Grid";
 import { OutlinedTextField } from "../../components/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
-class SignIn extends React.Component<{}, {password: string; email: string;}> {
+/* Services */
+import { loginService } from "../../data/services/authServices";
+
+const mapDispatchToProps = (dispatch: any) => ({
+  login: (email: string, password: string) =>
+    dispatch(loginService(email, password)),
+});
+
+class SignIn extends React.Component<{ login: any }, { password: string; email: string; }> {
   constructor(props:any) {
     super(props);
 
@@ -33,6 +40,7 @@ class SignIn extends React.Component<{}, {password: string; email: string;}> {
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,8 +53,12 @@ class SignIn extends React.Component<{}, {password: string; email: string;}> {
 
   handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const { email, password } = this.state;
+    const { login } = this.props;
 
-    console.log(this.state);
+    if (email && password) {
+      login(email, password);
+    }
   }
 
   render() {
@@ -128,4 +140,4 @@ class SignIn extends React.Component<{}, {password: string; email: string;}> {
   }
 }
 
-export default SignIn;
+export default connect(null, mapDispatchToProps)(SignIn);
