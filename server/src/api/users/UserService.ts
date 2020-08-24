@@ -166,7 +166,6 @@ export const getUser = async (email: string): Promise<User> => {
             {
                 email__c: email
             },
-            userFields
         )
         .limit(1)
         .execute((err: Error, record: any) => {

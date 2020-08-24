@@ -59,6 +59,7 @@ class SignIn extends React.Component<{ login: any }, { password: string; email: 
     if (email && password) {
       login(email, password);
     }
+    this.setState({ email: "", password: "" });
   }
 
   render() {

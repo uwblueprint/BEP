@@ -28,7 +28,6 @@ authRouter.post("/register", async (req: Express.Request, res: Express.Response)
         let preferredPronouns: string = req.body.preferredPronouns;
         let userType: UserType = req.body.userType;
 
-
         //Hash Password
         const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
@@ -45,7 +44,6 @@ authRouter.post("/register", async (req: Express.Request, res: Express.Response)
         }
         
         await UserService.create(user).then(response => {
-
             if (response["success"] == true) {
                 let token = jwt.sign({email: email}, process.env.SECRET_KEY, {expiresIn: 5000});
                 res.status(200).send({
@@ -67,28 +65,27 @@ authRouter.post('/login', async (req: Express.Request, res: Express.Response) =>
         let email: string = req.body.email;
         let password: string = req.body.password;
 
-        const fetchUser = await UserService.getUser(email)
+        const fetchUser = await UserService.getUser(email);
         let valid = false;
         if (fetchUser !== undefined) {
-            valid = await bcrypt.compare(password, fetchUser.password)
-            console.log("The comparison was:" + valid)
+            console.log(fetchUser);
+            valid = await bcrypt.compare(password, fetchUser.password);
+            console.log("The comparison was:" + valid);
         }
 
         if (valid) {
-            let token = jwt.sign({email: email}, process.env.SECRET_KEY, {expiresIn: 5000})
+            const token = jwt.sign({email: email}, process.env.SECRET_KEY, {expiresIn: 5000});
             res.status(200).send({
                 "Status":"Authenticated",
-                "token": token
-            })
+                token: token
+            });
         } else {
             res.status(401).send({
-                "Status":"Unauthenticated",
-                "Message":"Incorrect Username or Password"
-            }) 
+                Message: 'Incorrect Username or Password',
+                Status: 'Unauthenticated'
+            });
         }
-
-
     } catch (e) {
-        console.error(e)
+        console.error(e);
     }
 });

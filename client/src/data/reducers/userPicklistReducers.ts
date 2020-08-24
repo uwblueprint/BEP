@@ -1,5 +1,5 @@
 import { FETCH_USER_PICKLIST } from "../actions/actionTypes";
-import { UserPicklistType } from "../types/userPicklistTypes";
+import { UserPicklistType } from "../services/types/userPicklistTypes";
 import { UserPicklistsAction } from "../actions/userPicklistActions";
 
 export interface UserPicklistsPayload {

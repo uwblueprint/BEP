@@ -19,8 +19,8 @@ import {
 } from "../../data/selectors/userPicklistSelector";
 
 /* Types */
-import { Volunteer } from "../../data/types/userTypes";
-import { UserPicklistType } from "../../data/types/userPicklistTypes";
+import { Volunteer } from "../../data/services/types/userTypes";
+import { UserPicklistType } from "../../data/services/types/userPicklistTypes";
 
 /* Components */
 import VolunteerCard from "./VolunteerCard";
