@@ -80,7 +80,7 @@ class VolunteerList extends React.Component<
     };
     filteredVolunteers: Volunteer[];
   }
-> {
+  > {
   constructor(props: any) {
     super(props);
 
@@ -541,11 +541,11 @@ class VolunteerList extends React.Component<
                           disableUnderline={true}
                           IconComponent={() =>
                             document.activeElement &&
-                            document.activeElement.id === picklistName ? (
-                              <SecondaryMainExpandMoreIcon />
-                            ) : (
-                              <BlackExpandMoreIcon />
-                            )
+                              document.activeElement.id === picklistName ? (
+                                <SecondaryMainExpandMoreIcon />
+                              ) : (
+                                <BlackExpandMoreIcon />
+                              )
                           }
                           displayEmpty={true}
                           renderValue={() => {
@@ -559,21 +559,21 @@ class VolunteerList extends React.Component<
                                 >
                                   <Grid item>
                                     {document.activeElement.id ===
-                                    picklistName ? (
-                                      <SecondaryMainTextTypography
-                                        align="center"
-                                        variant="button"
-                                      >
-                                        {picklistDisplayName}
-                                      </SecondaryMainTextTypography>
-                                    ) : (
-                                      <BlackTextTypography
-                                        align="center"
-                                        variant="button"
-                                      >
-                                        {picklistDisplayName}
-                                      </BlackTextTypography>
-                                    )}
+                                      picklistName ? (
+                                        <SecondaryMainTextTypography
+                                          align="center"
+                                          variant="button"
+                                        >
+                                          {picklistDisplayName}
+                                        </SecondaryMainTextTypography>
+                                      ) : (
+                                        <BlackTextTypography
+                                          align="center"
+                                          variant="button"
+                                        >
+                                          {picklistDisplayName}
+                                        </BlackTextTypography>
+                                      )}
                                   </Grid>
                                 </Grid>
                               )

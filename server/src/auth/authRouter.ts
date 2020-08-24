@@ -47,7 +47,7 @@ authRouter.post("/register", async (req: Express.Request, res: Express.Response)
         await UserService.create(user).then(response => {
 
             if (response["success"] == true) {
-                let token = jwt.sign({email: email}, process.env.SECRET_KEY, {expiresIn: 500});
+                let token = jwt.sign({email: email}, process.env.SECRET_KEY, {expiresIn: 5000});
                 res.status(200).send({
                     "data": response,
                     "token": token
@@ -75,8 +75,10 @@ authRouter.post('/login', async (req: Express.Request, res: Express.Response) =>
         }
 
         if (valid) {
+            let token = jwt.sign({email: email}, process.env.SECRET_KEY, {expiresIn: 5000})
             res.status(200).send({
-                "Status":"Authenticated"
+                "Status":"Authenticated",
+                "token": token
             })
         } else {
             res.status(401).send({
