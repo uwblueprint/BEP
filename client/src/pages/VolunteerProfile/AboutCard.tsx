@@ -9,6 +9,7 @@ import { Link, SecondaryMainTextTypography } from "../../components/index";
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
+    marginBottom: 10
   },
   title: {
     fontSize: 18,
@@ -89,6 +90,7 @@ export default function AboutCard(props: any) {
               <Typography variant="subtitle1">Organization Address</Typography>
             <Typography variant="body1">
               {props.org && props.org.address ? props.org.address : "N/A"}
+              {props.org && props.org.postalCode ? ", " + props.org.postalCode : ""}
             </Typography>
             </Grid>
             <Grid item xs={6}>

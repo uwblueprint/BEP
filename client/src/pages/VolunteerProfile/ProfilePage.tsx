@@ -1,5 +1,4 @@
 import React from "react";
-import { PageBody } from "../../components/index";
 import VolunteerProfile from "./VolunteerProfile";
 
 export default function ProfilePage(props: any) {
@@ -16,24 +15,24 @@ export default function ProfilePage(props: any) {
           phoneNumber: "000 000 0000",
           preferredPronouns: "She/Her",
           userType: 2,
-          careerDescription: "Sfdsaf",
+          careerDescription: "My career description is here.",
           jobTitle: "Product Manager",
           department: "dept",
           employer: {
-            address: "111 Waterwoo St, Waterloo ON, N2L L4G",
+            address: "111 Waterwoo St, Waterloo ON",
             city: "Waterloo",
             id: "str",
             name: "VoiceHero",
             phoneNumber: "000 000 0000",
             postalCode: "N2L L4G",
-            sectors: [],
+            sectors: ["Justice, community safety, and emergency services"],
             size: "SDF",
             socialMedia: [],
-            website: "https://voicehero.org"
+            website: "https://www.voicehero.org"
           },
           employmentStatus: "Full time",
           expertiseAreas:["Performing Arts/Entertainment", "Agriculture/Food Production"],
-          extraDescription: "",
+          extraDescription: "My extra description is here.",
           grades: ["9", "10", "11", "12"],
           introductionMethod: "intro",
           isVolunteerCoordinator: false,
