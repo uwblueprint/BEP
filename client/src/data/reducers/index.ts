@@ -6,4 +6,3 @@ import picklists from './picklistReducers'
 import user from './authReducers';
 
 export default combineReducers({ test, volunteers, picklists, events, user });
-
