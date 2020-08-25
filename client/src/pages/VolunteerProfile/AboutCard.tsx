@@ -72,18 +72,16 @@ export default function AboutCard(props: any) {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="subtitle1">Organization Website</Typography>
-              <Typography variant="body1">
-                {
-                  props.org  && props.org.website ? 
-                  <Link target="_blank" href={props.org.website}>
-                    <SecondaryMainTextTypography variant = "body1">
-                      {props.org.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")}
-                    </SecondaryMainTextTypography>
-                  </Link>
-                  :
-                  <Typography variant="body1">N/A</Typography> 
-                }
-              </Typography>
+              {
+                props.org  && props.org.website ?
+                <Link target="_blank" href={props.org.website}>
+                  <SecondaryMainTextTypography variant = "body1">
+                    {props.org.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")}
+                  </SecondaryMainTextTypography>
+                </Link>
+                :
+                <Typography variant="body1">N/A</Typography>
+              }
             </Grid>
           </Grid>
           <Grid container item direction="row" xs={12}>
