@@ -10,7 +10,7 @@ import ApplicantCard from './ApplicantCard'
 import { getApplications, getInvitations, getVolunteers } from '../../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
-import { DarkContainedButton, ContainedButton } from '../../../components/Button'
+import { ContainedButton } from '../../../components/Button'
 import EventSection from './EventSection'
 import { PageHeader, PageBody } from '../../../components/Page';
 import ConfirmedVolunteerCard from './ConfirmedVolunteerCard';
@@ -203,7 +203,7 @@ const EventPage = (props: any) => {
                             </Typography>
                           </Grid>
                           <Grid item style={{paddingTop: '50px'}}>
-                          <ContainedButton>
+                          <ContainedButton style={{paddingRight: 15, paddingLeft: 15}}>
                               Duplicate Details
                           </ContainedButton>
                         </Grid>
