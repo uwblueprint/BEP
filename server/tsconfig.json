@@ -10,10 +10,9 @@
     "experimentalDecorators": true,
     "baseUrl": ".",
     "esModuleInterop": true,
-    "paths": {
-    }
+    "paths": {}
   },
   "include": [
     "src/**/*"
-]
+  ]
 }
