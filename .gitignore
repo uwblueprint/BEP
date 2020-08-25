@@ -24,3 +24,6 @@ yarn-debug.log*
 yarn-error.log*
 server/yarn.lock
 client/yarn.lock
+
+# local configs
+.tmuxinator.yml
