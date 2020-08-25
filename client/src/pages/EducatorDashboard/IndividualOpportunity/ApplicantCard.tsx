@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
-import { Button, ContainedButton } from '../../../components/Button'
+import { Button, ContainedButton, OutlinedButton } from '../../../components/Button'
 import { updateApplicantStatus } from '../../../utils/EventsApiUtils'
 
 export interface DialogProps {
@@ -16,23 +16,38 @@ export interface DialogProps {
 }
 
 const useStyles = makeStyles((theme) => ({
-    retract: {
-        color: 	"#FF0000",
-        fontWeight: "bold",
-        textDecoration: 'none'
-    },
     card: {
-        maxWidth: 800,
         margin: `${theme.spacing(4)}px auto`,
         padding: theme.spacing(4),
-        borderRadius: 10
+        borderRadius: 10,
     },
     root: {
         paddingLeft: '25px'
+    },
+    title: {
+        fontSize: '18px',
+        fontWeight: 800
+    },
+    subtitle: {
+        fontSize: '16px',
+    },
+    fieldHeader: {
+        fontSize: '12px',
+        marginBottom: '8px'
+      },
+    fieldText: {
+        fontSize: '16px'
+    },
+    dialogTitle: {
+        fontSize: '24px',
+        fontWeight: 800
+    },
+    dialogText: {
+        color: "black"
     }
 }));
 
-//create your forceUpdate hoo
+//create your forceUpdate hoop
 
 const ApplicantCard = (props: any) => {
     console.log("These are the applicant Card Props", props)
@@ -79,89 +94,89 @@ const ApplicantCard = (props: any) => {
     }
 
     return (
-    <Card className={classes.card}>
+    <Card className={classes.card} elevation={0}>
     <Grid container spacing={2}>
         <Grid item xs={9}>
-            <Typography variant="h5" component="h2">
+            <Typography variant="h5" component="h2" className={classes.title}>
                 {props.info.applicant.applicantName}      
             </Typography>
-            <Typography variant="body1" component="h1">
-                {props.info.applicant.job} -- {props.info.applicant.personalPronouns}
+            <Typography variant="body1" component="h1" className={classes.subtitle}>
+                {props.info.applicant.job} {`\u2013`} {props.info.applicant.personalPronouns}
             </Typography>
         </Grid>
         <Grid item xs={3}>
-            <Grid container spacing={10}>
-            <Grid item xs={1}>
-                <Button onClick={handleOpenDeclineConfirm} disabled={!buttonEnabled}>
+            <Grid spacing={10} container  alignItems="flex-end" justify="flex-end" style={{paddingRight: 100}}>
+            <Grid item xs={1} style={{marginRight: 40}}>
+                <OutlinedButton onClick={handleOpenDeclineConfirm} disabled={!buttonEnabled} style={{paddingRight: 22, paddingLeft: 22}}>
                     Decline
-                </Button>
+                </OutlinedButton>
                 <Dialog 
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description" 
                     open={denyOpen} >
-                    <DialogTitle id="alert-dialog-title">{`Are you sure you want to decline ${props.info.applicant.applicantName} for this event?`}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title"><Typography variant="h1" className={classes.dialogTitle}>Are you sure you want to <Typography className={classes.dialogTitle} style={{color: "red", display: "inline"}}>decline</Typography> {props.info.applicant.applicantName} for this event?</Typography></DialogTitle>
                     <DialogContent classes={{
                         root: classes.root,
                     }}>
-                    <DialogContentText id="alert-dialog-description">You cannot change your decision after this</DialogContentText>
+                    <DialogContentText id="alert-dialog-description"><Typography className={classes.dialogText}>You cannot change your decision after this</Typography></DialogContentText>
                     </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleStopConfirm}>No</Button>
-                        <ContainedButton onClick={handleDeclineConfirm}>Yes</ContainedButton>
+                    <DialogActions style={{margin: 15}}>
+                        <OutlinedButton onClick={handleStopConfirm} style={{paddingRight: 22, paddingLeft: 22}}>No</OutlinedButton>
+                        <ContainedButton onClick={handleDeclineConfirm} style={{paddingRight: 22, paddingLeft: 22}}>Yes</ContainedButton>
                     </DialogActions>
                 </Dialog>
             </Grid>
-             <Grid item xs={5}>
-                <ContainedButton onClick={handleOpenAcceptConfirm} disabled={!buttonEnabled}>
+             <Grid item xs={1}>
+                <ContainedButton onClick={handleOpenAcceptConfirm} disabled={!buttonEnabled} style={{paddingRight: 25, paddingLeft: 25}}>
                     Accept
                 </ContainedButton>
                 <Dialog 
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"  
                     open={acceptOpen}>
-                    <DialogTitle id="alert-dialog-title">{`Are you sure you want to accept ${props.info.applicant.applicantName} for this event?`}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title"><Typography variant="h1" className={classes.dialogTitle}>Are you sure you want to <Typography className={classes.dialogTitle} style={{color: "green", display: "inline"}}>accept</Typography> {props.info.applicant.applicantName} for this event?</Typography></DialogTitle>
                     <DialogContent classes={{
                         root: classes.root,
                     }}>
-                    <DialogContentText id="alert-dialog-description">You cannot change your decision after this</DialogContentText>
+                    <DialogContentText id="alert-dialog-description"><Typography className={classes.dialogText}>You cannot change your decision after this</Typography></DialogContentText>
                     </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleStopConfirm}>No</Button>
-                        <ContainedButton onClick={handleAcceptConfirm}>Yes</ContainedButton>
+                    <DialogActions style={{margin: 15}}>
+                        <OutlinedButton onClick={handleStopConfirm} style={{paddingRight: 22, paddingLeft: 22}}>No</OutlinedButton>
+                        <ContainedButton onClick={handleAcceptConfirm} style={{paddingRight: 22, paddingLeft: 22}}>Yes</ContainedButton>
                     </DialogActions>
                 </Dialog>
              </Grid>
              </Grid>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 SECTORS
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.applicant.sectors}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 AREAS OF EXPERTISE
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.applicant.areasOfExpertise}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 LINKEDIN URL
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.applicant.linkedinUrl}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 EMPLOYMENT STATUS
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.applicant.employmentStatus}
             </Typography>
         </Grid>
