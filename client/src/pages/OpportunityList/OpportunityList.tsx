@@ -12,11 +12,7 @@ import { getVolunteers } from "../../data/selectors/volunteersSelector";
 import {
   getExternalActivitesPicklist,
   getInternalActivitesPicklist,
-  getExpertiesAreasPicklist,
   getLocationsPicklist,
-  getPostSecondaryTrainingPicklist,
-  getGradesPicklist,
-  getLanguagesPicklist,
 } from "../../data/selectors/picklistSelector";
 
 /* Types */
@@ -24,7 +20,7 @@ import { Volunteer } from "../../data/types/userTypes";
 import { PicklistType } from "../../data/types/picklistTypes";
 
 /* Components */
-import VolunteerCard from "./VolunteerCard";
+import OpportunityCard from "./OpportunityCard";
 import {
   ContainedSelect,
   ContainedButton,
@@ -48,16 +44,12 @@ import FormControl from "@material-ui/core/FormControl";
 import { Grid } from "@material-ui/core";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
-class VolunteerList extends React.Component<
+class OpportunityList extends React.Component<
   {
     volunteers: Volunteer[];
     picklists: {
       activities: { displayName: string; list: string[] };
-      expertiseAreas: { displayName: string; list: string[] };
       locations: { displayName: string; list: string[] };
-      training: { displayName: string; list: string[] };
-      languages: { displayName: string; list: string[] };
-      grades: { displayName: string; list: string[] };
     };
     fetchVolunteers: any;
     fetchPicklists: any;
@@ -73,11 +65,7 @@ class VolunteerList extends React.Component<
     searchBar: string;
     filters: {
       activities: Map<string, boolean>;
-      expertiseAreas: Map<string, boolean>;
       locations: Map<string, boolean>;
-      training: Map<string, boolean>;
-      languages: Map<string, boolean>;
-      grades: Map<string, boolean>;
     };
     filteredVolunteers: Volunteer[];
   }
@@ -89,7 +77,7 @@ class VolunteerList extends React.Component<
 
     if (user) {
       // whatever the redirect route is supposed to be
-      history.push("/volunteers");
+      history.push("/volunteer-list");
     }
 
     this.getFilters = this.getFilters.bind(this);
@@ -119,11 +107,7 @@ class VolunteerList extends React.Component<
       searchBar: "",
       filters: {
         activities: new Map(),
-        expertiseAreas: new Map(),
         locations: new Map(),
-        training: new Map(),
-        languages: new Map(),
-        grades: new Map(),
       },
       filteredVolunteers: volunteers,
     };
@@ -158,16 +142,8 @@ class VolunteerList extends React.Component<
     switch (picklistName) {
       case "activities":
         return filters.activities;
-      case "expertiseAreas":
-        return filters.expertiseAreas;
       case "locations":
         return filters.locations;
-      case "training":
-        return filters.training;
-      case "languages":
-        return filters.languages;
-      case "grades":
-        return filters.grades;
     }
     return new Map<string, boolean>();
   }
@@ -278,18 +254,8 @@ class VolunteerList extends React.Component<
     volunteer.volunteerDesiredExternalActivities.includes(filter) ||
     volunteer.volunteerDesiredInternalActivities.includes(filter);
 
-  filterExpertiseAreas = (volunteer: Volunteer, filter: string) =>
-    volunteer.expertiseAreas.includes(filter);
-
   filterLocations = (volunteer: Volunteer, filter: string) =>
     volunteer.locations.includes(filter);
-
-  filterTraining = (volunteer: Volunteer, filter: string) =>
-    volunteer.postSecondaryTraining.includes(filter);
-  filterLanguages = (volunteer: Volunteer, filter: string) =>
-    volunteer.languages.includes(filter);
-  filterGrades = (volunteer: Volunteer, filter: string) =>
-    volunteer.grades.includes(filter);
 
   getFilterFunction = (fieldName: string) => {
     switch (fieldName) {
@@ -297,16 +263,8 @@ class VolunteerList extends React.Component<
         return this.filterSearchBar;
       case "activities":
         return this.filterActivities;
-      case "expertiseAreas":
-        return this.filterExpertiseAreas;
       case "locations":
         return this.filterLocations;
-      case "training":
-        return this.filterTraining;
-      case "languages":
-        return this.filterLanguages;
-      case "grades":
-        return this.filterGrades;
     }
 
     return (volunteer: Volunteer, filter: string) => true;
@@ -370,12 +328,7 @@ class VolunteerList extends React.Component<
   componentDidMount() {
     const picklistTypes: PicklistType[] = [
       PicklistType.expertiseAreas,
-      PicklistType.volunteerDesiredExternalActivities,
-      PicklistType.volunteerDesiredInternalActivities,
       PicklistType.locations,
-      PicklistType.postSecondaryTraining,
-      PicklistType.languages,
-      PicklistType.grades,
     ];
 
     this.fetchVolunteers(
@@ -392,11 +345,7 @@ class VolunteerList extends React.Component<
         const picklists = this.props.picklists;
         const filters = this.state.filters;
 
-        if (type === PicklistType.expertiseAreas) {
-          filters.expertiseAreas = new Map(
-            createFilters(picklists.expertiseAreas.list)
-          );
-        } else if (
+        if (
           type === PicklistType.volunteerDesiredExternalActivities ||
           type === PicklistType.volunteerDesiredInternalActivities
         ) {
@@ -405,12 +354,6 @@ class VolunteerList extends React.Component<
           );
         } else if (type === PicklistType.locations) {
           filters.locations = new Map(createFilters(picklists.locations.list));
-        } else if (type === PicklistType.postSecondaryTraining) {
-          filters.training = new Map(createFilters(picklists.training.list));
-        } else if (type === PicklistType.languages) {
-          filters.languages = new Map(createFilters(picklists.languages.list));
-        } else if (type === PicklistType.grades) {
-          filters.grades = new Map(createFilters(picklists.grades.list));
         }
 
         this.setState({ filters });
@@ -439,9 +382,9 @@ class VolunteerList extends React.Component<
   render() {
     let filtersSelected = false;
 
-    const createVolunteerCard = (volunteer: Volunteer) => (
+    const createOpportunityCard = (volunteer: Volunteer) => (
       <Grid item xs={12} key={volunteer.email}>
-        <VolunteerCard {...volunteer} />
+        <OpportunityCard {...volunteer} />
       </Grid>
     );
 
@@ -497,12 +440,7 @@ class VolunteerList extends React.Component<
                   </ContainedButton>
                 </Grid>
               </form>
-              <Grid
-                item
-                container
-                spacing={7}
-                direction="row"
-              >
+              <Grid item container spacing={7} direction="row">
                 {Object.entries(this.props.picklists).map((entry) => {
                   // Display picklists.
                   const picklistName: string = entry[0];
@@ -513,20 +451,8 @@ class VolunteerList extends React.Component<
                     case "activities":
                       picklist = this.state.filters.activities;
                       break;
-                    case "expertiseAreas":
-                      picklist = this.state.filters.expertiseAreas;
-                      break;
                     case "locations":
                       picklist = this.state.filters.locations;
-                      break;
-                    case "training":
-                      picklist = this.state.filters.training;
-                      break;
-                    case "languages":
-                      picklist = this.state.filters.languages;
-                      break;
-                    case "grades":
-                      picklist = this.state.filters.grades;
                       break;
                   }
 
@@ -655,7 +581,7 @@ class VolunteerList extends React.Component<
 
               <Grid item container spacing={4}>
                 {this.state.filteredVolunteers.map((volunteer) =>
-                  createVolunteerCard(volunteer)
+                  createOpportunityCard(volunteer)
                 )}
               </Grid>
             </Grid>
@@ -681,25 +607,9 @@ const mapStateToProps = (state: any) => {
           ),
         ],
       },
-      expertiseAreas: {
-        displayName: "Areas of Expertise",
-        list: getExpertiesAreasPicklist(state.picklists),
-      },
       locations: {
         displayName: "Location",
         list: getLocationsPicklist(state.picklists),
-      },
-      training: {
-        displayName: "Level of Training",
-        list: getPostSecondaryTrainingPicklist(state.picklists),
-      },
-      languages: {
-        displayName: "Language",
-        list: getLanguagesPicklist(state.picklists),
-      },
-      grades: {
-        displayName: "Audience Grade Level",
-        list: getGradesPicklist(state.picklists),
       },
     },
   };
@@ -712,4 +622,4 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(fetchPicklistsService(picklistType)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(VolunteerList);
+export default connect(mapStateToProps, mapDispatchToProps)(OpportunityList);

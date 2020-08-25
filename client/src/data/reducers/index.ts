@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import test from './testReducers';
 import volunteers from './volunteersReducers';
-import userPicklists from './userPicklistReducers'
+import picklists from './picklistReducers'
 
-export default combineReducers({test, volunteers, userPicklists});
+export default combineReducers({test, volunteers, picklists});
