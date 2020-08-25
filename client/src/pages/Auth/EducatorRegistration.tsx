@@ -8,12 +8,17 @@ import {
   getSchoolNamePicklist,
   getPositionPicklist,
   getIntroductionMethodPicklist,
-  getExpertiesAreasPicklist,
 } from "../../data/selectors/userPicklistSelector";
 import { UserPicklistType } from "../../data/types/userPicklistTypes";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import { Grid } from "@material-ui/core";
+
+import axios from "axios";
 
 import {
   ContainedSelect,
+  SecondaryMainTextTypography,
   ContainedButton,
   DarkContainedButton,
   OutlinedTextField,
@@ -23,15 +28,10 @@ import {
   PageBody,
 } from "../../components/index";
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-});
+type Picklist = {};
 
 interface StateProps {
   picklists: {
-    expertiseAreas: { displayName: string; list: string[] }; //TESTING
     educatorDesiredActivities: { displayName: string; list: string[] };
     schoolBoard: { displayName: string; list: string[] };
     schoolName: { displayName: string; list: string[] };
@@ -50,20 +50,22 @@ interface IEducator {
   confirmPassword: string;
   firstName: string;
   lastName: string;
+  phoneNumber: number;
   showPicklist: {
-    expertiseAreas: Map<string, boolean>;
     educatorDesiredActivities: Map<string, boolean>;
     schoolBoard: Map<string, boolean>;
     schoolName: Map<string, boolean>;
     position: Map<string, boolean>;
     introductionMethod: Map<string, boolean>;
   };
-  phoneNumber: number;
 }
 
 type Props = DispatchProps & StateProps;
 
-const EducatorRegistration: React.SFC<Props> = ({ fetchPicklists }: Props) => {
+const EducatorRegistration: React.SFC<Props> = ({
+  picklists,
+  fetchPicklists,
+}: Props) => {
   const [state, setState] = useState<IEducator>({
     email: "",
     password: "",
@@ -72,7 +74,6 @@ const EducatorRegistration: React.SFC<Props> = ({ fetchPicklists }: Props) => {
     lastName: "",
     phoneNumber: 0,
     showPicklist: {
-      expertiseAreas: new Map(),
       educatorDesiredActivities: new Map(),
       schoolBoard: new Map(),
       schoolName: new Map(),
@@ -81,15 +82,25 @@ const EducatorRegistration: React.SFC<Props> = ({ fetchPicklists }: Props) => {
     },
   });
 
+  const picklistTypes: UserPicklistType[] = [
+    UserPicklistType.educatorDesiredActivities,
+    UserPicklistType.schoolBoard,
+    UserPicklistType.schoolName,
+    UserPicklistType.position,
+    UserPicklistType.introductionMethod,
+  ];
+
+  const createFilters = (filterNames: string[]): Array<[string, boolean]> => {
+    return filterNames.map((item: string) => [item, false]);
+  };
+
   useEffect(() => {
-    const picklistTypes: UserPicklistType[] = [
-      UserPicklistType.expertiseAreas,
-      UserPicklistType.educatorDesiredActivities,
-      UserPicklistType.schoolBoard,
-      UserPicklistType.schoolName,
-      UserPicklistType.position,
-      UserPicklistType.introductionMethod,
-    ];
+    console.log("here?");
+
+    //test
+    fetchPicklists(UserPicklistType.introductionMethod).then(() => {
+      console.log(picklists);
+    });
   }, []);
 
   const handleChange = (event: any) => {
@@ -106,7 +117,6 @@ const EducatorRegistration: React.SFC<Props> = ({ fetchPicklists }: Props) => {
         <div>Register for an educator account</div>
         <BlackTextTypography>Account Information</BlackTextTypography>
         <OutlinedTextField
-          required
           placeholder="e.g. name@email.com"
           name="email"
           value={state.email}
@@ -142,12 +152,54 @@ const EducatorRegistration: React.SFC<Props> = ({ fetchPicklists }: Props) => {
         />
         <BlackTextTypography>School Board</BlackTextTypography>
         <ContainedSelect
-          placeholder="Selected your school board"
+          placeholder="Select your school board"
           name="schoolBoard"
-          value={state.showPicklist.schoolBoard}
+          value={[]}
+          key="schoolBoard"
+          id="schoolBoard"
+          multiple
+          disableUnderline={true}
+          displayEmpty={true}
           onChange={handleChange}
-        />
-        <BlackTextTypography>School</BlackTextTypography>
+          renderValue={() => {
+            return (
+              document.activeElement && (
+                <Grid
+                  container
+                  direction="row"
+                  justify="flex-end"
+                  alignItems="center"
+                >
+                  <Grid item>
+                    {document.activeElement.id === "schoolBoard" ? (
+                      <SecondaryMainTextTypography
+                        align="center"
+                        variant="button"
+                      >
+                        {picklists.schoolBoard.displayName}
+                      </SecondaryMainTextTypography>
+                    ) : (
+                      <BlackTextTypography align="center" variant="button">
+                        {picklists.schoolBoard.displayName}
+                      </BlackTextTypography>
+                    )}
+                  </Grid>
+                </Grid>
+              )
+            );
+          }}
+        >
+          {/* {Array.from(picklist.entries(), (entry) => entry).map(
+            ([option, isSelected]) => (
+              <MenuItem key={option} value={option} id="schoolBoard">
+                <OutlinedCheckbox checked={isSelected} />
+                {option}
+              </MenuItem>
+            )
+          )} */}
+        </ContainedSelect>
+
+        {/* <BlackTextTypography>School</BlackTextTypography>
         <ContainedSelect
           value={state.showPicklist.schoolName}
           name="schoolName"
@@ -160,15 +212,14 @@ const EducatorRegistration: React.SFC<Props> = ({ fetchPicklists }: Props) => {
           name="position"
           value={state.showPicklist.position}
           onChange={handleChange}
-        />
+        /> */}
         <BlackTextTypography>Phone Number</BlackTextTypography>
         <OutlinedTextField
           placeholder="At least 8 characters"
-          name="position"
+          name="phoneNumber"
           value={state.phoneNumber}
           onChange={handleChange}
         />
-
         <BlackTextTypography>BEP Information</BlackTextTypography>
         <BlackTextTypography>
           Which activities are you interested in?
@@ -176,48 +227,47 @@ const EducatorRegistration: React.SFC<Props> = ({ fetchPicklists }: Props) => {
         <OutlinedCheckbox />
         <BlackTextTypography>How did you hear about us</BlackTextTypography>
         <OutlinedCheckbox />
+        {/* <ContainedButton onClick={handleSubmit}>
+          <BlackTextTypography>Finish Registration </BlackTextTypography>
+        </ContainedButton> */}
       </PageBody>
     </React.Fragment>
   );
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: any): StateProps => {
   return {
     picklists: {
-      expertiseAreas: {
-        displayName: "Areas of Expertise",
-        list: getExpertiesAreasPicklist(state.userPicklists),
-      },
       educatorDesiredActivities: {
         displayName: "Educator Desired Activities",
-        list: getEducatorDesiredActivitiesPicklist(state.userPicklist),
+        list: getEducatorDesiredActivitiesPicklist(state.userPicklists),
       },
       schoolBoard: {
         displayName: "School Board",
-        list: getSchoolBoardPicklist(state.userPicklist),
+        list: getSchoolBoardPicklist(state.userPicklists),
       },
       schoolName: {
         displayName: "School Name",
-        list: getSchoolNamePicklist(state.userPicklist),
+        list: getSchoolNamePicklist(state.userPicklists),
       },
       introductionMethod: {
         displayName: "Introduction Method",
-        list: getIntroductionMethodPicklist(state.userPicklist),
+        list: getIntroductionMethodPicklist(state.userPicklists),
       },
       position: {
         displayName: "Position",
-        list: getPositionPicklist(state.userPicklist),
+        list: getPositionPicklist(state.userPicklists),
       },
     },
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: any): DispatchProps => ({
   fetchPicklists: (picklistType: UserPicklistType) =>
     dispatch(fetchPicklistsService(picklistType)),
 });
 
-export default connect(
+export default connect<StateProps, DispatchProps>(
   mapStateToProps,
   mapDispatchToProps
 )(EducatorRegistration);

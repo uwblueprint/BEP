@@ -19,9 +19,10 @@ export interface User {
 
 export interface Educator extends User {
   educatorDesiredActivities: string[];
-  position: string;
-  schoolBoard: string;
-  school: string;
+  position: string[];
+  schoolBoard: string[];
+  schoolName: string[];
+  introductionMethod: string[];
 }
 
 export interface Volunteer extends User {
@@ -69,4 +70,3 @@ export default interface Employer {
   socialMedia: string[];
   website: string;
 }
-

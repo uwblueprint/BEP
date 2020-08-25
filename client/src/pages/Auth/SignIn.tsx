@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import SelectUserBox from "./SelectUserBox";
 import EducatorRegistration from "./EducatorRegistration";
 import VolunteerRegistration from "./VolunteerRegistration";
-import { TextButton, Dialog, DialogTitle } from "../../components/index";
+import { TextButton } from "../../components/index";
 
 const SignIn = (props: any) => {
   const [email, setEmail] = useState<string>("");

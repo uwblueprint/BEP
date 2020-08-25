@@ -13,11 +13,11 @@ import { arrayToPicklistString, picklistStringToArray } from '../../util/Salesfo
 const siteUser: string = 'SiteUser__c';
 const userFields: string =
     'email__c, firstName__c, phoneNumber__c, followedPrograms__c, Id, isSubscribed__c, lastName__c, password__c, ' +
-    'preferredPronouns__c, userType__c, educatorDesiredActivities__c, position__c, schoolBoard__c, school__c, careerDescription__c, ' +
-    'coopPlacementMode__c, coopPlacementSchoolAffiliation__c, coopPlacementTime__c, jobTitle__c, department__c, employer__c, ' +
-    'employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, introductionMethod__c, isVolunteerCoordinator__c, languages__c, ' +
-    'linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, professionalAssociations__c, reasonsForVolunteering__c,' +
-    'shareWithEmployer__c, volunteerDesiredExternalActivities__c, volunteerDesiredInternalActivities__c';
+    'preferredPronouns__c, userType__c, careerDescription__c, coopPlacementMode__c, coopPlacementSchoolAffiliation__c, coopPlacementTime__c, ' +
+    'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
+    'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
+    'professionalAssociations__c, reasonsForVolunteering__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
+    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, schoolBoard__c, schoolName__c, introductionMethod__c, ';
 
 // Map fields of user model to Salesforce fields.
 const userModelToSalesforceUser = (user: User, id?: string): any => {
@@ -39,9 +39,10 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
         salesforceUser = {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
-            position__c: (user as Educator).position,
-            school__c: (user as Educator).school,
-            schoolBoard__c: (user as Educator).schoolBoard
+            position__c: arrayToPicklistString((user as Educator).position),
+            schoolName__c: arrayToPicklistString((user as Educator).schoolName),
+            schoolBoard__c: arrayToPicklistString((user as Educator).schoolBoard),
+            introductionMethod__c: arrayToPicklistString((user as Educator).introductionMethod)
         };
     } else if (isVolunteer(user)) {
         salesforceUser = {
@@ -106,9 +107,10 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
     if (UserType[record.userType__c] === UserType[UserType.Educator]) {
         // User is an educator.
         (user as Educator).educatorDesiredActivities = picklistStringToArray(record.educatorDesiredActivities__c);
-        (user as Educator).position = record.position__c;
-        (user as Educator).schoolBoard = record.schoolBoard__c;
-        (user as Educator).school = record.school__c;
+        (user as Educator).position = picklistStringToArray(record.position__c);
+        (user as Educator).schoolBoard = picklistStringToArray(record.schoolBoard__c);
+        (user as Educator).schoolName = picklistStringToArray(record.schoolName__c);
+        (user as Educator).introductionMethod = picklistStringToArray(record.introductionMethod__c);
     } else if (UserType[record.userType__c] === UserType[UserType.Volunteer]) {
         // User is a volunteer.
         let employer: Employer = null;
