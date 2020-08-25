@@ -1,4 +1,4 @@
-export enum UserPicklistType {
+export enum PicklistType {
   coopPlacementMode = "coopPlacementMode",
   coopPlacementTime = "coopPlacementTime",
   educatorDesiredActivities = "educatorDesiredActivities",
