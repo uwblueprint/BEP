@@ -13,6 +13,7 @@ import { employerRouter } from './api/employers/EmployerRouter';
 import { userPicklistRouter } from './api/users/picklists/UserPicklistRouter';
 import { eventRouter } from './users/EventRouter';
 import { inviteRouter } from './users/VolunteerInviteRouter';
+import { applicationRouter } from './api/volunteerApplications/VolunteerAppRouter';
 import { requestsRouter } from './requests/requests.router';
 import {verifyWebToken} from './middleware/jwt'
 import { authRouter } from './auth/authRouter'
@@ -74,6 +75,7 @@ class BackendServer extends Server {
         this.app.use("/api/requests", requestsRouter);
         this.app.use("/api/users/picklists", userPicklistRouter);
         this.app.use("/api/employers", employerRouter);
+        this.app.use("/api/volunteer-applications", applicationRouter);
 
         //If in development, do not mount JWT auth middleware to users route
         if (process.env.NODE_ENV == 'production') {

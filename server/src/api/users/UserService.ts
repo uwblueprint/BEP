@@ -40,7 +40,7 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
             position__c: (user as Educator).position,
-            school__c: (user as Educator).school,
+            school__c: (user as Educator).schoolName,
             schoolBoard__c: (user as Educator).schoolBoard
         };
     } else if (isVolunteer(user)) {
@@ -108,7 +108,7 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Educator).educatorDesiredActivities = picklistStringToArray(record.educatorDesiredActivities__c);
         (user as Educator).position = record.position__c;
         (user as Educator).schoolBoard = record.schoolBoard__c;
-        (user as Educator).school = record.school__c;
+        (user as Educator).schoolName = record.schoolName__c;
     } else if (UserType[record.userType__c] === UserType[UserType.Volunteer]) {
         // User is a volunteer.
         let employer: Employer = null;
@@ -159,15 +159,15 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
  */
 
 // Retrieve user by email.
-export const getUser = async (email: string): Promise<User> => {
+export const getUser = async (userInfo: { Id?: string; email?: string }): Promise<User> => {
+    let userIdentifier;
+    if (userInfo.Id) userIdentifier = { Id: userInfo.Id };
+    else if (userInfo.email) userIdentifier = { email__c: userInfo.email };
+    else throw Error('No valid user identifier provided.');
+
     const user: User = conn
         .sobject(siteUser)
-        .find(
-            {
-                email__c: email
-            },
-            userFields
-        )
+        .find(userIdentifier, userFields)
         .limit(1)
         .execute((err: Error, record: any) => {
             if (err) {
