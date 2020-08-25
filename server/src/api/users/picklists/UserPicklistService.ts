@@ -4,10 +4,11 @@ const siteUser: string = 'SiteUser__c';
 
 export const getGlobalPicklist = async (picklistName: string): Promise<string[]> => {
     let picklist: string[] = [];
+    console.log(picklistName);
 
     await conn.metadata.read('GlobalValueSet', [picklistName], function(err, res) {
         if (err) return console.error(err);
-
+        console.log(res);
         picklist = res.customValue ? res.customValue.map(value => value.label) : [];
     });
     return picklist;
@@ -31,31 +32,42 @@ export const getPicklist = async (picklistName: string): Promise<string[]> => {
         'volunteerDesiredExternalActivities__c',
         'volunteerDesiredInternalActivities__c'
     ];
-    if (!picklistFields.includes(picklistName)) throw new Error(`${picklistName} is not a valid picklistType.`);
 
-    await conn.metadata
-        .read('CustomObject', [siteUser], async function(err, res) {
-            if (err) return console.error(err);
-        })
-        .then(res => {
-            return Promise.all(
-                res.fields.map(
-                    async (field): Promise<string[]> => {
-                        if (field.fullName == picklistName) {
-                            return field.valueSet.valueSetDefinition
-                                ? field.valueSet.valueSetDefinition.value.map(picklistEntry => picklistEntry.label)
-                                : await getGlobalPicklist(field.valueSet.valueSetName);
+    const globalPicklists: string[] = [
+        'desiredExternalActivities__c',
+        'desiredInternalActivities__c',
+        'allActivities__c'
+    ];
+
+    if (picklistFields.includes(picklistName)) {
+        await conn.metadata
+            .read('CustomObject', [siteUser], async function(err, res) {
+                if (err) return console.error(err);
+            })
+            .then(res => {
+                return Promise.all(
+                    res.fields.map(
+                        async (field): Promise<string[]> => {
+                            if (field.fullName == picklistName) {
+                                return field.valueSet.valueSetDefinition
+                                    ? field.valueSet.valueSetDefinition.value.map(picklistEntry => picklistEntry.label)
+                                    : await getGlobalPicklist(field.valueSet.valueSetName);
+                            }
+                            return [];
                         }
-                        return [];
-                    }
-                )
-            );
-        })
-        .then((res: string[][]) => {
-            res.forEach((picklistValues: string[]) => {
-                if (picklistValues.length !== 0) picklist = picklistValues;
+                    )
+                );
+            })
+            .then((res: string[][]) => {
+                res.forEach((picklistValues: string[]) => {
+                    if (picklistValues.length !== 0) picklist = picklistValues;
+                });
             });
-        });
+    } else if (globalPicklists.includes(picklistName)) {
+        picklist = await getGlobalPicklist(picklistName.replace(/__c$/, ''));
+    } else {
+        throw new Error(`${picklistName} is not a valid picklistType.`);
+    }
 
     return picklist;
 };
