@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(3),
     borderRadius: 5
   },
+  bottomCard: {
+    margin: `${theme.spacing(2)}px auto ${theme.spacing(0)}px auto`,
+    padding: theme.spacing(3),
+    borderRadius: 5
+  }
 }));
 
 
@@ -33,6 +38,7 @@ const EventSection = (props: any) => {
 
   var eventStartDate = new Date(props.event.startDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
   var eventEndDate = new Date(props.event.endDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
+  var eventExpiryDate = new Date(props.event.postingExpiry).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
   
     return (
       <div className={classes.root}>
@@ -130,7 +136,7 @@ const EventSection = (props: any) => {
               </Grid>
             </Grid>
           </Card>
-          <Card className={classes.card} elevation={0}>
+          <Card className={classes.bottomCard} elevation={0}>
             <Typography variant="h6" classes={{
               root: classes.root,
             }}> Details </Typography>
@@ -169,8 +175,14 @@ const EventSection = (props: any) => {
               </Grid>
             </Grid>
           </Card>
-          <Box>
-          </Box>
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+            alignItems="flex-end"
+          >
+            <Typography variant="body1" style={{fontSize: "12px", opacity: "0.7"}}>Posting expires on {eventExpiryDate}</Typography>
+          </Grid>
         </div>
     )
 }

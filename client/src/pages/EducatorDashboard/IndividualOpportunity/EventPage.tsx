@@ -57,7 +57,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   tabs: {
     backgroundColor: theme.palette.primary.light,
     boxShadow: '0',
-    paddingTop: '13px'
+    paddingTop: '13px',
+  },
+  tab: {
+    paddingLeft: '10px',
+    paddinRight: '10px',
   },
   card: {
     margin: `${theme.spacing(2)}px auto`,
@@ -209,7 +213,7 @@ const EventPage = (props: any) => {
                 </PageHeader>
             <PageBody>
               <EventSection event={eventData} />
-            <Typography variant="h6" style={{fontSize: '24px'}}>
+            <Typography variant="h6" style={{fontSize: '24px', marginTop: 30}}>
                 Attended Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
 
             </Typography>
@@ -245,9 +249,9 @@ const EventPage = (props: any) => {
 
                           <AppBar position="static" color="transparent" elevation={0}>
                             <Tabs  className={classes.tabs} value={value} onChange={handleChange} aria-label="Simple Tabs">
-                              <Tab label = "Event Details" {...a11yProps(0)} />
-                              <Tab label={applicationsLabel} {...a11yProps(1)} />
-                              <Tab label={invitationsLabel} {...a11yProps(2)} />
+                              <Tab label = "Event Details" {...a11yProps(0)} className={classes.tab} />
+                              <Tab label={applicationsLabel} {...a11yProps(1)} className={classes.tab} />
+                              <Tab label={invitationsLabel} {...a11yProps(2)} className={classes.tab}/>
                             </Tabs>
                           </AppBar>
                     </Grid>
@@ -282,7 +286,7 @@ const EventPage = (props: any) => {
             </Grid>
         <EventSection event={eventData} />
         <React.Fragment>
-            <Typography variant="h6" style={{fontSize: '24px'}}>
+            <Typography variant="h6" style={{fontSize: '24px', padding: '5px'}}>
                 Confirmed Volunteers <Typography variant="body1" style={{opacity: '0.5', display: 'inline-block', fontSize: '24px'}}>{volunteers.length}/{eventData.numberOfVolunteers}</Typography>
 
             </Typography>

@@ -32,10 +32,18 @@ const ContainedButton = withStyles(containedButtonStyle)((props: any) => (
 const DarkContainedButton = withStyles(darkContainedButtonStyle)(Button);
 const TextButton = withStyles(textButtonStyle)((props: any) => (
   <Button {...props}>
-    <SecondaryMainTextTypography variant="button">
+    <SecondaryMainTextTypography variant="button" color="primary">
       {props.children}
     </SecondaryMainTextTypography>
   </Button>
 ));
 
-export { ContainedButton, DarkContainedButton, TextButton, Button };
+const OutlinedButton = ((props: any) => (
+  <Button {...props} variant="outlined">
+    <SecondaryMainTextTypography>
+    {props.children}
+    </SecondaryMainTextTypography>
+  </Button>
+));
+
+export { ContainedButton, DarkContainedButton, TextButton, Button, OutlinedButton };

@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog'
 
-import { ContainedButton, Button } from '../../../components/Button'
+import { ContainedButton, Button, OutlinedButton } from '../../../components/Button'
 
 export interface DialogProps {
     open: boolean;
@@ -97,41 +97,41 @@ const InviteCard = (props: any) => {
                 }}>
                     <DialogContentText><Typography variant="body1" className={classes.dialogText}>You cannot change your decision after this</Typography></DialogContentText>
                 </DialogContent>
-                    <DialogActions>
-                    <Button onClick={handleClickClose}>No</Button>
-                    <ContainedButton onClick={handleClickAcceptClose}>Yes</ContainedButton>
+                    <DialogActions style={{margin: 15}}>
+                    <OutlinedButton onClick={handleClickClose} style={{paddingRight: 22, paddingLeft: 22}}>No</OutlinedButton>
+                    <ContainedButton onClick={handleClickAcceptClose} style={{paddingRight: 22, paddingLeft: 22}}>Yes</ContainedButton>
                     </DialogActions>
                 </Dialog>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 SECTORS
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.invite.sectors}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 AREAS OF EXPERTISE
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.invite.areasOfExpertise}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}>
                 LINKEDIN URL
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.invite.linkedinUrl}
             </Typography>
         </Grid>
         <Grid item xs={6}>
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant="subtitle1" component="h2" className={classes.fieldHeader}> 
                 EMPLOYMENT STATUS
             </Typography>
-            <Typography variant="body1" component="h2">
+            <Typography variant="body1" component="h2" className={classes.fieldText}>
                 {props.info.invite.employmentStatus}
             </Typography>
         </Grid>

@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
-import { Button, ContainedButton } from '../../../components/Button'
+import { Button, ContainedButton, OutlinedButton } from '../../../components/Button'
 import { updateApplicantStatus } from '../../../utils/EventsApiUtils'
 
 export interface DialogProps {
@@ -105,11 +105,11 @@ const ApplicantCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid item xs={3}>
-            <Grid spacing={10} container  alignItems="flex-end" justify="flex-end" style={{paddingRight: '75px'}}>
-            <Grid item xs={1}>
-                <Button onClick={handleOpenDeclineConfirm} disabled={!buttonEnabled}>
+            <Grid spacing={10} container  alignItems="flex-end" justify="flex-end" style={{paddingRight: 100}}>
+            <Grid item xs={1} style={{marginRight: 40}}>
+                <OutlinedButton onClick={handleOpenDeclineConfirm} disabled={!buttonEnabled} style={{paddingRight: 22, paddingLeft: 22}}>
                     Decline
-                </Button>
+                </OutlinedButton>
                 <Dialog 
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description" 
@@ -120,14 +120,14 @@ const ApplicantCard = (props: any) => {
                     }}>
                     <DialogContentText id="alert-dialog-description"><Typography className={classes.dialogText}>You cannot change your decision after this</Typography></DialogContentText>
                     </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleStopConfirm}>No</Button>
-                        <ContainedButton onClick={handleDeclineConfirm}>Yes</ContainedButton>
+                    <DialogActions style={{margin: 15}}>
+                        <OutlinedButton onClick={handleStopConfirm} style={{paddingRight: 22, paddingLeft: 22}}>No</OutlinedButton>
+                        <ContainedButton onClick={handleDeclineConfirm} style={{paddingRight: 22, paddingLeft: 22}}>Yes</ContainedButton>
                     </DialogActions>
                 </Dialog>
             </Grid>
              <Grid item xs={1}>
-                <ContainedButton onClick={handleOpenAcceptConfirm} disabled={!buttonEnabled}>
+                <ContainedButton onClick={handleOpenAcceptConfirm} disabled={!buttonEnabled} style={{paddingRight: 25, paddingLeft: 25}}>
                     Accept
                 </ContainedButton>
                 <Dialog 
@@ -140,9 +140,9 @@ const ApplicantCard = (props: any) => {
                     }}>
                     <DialogContentText id="alert-dialog-description"><Typography className={classes.dialogText}>You cannot change your decision after this</Typography></DialogContentText>
                     </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleStopConfirm}>No</Button>
-                        <ContainedButton onClick={handleAcceptConfirm}>Yes</ContainedButton>
+                    <DialogActions style={{margin: 15}}>
+                        <OutlinedButton onClick={handleStopConfirm} style={{paddingRight: 22, paddingLeft: 22}}>No</OutlinedButton>
+                        <ContainedButton onClick={handleAcceptConfirm} style={{paddingRight: 22, paddingLeft: 22}}>Yes</ContainedButton>
                     </DialogActions>
                 </Dialog>
              </Grid>
