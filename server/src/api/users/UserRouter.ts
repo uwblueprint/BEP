@@ -26,7 +26,7 @@ userRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     try {
         if (email !== undefined) {
             // If email provided in query parameters, return user with email address.
-            const fetchedUser = await UserService.getUser(email);
+            const fetchedUser = await UserService.getUser({ email });
             res.status(200).send(fetchedUser);
         } else if (type === 'volunteer') {
             // If query parameters specify "volunteer", then return a paginated list of volunteers.

@@ -4,7 +4,7 @@ export default interface EducatorInterface extends UserInterface {
     educatorDesiredActivities: string[];
     position: string;
     schoolBoard: string;
-    school: string;
+    schoolName: string;
 }
 
 export const isEducator = (obj: any): boolean => {
@@ -14,6 +14,6 @@ export const isEducator = (obj: any): boolean => {
         typeof obj.educatorDesiredActivities.every(item => typeof item === 'string') &&
         typeof obj.position === 'string' &&
         typeof obj.schoolBoard === 'string' &&
-        typeof obj.school === 'string'
+        typeof obj.schoolName === 'string'
     );
 };
