@@ -4,5 +4,4 @@ import events from './eventsReducers';
 import volunteers from './volunteersReducers';
 import picklists from './picklistReducers'
 
-
-export default combineReducers({ test, volunteers, userPicklists, events });
+export default combineReducers({test, volunteers, picklists});
