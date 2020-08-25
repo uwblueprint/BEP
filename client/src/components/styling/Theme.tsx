@@ -31,16 +31,16 @@ const theme = createMuiTheme({
   typography: {
     // fontFamily: '"Lato", sans-serif',
     h1: {
-      fontFamily: 'Arial',
+      fontFamily: "Arial",
       fontStyle: "normal",
       fontSize: "40px",
       lineHeight: "49px",
-      fontWeight: 'bold'
+      fontWeight: "bold",
     },
     h2: {
       fontStyle: "normal",
       fontWeight: 800,
-      fontSize: "24px",
+      fontSize: "30px",
       lineHeight: "33px",
     },
     h3: {
@@ -92,11 +92,10 @@ const theme = createMuiTheme({
       letterSpacing: "0.5px",
       fontWeight: 500,
       lineHeight: "24px",
-      textTransform: "lowercase",
     },
     button: {
       fontStyle: "normal",
-      fontWeight: 800,
+      fontWeight: 700,
       fontSize: "16px",
       lineHeight: "22px",
       textTransform: "capitalize",
@@ -116,6 +115,11 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiTabs: {
+      flexContainer: {
+        margin: "1em 0em",
+      },
+    },
     MuiTab: {
       root: {
         textTransform: "none",
@@ -127,27 +131,19 @@ const theme = createMuiTheme({
           backgroundColor: "#f2faff",
           borderRadius: "2px",
         },
-        flexContainer: {
-          margin: "1em 0em",
-        },
       },
     },
     MuiIconButton: {
       root: {
-        color: '#0A79BF'
-      }
+        color: "#0A79BF",
+      },
     },
     MuiContainer: {
       root: {
         padding: 0,
-        '@media (min-width: 0px)': {
-          padding: 0
-        }
-      }
-    },
-    MuiPickersToolbar: {
-      toolbar: {
-        backgroundColor: "#0A79BF",
+        "@media (min-width: 0px)": {
+          padding: 0,
+        },
       },
     },
     MuiButton: {
@@ -157,24 +153,32 @@ const theme = createMuiTheme({
     },
     MuiPickersDay: {
       daySelected: {
-        color: "#0A79BF",
+        color: "#fff",
+        backgroundColor: "#0A79BF",
+        "&:hover": {
+          color: "#000",
+          backgroundColor: "#fff",
+        },
       },
-    },
-    MuiInputBase: {
-      input: {
-        padding: "8px 12px"
-      }
+      current: {
+        color: "#000",
+      },
+      day: {
+        "&:hover": {
+          backgroundColor: "#D9F0FF",
+        },
+      },
     },
     MuiInput: {
       underline: {
-        '&:before': {
-          background: "#fff",
+        "&:before": {
           border: "1px solid #e5e5e5",
           borderRadius: "2px",
-          padding: "8px"
-        }
-      }
-    }
+          padding: "8px",
+          content: "none",
+        },
+      },
+    },
   },
 });
 
