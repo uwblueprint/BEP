@@ -40,7 +40,7 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
             position__c: (user as Educator).position,
-            schoolName__c: (user as Educator).schoolName,
+            school__c: (user as Educator).schoolName,
             schoolBoard__c: (user as Educator).schoolBoard
         };
     } else if (isVolunteer(user)) {
