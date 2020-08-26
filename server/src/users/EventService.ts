@@ -147,8 +147,7 @@ export const getEventInfo = async (eventName: string): Promise<Event> => {
 };
 
 export const getEvents = async (limit: number, offset: number): Promise<Event[]> => {
-    let events: Event[] = new Array(limit);
-    let eventIndex: number = 0;
+    let events: Event[] = [];
     let eventPromises: Promise<Event>[];
 
     await conn.query(
@@ -159,16 +158,16 @@ export const getEvents = async (limit: number, offset: number): Promise<Event[]>
             }
 
             eventPromises = result.records.map(record => {
-                const eventPromise = salesforceEventToEventModel(record).then(res => {
-                    events[eventIndex] = res; // Maintain chronological order of events in the 'events' array.
-                });
-                ++eventIndex;
+                const eventPromise = salesforceEventToEventModel(record)
                 return eventPromise;
             });
         }
     );
 
-    await Promise.all(eventPromises);
+    await Promise.all(eventPromises).then(resolvedEvents => {
+        console.log(resolvedEvents)
+        events = resolvedEvents;
+    });
 
     return events;
 };
