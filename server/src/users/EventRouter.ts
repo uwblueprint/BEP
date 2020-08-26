@@ -28,10 +28,9 @@ eventRouter.get('/', async (req: Express.Request, res: Express.Response) => {
 });
 
 eventRouter.get('/active', async (req: Express.Request, res: Express.Response) => {
-    const limit: number = req.query.limit as any;
-    const offset: number = req.query.offset as any;
     try {
-        const fetchedEvents = await EventService.getEvents(limit, offset, 'active');
+        // Return all active events. Limit and offset have no effect.
+        const fetchedEvents = await EventService.getEvents(0, 0, 'active'); 
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);

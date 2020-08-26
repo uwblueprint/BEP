@@ -57,7 +57,6 @@ const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
 };
 
 const salesforceEventToEventModel = async (record: any): Promise<Event> => {
-    console.log(record);
     const event: Event = {
         activityType: record.activityType__c,
         applicantNumber: record.ApplicantNumber__c,
@@ -150,19 +149,16 @@ export const getEvents = async (limit: number, offset: number, filter: 'active' 
     let events: Event[] = [];
     let eventPromises: Promise<Event>[];
     const date = new Date().toISOString();
-    const query = `SELECT ${eventFields} FROM ${eventApi} ${
+    let query = `SELECT ${eventFields} FROM ${eventApi} ${
         filter !== 'all' ? `WHERE endDate__c ${filter === 'active' ? '>=' : '<'} ${date}` : ''
-    } ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}`;
+    } ${filter !== 'active' ? `ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}` : ''}`;
 
     await conn.query(query, function(err, result) {
         if (err) {
             return console.error(err);
         }
 
-        eventPromises = result.records.map(record => {
-            const eventPromise = salesforceEventToEventModel(record);
-            return eventPromise;
-        });
+        eventPromises = result.records.map(record => salesforceEventToEventModel(record));
     });
 
     await Promise.all(eventPromises).then(resolvedEvents => {
