@@ -165,7 +165,6 @@ export const getEvents = async (limit: number, offset: number): Promise<Event[]>
     );
 
     await Promise.all(eventPromises).then(resolvedEvents => {
-        console.log(resolvedEvents)
         events = resolvedEvents;
     });
 
