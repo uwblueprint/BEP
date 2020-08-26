@@ -4,7 +4,6 @@ import { fetchEvents } from "../actions/eventsActions";
 export function fetchEventsService(limit: number, offset: number) {
     return (dispatch: any) => {
         return get(limit, offset).then((res: any) => {
-            console.log(res.data)
             dispatch(fetchEvents(res.data));
             return res;
         });
