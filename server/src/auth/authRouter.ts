@@ -67,7 +67,7 @@ authRouter.post('/login', async (req: Express.Request, res: Express.Response) =>
         let email: string = req.body.email;
         let password: string = req.body.password;
 
-        const fetchUser = await UserService.getUser(email)
+        const fetchUser = await UserService.getUser({email})
         let valid = false
         if (fetchUser != undefined) {
             valid = await bcrypt.compare(password, fetchUser.password)
