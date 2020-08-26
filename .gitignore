@@ -27,3 +27,4 @@ client/yarn.lock
 
 # local configs
 .tmuxinator.yml
+.local
