@@ -323,6 +323,7 @@ const EducatorDashboard: React.SFC<Props> = ({
                     key={index}
                     event={event}
                     isPastEvent={isPastEvent}
+                    showOwner={true}
                   />
                 </Link>
               ))
