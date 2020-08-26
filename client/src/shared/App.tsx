@@ -13,6 +13,7 @@ import VolunteerDashboard from '../pages/VolunteerDashboard/VolunteerDashboard';
 
 /* Types */
 import { User } from '../data/types/userTypes';
+import OpportunityForm from '../pages/EducatorDashboard/OpportunityForm'
 
 interface IProps extends RouteProps {
   component: any;
@@ -65,6 +66,7 @@ class App extends React.Component<
               <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={isLoggedIn} />
               <PrivateRoute component={OpportunityList} exact path="/opportunities" isLoggedIn={isLoggedIn} />
               <PrivateRoute component={VolunteerDashboard} exact path="/dashboard" isLoggedIn={isLoggedIn} />
+              <Route exact path="/newevent" component={OpportunityForm} />
             </Switch>
           </React.Fragment>
         </Router>
