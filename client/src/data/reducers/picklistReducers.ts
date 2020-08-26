@@ -37,8 +37,7 @@ export default function (
     case FETCH_PICKLIST:
       return {
         ...state,
-        [PicklistType[action.payload.picklistType]]:
-          action.payload.picklist,
+        [PicklistType[action.payload.picklistType]]: action.payload.picklist,
       };
 
     default:
