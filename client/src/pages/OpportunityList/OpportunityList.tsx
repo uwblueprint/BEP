@@ -299,7 +299,14 @@ class OpportunityList extends React.Component<
   render() {
     let filtersSelected = false;
     const createOpportunityCard = (event: Event) => (
-      <EventCard key={event.id} event={event} isPastEvent={false} showOwner={false} />
+      <Grid item>
+        <EventCard
+          key={event.id}
+          event={event}
+          isPastEvent={false}
+          showOwner={false}
+        />
+      </Grid>
     );
 
     return (
@@ -493,7 +500,7 @@ class OpportunityList extends React.Component<
                 )}
               </Grid>
 
-              <Grid item container>
+              <Grid item container spacing={4}>
                 {this.state.filteredEvents.map((event) =>
                   createOpportunityCard(event)
                 )}
