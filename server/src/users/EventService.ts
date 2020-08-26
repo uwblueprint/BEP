@@ -151,7 +151,9 @@ export const getEvents = async (limit: number, offset: number, filter: 'active' 
     const date = new Date().toISOString();
     let query = `SELECT ${eventFields} FROM ${eventApi} ${
         filter !== 'all' ? `WHERE endDate__c ${filter === 'active' ? '>=' : '<'} ${date}` : ''
-    } ${filter !== 'active' ? `ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}` : ''}`;
+    } ORDER BY endDate__c ${filter !== 'active' ? `LIMIT ${limit} OFFSET ${offset}` : ''}`;
+
+    console.log(query)
 
     await conn.query(query, function(err, result) {
         if (err) {
