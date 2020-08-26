@@ -300,13 +300,8 @@ class OpportunityList extends React.Component<
     let filtersSelected = false;
 
     const createOpportunityCard = (event: Event) => (
-      <Grid item>
-        <EventCard
-          key={event.id}
-          event={event}
-          isPastEvent={false}
-          showOwner={false}
-        />
+      <Grid item key={event.id}>
+        <EventCard event={event} isPastEvent={false} showOwner={false} />
       </Grid>
     );
 
