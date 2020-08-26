@@ -20,7 +20,7 @@ eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
     const limit: number = req.query.limit as any;
     const offset: number = req.query.offset as any;
     try {
-        const fetchedEvents = await EventService.getAllEvents(limit, offset);
+        const fetchedEvents = await EventService.getEvents(limit, offset);
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);
