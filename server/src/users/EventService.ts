@@ -6,6 +6,7 @@ import Event, { EventApplicantInterface, EventInvitationInterface, EventVoluntee
 import Educator from '../api/users/EducatorInterface';
 import * as UserService from '../api/users/UserService';
 import { conn } from '../server';
+import { arrayToPicklistString, picklistStringToArray } from '../util/SalesforcePicklistUtils';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
@@ -34,7 +35,7 @@ const eventVolunteerFields: string = 'Name, volunteerJob__c, volunteerPersonalPr
 
 const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
     let salesforceEvent: any = {
-        activityType__c: event.activityType,
+        activityType__c: arrayToPicklistString(event.activityType),
         contact__c: event.contact.id,
         endDate__c: event.endDate,
         eventName__c: event.eventName,
@@ -58,7 +59,7 @@ const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
 
 const salesforceEventToEventModel = async (record: any): Promise<Event> => {
     const event: Event = {
-        activityType: record.activityType__c,
+        activityType: picklistStringToArray(record.activityType__c),
         applicantNumber: record.ApplicantNumber__c,
         contact: (await UserService.getUser({ Id: record.contact__c })) as Educator,
         endDate: record.endDate__c,
