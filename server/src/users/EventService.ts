@@ -153,8 +153,6 @@ export const getEvents = async (limit: number, offset: number, filter: 'active' 
         filter !== 'all' ? `WHERE endDate__c ${filter === 'active' ? '>=' : '<'} ${date}` : ''
     } ORDER BY endDate__c ${filter !== 'active' ? `LIMIT ${limit} OFFSET ${offset}` : ''}`;
 
-    console.log(query)
-
     await conn.query(query, function(err, result) {
         if (err) {
             return console.error(err);
