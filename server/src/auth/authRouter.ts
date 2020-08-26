@@ -66,16 +66,16 @@ authRouter.post('/login', async (req: Express.Request, res: Express.Response) =>
         const fetchUser = await UserService.getUser(email);
         let valid = false;
         if (fetchUser !== undefined) {
-            console.log(fetchUser);
             valid = await bcrypt.compare(password, fetchUser.password);
-            console.log('The comparison was:' + valid);
         }
 
         if (valid) {
             const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: 5000 });
+            delete fetchUser.password;
             res.status(200).send({
                 Status: 'Authenticated',
-                token
+                token,
+                user: fetchUser
             });
         } else {
             res.status(401).send({

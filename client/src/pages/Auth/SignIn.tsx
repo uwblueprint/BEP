@@ -51,15 +51,16 @@ class SignIn extends React.Component<{ login: any }, { password: string; email: 
     }
   }
 
-  handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { email, password } = this.state;
     const { login } = this.props;
 
     if (email && password) {
-      login(email, password);
+      await login(email, password);
+      // select and redirect if true
+      this.setState({ email: "", password: "" });
     }
-    this.setState({ email: "", password: "" });
   }
 
   render() {
