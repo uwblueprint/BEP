@@ -5,8 +5,10 @@ const siteUser: string = 'SiteUser__c';
 export const getGlobalPicklist = async (picklistName: string): Promise<string[]> => {
     let picklist: string[] = [];
 
-    await conn.metadata.read('GlobalValueSet', [picklistName], function(err, res) {
-        if (err) return console.error(err);
+    await conn.metadata.read('GlobalValueSet', [picklistName], (err, res) => {
+        if (err) {
+            return console.error(err);
+        }
         picklist = res.customValue ? res.customValue.map(value => value.label) : [];
     });
     return picklist;
@@ -39,14 +41,16 @@ export const getPicklist = async (picklistName: string): Promise<string[]> => {
 
     if (picklistFields.includes(picklistName)) {
         await conn.metadata
-            .read('CustomObject', [siteUser], async function(err, res) {
-                if (err) return console.error(err);
+            .read('CustomObject', [siteUser], (err, res) => {
+                if (err) {
+                    return console.error(err);
+                }
             })
             .then(res => {
                 return Promise.all(
                     res.fields.map(
                         async (field): Promise<string[]> => {
-                            if (field.fullName == picklistName) {
+                            if (field.fullName === picklistName) {
                                 return field.valueSet.valueSetDefinition
                                     ? field.valueSet.valueSetDefinition.value.map(picklistEntry => picklistEntry.label)
                                     : await getGlobalPicklist(field.valueSet.valueSetName);
@@ -58,7 +62,9 @@ export const getPicklist = async (picklistName: string): Promise<string[]> => {
             })
             .then((res: string[][]) => {
                 res.forEach((picklistValues: string[]) => {
-                    if (picklistValues.length !== 0) picklist = picklistValues;
+                    if (picklistValues.length !== 0) {
+                        picklist = picklistValues;
+                    }
                 });
             });
     } else if (globalPicklists.includes(picklistName)) {

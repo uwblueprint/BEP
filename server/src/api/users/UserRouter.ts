@@ -59,7 +59,7 @@ userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
         const id: string = req.params.id;
         await UserService.update(id, req.body);
 
-        res.status(200).send({ id: id });
+        res.status(200).send({ id });
     } catch (e) {
         res.status(500).send({ msg: e.message });
     }
@@ -69,7 +69,7 @@ userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
 
 userRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
-        let id: string = req.params.id;
+        const id: string = req.params.id;
         await UserService.remove(id);
 
         res.sendStatus(200);

@@ -159,7 +159,7 @@ eventRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
 
 eventRouter.delete('/:name', async (req: Express.Request, res: Express.Response) => {
     try {
-        let id: string = req.params.id;
+        const id: string = req.params.id;
         await EventService.remove(id);
 
         res.sendStatus(200);

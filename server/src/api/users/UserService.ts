@@ -40,8 +40,8 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
             position__c: (user as Educator).position,
-            schoolName__c: (user as Educator).schoolName,
-            schoolBoard__c: (user as Educator).schoolBoard
+            schoolBoard__c: (user as Educator).schoolBoard,
+            schoolName__c: (user as Educator).schoolName
         };
     } else if (isVolunteer(user)) {
         salesforceUser = {
@@ -161,9 +161,13 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
 // Retrieve user by email.
 export const getUser = async (userInfo: { Id?: string; email?: string }): Promise<User> => {
     let userIdentifier;
-    if (userInfo.Id) userIdentifier = { Id: userInfo.Id };
-    else if (userInfo.email) userIdentifier = { email__c: userInfo.email };
-    else throw Error('No valid user identifier provided.');
+    if (userInfo.Id) {
+        userIdentifier = { Id: userInfo.Id };
+    } else if (userInfo.email) {
+        userIdentifier = { email__c: userInfo.email };
+    } else {
+        throw Error('No valid user identifier provided.');
+    }
 
     const user: User = conn
         .sobject(siteUser)
@@ -182,12 +186,12 @@ export const getUser = async (userInfo: { Id?: string; email?: string }): Promis
 // Retrieve list of volunteers in alphabetical order
 
 export const getVolunteers = async (limit: number, offset: number): Promise<User[]> => {
-    let volunteers: User[] = [];
+    const volunteers: Array<User> = [];
     let volunteerPromises: Promise<User>[] = [];
     const volunteerUserType: number = 2;
     await conn.query(
         `SELECT ${userFields} FROM ${siteUser} WHERE userType__c=${volunteerUserType} ORDER BY Name LIMIT ${limit} OFFSET ${offset}`,
-        function(err, result) {
+        (err, result) => {
             if (err) {
                 return console.error(err);
             }
