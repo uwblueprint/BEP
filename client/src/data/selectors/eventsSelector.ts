@@ -3,7 +3,7 @@ import { EventsState } from "../reducers/eventsReducers";
 
 const getEventsStatus = (state: EventsState) => state.eventsFilter
 
-const getEventsData = (state: EventsState) => {
+export const getEventsData = (state: EventsState) => {
     return state.list ? state.list : []
 }
 

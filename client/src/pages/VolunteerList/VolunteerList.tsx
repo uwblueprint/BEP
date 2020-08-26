@@ -9,8 +9,7 @@ import { fetchPicklistsService } from "../../data/services/picklistServices";
 /* Selectors */
 import { getVolunteers } from "../../data/selectors/volunteersSelector";
 import {
-  getExternalActivitesPicklist,
-  getInternalActivitesPicklist,
+  getAllAcitivitiesPicklist,
   getExpertiesAreasPicklist,
   getLocationsPicklist,
   getPostSecondaryTrainingPicklist,
@@ -80,11 +79,11 @@ class VolunteerList extends React.Component<
     };
     filteredVolunteers: Volunteer[];
   }
-  > {
+> {
   constructor(props: any) {
     super(props);
 
-    const { history, user, volunteers, picklists } = props;
+    const { history, user, volunteers } = props;
 
     if (user) {
       // whatever the redirect route is supposed to be
@@ -248,7 +247,6 @@ class VolunteerList extends React.Component<
 
   handleSearchFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const searchBarValue = this.state.searchBar;
     this.setState({
       filteredVolunteers: this.filterAllFields(this.props.volunteers),
     });
@@ -496,12 +494,7 @@ class VolunteerList extends React.Component<
                   </ContainedButton>
                 </Grid>
               </form>
-              <Grid
-                item
-                container
-                spacing={7}
-                direction="row"
-              >
+              <Grid item container spacing={7} direction="row">
                 {Object.entries(this.props.picklists).map((entry) => {
                   // Display picklists.
                   const picklistName: string = entry[0];
@@ -541,11 +534,11 @@ class VolunteerList extends React.Component<
                           disableUnderline={true}
                           IconComponent={() =>
                             document.activeElement &&
-                              document.activeElement.id === picklistName ? (
-                                <SecondaryMainExpandMoreIcon />
-                              ) : (
-                                <BlackExpandMoreIcon />
-                              )
+                            document.activeElement.id === picklistName ? (
+                              <SecondaryMainExpandMoreIcon />
+                            ) : (
+                              <BlackExpandMoreIcon />
+                            )
                           }
                           displayEmpty={true}
                           renderValue={() => {
@@ -559,21 +552,21 @@ class VolunteerList extends React.Component<
                                 >
                                   <Grid item>
                                     {document.activeElement.id ===
-                                      picklistName ? (
-                                        <SecondaryMainTextTypography
-                                          align="center"
-                                          variant="button"
-                                        >
-                                          {picklistDisplayName}
-                                        </SecondaryMainTextTypography>
-                                      ) : (
-                                        <BlackTextTypography
-                                          align="center"
-                                          variant="button"
-                                        >
-                                          {picklistDisplayName}
-                                        </BlackTextTypography>
-                                      )}
+                                    picklistName ? (
+                                      <SecondaryMainTextTypography
+                                        align="center"
+                                        variant="button"
+                                      >
+                                        {picklistDisplayName}
+                                      </SecondaryMainTextTypography>
+                                    ) : (
+                                      <BlackTextTypography
+                                        align="center"
+                                        variant="button"
+                                      >
+                                        {picklistDisplayName}
+                                      </BlackTextTypography>
+                                    )}
                                   </Grid>
                                 </Grid>
                               )
@@ -672,13 +665,7 @@ const mapStateToProps = (state: any) => {
     picklists: {
       activities: {
         displayName: "Activities",
-        list: [
-          ...new Set( // Ensure list only has unique elements
-            getExternalActivitesPicklist(state.picklists).concat(
-              getInternalActivitesPicklist(state.picklists)
-            )
-          ),
-        ],
+        list: getAllAcitivitiesPicklist(state.picklists),
       },
       expertiseAreas: {
         displayName: "Areas of Expertise",

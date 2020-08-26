@@ -13,9 +13,12 @@ const createPicklistSelector = (picklistType: PicklistType) => createSelector(
   [getPicklistData(picklistType)],
   (picklist) => picklist
 );
+
 export const getExternalActivitesPicklist = createPicklistSelector(PicklistType.volunteerDesiredExternalActivities)
 
 export const getInternalActivitesPicklist = createPicklistSelector(PicklistType.volunteerDesiredInternalActivities)
+
+export const getAllAcitivitiesPicklist = createPicklistSelector(PicklistType.allAcitivities)
 
 export const getExpertiesAreasPicklist = createPicklistSelector(PicklistType.expertiseAreas)
 
