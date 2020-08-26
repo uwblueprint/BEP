@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   card: {
-    margin: `${theme.spacing(7)}px auto`,
     padding: theme.spacing(3),
     borderRadius: 5,
     boxShadow: "none",

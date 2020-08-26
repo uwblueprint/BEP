@@ -302,7 +302,9 @@ const EducatorDashboard: React.SFC<Props> = ({
               </div>
             </div>
           </TabPanel>
-          <div>
+
+          <Grid container spacing={4}>
+            <Grid item />
             {eventList.length === 0 && retrievedData ? (
               <Container className={classes.noAppsDisc}>
                 <Typography style={{ paddingBottom: "20px" }}>
@@ -312,23 +314,25 @@ const EducatorDashboard: React.SFC<Props> = ({
               </Container>
             ) : (
               eventList.map((event, index) => (
-                <Link
-                  to={{
-                    pathname: `/events/${event.eventName}`,
-                    state: { event },
-                  }}
-                  style={{ textDecoration: "none" }}
-                >
-                  <EventCard
-                    key={index}
-                    event={event}
-                    isPastEvent={isPastEvent}
-                    showOwner={true}
-                  />
-                </Link>
+                <Grid item>
+                  <Link
+                    to={{
+                      pathname: `/events/${event.eventName}`,
+                      state: { event },
+                    }}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <EventCard
+                      key={index}
+                      event={event}
+                      isPastEvent={isPastEvent}
+                      showOwner={true}
+                    />
+                  </Link>
+                </Grid>
               ))
             )}
-          </div>
+          </Grid>
 
           <div ref={loadingRef} />
         </PageBody>
