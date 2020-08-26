@@ -13,4 +13,5 @@ export enum PicklistType {
   professionalAssociations = "professionalAssociations",
   volunteerDesiredExternalActivities = "volunteerDesiredExternalActivities",
   volunteerDesiredInternalActivities = "volunteerDesiredInternalActivities",
+  allAcitivities = "allAcitivities",
 }

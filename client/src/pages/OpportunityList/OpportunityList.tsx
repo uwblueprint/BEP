@@ -1,26 +1,24 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
 import { connect } from "react-redux";
 
 /* Services */
-import { fetchVolunteersService } from "../../data/services/volunteersServices";
+import { fetchEventsService } from "../../data/services/eventsServices";
 import { fetchPicklistsService } from "../../data/services/picklistServices";
 
 /* Selectors */
-import { getVolunteers } from "../../data/selectors/volunteersSelector";
+import { getEventsData } from "../../data/selectors/eventsSelector";
 import {
-  getExternalActivitesPicklist,
-  getInternalActivitesPicklist,
+  getAllAcitivitiesPicklist,
   getLocationsPicklist,
 } from "../../data/selectors/picklistSelector";
 
 /* Types */
-import { Volunteer } from "../../data/types/userTypes";
+import { Event } from "../../data/types/EventTypes";
 import { PicklistType } from "../../data/types/picklistTypes";
 
 /* Components */
-import OpportunityCard from "./OpportunityCard";
+import EventCard from "../EducatorDashboard/EventCard";
 import {
   ContainedSelect,
   ContainedButton,
@@ -46,12 +44,12 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 
 class OpportunityList extends React.Component<
   {
-    volunteers: Volunteer[];
+    events: Event[];
     picklists: {
       activities: { displayName: string; list: string[] };
       locations: { displayName: string; list: string[] };
     };
-    fetchVolunteers: any;
+    fetchEvents: any;
     fetchPicklists: any;
   },
   {
@@ -60,24 +58,24 @@ class OpportunityList extends React.Component<
     page: number;
     offset: number;
     loadingRef: any;
-    loadedAllVolunteers: boolean;
-    lastVolunteerListLength: number;
+    loadedAllEvents: boolean;
+    lastEventsListLength: number;
     searchBar: string;
     filters: {
       activities: Map<string, boolean>;
       locations: Map<string, boolean>;
     };
-    filteredVolunteers: Volunteer[];
+    filteredEvents: Event[];
   }
 > {
   constructor(props: any) {
     super(props);
 
-    const { history, user, volunteers, picklists } = props;
+    const { history, user, events } = props;
 
     if (user) {
       // whatever the redirect route is supposed to be
-      history.push("/volunteer-list");
+      history.push("/opportunities");
     }
 
     this.getFilters = this.getFilters.bind(this);
@@ -93,7 +91,7 @@ class OpportunityList extends React.Component<
     this.handleSearchFormSubmit = this.handleSearchFormSubmit.bind(this);
     this.filterSingleField = this.filterSingleField.bind(this);
     this.filterAllFields = this.filterAllFields.bind(this);
-    this.fetchVolunteers = this.fetchVolunteers.bind(this);
+    this.fetchEvents = this.fetchEvents.bind(this);
     this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
 
     this.state = {
@@ -102,14 +100,14 @@ class OpportunityList extends React.Component<
       page: 0,
       offset: 10,
       loadingRef: React.createRef(),
-      loadedAllVolunteers: false,
-      lastVolunteerListLength: 0,
+      loadedAllEvents: false,
+      lastEventsListLength: 0,
       searchBar: "",
       filters: {
         activities: new Map(),
         locations: new Map(),
       },
-      filteredVolunteers: volunteers,
+      filteredEvents: events,
     };
   }
 
@@ -117,19 +115,19 @@ class OpportunityList extends React.Component<
     const y = entities[0].boundingClientRect.y;
     const newPage = this.state.page + 1;
     if (this.state.prevY > y) {
-      if (this.state.lastVolunteerListLength === this.props.volunteers.length) {
-        // If no new volunteers are available, prevent additional calls to backend.
-        this.setState({ loadedAllVolunteers: true });
+      if (this.state.lastEventsListLength === this.props.events.length) {
+        // If no new events are available, prevent additional calls to backend.
+        this.setState({ loadedAllEvents: true });
       }
 
-      if (!this.state.loadedAllVolunteers) {
-        if (this.props.volunteers.length > 1)
+      if (!this.state.loadedAllEvents) {
+        if (this.props.events.length > 1)
           this.setState({
-            // Keep track of last volunteer length to determine if any new volunteers are loaded.
-            lastVolunteerListLength: this.props.volunteers.length,
+            // Keep track of last event list length to determine if any new events are loaded.
+            lastEventsListLength: this.props.events.length,
           });
 
-        this.fetchVolunteers(this.state.offset, newPage * this.state.offset);
+        this.fetchEvents(this.state.offset, newPage * this.state.offset);
 
         this.setState({ page: newPage });
       }
@@ -162,7 +160,7 @@ class OpportunityList extends React.Component<
           ...filters,
           [picklistName]: picklistFilters,
         },
-        filteredVolunteers: this.filterAllFields(this.props.volunteers),
+        filteredEvents: this.filterAllFields(this.props.events),
       });
     };
   }
@@ -179,7 +177,7 @@ class OpportunityList extends React.Component<
           ...filters,
           [picklistName]: picklistFilters,
         },
-        filteredVolunteers: this.filterAllFields(this.props.volunteers),
+        filteredEvents: this.filterAllFields(this.props.events),
       });
     };
   }
@@ -197,7 +195,7 @@ class OpportunityList extends React.Component<
       filters,
     });
     this.setState({
-      filteredVolunteers: this.filterAllFields(this.props.volunteers),
+      filteredEvents: this.filterAllFields(this.props.events),
     });
   }
 
@@ -225,9 +223,8 @@ class OpportunityList extends React.Component<
 
   handleSearchFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const searchBarValue = this.state.searchBar;
     this.setState({
-      filteredVolunteers: this.filterAllFields(this.props.volunteers),
+      filteredEvents: this.filterAllFields(this.props.events),
     });
   }
 
@@ -237,25 +234,20 @@ class OpportunityList extends React.Component<
     this.setState({ searchBar: event.target.value });
   }
 
-  filterSearchBar = (volunteer: Volunteer, filter: string): boolean => {
+  filterSearchBar = (event: Event, filter: string): boolean => {
     filter = filter.toLowerCase();
     return (
       filter.length === 0 || // ignore search bar input if input is empty.
-      volunteer.firstName.toLowerCase().includes(filter) ||
-      volunteer.lastName.toLowerCase().includes(filter) ||
-      (volunteer.employer !== undefined &&
-        volunteer.employer !== null &&
-        volunteer.employer.name.toLowerCase().includes(filter)) ||
-      volunteer.jobTitle.toLowerCase().includes(filter)
+      event.contact.firstName.toLowerCase().includes(filter) ||
+      event.contact.lastName.toLowerCase().includes(filter) ||
+      event.contact.schoolName.toLowerCase().includes(filter)
     );
   };
 
-  filterActivities = (volunteer: Volunteer, filter: string) =>
-    volunteer.volunteerDesiredExternalActivities.includes(filter) ||
-    volunteer.volunteerDesiredInternalActivities.includes(filter);
+  filterActivities = (event: Event, filter: string) =>
+    event.activityType.includes(filter);
 
-  filterLocations = (volunteer: Volunteer, filter: string) =>
-    volunteer.locations.includes(filter);
+  filterLocations = (event: Event, filter: string) => event.location === filter;
 
   getFilterFunction = (fieldName: string) => {
     switch (fieldName) {
@@ -267,31 +259,24 @@ class OpportunityList extends React.Component<
         return this.filterLocations;
     }
 
-    return (volunteer: Volunteer, filter: string) => true;
+    return (event: Event, filter: string) => true;
   };
 
-  filterSingleField(
-    volunteers: Volunteer[],
-    fieldName: string,
-    filter: string
-  ) {
+  filterSingleField(events: Event[], fieldName: string, filter: string) {
     let filterFunction = this.getFilterFunction(fieldName);
 
-    return volunteers.filter((volunteer: Volunteer) =>
-      filterFunction(volunteer, filter)
-    );
+    return events.filter((event: Event) => filterFunction(event, filter));
   }
 
-  filterAllFields(volunteers: Volunteer[]) {
-    const newVolunteers = volunteers.filter((volunteer: Volunteer) => {
+  filterAllFields(events: Event[]) {
+    const newEvents = events.filter((event: Event) => {
       var pass = true;
 
       // Apply filters from picklists
       for (let [fieldName, filterMap] of Object.entries(this.state.filters)) {
         const filterFunction = this.getFilterFunction(fieldName);
         [...filterMap.entries()].forEach(([filter, isActive]) => {
-          if (pass && isActive && !filterFunction(volunteer, filter))
-            pass = false;
+          if (pass && isActive && !filterFunction(event, filter)) pass = false;
         });
         if (!pass) return false;
       }
@@ -302,7 +287,7 @@ class OpportunityList extends React.Component<
       if (
         pass &&
         searchString.length > 0 &&
-        !filterFunction(volunteer, searchString)
+        !filterFunction(event, searchString)
       )
         pass = false;
 
@@ -310,15 +295,15 @@ class OpportunityList extends React.Component<
       return true;
     });
 
-    return newVolunteers;
+    return newEvents;
   }
 
-  fetchVolunteers(limit: number, offset: number) {
-    this.props.fetchVolunteers(limit, offset).then(() => {
+  fetchEvents(limit: number, offset: number) {
+    this.props.fetchEvents(limit, offset).then(() => {
       this.setState({
-        filteredVolunteers: this.state.filteredVolunteers.concat(
+        filteredEvents: this.state.filteredEvents.concat(
           this.filterAllFields(
-            this.props.volunteers.slice(this.state.page * this.state.offset)
+            this.props.events.slice(this.state.page * this.state.offset)
           )
         ),
       });
@@ -331,10 +316,7 @@ class OpportunityList extends React.Component<
       PicklistType.locations,
     ];
 
-    this.fetchVolunteers(
-      this.state.offset,
-      this.state.page * this.state.offset
-    );
+    this.fetchEvents(this.state.offset, this.state.page * this.state.offset);
 
     const createFilters = (filterNames: string[]): Array<[string, boolean]> => {
       return filterNames.map((item: string) => [item, false]);
@@ -345,10 +327,7 @@ class OpportunityList extends React.Component<
         const picklists = this.props.picklists;
         const filters = this.state.filters;
 
-        if (
-          type === PicklistType.volunteerDesiredExternalActivities ||
-          type === PicklistType.volunteerDesiredInternalActivities
-        ) {
+        if (type === PicklistType.allAcitivities) {
           picklists.activities.list.forEach((acitivity) =>
             filters.activities.set(acitivity, false)
           );
@@ -381,10 +360,10 @@ class OpportunityList extends React.Component<
 
   render() {
     let filtersSelected = false;
-
-    const createOpportunityCard = (volunteer: Volunteer) => (
-      <Grid item xs={12} key={volunteer.email}>
-        <OpportunityCard {...volunteer} />
+    
+    const createOpportunityCard = (event: Event) => (
+      <Grid item xs={12} key={event.id}>
+        <EventCard event={event} isPastEvent={true} />
       </Grid>
     );
 
@@ -402,7 +381,7 @@ class OpportunityList extends React.Component<
             >
               <Grid item>
                 <Typography variant="h1" style={{ marginBottom: "20%" }}>
-                  Browse Volunteers
+                  Browse Opportunities
                 </Typography>
               </Grid>
             </Grid>
@@ -417,7 +396,7 @@ class OpportunityList extends React.Component<
                 <Grid item container direction="row">
                   <OutlinedTextField
                     id="search-bar"
-                    placeholder="Search Volunteers"
+                    placeholder="Search Opportunities"
                     value={this.state.searchBar}
                     fullWidth
                     onChange={this.handleSearchBarChange}
@@ -580,8 +559,8 @@ class OpportunityList extends React.Component<
               </Grid>
 
               <Grid item container spacing={4}>
-                {this.state.filteredVolunteers.map((volunteer) =>
-                  createOpportunityCard(volunteer)
+                {this.state.filteredEvents.map((event) =>
+                  createOpportunityCard(event)
                 )}
               </Grid>
             </Grid>
@@ -595,17 +574,11 @@ class OpportunityList extends React.Component<
 
 const mapStateToProps = (state: any) => {
   return {
-    volunteers: getVolunteers(state.volunteers),
+    events: getEventsData(state.events),
     picklists: {
       activities: {
         displayName: "Activities",
-        list: [
-          ...new Set( // Ensure list only has unique elements
-            getExternalActivitesPicklist(state.picklists).concat(
-              getInternalActivitesPicklist(state.picklists)
-            )
-          ),
-        ],
+        list: getAllAcitivitiesPicklist(state.picklists),
       },
       locations: {
         displayName: "Location",
@@ -616,8 +589,8 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchVolunteers: (limit: number, offset: number) =>
-    dispatch(fetchVolunteersService(limit, offset)),
+  fetchEvents: (limit: number, offset: number) =>
+    dispatch(fetchEventsService(limit, offset)),
   fetchPicklists: (picklistType: PicklistType) =>
     dispatch(fetchPicklistsService(picklistType)),
 });

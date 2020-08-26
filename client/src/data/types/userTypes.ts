@@ -21,7 +21,7 @@ export interface Educator extends User {
   educatorDesiredActivities: string[];
   position: string;
   schoolBoard: string;
-  school: string;
+  schoolName: string;
 }
 
 export interface Volunteer extends User {
