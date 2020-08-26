@@ -16,11 +16,33 @@ export const eventRouter = Express.Router();
  * Controller Definitions
  */
 
-eventRouter.get("/", async (req: Express.Request, res: Express.Response) => {
+eventRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     const limit: number = req.query.limit as any;
     const offset: number = req.query.offset as any;
     try {
-        const fetchedEvents = await EventService.getEvents(limit, offset);
+        const fetchedEvents = await EventService.getEvents(limit, offset, 'all');
+        res.status(200).send(fetchedEvents);
+    } catch (e) {
+        res.status(404).send(e.message);
+    }
+});
+
+eventRouter.get('/active', async (req: Express.Request, res: Express.Response) => {
+    const limit: number = req.query.limit as any;
+    const offset: number = req.query.offset as any;
+    try {
+        const fetchedEvents = await EventService.getEvents(limit, offset, 'active');
+        res.status(200).send(fetchedEvents);
+    } catch (e) {
+        res.status(404).send(e.message);
+    }
+});
+
+eventRouter.get('/past', async (req: Express.Request, res: Express.Response) => {
+    const limit: number = req.query.limit as any;
+    const offset: number = req.query.offset as any;
+    try {
+        const fetchedEvents = await EventService.getEvents(limit, offset, 'past');
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);
@@ -34,8 +56,8 @@ eventRouter.get('/applications', async (req: Express.Request, res: Express.Respo
         if (name) {
             const applications = await EventService.getApplications(name);
             res.status(200).json({
-                    applications
-                });
+                applications
+            });
         } else {
             throw Error(`Invalid query parameters. Please set "name" parameter`);
         }
@@ -49,14 +71,14 @@ eventRouter.patch('/applications/updatestate', async (req: Express.Request, res:
     const eventName: string = req.body.event_name as string;
     const applicantName: string = req.body.applicant_name as string;
 
-    if (type === "accept") {
-        EventService.acceptApplicant(eventName, applicantName, true)
-    } else if (type === "deny") {
-        EventService.acceptApplicant(eventName, applicantName, false)
+    if (type === 'accept') {
+        EventService.acceptApplicant(eventName, applicantName, true);
+    } else if (type === 'deny') {
+        EventService.acceptApplicant(eventName, applicantName, false);
     } else {
-        res.status(400).send({msg: "Bad Request"})
+        res.status(400).send({ msg: 'Bad Request' });
     }
-})
+});
 
 eventRouter.get('/invitations', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.query.name as string;
@@ -65,8 +87,8 @@ eventRouter.get('/invitations', async (req: Express.Request, res: Express.Respon
         if (name) {
             const invitations = await EventService.getInvitations(name);
             res.status(200).json({
-                    invitations
-                });
+                invitations
+            });
         } else {
             throw Error(`Invalid query parameters. Please set "name" parameter`);
         }
@@ -82,8 +104,8 @@ eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Respons
         if (name) {
             const volunteers = await EventService.getVolunteers(name);
             res.status(200).json({
-                    volunteers
-                });
+                volunteers
+            });
         } else {
             throw Error(`Invalid query parameters. Please set "name" parameter`);
         }
@@ -96,7 +118,7 @@ eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) =>
     // const id: number = parseInt(req.params.id, 10);
     //const name: string = req.query.name as string;
 
-    const name: string = req.params.name as string
+    const name: string = req.params.name as string;
 
     try {
         if (name) {
@@ -109,7 +131,6 @@ eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) =>
         res.status(500).send({ msg: e.message });
     }
 });
-
 
 // POST requests/
 
@@ -140,7 +161,7 @@ eventRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
 eventRouter.delete('/:name', async (req: Express.Request, res: Express.Response) => {
     try {
         let id: string = req.params.id;
-        await EventService.remove(id)
+        await EventService.remove(id);
 
         res.sendStatus(200);
     } catch (e) {
