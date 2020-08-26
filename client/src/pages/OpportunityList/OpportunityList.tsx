@@ -316,8 +316,13 @@ class OpportunityList extends React.Component<
       PicklistType.locations,
     ];
 
-    // this.fetchEvents(this.state.offset, this.state.page * this.state.offset);
-    this.props.fetchEvents();
+    this.props.fetchEvents().then(() => {
+      this.setState({
+        filteredEvents: this.state.filteredEvents.concat(
+          this.filterAllFields(this.props.events)
+        ),
+      });
+    });
 
     const createFilters = (filterNames: string[]): Array<[string, boolean]> => {
       return filterNames.map((item: string) => [item, false]);
@@ -363,7 +368,7 @@ class OpportunityList extends React.Component<
     let filtersSelected = false;
 
     const createOpportunityCard = (event: Event) => (
-      <EventCard event={event} isPastEvent={false} />
+      <EventCard key={event.id} event={event} isPastEvent={false} />
     );
 
     return (
@@ -588,7 +593,7 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchEvents: fetchActiveEventsService(),
+  fetchEvents: () => dispatch(fetchActiveEventsService()),
   fetchPicklists: (picklistType: PicklistType) =>
     dispatch(fetchPicklistsService(picklistType)),
 });
