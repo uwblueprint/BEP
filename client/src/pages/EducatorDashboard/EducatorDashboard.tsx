@@ -314,7 +314,7 @@ const EducatorDashboard: React.SFC<Props> = ({
               </Container>
             ) : (
               eventList.map((event, index) => (
-                <Grid item>
+                <Grid item key={index}>
                   <Link
                     to={{
                       pathname: `/events/${event.eventName}`,
@@ -323,7 +323,6 @@ const EducatorDashboard: React.SFC<Props> = ({
                     style={{ textDecoration: "none" }}
                   >
                     <EventCard
-                      key={index}
                       event={event}
                       isPastEvent={isPastEvent}
                       showOwner={true}
