@@ -1,4 +1,9 @@
-import { FETCH_EVENTS, CHANGE_EVENTS_FILTER } from "../actions/actionTypes";
+import {
+  FETCH_EVENTS,
+  FETCH_ACTIVE_EVENTS,
+  FETCH_PAST_EVENTS,
+  CHANGE_EVENTS_FILTER,
+} from "../actions/actionTypes";
 import { Event } from "../types/EventTypes";
 
 export interface EventsState {
@@ -26,12 +31,23 @@ export default function eventsFilter(
         ...state,
         list: state.list.concat(action.payload.list),
         activeList: state.activeList.concat(
-          // action.payload.list.filter((t: Event) => new Date(t.endDate) >= today)
-          action.payload.list.filter((t: Event) => { console.log(new Date(t.endDate)); return new Date(t.endDate) >= today})
+          action.payload.list.filter((t: Event) => new Date(t.endDate) >= today)
         ),
         pastList: state.pastList.concat(
           action.payload.list.filter((t: Event) => new Date(t.endDate) < today)
         ),
+      };
+    case FETCH_ACTIVE_EVENTS:
+      return {
+        ...state,
+        list: state.list.concat(action.payload.list),
+        activeList: state.activeList.concat(action.payload.list),
+      };
+    case FETCH_PAST_EVENTS:
+      return {
+        ...state,
+        list: state.list.concat(action.payload.list),
+        pastList: state.pastList.concat(action.payload.list),
       };
     case CHANGE_EVENTS_FILTER:
       return {

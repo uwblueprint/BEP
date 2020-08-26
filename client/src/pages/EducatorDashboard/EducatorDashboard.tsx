@@ -2,9 +2,15 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Event } from "../../data/types/EventTypes";
 import { connect } from "react-redux";
-import { fetchEventsService } from "../../data/services/eventsServices";
+import {
+  fetchActiveEventsService,
+  fetchPastEventsService,
+} from "../../data/services/eventsServices";
 import { changeFilter } from "../../data/actions/eventsActions";
-import { getFilteredEvents } from "../../data/selectors/eventsSelector";
+import {
+  getActiveEventsData,
+  getPastEventsData,
+} from "../../data/selectors/eventsSelector";
 import EventCard from "./EventCard";
 import {
   MuiPickersUtilsProvider,
@@ -26,11 +32,13 @@ type EventProps = {
 };
 
 interface StateProps {
-  events: Event[];
+  activeEvents: Event[];
+  pastEvents: Event[];
 }
 
 interface DispatchProps {
-  fetchEvents: any;
+  fetchActiveEvents: any;
+  fetchPastEvents: any;
   changeFilter: any;
 }
 
@@ -104,8 +112,10 @@ function a11yProps(index: any) {
 }
 
 const EducatorDashboard: React.SFC<Props> = ({
-  events,
-  fetchEvents,
+  activeEvents,
+  pastEvents,
+  fetchActiveEvents,
+  fetchPastEvents,
   changeFilter,
 }: Props) => {
   const classes = useStyles();
@@ -116,13 +126,14 @@ const EducatorDashboard: React.SFC<Props> = ({
   const [isPastEvent, setIsPastEvent] = useState(false);
   const [retrievedData, setRetrievedData] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const [fetchedActiveEvents, setFetchedActiveEvents] = useState(false);
 
   // State variables for infinite scroll functionality
   const [page, setPage] = useState<number>(0);
   const [prevY, setPrevY] = useState<number>(0);
   const [lastEventListLength, setLastEventListLength] = useState<number>(0);
   const [loadedAllEvents, setLoadedAllEvents] = useState<boolean>(false);
-  const offset = 10;
+  const offset = 5;
 
   const loadingRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -132,16 +143,16 @@ const EducatorDashboard: React.SFC<Props> = ({
       const newPage = page + 1;
 
       if (prevY > y) {
-        if (lastEventListLength === events.length) {
+        if (lastEventListLength === pastEvents.length) {
           console.log("no new events are available");
           // If no new events are available, prevent additional calls to backend.
           setLoadedAllEvents(true);
         }
 
         if (!loadedAllEvents) {
-          if (events.length > 1) setLastEventListLength(events.length);
+          if (pastEvents.length > 1) setLastEventListLength(pastEvents.length);
 
-          fetchEvents(offset, offset * newPage);
+          fetchPastEvents(offset, offset * newPage);
           setPage(newPage);
         }
       }
@@ -152,8 +163,8 @@ const EducatorDashboard: React.SFC<Props> = ({
       prevY,
       lastEventListLength,
       loadedAllEvents,
-      events.length,
-      fetchEvents,
+      pastEvents.length,
+      fetchPastEvents,
     ]
   );
 
@@ -170,25 +181,33 @@ const EducatorDashboard: React.SFC<Props> = ({
     );
 
     //Observe the bottom div of the page
-    if (loadingRef) {
+    if (loadingRef && tabValue === 1) {
       observer.observe(loadingRef.current);
+      return () => observer.unobserve(loadingRef.current);
     }
 
     return () => observer.unobserve(loadingRef.current);
-  }, [loadingRef, handleObserver]);
+  }, [loadingRef, handleObserver, tabValue]);
 
   useEffect(() => {
     // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
     // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
     (async function test() {
-      await fetchEvents(offset, 0);
+      await fetchPastEvents(offset, 0);
+      if (!fetchedActiveEvents) {
+        await fetchActiveEvents();
+        setFetchedActiveEvents(true);
+      }
       setRetrievedData(true);
     })();
-  }, [fetchEvents]);
+  }, [fetchActiveEvents, fetchPastEvents]);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
+
+  let eventList = pastEvents;
+  if (tabValue === 0) eventList = activeEvents;
 
   return (
     <div style={{ height: "100vh" }}>
@@ -279,37 +298,15 @@ const EducatorDashboard: React.SFC<Props> = ({
             </div>
           </TabPanel>
           <div>
-            {events.length === 0 && retrievedData ? (
+            {eventList.length === 0 && retrievedData ? (
               <Container className={classes.noAppsDisc}>
                 <Typography style={{ paddingBottom: "20px" }}>
                   You do not currently have any listed opportunities. <br></br>
                   Click 'Create Opportunity' to get started!
                 </Typography>
               </Container>
-            ) : isPastEvent ? (
-              events
-                .filter(
-                  (event, index) =>
-                    new Date(event.startDate) > new Date(startDate || "0") &&
-                    new Date(event.endDate) < new Date(endDate || Date.now())
-                )
-                .map((event, index) => (
-                  <Link
-                    to={{
-                      pathname: `/events/${event.eventName}`,
-                      state: { event },
-                    }}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <EventCard
-                      key={index}
-                      event={event}
-                      isPastEvent={isPastEvent}
-                    />
-                  </Link>
-                ))
             ) : (
-              events.map((event, index) => (
+              eventList.map((event, index) => (
                 <Link
                   to={{
                     pathname: `/events/${event.eventName}`,
@@ -335,12 +332,14 @@ const EducatorDashboard: React.SFC<Props> = ({
 };
 
 const mapStateToProps = (state: any): StateProps => ({
-  events: getFilteredEvents(state.events),
+  activeEvents: getActiveEventsData(state.events),
+  pastEvents: getPastEventsData(state.events),
 });
 
 const mapDispatchToProps = (dispatch: any): DispatchProps => ({
-  fetchEvents: (limit: number, offset: number) =>
-    dispatch(fetchEventsService(limit, offset)),
+  fetchPastEvents: (limit: number, offset: number) =>
+    dispatch(fetchPastEventsService(limit, offset)),
+  fetchActiveEvents: () => dispatch(fetchActiveEventsService()),
   changeFilter: (filter: string) => dispatch(changeFilter(filter)),
 });
 
