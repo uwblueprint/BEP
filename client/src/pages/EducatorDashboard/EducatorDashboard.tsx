@@ -206,8 +206,13 @@ const EducatorDashboard: React.SFC<Props> = ({
     setTabValue(newValue);
   };
 
-  let eventList = pastEvents;
-  if (tabValue === 0) eventList = activeEvents;
+  let eventList = activeEvents;
+  if (tabValue === 1)
+    eventList = pastEvents.filter(
+      (event, index) =>
+        new Date(event.startDate) > new Date(startDate || "0") &&
+        new Date(event.endDate) < new Date(endDate || Date.now())
+    );
 
   return (
     <div style={{ height: "100vh" }}>
