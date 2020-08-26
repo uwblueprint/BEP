@@ -15,24 +15,24 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 /* Services */
 import { loginService } from "../../data/services/authServices";
 
+/* Selectors */
+import { getUser } from "../../data/selectors/userSelector";
+
+/* Type */
+import { User } from "../../data/types/userTypes";
+
+const mapStateToProps = (state: any): any => ({
+  user: getUser(state)
+});
+
 const mapDispatchToProps = (dispatch: any) => ({
   login: (email: string, password: string) =>
     dispatch(loginService(email, password)),
 });
 
-class SignIn extends React.Component<{ login: any }, { password: string; email: string; }> {
+class SignIn extends React.Component<{ login: any, user: User, history: any }, { password: string; email: string; }> {
   constructor(props:any) {
     super(props);
-
-    const {
-      history,
-      user
-    } = props;
-
-    if (user) {
-        // whatever the redirect route is supposed to be
-        history.push('/');
-    }
 
     this.state = {
       email: '',
@@ -58,7 +58,12 @@ class SignIn extends React.Component<{ login: any }, { password: string; email: 
 
     if (email && password) {
       await login(email, password);
-      // select and redirect if true
+
+      const { user, history } = this.props;
+      if (user) {
+        // todo: if educator, redirect to x; if volunteer, redirect to y
+        history.push("/volunteers");
+      }
       this.setState({ email: "", password: "" });
     }
   }
@@ -142,4 +147,4 @@ class SignIn extends React.Component<{ login: any }, { password: string; email: 
   }
 }
 
-export default connect(null, mapDispatchToProps)(SignIn);
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

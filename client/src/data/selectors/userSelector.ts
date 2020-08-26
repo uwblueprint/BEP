@@ -1,27 +1,15 @@
-import { createSelector } from "reselect";
-import { User } from "../types/userTypes";
+import { createSelector } from 'reselect';
+import { userObject } from '../reducers/authReducers';
 
-const getUser = (email: string) => (
-  state: UserPicklistState
-) =>
-  state[UserPicklistType[picklistType]]
-    ? state[UserPicklistType[picklistType]]
-    : [];
+const currentUser = (state: userObject) => {
+    return state.user.user ? state.user && state.user.user : null;
+}
 
-const createPicklistSelector = (picklistType: UserPicklistType) => createSelector(
-  [getPicklistData(picklistType)],
-  (picklist) => picklist
-);
-export const getExternalActivitesPicklist = createPicklistSelector(UserPicklistType.volunteerDesiredExternalActivities)
+const isLoggedIn = (state: userObject) => {
+    return state.user.loggedIn ? state.user && state.user.loggedIn : false;
+}
 
-export const getInternalActivitesPicklist = createPicklistSelector(UserPicklistType.volunteerDesiredInternalActivities)
-
-export const getExpertiesAreasPicklist = createPicklistSelector(UserPicklistType.expertiseAreas)
-
-export const getGradesPicklist = createPicklistSelector(UserPicklistType.grades)
-
-export const getPostSecondaryTrainingPicklist = createPicklistSelector(UserPicklistType.postSecondaryTraining)
-
-export const getLocationsPicklist = createPicklistSelector(UserPicklistType.locations)
-
-export const getLanguagesPicklist = createPicklistSelector(UserPicklistType.languages)
+// more details on creating selectors:
+// https://redux.js.org/recipes/computing-derived-data
+export const getUser = createSelector([currentUser], (userData) => userData);
+export const getIsLoggedIn = createSelector([isLoggedIn], (userData) => userData);

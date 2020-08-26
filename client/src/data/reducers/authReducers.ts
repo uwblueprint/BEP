@@ -1,13 +1,19 @@
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT } from "../actions/actionTypes";
+import { LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT } from "../actions/actionTypes";
 import { User } from "../types/userTypes";
 
-export interface userState {
-  loggingIn: boolean;
+interface userState {
+  loggedIn: boolean,
+  token: string;
   user: User | null;
 }
 
+export interface userObject {
+  user: userState,
+}
+
 const initialState: userState = {
-  loggingIn: true,
+  loggedIn: false,
+  token: "",
   user: null
 };
 
@@ -16,17 +22,15 @@ export default function (
   action: { type: string; payload: any }
 ) {
   switch (action.type) {
-    case LOGIN_REQUEST:
-      return {
-        loggingIn: true,
-      }
     case LOGIN_SUCCESS:
       // todo: type the payload when registration and login are merged
       const user = action.payload.data && action.payload.data.user ? action.payload.data.user : null;
+      const token = action.payload.data && action.payload.data.token ? action.payload.data.token : "";
 
       return {
         ...state,
-        loggingIn: false,
+        loggedIn: true,
+        token,
         user
       };
     case LOGIN_FAILURE:
