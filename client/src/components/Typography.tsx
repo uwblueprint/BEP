@@ -23,6 +23,17 @@ const secondaryMainTextStyle = (theme: Theme) =>
     },
   });
 
+const greyBackgroundTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      background: theme.palette.secondary.light,
+      borderRadius: "2%",
+      margin: "5% 0",
+      padding: "0 3%",
+      width: "fit-content"
+    },
+  });
+
 const WhiteTextTypography = withStyles(whiteTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
@@ -35,4 +46,8 @@ const SecondaryMainTextTypography = withStyles(secondaryMainTextStyle)((props: a
   <Typography {...props}>{props.children}</Typography>
 ));
 
-export { WhiteTextTypography, BlackTextTypography, SecondaryMainTextTypography };
+const GreyBackgroundTextTypography = withStyles(greyBackgroundTextStyle)((props: any) => (
+  <Typography {...props}>{props.children}</Typography>
+));
+
+export { WhiteTextTypography, BlackTextTypography, SecondaryMainTextTypography, GreyBackgroundTextTypography };

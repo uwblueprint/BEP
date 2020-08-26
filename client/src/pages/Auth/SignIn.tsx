@@ -5,6 +5,9 @@ import {
   ContainedButton,
   PageBody,
   WhiteTextTypography,
+  SecondaryMainTextTypography,
+  GreyBackgroundTextTypography,
+  Link
 } from "../../components/index";
 
 import Typography from "@material-ui/core/Typography";
@@ -30,7 +33,10 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(loginService(email, password)),
 });
 
-class SignIn extends React.Component<{ login: any, user: User, history: any }, { password: string; email: string; }> {
+class SignIn extends React.Component<
+    { login: any, user: User, history: any }, 
+    { password: string; email: string; }
+  > {
   constructor(props:any) {
     super(props);
 
@@ -72,17 +78,17 @@ class SignIn extends React.Component<{ login: any, user: User, history: any }, {
     return (
       <PageBody>
         <div style={{ height: "100vh" }}>
-          <Grid container style={{height: "60vh"}}>
+          <Grid container alignItems="center" justify="center">
             
-            <Grid item xs={4} style={{background: "#07598C", padding:"0 30px"}}>
-              <WhiteTextTypography variant="h5">Preparing youth for the future of work</WhiteTextTypography>
-              <WhiteTextTypography>It takes a village to raise a child. We're bringing Waterloo Region together to help our kids:</WhiteTextTypography>
-              <Typography>better understand the world of work</Typography>
-              <Typography>find a sense of purpose</Typography>
-              <Typography>connect with a rewarding career</Typography>
+            <Grid item xs={5} style={{background: "#07598C", height:"70vh", marginTop:"10vh", padding:"5%", marginRight:"1%", borderRadius:"1%"}}>
+              <WhiteTextTypography variant="h5" style={{margin:"5% 0"}}>Preparing youth for the future of work</WhiteTextTypography>
+              <WhiteTextTypography variant="body2" style={{fontSize:"0.9em", marginBottom:"5%"}}>It takes a village to raise a child. We're bringing Waterloo Region together to help our kids:</WhiteTextTypography>
+              <GreyBackgroundTextTypography>better understand the world of work</GreyBackgroundTextTypography>
+              <GreyBackgroundTextTypography>find a sense of purpose</GreyBackgroundTextTypography>
+              <GreyBackgroundTextTypography>connect with a rewarding career</GreyBackgroundTextTypography>
             </Grid>
             
-            <Grid item xs={4} style={{background:"white"}}>
+            <Grid item xs={5} style={{background:"white", height:"70vh", marginTop:"10vh", padding:"5%", borderRadius:"1%"}}>
               <form
                 style={{ width: "100%" }}
                 onSubmit={this.handleSubmit}
@@ -90,7 +96,7 @@ class SignIn extends React.Component<{ login: any, user: User, history: any }, {
                 <Typography variant="h6">
                   Login to get started
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="body1" style={{margin: "10% 0 1% 0"}}>
                   Email
                 </Typography>
                 <Grid item container direction="row">
@@ -111,7 +117,7 @@ class SignIn extends React.Component<{ login: any, user: User, history: any }, {
                   />
                 </Grid>
 
-                <Typography variant="body1">
+                <Typography variant="body1" style={{margin: "3% 0 1% 0"}}>
                   Password
                 </Typography>
                 <Grid item container direction="row">
@@ -131,13 +137,25 @@ class SignIn extends React.Component<{ login: any, user: User, history: any }, {
                     style={{ width: "90%" }}
                   />
                 </Grid>
+                <Link target="_blank" href="/">
+                  <SecondaryMainTextTypography style={{fontSize:"0.9em", marginTop:"2%"}}>
+                    Forgot Password?
+                  </SecondaryMainTextTypography>
+                </Link>
 
+                <Grid container direction="column" alignItems="center" justify="center">
                   <ContainedButton
                     type="submit"
-                    style={{ width: "8%"}}
+                    style={{ width: "50%", margin:"30px 0 10px 0"}}
                   >
                     Login
                   </ContainedButton>
+                  <Link target="_blank" href="/">
+                    <SecondaryMainTextTypography style={{fontSize:"0.9em"}}>
+                      Don't Have An Account? Sign Up
+                    </SecondaryMainTextTypography>
+                  </Link>
+                </Grid>
               </form>
             </Grid>
           </Grid>
