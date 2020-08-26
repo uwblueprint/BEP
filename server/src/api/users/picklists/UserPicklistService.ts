@@ -4,11 +4,9 @@ const siteUser: string = 'SiteUser__c';
 
 export const getGlobalPicklist = async (picklistName: string): Promise<string[]> => {
     let picklist: string[] = [];
-    console.log(picklistName);
 
     await conn.metadata.read('GlobalValueSet', [picklistName], function(err, res) {
         if (err) return console.error(err);
-        console.log(res);
         picklist = res.customValue ? res.customValue.map(value => value.label) : [];
     });
     return picklist;
