@@ -6,18 +6,18 @@ import Card from '@material-ui/core/Card'
 
 const useStyles = makeStyles((theme) => ({
     retract: {
-        textDecoration: 'none'
+        textDecoration: 'none',
+        fontSize: '24px'
     },
     card: {
-        maxWidth: 700,
-        // margin: `${theme.spacing(4)}px auto`,
-        padding: theme.spacing(1),
-        margin: '10px',
-        borderRadius: 10
-    },
-    root: {
-        paddingLeft: '25px'
-    }
+        margin: `${theme.spacing(2)}px auto`,
+        paddingLeft: theme.spacing(3),
+        paddingBottom: theme.spacing(3),
+        borderRadius: 5
+      },
+      body: {
+        fontSize: '16px',
+      },
 }));
 
 const ConfirmedVolunteerCard = (props: any) => {
@@ -26,11 +26,11 @@ const ConfirmedVolunteerCard = (props: any) => {
     console.log(props)
 
     return (
-        <Card className={classes.card}>
+        <Card className={classes.card} elevation={0}>
             <Typography variant="h4" classes={{
                 root: classes.retract,
             }}>{props.info.volunteer.volunteerName}</Typography>
-            <Typography variant="body1">{props.info.volunteer.job} at {props.info.volunteer.company} -- ({props.info.volunteer.personalPronouns})</Typography>
+            <Typography variant="body1" className={classes.body} >{props.info.volunteer.job} at {props.info.volunteer.company} {`\u2013`} ({props.info.volunteer.personalPronouns})</Typography>
         </Card>
     )
 
