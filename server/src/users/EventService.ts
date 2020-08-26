@@ -146,23 +146,24 @@ export const getEventInfo = async (eventName: string): Promise<Event> => {
     return eventInfo;
 };
 
-export const getEvents = async (limit: number, offset: number): Promise<Event[]> => {
+export const getEvents = async (limit: number, offset: number, filter: 'active' | 'past' | 'all'): Promise<Event[]> => {
     let events: Event[] = [];
     let eventPromises: Promise<Event>[];
+    const date = new Date().toISOString();
+    const query = `SELECT ${eventFields} FROM ${eventApi} ${
+        filter !== 'all' ? `WHERE endDate__c ${filter === 'active' ? '>=' : '<'} ${date}` : ''
+    } ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}`;
 
-    await conn.query(
-        `SELECT ${eventFields} FROM ${eventApi} ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}`,
-        function(err, result) {
-            if (err) {
-                return console.error(err);
-            }
-
-            eventPromises = result.records.map(record => {
-                const eventPromise = salesforceEventToEventModel(record)
-                return eventPromise;
-            });
+    await conn.query(query, function(err, result) {
+        if (err) {
+            return console.error(err);
         }
-    );
+
+        eventPromises = result.records.map(record => {
+            const eventPromise = salesforceEventToEventModel(record);
+            return eventPromise;
+        });
+    });
 
     await Promise.all(eventPromises).then(resolvedEvents => {
         events = resolvedEvents;
