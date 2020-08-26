@@ -53,13 +53,6 @@ class OpportunityList extends React.Component<
     fetchPicklists: any;
   },
   {
-    // prevY: number;
-    // observer: IntersectionObserver | null;
-    // page: number;
-    // offset: number;
-    // // loadingRef: any;
-    // loadedAllEvents: boolean;
-    // lastEventsListLength: number;
     searchBar: string;
     filters: {
       activities: Map<string, boolean>;
@@ -91,17 +84,9 @@ class OpportunityList extends React.Component<
     this.handleSearchFormSubmit = this.handleSearchFormSubmit.bind(this);
     this.filterSingleField = this.filterSingleField.bind(this);
     this.filterAllFields = this.filterAllFields.bind(this);
-    // this.fetchEvents = this.fetchEvents.bind(this);
     this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
 
     this.state = {
-      // prevY: 0,
-      // observer: null,
-      // page: 0,
-      // offset: 10,
-      // loadingRef: React.createRef(),
-      // loadedAllEvents: false,
-      // lastEventsListLength: 0,
       searchBar: "",
       filters: {
         activities: new Map(),
@@ -110,30 +95,6 @@ class OpportunityList extends React.Component<
       filteredEvents: events,
     };
   }
-
-  // handleObserver(entities: any, observer: IntersectionObserver) {
-  //   const y = entities[0].boundingClientRect.y;
-  //   const newPage = this.state.page + 1;
-  //   if (this.state.prevY > y) {
-  //     if (this.state.lastEventsListLength === this.props.events.length) {
-  //       // If no new events are available, prevent additional calls to backend.
-  //       this.setState({ loadedAllEvents: true });
-  //     }
-
-  //     if (!this.state.loadedAllEvents) {
-  //       if (this.props.events.length > 1)
-  //         this.setState({
-  //           // Keep track of last event list length to determine if any new events are loaded.
-  //           lastEventsListLength: this.props.events.length,
-  //         });
-
-  //       this.fetchEvents(this.state.offset, newPage * this.state.offset);
-
-  //       this.setState({ page: newPage });
-  //     }
-  //   }
-  //   this.setState({ prevY: y });
-  // }
 
   getFilters(picklistName: string) {
     const filters = this.state.filters;
@@ -240,7 +201,8 @@ class OpportunityList extends React.Component<
       filter.length === 0 || // ignore search bar input if input is empty.
       event.contact.firstName.toLowerCase().includes(filter) ||
       event.contact.lastName.toLowerCase().includes(filter) ||
-      event.contact.schoolName.toLowerCase().includes(filter)
+      event.contact.schoolName.toLowerCase().includes(filter) ||
+      event.eventName.toLowerCase().includes(filter)
     );
   };
 
@@ -298,18 +260,6 @@ class OpportunityList extends React.Component<
     return newEvents;
   }
 
-  // fetchEvents(limit: number, offset: number) {
-  //   this.props.fetchEvents(limit, offset).then(() => {
-  //     this.setState({
-  //       filteredEvents: this.state.filteredEvents.concat(
-  //         this.filterAllFields(
-  //           this.props.events.slice(this.state.page * this.state.offset)
-  //         )
-  //       ),
-  //     });
-  //   });
-  // }
-
   componentDidMount() {
     const picklistTypes: PicklistType[] = [
       PicklistType.allActivities,
@@ -344,31 +294,13 @@ class OpportunityList extends React.Component<
         this.setState({ filters });
       });
     });
-
-    // if (this.state.loadingRef) {
-    //   // Options
-    //   var options = {
-    //     root: null, // Page as root
-    //     rootMargin: "0px",
-    //     threshold: 1.0,
-    //   };
-    //   // Create an observer
-    //   const observer = new IntersectionObserver(
-    //     this.handleObserver.bind(this), //callback
-    //     options
-    //   );
-
-    //   //Observe the bottom div of the page
-    //   observer.observe(this.state.loadingRef.current);
-    //   this.setState({ observer });
-    // }
   }
 
   render() {
     let filtersSelected = false;
 
     const createOpportunityCard = (event: Event) => (
-      <EventCard key={event.id} event={event} isPastEvent={false} />
+      <EventCard key={event.id} event={event} isPastEvent={false} showOwner={false} />
     );
 
     return (
@@ -570,7 +502,6 @@ class OpportunityList extends React.Component<
             </Grid>
           </PageBody>
         </Grid>
-        {/* <div ref={this.state.loadingRef} /> */}
       </div>
     );
   }

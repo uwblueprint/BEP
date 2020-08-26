@@ -1,4 +1,3 @@
-
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -70,7 +69,7 @@ export default function EventCard(props: any) {
 
   return (
     <div className={classes.root}>
-      <Card className={classes.card}>
+      <Card className={classes.card} elevation={0}>
         <CardContent>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -83,7 +82,7 @@ export default function EventCard(props: any) {
                 Event Type
               </Typography>
               <Typography variant="body1">
-                {props.event.activityType}
+                {props.event.activityType.join(", ")}
               </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -142,22 +141,26 @@ export default function EventCard(props: any) {
                     .replace(",", "")}
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
-                <Typography variant="subtitle2" className={classes.tag}>
-                  Applications Received{" "}
-                  <span className={classes.textHighlight}>
-                    {props.event.applicantNumber}
-                  </span>
-                </Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="subtitle2" className={classes.tag}>
-                  Invitations Sent{" "}
-                  <span className={classes.textHighlight}>
-                    {props.event.invitationNumber}
-                  </span>
-                </Typography>
-              </Grid>
+              {props.showOwner && (
+                <React.Fragment>
+                  <Grid item xs={3}>
+                    <Typography variant="subtitle2" className={classes.tag}>
+                      Applications Received{" "}
+                      <span className={classes.textHighlight}>
+                        {props.event.applicantNumber}
+                      </span>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Typography variant="subtitle2" className={classes.tag}>
+                      Invitations Sent{" "}
+                      <span className={classes.textHighlight}>
+                        {props.event.invitationNumber}
+                      </span>
+                    </Typography>
+                  </Grid>
+                </React.Fragment>
+              )}
             </Grid>
           </CardContent>
         ) : null}
