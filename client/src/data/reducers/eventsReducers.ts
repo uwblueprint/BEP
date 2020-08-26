@@ -26,7 +26,8 @@ export default function eventsFilter(
         ...state,
         list: state.list.concat(action.payload.list),
         activeList: state.activeList.concat(
-          action.payload.list.filter((t: Event) => new Date(t.endDate) >= today)
+          // action.payload.list.filter((t: Event) => new Date(t.endDate) >= today)
+          action.payload.list.filter((t: Event) => { console.log(new Date(t.endDate)); return new Date(t.endDate) >= today})
         ),
         pastList: state.pastList.concat(
           action.payload.list.filter((t: Event) => new Date(t.endDate) < today)

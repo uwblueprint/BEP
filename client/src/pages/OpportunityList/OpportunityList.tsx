@@ -7,9 +7,9 @@ import { fetchEventsService } from "../../data/services/eventsServices";
 import { fetchPicklistsService } from "../../data/services/picklistServices";
 
 /* Selectors */
-import { getEventsData } from "../../data/selectors/eventsSelector";
+import { getActiveEventsData } from "../../data/selectors/eventsSelector";
 import {
-  getAllAcitivitiesPicklist,
+  getAllActivitiesPicklist,
   getLocationsPicklist,
 } from "../../data/selectors/picklistSelector";
 
@@ -312,7 +312,7 @@ class OpportunityList extends React.Component<
 
   componentDidMount() {
     const picklistTypes: PicklistType[] = [
-      PicklistType.expertiseAreas,
+      PicklistType.allActivities,
       PicklistType.locations,
     ];
 
@@ -327,9 +327,9 @@ class OpportunityList extends React.Component<
         const picklists = this.props.picklists;
         const filters = this.state.filters;
 
-        if (type === PicklistType.allAcitivities) {
-          picklists.activities.list.forEach((acitivity) =>
-            filters.activities.set(acitivity, false)
+        if (type === PicklistType.allActivities) {
+          filters.activities = new Map(
+            createFilters(picklists.activities.list)
           );
         } else if (type === PicklistType.locations) {
           filters.locations = new Map(createFilters(picklists.locations.list));
@@ -361,9 +361,7 @@ class OpportunityList extends React.Component<
   render() {
     let filtersSelected = false;
     const createOpportunityCard = (event: Event) => (
-      <Grid item xs={12} key={event.id}>
-        <EventCard event={event} isPastEvent={true} />
-      </Grid>
+      <EventCard event={event} isPastEvent={false} />
     );
 
     return (
@@ -573,11 +571,11 @@ class OpportunityList extends React.Component<
 
 const mapStateToProps = (state: any) => {
   return {
-    events: getEventsData(state.events),
+    events: getActiveEventsData(state.events),
     picklists: {
       activities: {
         displayName: "Activities",
-        list: getAllAcitivitiesPicklist(state.picklists),
+        list: getAllActivitiesPicklist(state.picklists),
       },
       locations: {
         displayName: "Location",

@@ -9,7 +9,7 @@ import { fetchPicklistsService } from "../../data/services/picklistServices";
 /* Selectors */
 import { getVolunteers } from "../../data/selectors/volunteersSelector";
 import {
-  getAllAcitivitiesPicklist,
+  getAllActivitiesPicklist,
   getExpertiesAreasPicklist,
   getLocationsPicklist,
   getPostSecondaryTrainingPicklist,
@@ -367,8 +367,7 @@ class VolunteerList extends React.Component<
   componentDidMount() {
     const picklistTypes: PicklistType[] = [
       PicklistType.expertiseAreas,
-      PicklistType.volunteerDesiredExternalActivities,
-      PicklistType.volunteerDesiredInternalActivities,
+      PicklistType.allActivities,
       PicklistType.locations,
       PicklistType.postSecondaryTraining,
       PicklistType.languages,
@@ -393,12 +392,9 @@ class VolunteerList extends React.Component<
           filters.expertiseAreas = new Map(
             createFilters(picklists.expertiseAreas.list)
           );
-        } else if (
-          type === PicklistType.volunteerDesiredExternalActivities ||
-          type === PicklistType.volunteerDesiredInternalActivities
-        ) {
-          picklists.activities.list.forEach((acitivity) =>
-            filters.activities.set(acitivity, false)
+        } else if (type === PicklistType.allActivities) {
+          filters.activities = new Map(
+            createFilters(picklists.activities.list)
           );
         } else if (type === PicklistType.locations) {
           filters.locations = new Map(createFilters(picklists.locations.list));
@@ -665,7 +661,7 @@ const mapStateToProps = (state: any) => {
     picklists: {
       activities: {
         displayName: "Activities",
-        list: getAllAcitivitiesPicklist(state.picklists),
+        list: getAllActivitiesPicklist(state.picklists),
       },
       expertiseAreas: {
         displayName: "Areas of Expertise",

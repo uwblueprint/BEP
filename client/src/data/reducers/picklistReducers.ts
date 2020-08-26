@@ -12,6 +12,7 @@ export type PicklistState = {
 };
 
 const initialState: PicklistState = {
+  [PicklistType.allActivities]: [],
   [PicklistType.coopPlacementMode]: [],
   [PicklistType.coopPlacementTime]: [],
   [PicklistType.educatorDesiredActivities]: [],
@@ -26,7 +27,6 @@ const initialState: PicklistState = {
   [PicklistType.professionalAssociations]: [],
   [PicklistType.volunteerDesiredExternalActivities]: [],
   [PicklistType.volunteerDesiredInternalActivities]: [],
-  [PicklistType.allAcitivities]: [],
 };
 
 export default function (
