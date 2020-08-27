@@ -8,8 +8,8 @@ import {
 } from "../../data/services/eventsServices";
 import { changeFilter } from "../../data/actions/eventsActions";
 import {
-  getActiveEventsData,
-  getPastEventsData,
+  getActiveEvents,
+  getPastEvents,
 } from "../../data/selectors/eventsSelector";
 import EventCard from "./EventCard";
 import {
@@ -341,8 +341,8 @@ const EducatorDashboard: React.SFC<Props> = ({
 };
 
 const mapStateToProps = (state: any): StateProps => ({
-  activeEvents: getActiveEventsData(state.events),
-  pastEvents: getPastEventsData(state.events),
+  activeEvents: getActiveEvents(state.events),
+  pastEvents: getPastEvents(state.events),
 });
 
 const mapDispatchToProps = (dispatch: any): DispatchProps => ({
