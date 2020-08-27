@@ -50,7 +50,7 @@ function SimpleDialog(props: SimpleDialogProps) {
           </TextButton>
         </Grid>
         <Grid item xs={6} className={classes.boxedUser}>
-          <TextButton onClick={() => handleSelectionClick("educator")}>
+          <TextButton onClick={() => handleSelectionClick("volunteer")}>
             Volunteer
             <VolunteerImage />
           </TextButton>
