@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
 import { connect } from "react-redux";
 
@@ -89,7 +88,7 @@ class VolunteerList extends React.Component<
 
     if (user) {
       // whatever the redirect route is supposed to be
-      history.push("/volunteer-list");
+      history.push("/volunteers");
     }
 
     this.getFilters = this.getFilters.bind(this);
