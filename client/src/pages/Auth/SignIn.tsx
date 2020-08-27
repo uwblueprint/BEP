@@ -63,8 +63,8 @@ class SignIn extends React.Component<
 
     if (email && password) {
       const success = await login(email, password);
-      console.log(success);
       const { user, history } = this.props;
+
       if (user && success) {
         // todo: if educator, redirect to x; if volunteer, redirect to y
         this.setState({ email: "", password: "", failed: false });
@@ -79,7 +79,7 @@ class SignIn extends React.Component<
     const { failed } = this.state;
     return (
       <PageBody>
-        <div style={{ height: "100vh" }}>
+        <div style={{ height: "95vh" }}>
           <Grid container alignItems="center" justify="center">
             
             <Grid item xs={5} style={{background: "#07598C", height:"70vh", marginTop:"10vh", padding:"5%", marginRight:"1%", borderRadius:"1%"}}>
