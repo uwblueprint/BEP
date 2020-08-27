@@ -4,8 +4,8 @@
 
 import { conn } from '../../server';
 import Educator, { isEducator } from './EducatorInterface';
-import Employer from '../employers/EmployerInterface';
 import * as EmployerService from '../employers/EmployerService';
+import * as SchoolService from '../schools/SchoolService';
 import User, { isUser, UserType } from './UserInterface';
 import Volunteer, { isVolunteer } from './VolunteerInterface';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
@@ -13,7 +13,7 @@ import { arrayToPicklistString, picklistStringToArray } from '../../util/Salesfo
 const siteUser: string = 'SiteUser__c';
 const userFields: string =
     'email__c, firstName__c, phoneNumber__c, followedPrograms__c, Id, isSubscribed__c, lastName__c, password__c, ' +
-    'preferredPronouns__c, userType__c, educatorDesiredActivities__c, position__c, schoolBoard__c, schoolName__c, careerDescription__c, ' +
+    'preferredPronouns__c, userType__c, educatorDesiredActivities__c, position__c, school__c, careerDescription__c, ' +
     'coopPlacementMode__c, coopPlacementSchoolAffiliation__c, coopPlacementTime__c, jobTitle__c, department__c, employer__c, ' +
     'employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, introductionMethod__c, isVolunteerCoordinator__c, languages__c, ' +
     'linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, professionalAssociations__c, reasonsForVolunteering__c,' +
@@ -40,8 +40,7 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
             position__c: (user as Educator).position,
-            schoolBoard__c: (user as Educator).schoolBoard,
-            schoolName__c: (user as Educator).schoolName
+            school__c: (user as Educator).school.id
         };
     } else if (isVolunteer(user)) {
         salesforceUser = {
@@ -107,23 +106,16 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         // User is an educator.
         (user as Educator).educatorDesiredActivities = picklistStringToArray(record.educatorDesiredActivities__c);
         (user as Educator).position = record.position__c;
-        (user as Educator).schoolBoard = record.schoolBoard__c;
-        (user as Educator).schoolName = record.schoolName__c;
+        (user as Educator).school = await SchoolService.get(record.school__c);
     } else if (UserType[record.userType__c] === UserType[UserType.Volunteer]) {
         // User is a volunteer.
-        let employer: Employer = null;
-        if (record.employer__c !== null) {
-            const employerId = record.employer__c;
-            employer = await EmployerService.get(employerId);
-        }
-
         (user as Volunteer).careerDescription = record.careerDescription__c;
         (user as Volunteer).coopPlacementMode = record.coopPlacementMode__c;
         (user as Volunteer).coopPlacementSchoolAffiliation = record.coopPlacementSchoolAffiliation__c;
         (user as Volunteer).coopPlacementTime = picklistStringToArray(record.coopPlacementTime__c);
         (user as Volunteer).jobTitle = record.jobTitle__c;
         (user as Volunteer).department = record.department__c;
-        (user as Volunteer).employer = employer;
+        (user as Volunteer).employer = record.employer__c ? await EmployerService.get(record.employer__c) : null;
         (user as Volunteer).employmentStatus = record.employmentStatus__c;
         (user as Volunteer).expertiseAreas = picklistStringToArray(record.expertiseAreas__c);
         (user as Volunteer).extraDescription = record.extraDescription__c;

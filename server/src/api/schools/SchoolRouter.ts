@@ -31,6 +31,7 @@ schoolRouter.get('/:id', async (req: Express.Request, res: Express.Response) => 
         res.status(500).send({ msg: e.message });
     }
 });
+
 // GET schools/
 schoolRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     try {
