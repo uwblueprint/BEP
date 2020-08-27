@@ -68,17 +68,6 @@ class BackendServer extends Server {
     }
 
     public start(port: string): void {
-        // Sanity check test method
-        this.app.get('/test', (req, res) => {
-            conn.query('SELECT Name,Email__c FROM Test__c', (err, result) => {
-                if (err) {
-                    console.log("query error");
-                    return console.error(err);
-                }
-                console.log(result.records);
-                res.send(result.records);
-            });
-        });
         this.app.use("/api/events", eventRouter);
         this.app.use("/api/invites", inviteRouter);
         this.app.use("/api/auth", authRouter)
@@ -92,7 +81,6 @@ class BackendServer extends Server {
         } else {
             this.app.use("/api/users", userRouter);
         }
-
 
         //Uncomment soon. Test method to prevent non-logged in users from accessing '/'
         // this.app.get('/', (req, res)  => {
