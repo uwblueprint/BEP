@@ -16,7 +16,7 @@ const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
     'Id, Name, isActive__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
     'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, schoolName__c, schoolAddress__c, ' +
-    'schoolTransportation__c, contact__c, ApplicantNumber__c, invitationNumber__c, location__c';
+    'schoolTransportation__c, contact__c, ApplicantNumber__c, invitationNumber__c';
 
 const eventApplicantFields: string =
     'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, applicantCompany__c, accepted__c, denied__c';
@@ -43,7 +43,6 @@ const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
         hoursCommitment__c: event.hoursCommitment,
         ...(id && { Id: id }),
         isActive__c: event.isActive,
-        location__c: event.location,
         numberOfStudents__c: event.numberOfStudents,
         numberOfVolunteers__c: event.numberOfVolunteers,
         postingExpiry__c: event.postingExpiry,
@@ -69,7 +68,6 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
         id: record.Id,
         invitationNumber: record.invitationNumber__c,
         isActive: record.isActive__c,
-        location: record.location__c,
         numberOfStudents: record.numberOfStudents__c,
         numberOfVolunteers: record.numberOfVolunteers__c,
         postingExpiry: record.postingExpiry__c,
