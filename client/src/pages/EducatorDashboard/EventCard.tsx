@@ -65,7 +65,6 @@ function getDate(props: any) {
 
 export default function EventCard(props: any) {
   const classes = useStyles();
-
   return (
     <div className={classes.root}>
       <Card className={classes.card} elevation={0}>
@@ -89,7 +88,9 @@ export default function EventCard(props: any) {
                 Preferred Sector
               </Typography>
               <Typography variant="body1">
-                {props.event.preferredSector}
+                {props.event.preferredSector
+                  ? props.event.preferredSector.join(", ")
+                  : ""}
               </Typography>
             </Grid>
             <Grid item xs={6}>

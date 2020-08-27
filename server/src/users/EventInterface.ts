@@ -14,7 +14,7 @@ export default interface EventInterface {
     numberOfStudents: number;
     numberOfVolunteers: number;
     postingExpiry: Date;
-    preferredSector: string;
+    preferredSector: string[];
     schoolAddress: string;
     schoolName: string;
     schoolTransportation: string;
