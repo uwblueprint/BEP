@@ -1,5 +1,5 @@
 import UserInterface, { UserType } from './UserInterface';
-import SchoolInterface from '../schools/SchoolInterface';
+import SchoolInterface, { isSchool } from '../schools/SchoolInterface';
 
 export default interface EducatorInterface extends UserInterface {
     educatorDesiredActivities: string[];
@@ -12,8 +12,7 @@ export const isEducator = (obj: any): boolean => {
         UserType[obj.userType] === UserType[UserType.Educator] &&
         Array.isArray(obj.educatorDesiredActivities) &&
         typeof obj.educatorDesiredActivities.every(item => typeof item === 'string') &&
-        typeof obj.position === 'string' &&
-        typeof obj.schoolBoard === 'string' &&
-        typeof obj.schoolName === 'string'
+        obj.school &&
+        isSchool(obj.school)
     );
 };
