@@ -1,11 +1,18 @@
 import React, { useEffect } from 'react'
 import { OutlinedTextField, TextField } from '../../components/TextField'
+import { fetchPicklistsService } from "../../data/services/eventPicklistServices";
 import {PageHeader, PageBody} from '../../components/Page'
 import Grid from '@material-ui/core/Grid'
 import {BlackTextTypography} from '../../components/Typography'
 import Divider from '@material-ui/core/Divider'
+import { Select }  from '../../components/Select'
+import { getActivityTypePicklist, getPreferredSectorPicklist } from '../../data/selectors/eventPicklistSelector'
+import { connect } from "react-redux";
+
 import {Link} from 'react-router-dom'
 import { ContainedButton } from '../../components/Button'
+import { EventPicklistType } from '../../data/types/EventPicklistTypes';
+import { withStyles } from '@material-ui/core';
 
 const styles = () => ({
     selectTextField: {
@@ -25,26 +32,57 @@ type OpFormProps = {
     name: string;
     requiredVolunteers: string;
     activityType: string;
-    preferredSector: string
+    preferredSector: string;
     singleDayEvent: boolean;
     startDateAndTime: Date;
     endDateAndTime: Date;
-    numberOfHours?: number;
+    numberOfHours?: string;
     transportation: string;
     numberOfStudents: string;
     studentGrades: string[];
     public: boolean;
 }
 
-class OpportunityForm extends React.Component<OpFormProps, OpFormProps> {
-    constructor(props: OpFormProps) {
+class OpportunityForm extends React.Component<
+{ opform: OpFormProps,
+    picklists: {
+        activityType: { displayName: string, list: string[] };
+        preferredSector: { displayName: string, list: string[] };
+        studentGrades: { displayName: string, list: string[] };
+    };
+    fetchPicklists: any;
+}, OpFormProps> {
+    constructor(props: Readonly<{ opform: OpFormProps; picklists: { activityType: { displayName: string; list: string[]; }; preferredSector: { displayName: string; list: string[]; }; studentGrades: { displayName: string; list: string[]; }; }; fetchPicklists: any; }>) {
         super(props);
-        console.log("These are the component props", props)
-        this.state = props
-        console.log("This is the state", this.state)
+        console.log("These are the props", props)
+        console.log("These are the component opformprops", props.opform)
+        if (!props.opform) {
+            console.log("Setting state")
+            this.state = {
+                name: "",
+                requiredVolunteers: "",
+                activityType: "",
+                preferredSector: "",
+                singleDayEvent: false,
+                startDateAndTime: new Date(),
+                endDateAndTime: new Date(),
+                numberOfHours: "",
+                transportation: "",
+                numberOfStudents: "",
+                studentGrades: [],
+                public: false,
+            };
+        } else {
+            this.state = props.opform
+        }
         this.handleChange = this.handleChange.bind(this);
         //this.handleSubmit = this.handleSubmit.bind(this)
+        console.log("This is the state", this.state)
     }
+
+    // componentDidMount () {
+    //     const pickListTypes: 
+    // }
 
     handleChange = (event: any) => {
         console.log(event.target.value);
@@ -79,10 +117,15 @@ class OpportunityForm extends React.Component<OpFormProps, OpFormProps> {
                 <PageBody>
                     <Grid
                         container
+                        spacing={4}
                         direction="column"
-                        justify="flex-start"
-                        alignItems="flex-start"
-                        spacing={3}>
+                        style={{
+                        padding: "3em",
+                        backgroundColor: "#fff",
+                        borderRadius: "2px",
+                        margin: "2em 0em",
+                        }}
+                    >
                     <Grid item direction="column">
                         <BlackTextTypography>
                             Opportunity Name*
@@ -92,18 +135,34 @@ class OpportunityForm extends React.Component<OpFormProps, OpFormProps> {
                             id="name"
                             value={this.state.name}
                             onChange={this.handleChange}
-                            style={{ width: "40%", marginBottom: "24px" }}
+                            style={{ width: "50%", marginBottom: "24px", height: '50%' }}
                             />
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography>
                             Number of Volunteers Required
                         </BlackTextTypography>
+                        <OutlinedTextField
+                            placeholder="How many volunteers would you need for this event"
+                            id="requiredVolunteers"
+                            value={this.state.requiredVolunteers}
+                            onChange={this.handleChange}
+                            style={{ width: "50%", marginBottom: "24px", height: '50%' }}
+                            />
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography>
                             Activity Type
                         </BlackTextTypography>
+                        {/* <Select
+                            native
+                            value={this.props.picklist}
+                            onChange={this.handleOtherChange}
+                            style={{ width: "40%", marginBottom: "24px" }}
+                            inputProps={{
+                            id: "schoolBoard",
+                            }}
+                        ></Select> */}
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography>
@@ -188,6 +247,35 @@ class OpportunityForm extends React.Component<OpFormProps, OpFormProps> {
         </div>
         )
     }
+
 }
 
-export default OpportunityForm
+const mapStateToProps = (state: any) => {
+    return {
+        picklists: {
+            activityType: { 
+                displayName: "Activity Type", 
+                list: getActivityTypePicklist(state.eventPicklists)
+            },
+            preferredSector: {
+                displayName: "Preferred Sector",
+                list: getPreferredSectorPicklist(state.eventPicklists)
+            },
+            studentGrades: {
+                displayName: "Grades",
+                list: getPreferredSectorPicklist(state.eventPicklists),
+            }
+        }
+    }
+}
+
+const mapDispatchToProps = (dispatch: any) => ({
+    fetchPicklists: (picklistType: EventPicklistType) => {
+        dispatch(fetchPicklistsService(picklistType))
+    }
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withStyles(styles)(OpportunityForm));
