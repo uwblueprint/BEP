@@ -22,8 +22,8 @@ employerRouter.get('/:id', async (req: Express.Request, res: Express.Response) =
 
     try {
         if (id !== undefined) {
-            const fetchedUser = await EmployerService.get(id);
-            res.status(200).send(fetchedUser);
+            const fetchedEmployer = await EmployerService.get(id);
+            res.status(200).send(fetchedEmployer);
         } else {
             throw Error(`Invalid query parameters. Either set "id" parameter.`);
         }
