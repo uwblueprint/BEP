@@ -1,14 +1,14 @@
 import { createSelector } from "reselect";
 import { EventsState } from "../reducers/eventsReducers";
 
-export const getEventsStatus = (state: EventsState) => state.eventsFilter;
-export const getEventsData = (state: EventsState) => {
+const getEventsStatus = (state: EventsState) => state.eventsFilter;
+const getEventsData = (state: EventsState) => {
   return state.list ? state.list : [];
 };
-export const getActiveEventsData = (state: EventsState) => {
+const getActiveEventsData = (state: EventsState) => {
   return state.activeList ? state.activeList : [];
 };
-export const getPastEventsData = (state: EventsState) => {
+const getPastEventsData = (state: EventsState) => {
   return state.pastList ? state.pastList : [];
 };
 
@@ -23,4 +23,14 @@ export const getFilteredEvents = createSelector(
     }
     return allEvents;
   }
+);
+
+export const getActiveEvents = createSelector(
+  [getActiveEventsData],
+  (activeEvents) => activeEvents
+);
+
+export const getPastEvents = createSelector(
+  [getPastEventsData],
+  (pastEvents) => pastEvents
 );

@@ -7,7 +7,7 @@ import { fetchActiveEventsService } from "../../data/services/eventsServices";
 import { fetchPicklistsService } from "../../data/services/picklistServices";
 
 /* Selectors */
-import { getActiveEventsData } from "../../data/selectors/eventsSelector";
+import { getActiveEvents } from "../../data/selectors/eventsSelector";
 import {
   getAllActivitiesPicklist,
   getLocationsPicklist,
@@ -510,7 +510,7 @@ class OpportunityList extends React.Component<
 
 const mapStateToProps = (state: any) => {
   return {
-    events: getActiveEventsData(state.events),
+    events: getActiveEvents(state.events),
     picklists: {
       activities: {
         displayName: "Activities",
