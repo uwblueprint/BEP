@@ -50,11 +50,13 @@ class SignIn extends React.Component<
   }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.id === "email") {
-      this.setState({email: e.target.value});
-    } else if (e.target.id === "password") {
-      this.setState({password: e.target.value});
-    }
+    // if (e.target.id === "email") {
+    //   this.setState({email: e.target.value});
+    // } else if (e.target.id === "password") {
+    //   this.setState({password: e.target.value});
+    // }
+    const { id, value } = e.target;
+    this.setState({ ...this.state, [id]: value });
   }
 
   handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -82,10 +84,16 @@ class SignIn extends React.Component<
             
             <Grid item xs={5} style={{background: "#07598C", height:"70vh", marginTop:"10vh", padding:"5%", marginRight:"1%", borderRadius:"1%"}}>
               <WhiteTextTypography variant="h5" style={{margin:"5% 0"}}>Preparing youth for the future of work</WhiteTextTypography>
-              <WhiteTextTypography variant="body2" style={{fontSize:"0.9em", marginBottom:"5%"}}>It takes a village to raise a child. We're bringing Waterloo Region together to help our kids:</WhiteTextTypography>
-              <GreyBackgroundTextTypography>better understand the world of work</GreyBackgroundTextTypography>
-              <GreyBackgroundTextTypography>find a sense of purpose</GreyBackgroundTextTypography>
-              <GreyBackgroundTextTypography>connect with a rewarding career</GreyBackgroundTextTypography>
+              <WhiteTextTypography variant="body2" style={{fontSize:"0.9em", marginBottom:"7%"}}>It takes a village to raise a child. We're bringing Waterloo Region together to help our kids:</WhiteTextTypography>
+              <GreyBackgroundTextTypography style={{borderRadius: "2%", margin: "5% 0", padding: "1% 3%", width: "fit-content", textTransform: "uppercase", fontSize: "0.7em"}}>
+                better understand the world of work
+              </GreyBackgroundTextTypography>
+              <GreyBackgroundTextTypography style={{borderRadius: "2%", margin: "5% 0", padding: "1% 3%", width: "fit-content", textTransform: "uppercase", fontSize: "0.7em"}}>
+                find a sense of purpose
+              </GreyBackgroundTextTypography>
+              <GreyBackgroundTextTypography style={{borderRadius: "2%", margin: "5% 0", padding: "1% 3%", width: "fit-content", textTransform: "uppercase", fontSize: "0.7em"}}>
+                connect with a rewarding career
+              </GreyBackgroundTextTypography>
             </Grid>
             
             <Grid item xs={5} style={{background:"white", height:"70vh", marginTop:"10vh", padding:"5%", borderRadius:"1%"}}>

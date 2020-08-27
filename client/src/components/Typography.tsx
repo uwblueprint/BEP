@@ -27,10 +27,6 @@ const greyBackgroundTextStyle = (theme: Theme) =>
   createStyles({
     root: {
       background: theme.palette.secondary.light,
-      borderRadius: "2%",
-      margin: "5% 0",
-      padding: "0 3%",
-      width: "fit-content"
     },
   });
 
