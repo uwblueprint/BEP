@@ -11,7 +11,6 @@ export default interface EventInterface {
     id?: string;
     invitationNumber: number;
     isActive: boolean;
-    location: string;
     numberOfStudents: number;
     numberOfVolunteers: number;
     postingExpiry: Date;
