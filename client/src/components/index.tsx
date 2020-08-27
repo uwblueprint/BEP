@@ -19,9 +19,11 @@ import {
   WhiteTextTypography,
   BlackTextTypography,
   SecondaryMainTextTypography,
+  GreyBackgroundTextTypography,
 } from "./Typography";
 import Dialog from "./Dialog";
 import DialogTitle from "./DialogTitle";
+
 
 export { ContainedButton, DarkContainedButton, TextButton, Button };
 export { Link };
@@ -39,6 +41,7 @@ export {
   WhiteTextTypography,
   BlackTextTypography,
   SecondaryMainTextTypography,
+  GreyBackgroundTextTypography,
 };
 
 export { Dialog };

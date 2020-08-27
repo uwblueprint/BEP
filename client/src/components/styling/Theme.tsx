@@ -33,14 +33,14 @@ const theme = createMuiTheme({
     h1: {
       fontFamily: "Arial",
       fontStyle: "normal",
-      // fontWeight: "800",
-      fontSize: "36px",
+      fontSize: "40px",
       lineHeight: "49px",
+      fontWeight: "bold",
     },
     h2: {
       fontStyle: "normal",
       fontWeight: 800,
-      fontSize: "24px",
+      fontSize: "30px",
       lineHeight: "33px",
     },
     h3: {
@@ -92,11 +92,10 @@ const theme = createMuiTheme({
       letterSpacing: "0.5px",
       fontWeight: 500,
       lineHeight: "24px",
-      textTransform: "lowercase",
     },
     button: {
       fontStyle: "normal",
-      fontWeight: 800,
+      fontWeight: 700,
       fontSize: "16px",
       lineHeight: "22px",
       textTransform: "capitalize",
@@ -120,6 +119,70 @@ const theme = createMuiTheme({
       input: {
         height: "40px",
         padding: "0px 15px",
+      },
+    },
+    MuiTabs: {
+      flexContainer: {
+        margin: "1em 0em",
+      },
+    },
+    MuiTab: {
+      root: {
+        textTransform: "none",
+      },
+      textColorInherit: {
+        color: "black",
+        "&$selected": {
+          color: "#0A79BF",
+          backgroundColor: "#f2faff",
+          borderRadius: "2px",
+        },
+      },
+    },
+    MuiIconButton: {
+      root: {
+        color: "#0A79BF",
+      },
+    },
+    MuiContainer: {
+      root: {
+        padding: 0,
+        "@media (min-width: 0px)": {
+          padding: 0,
+        },
+      },
+    },
+    MuiButton: {
+      textPrimary: {
+        color: "#0A79BF",
+      },
+    },
+    MuiPickersDay: {
+      daySelected: {
+        color: "#fff",
+        backgroundColor: "#0A79BF",
+        "&:hover": {
+          color: "#000",
+          backgroundColor: "#fff",
+        },
+      },
+      current: {
+        color: "#000",
+      },
+      day: {
+        "&:hover": {
+          backgroundColor: "#D9F0FF",
+        },
+      },
+    },
+    MuiInput: {
+      underline: {
+        "&:before": {
+          border: "1px solid #e5e5e5",
+          borderRadius: "2px",
+          padding: "8px",
+          content: "none",
+        },
       },
     },
   },

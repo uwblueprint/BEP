@@ -251,13 +251,14 @@ class EducatorRegistration extends React.Component<
                   id: "schoolBoard",
                 }}
               >
-                {Object.entries(this.props.picklists.schoolBoard.list).map(
-                  (entry, index) => (
-                    <option key={index} value={entry[1]}>
-                      {entry[1]}
-                    </option>
-                  )
-                )}
+                {Array.from(
+                  this.props.picklists.schoolBoard.list.entries(),
+                  (entry) => entry
+                ).map((entry, index) => (
+                  <option key={index} value={entry[1]}>
+                    {entry[1]}
+                  </option>
+                ))}
               </Select>
             </FormControl>
 
@@ -274,13 +275,14 @@ class EducatorRegistration extends React.Component<
                 }}
               >
                 <option aria-label="None" value="" />
-                {Object.entries(this.props.picklists.schoolName.list).map(
-                  (entry, index) => (
-                    <option key={index} value={entry[1]}>
-                      {entry[1]}
-                    </option>
-                  )
-                )}
+                {Array.from(
+                  this.props.picklists.schoolName.list.entries(),
+                  (entry) => entry
+                ).map((entry, index) => (
+                  <option key={index} value={entry[1]}>
+                    {entry[1]}
+                  </option>
+                ))}
               </Select>
             </FormControl>
 
@@ -297,13 +299,14 @@ class EducatorRegistration extends React.Component<
                 }}
               >
                 <option aria-label="None" value="" />
-                {Object.entries(this.props.picklists.position.list).map(
-                  (entry, index) => (
-                    <option key={index} value={entry[1]}>
-                      {entry[1]}
-                    </option>
-                  )
-                )}
+                {Array.from(
+                  this.props.picklists.position.list.entries(),
+                  (entry) => entry
+                ).map((entry, index) => (
+                  <option key={index} value={entry[1]}>
+                    {entry[1]}
+                  </option>
+                ))}
               </Select>
             </FormControl>
 
@@ -348,8 +351,9 @@ class EducatorRegistration extends React.Component<
                 }}
               >
                 <option aria-label="None" value="" />
-                {Object.entries(
-                  this.props.picklists.introductionMethod.list
+                {Array.from(
+                  this.props.picklists.introductionMethod.list.entries(),
+                  (entry) => entry
                 ).map((entry, index) => (
                   <option key={index} value={entry[1]}>
                     {entry[1]}
