@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { fetchPicklistsService } from "../../data/services/userPicklistServices";
 import {
@@ -8,13 +8,20 @@ import {
   getSchoolNamePicklist,
   getPositionPicklist,
   getIntroductionMethodPicklist,
+  getMoreInfoPicklist,
 } from "../../data/selectors/userPicklistSelector";
+import { baseURL } from "../../utils/ApiUtils";
+
 import { UserPicklistType } from "../../data/types/userPicklistTypes";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
+import Typography from "@material-ui/core/Typography";
+
 import { Grid } from "@material-ui/core";
 
 import axios from "axios";
+
+import InputLabel from "@material-ui/core/InputLabel";
 
 import {
   ContainedSelect,
@@ -26,216 +33,352 @@ import {
   PageHeader,
   OutlinedCheckbox,
   PageBody,
+  TextField,
+  Select,
 } from "../../components/index";
 
-type Picklist = {};
+const styles = () => ({
+  selectTextField: {
+    width: "40%",
+    marginBottom: "24px",
+  },
+  card: {
+    padding: "3em",
+    backgroundColor: "#fff",
+    borderRadius: "2px",
+    margin: "2em 0em",
+  },
+});
 
-interface StateProps {
-  picklists: {
-    educatorDesiredActivities: { displayName: string; list: string[] };
-    schoolBoard: { displayName: string; list: string[] };
-    schoolName: { displayName: string; list: string[] };
-    position: { displayName: string; list: string[] };
-    introductionMethod: { displayName: string; list: string[] };
-  };
-}
-
-interface DispatchProps {
-  fetchPicklists: any;
-}
-
-interface IEducator {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: number;
-  showPicklist: {
-    educatorDesiredActivities: Map<string, boolean>;
-    schoolBoard: Map<string, boolean>;
-    schoolName: Map<string, boolean>;
-    position: Map<string, boolean>;
-    introductionMethod: Map<string, boolean>;
-  };
-}
-
-type Props = DispatchProps & StateProps;
-
-const EducatorRegistration: React.SFC<Props> = ({
-  picklists,
-  fetchPicklists,
-}: Props) => {
-  const [state, setState] = useState<IEducator>({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: 0,
+class EducatorRegistration extends React.Component<
+  {
+    picklists: {
+      educatorDesiredActivities: { displayName: string; list: string[] };
+      schoolBoard: { displayName: string; list: string[] };
+      schoolName: { displayName: string; list: string[] };
+      position: { displayName: string; list: string[] };
+      introductionMethod: { displayName: string; list: string[] };
+      moreInfo: { displayName: string; list: string[] };
+    };
+    fetchPicklists: any;
+  },
+  {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: number;
     showPicklist: {
-      educatorDesiredActivities: new Map(),
-      schoolBoard: new Map(),
-      schoolName: new Map(),
-      position: new Map(),
-      introductionMethod: new Map(),
-    },
-  });
+      educatorDesiredActivities: Map<string, boolean>;
+      schoolBoard: string;
+      schoolName: string;
+      position: string;
+      introductionMethod: Map<string, boolean>;
+      moreInfo: Map<string, boolean>;
+    };
+  }
+> {
+  constructor(props: any) {
+    super(props);
 
-  const picklistTypes: UserPicklistType[] = [
-    UserPicklistType.educatorDesiredActivities,
-    UserPicklistType.schoolBoard,
-    UserPicklistType.schoolName,
-    UserPicklistType.position,
-    UserPicklistType.introductionMethod,
-  ];
+    const { picklists } = props;
 
-  const createFilters = (filterNames: string[]): Array<[string, boolean]> => {
-    return filterNames.map((item: string) => [item, false]);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleOtherChange = this.handleOtherChange.bind(this);
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.state = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: 0,
+      showPicklist: {
+        educatorDesiredActivities: new Map(),
+        schoolBoard: "",
+        schoolName: "",
+        position: "",
+        introductionMethod: new Map(),
+        moreInfo: new Map(),
+      },
+    };
+  }
+
+  componentDidMount() {
+    const picklistTypes: UserPicklistType[] = [
+      UserPicklistType.educatorDesiredActivities,
+      UserPicklistType.schoolBoard,
+      UserPicklistType.schoolName,
+      UserPicklistType.position,
+      UserPicklistType.introductionMethod,
+      UserPicklistType.moreInfo,
+    ];
+
+    const createFilters = (filterNames: string[]): Array<[string, boolean]> => {
+      return filterNames.map((item: string) => [item, false]);
+    };
+
+    picklistTypes.forEach((type: UserPicklistType) => {
+      this.props.fetchPicklists(type).then(() => {
+        const picklists = this.props.picklists;
+        const showPicklist = this.state.showPicklist;
+
+        if (type === UserPicklistType.educatorDesiredActivities) {
+          showPicklist.educatorDesiredActivities = new Map(
+            createFilters(picklists.educatorDesiredActivities.list)
+          );
+        } else if (type === UserPicklistType.introductionMethod) {
+          showPicklist.introductionMethod = new Map(
+            createFilters(picklists.introductionMethod.list)
+          );
+        } else if (type === UserPicklistType.moreInfo) {
+          showPicklist.moreInfo = new Map(
+            createFilters(picklists.moreInfo.list)
+          );
+        }
+        this.setState({ showPicklist });
+      });
+    });
+  }
+
+  handleChange = (event: any) => {
+    console.log(event.target.value);
+    const { id, value } = event.target;
+    this.setState({ ...this.state, [id]: value });
   };
 
-  useEffect(() => {
-    console.log("here?");
-
-    //test
-    fetchPicklists(UserPicklistType.introductionMethod).then(() => {
-      console.log(picklists);
-    });
-  }, []);
-
-  const handleChange = (event: any) => {
-    const { name, value } = event.target;
-    setState((prevState) => ({
+  handleOtherChange = (event: any) => {
+    console.log("hello");
+    const { id, value } = event.target;
+    this.setState((prevState) => ({
       ...prevState,
-      [name]: value,
+      showPicklist: {
+        ...prevState.showPicklist,
+        [id]: value,
+      },
     }));
   };
 
-  return (
-    <React.Fragment>
-      <PageBody>
-        <div>Register for an educator account</div>
-        <BlackTextTypography>Account Information</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          name="email"
-          value={state.email}
-          onChange={handleChange}
-        />
-        <BlackTextTypography>Account Password</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="At least 8 characters"
-          name="password"
-          value={state.password}
-          onChange={handleChange}
-        />
-        <BlackTextTypography>Confirm Password</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="At least 8 characters"
-          name="confirmPassword"
-          value={state.confirmPassword}
-          onChange={handleChange}
-        />
-        <BlackTextTypography>First Name</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="Enter first name"
-          name="firstName"
-          value={state.firstName}
-          onChange={handleChange}
-        />
-        <BlackTextTypography>Last Name</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="Enter last name"
-          name="lastName"
-          value={state.lastName}
-          onChange={handleChange}
-        />
-        <BlackTextTypography>School Board</BlackTextTypography>
-        <ContainedSelect
-          placeholder="Select your school board"
-          name="schoolBoard"
-          value={[]}
-          key="schoolBoard"
-          id="schoolBoard"
-          multiple
-          disableUnderline={true}
-          displayEmpty={true}
-          onChange={handleChange}
-          renderValue={() => {
-            return (
-              document.activeElement && (
-                <Grid
-                  container
-                  direction="row"
-                  justify="flex-end"
-                  alignItems="center"
-                >
-                  <Grid item>
-                    {document.activeElement.id === "schoolBoard" ? (
-                      <SecondaryMainTextTypography
-                        align="center"
-                        variant="button"
-                      >
-                        {picklists.schoolBoard.displayName}
-                      </SecondaryMainTextTypography>
-                    ) : (
-                      <BlackTextTypography align="center" variant="button">
-                        {picklists.schoolBoard.displayName}
-                      </BlackTextTypography>
-                    )}
-                  </Grid>
-                </Grid>
-              )
-            );
-          }}
-        >
-          {/* {Array.from(picklist.entries(), (entry) => entry).map(
-            ([option, isSelected]) => (
-              <MenuItem key={option} value={option} id="schoolBoard">
-                <OutlinedCheckbox checked={isSelected} />
-                {option}
-              </MenuItem>
-            )
-          )} */}
-        </ContainedSelect>
+  handleSubmit = (event: any) => {
+    event.preventDefault();
+    console.log(this.state);
+    axios
+      .post(`${baseURL}/api/users/`, this.state)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-        {/* <BlackTextTypography>School</BlackTextTypography>
-        <ContainedSelect
-          value={state.showPicklist.schoolName}
-          name="schoolName"
-          placeholder="Select your school's name"
-          onChange={handleChange}
-        />
-        <BlackTextTypography>Position</BlackTextTypography>
-        <ContainedSelect
-          placeholder="Select your position at the school"
-          name="position"
-          value={state.showPicklist.position}
-          onChange={handleChange}
-        /> */}
-        <BlackTextTypography>Phone Number</BlackTextTypography>
-        <OutlinedTextField
-          placeholder="At least 8 characters"
-          name="phoneNumber"
-          value={state.phoneNumber}
-          onChange={handleChange}
-        />
-        <BlackTextTypography>BEP Information</BlackTextTypography>
-        <BlackTextTypography>
-          Which activities are you interested in?
-        </BlackTextTypography>
-        <OutlinedCheckbox />
-        <BlackTextTypography>How did you hear about us</BlackTextTypography>
-        <OutlinedCheckbox />
-        {/* <ContainedButton onClick={handleSubmit}>
-          <BlackTextTypography>Finish Registration </BlackTextTypography>
-        </ContainedButton> */}
-      </PageBody>
-    </React.Fragment>
-  );
-};
+  render() {
+    return (
+      <React.Fragment>
+        <PageBody>
+          <Typography variant="h1">Register for an educator account</Typography>
+          <Grid
+            container
+            spacing={4}
+            direction="column"
+            style={{
+              padding: "3em",
+              backgroundColor: "#fff",
+              borderRadius: "2px",
+              margin: "2em 0em",
+            }}
+          >
+            {console.log(this.state.showPicklist.position)}
+            <BlackTextTypography>Account Information</BlackTextTypography>
 
-const mapStateToProps = (state: any): StateProps => {
+            <BlackTextTypography>Email</BlackTextTypography>
+            <OutlinedTextField
+              placeholder="e.g. name@email.com"
+              id="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+              style={{ width: "40%", marginBottom: "24px" }}
+            />
+
+            <BlackTextTypography>Account Password</BlackTextTypography>
+            <OutlinedTextField
+              placeholder="At least 8 characters"
+              id="password"
+              type="password"
+              autoComplete="current-password"
+              value={this.state.password}
+              onChange={this.handleChange}
+              style={{ width: "40%", marginBottom: "24px" }}
+            />
+
+            <BlackTextTypography>Confirm Password</BlackTextTypography>
+            <OutlinedTextField
+              placeholder="At least 8 characters"
+              id="confirmPassword"
+              value={this.state.confirmPassword}
+              type="password"
+              autoComplete="current-password"
+              onChange={this.handleChange}
+              style={{ width: "40%", marginBottom: "24px" }}
+            />
+            <BlackTextTypography>First Name</BlackTextTypography>
+            <OutlinedTextField
+              placeholder="Enter first name"
+              id="firstName"
+              value={this.state.firstName}
+              onChange={this.handleChange}
+              style={{ width: "40%", marginBottom: "24px" }}
+            />
+            <BlackTextTypography>Last Name</BlackTextTypography>
+            <OutlinedTextField
+              placeholder="Enter last name"
+              id="lastName"
+              value={this.state.lastName}
+              onChange={this.handleChange}
+              style={{ width: "40%", marginBottom: "24px" }}
+            />
+            <BlackTextTypography>School Board</BlackTextTypography>
+
+            <FormControl variant="outlined">
+              <Select
+                native
+                value={this.state.showPicklist.schoolBoard}
+                onChange={this.handleOtherChange}
+                style={{ width: "40%", marginBottom: "24px" }}
+                inputProps={{
+                  id: "schoolBoard",
+                }}
+              >
+                {Object.entries(this.props.picklists.schoolBoard.list).map(
+                  (entry, index) => (
+                    <option key={index} value={entry[1]}>
+                      {entry[1]}
+                    </option>
+                  )
+                )}
+              </Select>
+            </FormControl>
+
+            <BlackTextTypography>School Name</BlackTextTypography>
+
+            <FormControl variant="outlined">
+              <Select
+                native
+                value={this.state.showPicklist.schoolName}
+                onChange={this.handleOtherChange}
+                style={{ width: "40%", marginBottom: "24px" }}
+                inputProps={{
+                  id: "schoolName",
+                }}
+              >
+                <option aria-label="None" value="" />
+                {Object.entries(this.props.picklists.schoolName.list).map(
+                  (entry, index) => (
+                    <option key={index} value={entry[1]}>
+                      {entry[1]}
+                    </option>
+                  )
+                )}
+              </Select>
+            </FormControl>
+
+            <BlackTextTypography>Position</BlackTextTypography>
+
+            <FormControl variant="outlined">
+              <Select
+                native
+                value={this.state.showPicklist.position}
+                onChange={this.handleOtherChange}
+                style={{ width: "40%", marginBottom: "24px" }}
+                inputProps={{
+                  id: "position",
+                }}
+              >
+                <option aria-label="None" value="" />
+                {Object.entries(this.props.picklists.position.list).map(
+                  (entry, index) => (
+                    <option key={index} value={entry[1]}>
+                      {entry[1]}
+                    </option>
+                  )
+                )}
+              </Select>
+            </FormControl>
+
+            <BlackTextTypography>Phone Number</BlackTextTypography>
+            <OutlinedTextField
+              placeholder="At least 8 characters"
+              id="firstName"
+              value={this.state.phoneNumber}
+              onChange={this.handleChange}
+              style={{ width: "40%", marginBottom: "24px" }}
+            />
+
+            <BlackTextTypography>
+              Which activities are you interested in?
+            </BlackTextTypography>
+            <Grid style={{ columns: "2 auto" }}>
+              {Array.from(
+                this.state.showPicklist.educatorDesiredActivities.entries(),
+                (entry) => entry
+              ).map(([option, isSelected]) => (
+                <div>
+                  <OutlinedCheckbox key={option} value={option} />
+                  {option}
+                </div>
+              ))}
+            </Grid>
+
+            <BlackTextTypography>How did you hear about us</BlackTextTypography>
+
+            <FormControl variant="outlined">
+              <Select
+                native
+                value={this.state.showPicklist.introductionMethod}
+                onChange={this.handleOtherChange}
+                style={{ width: "40%", marginBottom: "24px" }}
+                inputProps={{
+                  id: "introductionMethod",
+                }}
+              >
+                <option aria-label="None" value="" />
+                {Object.entries(
+                  this.props.picklists.introductionMethod.list
+                ).map((entry, index) => (
+                  <option key={index} value={entry[1]}>
+                    {entry[1]}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <BlackTextTypography>
+              Which BEP programs would you like more information about?
+            </BlackTextTypography>
+            <Grid style={{ columns: "2 auto" }}>
+              {Array.from(
+                this.state.showPicklist.moreInfo.entries(),
+                (entry) => entry
+              ).map(([option, isSelected]) => (
+                <div>
+                  <OutlinedCheckbox key={option} value={option} />
+                  {option}
+                </div>
+              ))}
+            </Grid>
+            <ContainedButton onClick={this.handleSubmit}>
+              Finish Registration
+            </ContainedButton>
+          </Grid>
+        </PageBody>
+      </React.Fragment>
+    );
+  }
+}
+
+const mapStateToProps = (state: any) => {
   return {
     picklists: {
       educatorDesiredActivities: {
@@ -258,16 +401,20 @@ const mapStateToProps = (state: any): StateProps => {
         displayName: "Position",
         list: getPositionPicklist(state.userPicklists),
       },
+      moreInfo: {
+        displayName: "moreInfo",
+        list: getMoreInfoPicklist(state.userPicklists),
+      },
     },
   };
 };
 
-const mapDispatchToProps = (dispatch: any): DispatchProps => ({
+const mapDispatchToProps = (dispatch: any) => ({
   fetchPicklists: (picklistType: UserPicklistType) =>
     dispatch(fetchPicklistsService(picklistType)),
 });
 
-export default connect<StateProps, DispatchProps>(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EducatorRegistration);
+)(withStyles(styles)(EducatorRegistration));

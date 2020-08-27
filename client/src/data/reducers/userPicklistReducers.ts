@@ -29,6 +29,7 @@ const initialState: UserPicklistState = {
   [UserPicklistType.schoolBoard]: [],
   [UserPicklistType.schoolName]: [],
   [UserPicklistType.position]: [],
+  [UserPicklistType.moreInfo]: [],
 };
 
 export default function (

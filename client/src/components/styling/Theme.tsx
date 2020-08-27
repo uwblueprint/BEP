@@ -31,7 +31,7 @@ const theme = createMuiTheme({
   typography: {
     // fontFamily: '"Lato", sans-serif',
     h1: {
-      fontFamily: 'Arial',
+      fontFamily: "Arial",
       fontStyle: "normal",
       // fontWeight: "800",
       fontSize: "36px",
@@ -114,6 +114,12 @@ const theme = createMuiTheme({
         "&:focus": {
           backgroundColor: "$labelcolor",
         },
+      },
+    },
+    MuiOutlinedInput: {
+      input: {
+        height: "40px",
+        padding: "0px 15px",
       },
     },
   },

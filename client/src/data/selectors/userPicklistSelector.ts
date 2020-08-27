@@ -59,3 +59,7 @@ export const getIntroductionMethodPicklist = createPicklistSelector(
 export const getPositionPicklist = createPicklistSelector(
   UserPicklistType.position
 );
+
+export const getMoreInfoPicklist = createPicklistSelector(
+  UserPicklistType.moreInfo
+);

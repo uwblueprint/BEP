@@ -16,4 +16,5 @@ export enum UserPicklistType {
   schoolName = "schoolName",
   position = "position",
   introductionMethod = "introductionMethod",
+  moreInfo = "moreInfo",
 }

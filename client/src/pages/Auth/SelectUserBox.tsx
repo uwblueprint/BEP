@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { ReactComponent as EducatorImage } from "../../components/assets/undraw_teacher.svg";
+import { ReactComponent as VolunteerImage } from "../../components/assets/undraw_candidate.svg";
 
 import { TextButton, Dialog, DialogTitle } from "../../components/index";
+import { Grid } from "@material-ui/core";
 
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
+  },
+  boxedUser: {
+    border: "3px solid #0A79BF",
+    borderRadius: "2.93603px",
   },
 });
 
@@ -34,12 +41,21 @@ function SimpleDialog(props: SimpleDialogProps) {
       open={open}
     >
       <DialogTitle id="simple-dialog-title">Which one are you?</DialogTitle>
-      <TextButton onClick={() => handleSelectionClick("volunteer")}>
-        Volunteer
-      </TextButton>
-      <TextButton onClick={() => handleSelectionClick("educator")}>
-        Educator
-      </TextButton>
+
+      <Grid container direction="row">
+        <Grid item xs={6} className={classes.boxedUser}>
+          <TextButton onClick={() => handleSelectionClick("educator")}>
+            Educator
+            <EducatorImage />
+          </TextButton>
+        </Grid>
+        <Grid item xs={6} className={classes.boxedUser}>
+          <TextButton onClick={() => handleSelectionClick("educator")}>
+            Volunteer
+            <VolunteerImage />
+          </TextButton>
+        </Grid>
+      </Grid>
     </Dialog>
   );
 }

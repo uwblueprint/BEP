@@ -6,6 +6,7 @@ export default interface EducatorInterface extends UserInterface {
     schoolBoard: string[];
     position: string[];
     introductionMethod: string[];
+    moreInfo: string[];
 }
 
 export const isEducator = (obj: any): boolean => {
@@ -20,6 +21,8 @@ export const isEducator = (obj: any): boolean => {
         Array.isArray(obj.position) &&
         obj.position.every(item => typeof item === 'string') &&
         Array.isArray(obj.position) &&
-        obj.introductionMethod.every(item => typeof item === 'string')
+        obj.introductionMethod.every(item => typeof item === 'string') &&
+        Array.isArray(obj.moreInfo) &&
+        obj.moreInfo.every(item => typeof item === 'string')
     );
 };
