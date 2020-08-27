@@ -1,9 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
+import {Card, CardContent, Grid, Typography}
+  from "@material-ui/core";
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +21,9 @@ export default function ActivitiesCard(props: any) {
       <CardContent>
         <Grid container spacing={2} direction="column"  >
           <Grid item xs={12}>
-            <Typography variant="h2" className={classes.title}>Activities</Typography>
+            <Typography variant="h2" className={classes.title}>
+              Activities
+            </Typography>
           </Grid>
           <Grid container item direction="row" xs={12}>
             <Grid item xs={6}>
@@ -41,13 +41,17 @@ export default function ActivitiesCard(props: any) {
           </Grid>
           <Grid container item direction="row" xs={12}>
             <Grid item xs={6}>
-              <Typography variant="subtitle1">Areas Willing to Volunteer In</Typography>
+              <Typography variant="subtitle1">
+                Areas Willing to Volunteer In
+              </Typography>
               <Typography variant="body1">
                 {props.locations.join(", ")}
               </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="subtitle1">Grades Willing to Volunteer With</Typography>
+              <Typography variant="subtitle1">
+                Grades Willing to Volunteer With
+              </Typography>
               <Typography variant="body1">
                 Grades {props.grades.join(", ")}
               </Typography>

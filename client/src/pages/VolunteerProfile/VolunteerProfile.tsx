@@ -1,18 +1,26 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import { ContainedButton, PageBody} from "../../components/index";
+import {Grid, Typography} from "@material-ui/core";
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { Button, ContainedButton, PageBody} from "../../components/index";
 import AboutCard from "./AboutCard";
 import ExpertiseCard from "./ExpertiseCard";
 import ActivitiesCard from "./ActivitiesCard";
 import { Volunteer } from "../../data/types/userTypes";
 
-class VolunteerProfile extends React.Component<{volunteer: Volunteer}> {
+class VolunteerProfile extends React.Component<
+  {volunteer: Volunteer, backAction? : () => void}> {
   render() {
     return (
       <Grid container spacing={3} direction="column">
+        <Grid item xs={12}  style={{marginTop: "20px", padding: "0px 12%"}}>
+          <Button color="primary" style={{fontSize: 14}}
+            onClick={this.props.backAction}
+          >
+            <ArrowBackIosIcon/> Back
+          </Button>
+        </Grid>
         <Grid container direction="row" item xs={12}
-          style={{marginTop: "20px", padding: "0px 12%"}}>
+          style={{marginTop: "10px", padding: "0px 12%"}}>
             <Typography variant="h1" style={{ marginLeft: "2%", fontWeight: "bold" }}>
               {this.props.volunteer.firstName}{" "}
               {this.props.volunteer.lastName}{" "}
