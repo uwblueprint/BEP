@@ -34,9 +34,17 @@ export default function (
         user
       };
     case LOGIN_FAILURE:
-      return {};
+      return {
+        loggedIn: false,
+        token: "",
+        user: null
+      };
     case LOGOUT:
-      return {};
+      return {
+        loggedIn: false,
+        token: "",
+        user: null
+      };
     default:
       return state;
   }
