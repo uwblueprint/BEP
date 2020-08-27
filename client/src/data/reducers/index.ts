@@ -1,7 +1,9 @@
 import { combineReducers } from "redux";
 import events from './eventsReducers';
 import volunteers from './volunteersReducers';
-import picklists from './picklistReducers'
+import userPicklists from './userPicklistReducers';
+import eventPicklists from './eventPicklistReducers'
 import user from './authReducers';
 
-export default combineReducers({ volunteers, picklists, events, user });
+
+export default combineReducers({ volunteers, userPicklists, eventPicklists, events, user });
