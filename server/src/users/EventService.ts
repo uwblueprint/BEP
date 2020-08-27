@@ -14,8 +14,8 @@ const eventApplicantApi: string = 'EventApplicants__r';
 const eventInvitationApi: string = 'EventInvitations__r';
 const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
-    'Id, Name, isActive__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
-    'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, schoolName__c, schoolAddress__c, ' +
+    'Id, Name, isActive__c, isPublic__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
+    'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, ' +
     'schoolTransportation__c, contact__c, ApplicantNumber__c, invitationNumber__c';
 
 const eventApplicantFields: string =
@@ -38,17 +38,16 @@ const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
         activityType__c: arrayToPicklistString(event.activityType),
         contact__c: event.contact.id,
         endDate__c: event.endDate,
-        eventName__c: event.eventName,
+        Name: event.eventName,
         gradeOfStudents__c: event.gradeOfStudents,
         hoursCommitment__c: event.hoursCommitment,
         ...(id && { Id: id }),
         isActive__c: event.isActive,
+        isPublic__c: event.isPublic,
         numberOfStudents__c: event.numberOfStudents,
         numberOfVolunteers__c: event.numberOfVolunteers,
         postingExpiry__c: event.postingExpiry,
         preferredSector__c: arrayToPicklistString(event.preferredSector),
-        schoolAddress__c: event.schoolAddress,
-        schoolName__c: event.schoolName,
         schoolTransportation__c: event.schoolTransportation,
         startDate__c: event.startDate
     };
@@ -68,12 +67,11 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
         id: record.Id,
         invitationNumber: record.invitationNumber__c,
         isActive: record.isActive__c,
+        isPublic: record.isPublic__c,
         numberOfStudents: record.numberOfStudents__c,
         numberOfVolunteers: record.numberOfVolunteers__c,
         postingExpiry: record.postingExpiry__c,
         preferredSector: picklistStringToArray(record.preferredSector__c),
-        schoolAddress: record.schoolAddress__c,
-        schoolName: record.schoolName__c,
         schoolTransportation: record.schoolTransportation__c,
         startDate: record.startDate__c
     };
