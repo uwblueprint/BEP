@@ -7,6 +7,7 @@ import {
   WhiteTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
+  RedTextTypography,
   Link
 } from "../../components/index";
 
@@ -34,15 +35,16 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 class SignIn extends React.Component<
-    { login: any, user: User, history: any }, 
-    { password: string; email: string; }
+    { login: any, user: User, history: any, location: any }, 
+    { password: string; email: string; failed: boolean; }
   > {
   constructor(props:any) {
     super(props);
 
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      failed: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -50,11 +52,6 @@ class SignIn extends React.Component<
   }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if (e.target.id === "email") {
-    //   this.setState({email: e.target.value});
-    // } else if (e.target.id === "password") {
-    //   this.setState({password: e.target.value});
-    // }
     const { id, value } = e.target;
     this.setState({ ...this.state, [id]: value });
   }
@@ -65,18 +62,21 @@ class SignIn extends React.Component<
     const { login } = this.props;
 
     if (email && password) {
-      await login(email, password);
-
+      const success = await login(email, password);
+      console.log(success);
       const { user, history } = this.props;
-      if (user) {
+      if (user && success) {
         // todo: if educator, redirect to x; if volunteer, redirect to y
+        this.setState({ email: "", password: "", failed: false });
         history.push("/volunteers");
+      } else if (!success) {
+        this.setState({ ...this.state, failed: true })
       }
-      this.setState({ email: "", password: "" });
     }
   }
 
   render() {
+    const { failed } = this.state;
     return (
       <PageBody>
         <div style={{ height: "100vh" }}>
@@ -101,10 +101,13 @@ class SignIn extends React.Component<
                 style={{ width: "100%" }}
                 onSubmit={this.handleSubmit}
               >
-                <Typography variant="h6">
+                <Typography variant="h6" style={{marginBottom: "4%"}}>
                   Login to get started
                 </Typography>
-                <Typography variant="body1" style={{margin: "10% 0 1% 0"}}>
+                <Grid style={{height:"30px", width: "100%"}}>
+                { failed ? <RedTextTypography style={{fontSize: "0.9em"}}>Incorrect email or password. Please try again.</RedTextTypography> : null }
+                </Grid>
+                <Typography variant="body1" style={{margin: "1% 0"}}>
                   Email
                 </Typography>
                 <Grid item container direction="row">

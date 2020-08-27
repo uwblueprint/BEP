@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS } from "./actionTypes";
+import { LOGIN_SUCCESS, LOGIN_FAILURE } from "./actionTypes";
 
 export interface loginRequestAction {
   type: string;
@@ -11,3 +11,9 @@ export const loginRequest = ( data: any ) => {
     payload: { data },
   };
 };
+
+export const loginFailed = () => {
+  return {
+    type: LOGIN_FAILURE
+  }
+}
