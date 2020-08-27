@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 're
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../components/styling/Theme";
 import './App.css';
+import Navbar from './Navbar';
 import EducatorDashboard from '../pages/EducatorDashboard/EducatorDashboard';
 import EventPage from '../pages/EducatorDashboard/IndividualOpportunity/EventPage'
 import Login from '../pages/Auth/SignIn';
-import TestSection from '../pages/Requests/TestSection';
 import VolunteerList from '../pages/VolunteerList/VolunteerList';
 
 interface IProps extends RouteProps {
@@ -46,13 +46,13 @@ export default class App extends React.Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
+        <Navbar />
         <Router>
           <React.Fragment>
             <Switch>
               <Route exact path="/" component={Login} />
-              <Route exact path="/events" component={EducatorDashboard} />
-              <Route path="/events/:name" component={EventPage} />
-              <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
+              <PrivateRoute exact path="/events" component={EducatorDashboard} isLoggedIn={true} />
+              <PrivateRoute path="/events/:name" component={EventPage} isLoggedIn={true} />
               <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={true} />
             </Switch>
           </React.Fragment>

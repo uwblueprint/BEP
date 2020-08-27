@@ -79,7 +79,7 @@ class SignIn extends React.Component<
     const { failed } = this.state;
     return (
       <PageBody>
-        <div style={{ height: "95vh" }}>
+        <div style={{ height: "92vh" }}>
           <Grid container alignItems="center" justify="center">
             
             <Grid item xs={5} style={{background: "#07598C", height:"70vh", marginTop:"10vh", padding:"5%", marginRight:"1%", borderRadius:"1%"}}>
