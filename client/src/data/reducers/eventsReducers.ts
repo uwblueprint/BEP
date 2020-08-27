@@ -2,6 +2,7 @@ import {
   FETCH_EVENTS,
   FETCH_ACTIVE_EVENTS,
   FETCH_PAST_EVENTS,
+  UPDATE_EVENT,
   CHANGE_EVENTS_FILTER,
 } from "../actions/actionTypes";
 import { Event } from "../types/EventTypes";
@@ -48,6 +49,28 @@ export default function eventsFilter(
         ...state,
         list: state.list.concat(action.payload.list),
         pastList: state.pastList.concat(action.payload.list),
+      };
+    case UPDATE_EVENT:
+      let foundEvent = false;
+      return {
+        ...state,
+        list: state.list.map((event) =>
+          event.id === action.payload.event.id ? action.payload.event : event
+        ),
+        activeList: state.activeList.map((event) => {
+          if (event.id === action.payload.event.id) {
+            foundEvent = true;
+            return action.payload.event;
+          }
+          return event;
+        }),
+        pastList: foundEvent
+          ? state.pastList
+          : state.pastList.map((event) =>
+              event.id === action.payload.event.id
+                ? action.payload.event
+                : event
+            ),
       };
     case CHANGE_EVENTS_FILTER:
       return {

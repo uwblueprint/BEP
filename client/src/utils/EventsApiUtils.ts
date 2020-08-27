@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
+import { Event } from "../data/types/EventTypes";
 
-const getAllEvents = (limit: number, offset: number) => {
+const getEvents = (limit: number, offset: number) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/events/?limit=${limit}&offset=${offset}`,
     method: "get",
@@ -23,6 +24,16 @@ const getPastEvents = (limit: number, offset: number) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/events/past?limit=${limit}&offset=${offset}`,
     method: "get",
+  };
+
+  return axios.request(config);
+};
+
+const updateEvent = (event: Event) => {
+  const config: AxiosRequestConfig = {
+    url: `${baseURL}api/events/${event.id}`,
+    method: "put",
+    data: event,
   };
 
   return axios.request(config);
@@ -81,9 +92,10 @@ const getSchoolInfo = async () => {
 };
 
 export {
-  getAllEvents,
+  getEvents,
   getActiveEvents,
   getPastEvents,
+  updateEvent,
   getApplications,
   getInvitations,
   getSchoolInfo,

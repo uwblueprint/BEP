@@ -11,12 +11,11 @@ export interface Event {
   id: string;
   invitationNumber: number;
   isActive: boolean;
+  isPublic: boolean;
   numberOfStudents: number;
   numberOfVolunteers: number;
   postingExpiry: Date;
   preferredSector: string;
-  schoolAddress: string;
-  schoolName: string;
   schoolTransportation: string;
   startDate: Date;
 
