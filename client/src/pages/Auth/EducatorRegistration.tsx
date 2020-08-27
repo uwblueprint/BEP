@@ -68,7 +68,7 @@ class EducatorRegistration extends React.Component<
     confirmPassword: string;
     firstName: string;
     lastName: string;
-    phoneNumber: number;
+    phoneNumber: string;
     showPicklist: {
       educatorDesiredActivities: Map<string, boolean>;
       schoolBoard: string;
@@ -95,7 +95,7 @@ class EducatorRegistration extends React.Component<
       confirmPassword: "",
       firstName: "",
       lastName: "",
-      phoneNumber: 0,
+      phoneNumber: "",
       showPicklist: {
         educatorDesiredActivities: new Map(),
         schoolBoard: "",
@@ -151,7 +151,6 @@ class EducatorRegistration extends React.Component<
   };
 
   handleOtherChange = (event: any) => {
-    console.log("hello");
     const { id, value } = event.target;
     this.setState((prevState) => ({
       ...prevState,
@@ -326,7 +325,11 @@ class EducatorRegistration extends React.Component<
                 (entry) => entry
               ).map(([option, isSelected]) => (
                 <div>
-                  <OutlinedCheckbox key={option} value={option} />
+                  <OutlinedCheckbox
+                    checked={isSelected}
+                    key={option}
+                    value={option}
+                  />
                   {option}
                 </div>
               ))}

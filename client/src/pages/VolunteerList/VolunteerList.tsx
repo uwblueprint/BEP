@@ -368,6 +368,7 @@ class VolunteerList extends React.Component<
   }
 
   componentDidMount() {
+    console.log("here" + this.props.picklists.expertiseAreas.list);
     const picklistTypes: UserPicklistType[] = [
       UserPicklistType.expertiseAreas,
       UserPicklistType.volunteerDesiredExternalActivities,
@@ -389,28 +390,29 @@ class VolunteerList extends React.Component<
 
     picklistTypes.forEach((type: UserPicklistType) => {
       this.props.fetchPicklists(type).then(() => {
-        const picklists = this.props.picklists;
+        console.log("HELLO THERE" + this.props.picklists);
+        const testtest = this.props.picklists;
         const filters = this.state.filters;
 
         if (type === UserPicklistType.expertiseAreas) {
           filters.expertiseAreas = new Map(
-            createFilters(picklists.expertiseAreas.list)
+            createFilters(testtest.expertiseAreas.list)
           );
         } else if (
           type === UserPicklistType.volunteerDesiredExternalActivities ||
           type === UserPicklistType.volunteerDesiredInternalActivities
         ) {
-          picklists.activities.list.forEach((acitivity) =>
-            filters.activities.set(acitivity, false)
+          testtest.activities.list.forEach((activity) =>
+            filters.activities.set(activity, false)
           );
         } else if (type === UserPicklistType.locations) {
-          filters.locations = new Map(createFilters(picklists.locations.list));
+          filters.locations = new Map(createFilters(testtest.locations.list));
         } else if (type === UserPicklistType.postSecondaryTraining) {
-          filters.training = new Map(createFilters(picklists.training.list));
+          filters.training = new Map(createFilters(testtest.training.list));
         } else if (type === UserPicklistType.languages) {
-          filters.languages = new Map(createFilters(picklists.languages.list));
+          filters.languages = new Map(createFilters(testtest.languages.list));
         } else if (type === UserPicklistType.grades) {
-          filters.grades = new Map(createFilters(picklists.grades.list));
+          filters.grades = new Map(createFilters(testtest.grades.list));
         }
 
         this.setState({ filters });
