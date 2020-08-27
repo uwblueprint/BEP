@@ -22,11 +22,20 @@ schoolRouter.get('/:id', async (req: Express.Request, res: Express.Response) => 
 
     try {
         if (id !== undefined) {
-            const fetchedUser = await SchoolService.get(id);
-            res.status(200).send(fetchedUser);
+            const fetchedSchool = await SchoolService.get(id);
+            res.status(200).send(fetchedSchool);
         } else {
             throw Error(`Invalid query parameters. Either set "id" parameter.`);
         }
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
+    }
+});
+// GET schools/
+schoolRouter.get('/', async (req: Express.Request, res: Express.Response) => {
+    try {
+        const fetchedSchools = await SchoolService.getAll();
+        res.status(200).send(fetchedSchools);
     } catch (e) {
         res.status(500).send({ msg: e.message });
     }

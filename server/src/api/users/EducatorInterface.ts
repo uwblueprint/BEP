@@ -1,10 +1,10 @@
 import UserInterface, { UserType } from './UserInterface';
+import SchoolInterface from '../schools/SchoolInterface';
 
 export default interface EducatorInterface extends UserInterface {
     educatorDesiredActivities: string[];
     position: string;
-    schoolBoard: string;
-    schoolName: string;
+    school: SchoolInterface;
 }
 
 export const isEducator = (obj: any): boolean => {

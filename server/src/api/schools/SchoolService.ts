@@ -59,7 +59,7 @@ const salesforceSchoolToSchoolModel = (record: any): School => {
 
 // Retrieve school by ID.
 export const get = async (id: string): Promise<School> => {
-    const user: School = conn
+    const school: School = conn
         .sobject(schoolObjectName)
         .find(
             {
@@ -75,7 +75,20 @@ export const get = async (id: string): Promise<School> => {
             return salesforceSchoolToSchoolModel(record[0]);
         });
 
-    return user;
+    return school;
+};
+
+export const getAll = async (): Promise<School[]> => {
+    let schools: Array<School> = [];
+
+    await conn.query(`SELECT ${schoolFields} FROM ${schoolObjectName}`, (err, result) => {
+        if (err) {
+            return console.error(err);
+        }
+        schools = result.records.map(record => salesforceSchoolToSchoolModel(record));
+    });
+
+    return schools;
 };
 
 // Update school by ID.

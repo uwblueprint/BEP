@@ -29,7 +29,7 @@ const employerModelToSalesforceEmployer = (employer: Employer): any => {
     return salesforceEmployer;
 };
 
-// Map Saleforce record fields to user model fields.
+// Map Saleforce record fields to employer model fields.
 const salesforceEmployerToEmployerModel = (record: any): Employer => {
     const employer: Employer = {
         address: record.address__c,
@@ -57,7 +57,7 @@ const salesforceEmployerToEmployerModel = (record: any): Employer => {
 
 // Retrieve employer by ID.
 export const get = async (id: string): Promise<Employer> => {
-    const user: Employer = conn
+    const employer: Employer = conn
         .sobject(employerObjectName)
         .find(
             {
@@ -73,7 +73,7 @@ export const get = async (id: string): Promise<Employer> => {
             return salesforceEmployerToEmployerModel(record[0]);
         });
 
-    return user;
+    return employer;
 };
 
 // Update employer by ID.
