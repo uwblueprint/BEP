@@ -1,4 +1,4 @@
-export default interface EmployerInterface {
+export default interface SchoolInterface {
     abbreviatedName: string;
     email?: string;
     id?: string;

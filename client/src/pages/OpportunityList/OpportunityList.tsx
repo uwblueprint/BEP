@@ -201,7 +201,7 @@ class OpportunityList extends React.Component<
       filter.length === 0 || // ignore search bar input if input is empty.
       event.contact.firstName.toLowerCase().includes(filter) ||
       event.contact.lastName.toLowerCase().includes(filter) ||
-      event.contact.schoolName.toLowerCase().includes(filter) ||
+      event.contact.school.name.toLowerCase().includes(filter) ||
       event.eventName.toLowerCase().includes(filter)
     );
   };
@@ -209,7 +209,8 @@ class OpportunityList extends React.Component<
   filterActivities = (event: Event, filter: string) =>
     event.activityType.includes(filter);
 
-  filterLocations = (event: Event, filter: string) => event.location === filter;
+  filterLocations = (event: Event, filter: string) =>
+    event.contact.school.city === filter;
 
   getFilterFunction = (fieldName: string) => {
     switch (fieldName) {
