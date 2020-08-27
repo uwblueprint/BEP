@@ -1,4 +1,4 @@
-import { FETCH_EVENTS, FETCH_ACTIVE_EVENTS, FETCH_PAST_EVENTS, CHANGE_EVENTS_FILTER } from "./actionTypes";
+import { FETCH_EVENTS, FETCH_ACTIVE_EVENTS, FETCH_PAST_EVENTS, UPDATE_EVENT, CHANGE_EVENTS_FILTER } from "./actionTypes";
 import { Event } from '../types/EventTypes'
 
 // export const fetchEvents = (events: any[]) => ({
@@ -19,6 +19,11 @@ export const fetchActiveEvents = (events: Event[]) => ({
 export const fetchPastEvents = (events: Event[]) => ({
     type: FETCH_PAST_EVENTS,
     payload: { list: events },
+})
+
+export const updateEvent = (event: Event) => ({
+    type: UPDATE_EVENT,
+    payload: { event },
 })
 
 export const changeFilter = (filter: any) => ({
