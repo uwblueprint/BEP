@@ -26,7 +26,7 @@ import { getUser } from "../../data/selectors/userSelector";
 import { User } from "../../data/types/userTypes";
 
 const mapStateToProps = (state: any): any => ({
-  user: getUser(state),
+  user: getUser(state.user),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -71,12 +71,12 @@ class SignIn extends React.Component<
     if (email && password) {
       const success = await login(email, password);
       const { user, history } = this.props;
-
       if (user && success) {
         // todo: if educator, redirect to x; if volunteer, redirect to y
         this.setState({ email: "", password: "", failed: false });
         localStorage.setItem("user", JSON.stringify(user));
-        history.push("/volunteers");
+        // history.push("/opportunities");
+        history.push("/events");
       } else if (!success) {
         this.setState({ ...this.state, failed: true })
       }

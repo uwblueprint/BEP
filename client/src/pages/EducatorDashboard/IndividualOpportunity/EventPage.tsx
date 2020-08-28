@@ -196,9 +196,6 @@ const EventPage = (props: any) => {
   const applicationsLabel = `Applications  ${applications.length}`;
   const invitationsLabel = `Invitations  ${invitations.length}`;
 
-  console.log(isEducator);
-  console.log(isVolunteer);
-
   return (
     <React.Fragment>
       {pastEvent || !isEducator ? (
@@ -223,7 +220,10 @@ const EventPage = (props: any) => {
                       variant="body1"
                       style={{ paddingBottom: "10px" }}
                     >
-                      <Link to="/events" style={{ textDecoration: "none" }}>
+                      <Link
+                        to={isEducator ? "/events" : "/opportunities"}
+                        style={{ textDecoration: "none" }}
+                      >
                         {`<`} Back{" "}
                       </Link>
                     </Typography>
@@ -233,6 +233,7 @@ const EventPage = (props: any) => {
                     <Grid item style={{ paddingTop: "50px" }}>
                       <ContainedButton
                         style={{ paddingRight: 15, paddingLeft: 15 }}
+                        onClick={() => console.log("Applied!")}
                       >
                         {isVolunteer ? "Apply for Event" : "Duplicate Details"}
                       </ContainedButton>
@@ -458,8 +459,6 @@ const EventPage = (props: any) => {
 
 const mapStateToProps = (state: any) => {
   const user: User | null = getUser(state.user);
-  console.log("HERE2")
-  console.log(user)
   return {
     userType: user ? user.userType : 0,
   };

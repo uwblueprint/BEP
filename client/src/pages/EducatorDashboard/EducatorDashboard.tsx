@@ -7,10 +7,10 @@ import {
   fetchActiveEventsService,
   fetchPastEventsService,
 } from "../../data/services/eventsServices";
-import { changeFilter } from "../../data/actions/eventsActions";
 import {
   getActiveEvents,
   getPastEvents,
+  getNumPastEventsRecieved,
 } from "../../data/selectors/eventsSelector";
 import { getUser } from "../../data/selectors/userSelector";
 import EventCard from "./EventCard";
@@ -35,6 +35,7 @@ type EventProps = {
 
 interface StateProps {
   activeEvents: Event[];
+  offset: number;
   pastEvents: Event[];
   userType: number;
   userId: string;
@@ -43,7 +44,6 @@ interface StateProps {
 interface DispatchProps {
   fetchActiveEvents: any;
   fetchPastEvents: any;
-  changeFilter: any;
 }
 
 type Props = StateProps & DispatchProps & EventProps;
@@ -117,14 +117,15 @@ function a11yProps(index: any) {
 
 const EducatorDashboard: React.SFC<Props> = ({
   activeEvents,
+  offset,
   pastEvents,
   userType,
   userId,
   fetchActiveEvents,
   fetchPastEvents,
-  changeFilter,
 }: Props) => {
   const classes = useStyles();
+  const blockSize = 5;
 
   //State variables for educator dashboard
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -135,41 +136,39 @@ const EducatorDashboard: React.SFC<Props> = ({
   const [fetchedActiveEvents, setFetchedActiveEvents] = useState(false);
 
   // State variables for infinite scroll functionality
-  const [page, setPage] = useState<number>(0);
   const [prevY, setPrevY] = useState<number>(0);
-  const [lastEventListLength, setLastEventListLength] = useState<number>(0);
+  const [lastOffset, setLastOffset] = useState<number>(
+    offset < blockSize ? 0 : offset - blockSize
+  );
   const [loadedAllEvents, setLoadedAllEvents] = useState<boolean>(false);
-  const offset = 5;
 
   const loadingRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const handleObserver = useCallback(
     (entities: any) => {
       const y = entities[0].boundingClientRect.y;
-      const newPage = page + 1;
 
-      if (prevY > y) {
-        if (lastEventListLength === pastEvents.length) {
+      if (prevY >= y) {
+        if (lastOffset === offset) {
           console.log("no new events are available");
           // If no new events are available, prevent additional calls to backend.
           setLoadedAllEvents(true);
         }
 
         if (!loadedAllEvents) {
-          if (pastEvents.length > 1) setLastEventListLength(pastEvents.length);
+          if (offset > 1) setLastOffset(offset);
 
-          fetchPastEvents(offset, offset * newPage, userType, userId);
-          setPage(newPage);
+          fetchPastEvents(blockSize, offset, userType, userId);
         }
       }
       setPrevY(y);
     },
     [
-      page,
-      prevY,
-      lastEventListLength,
+      lastOffset,
       loadedAllEvents,
+      offset,
       pastEvents.length,
+      prevY,
       fetchPastEvents,
     ]
   );
@@ -199,14 +198,15 @@ const EducatorDashboard: React.SFC<Props> = ({
     // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
     // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
     (async function test() {
-      await fetchPastEvents(offset, 0, userType, userId);
+      await fetchPastEvents(blockSize, offset, userType, userId);
+      setLastOffset(offset);
       if (!fetchedActiveEvents) {
         await fetchActiveEvents(userType, userId);
         setFetchedActiveEvents(true);
       }
       setRetrievedData(true);
     })();
-  }, [fetchActiveEvents, fetchPastEvents]);
+  }, [fetchActiveEvents, fetchPastEvents, offset]);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -244,14 +244,12 @@ const EducatorDashboard: React.SFC<Props> = ({
                 aria-label="Simple Tabs"
               >
                 <Tab
-                  onClick={() =>
-                    changeFilter("ACTIVE") && setIsPastEvent(false)
-                  }
+                  onClick={() => setIsPastEvent(false)}
                   label="Current"
                   {...a11yProps(0)}
                 />
                 <Tab
-                  onClick={() => changeFilter("PAST") && setIsPastEvent(true)}
+                  onClick={() => setIsPastEvent(true)}
                   label="Past"
                   {...a11yProps(1)}
                 />
@@ -350,6 +348,7 @@ const mapStateToProps = (state: any): StateProps => {
   const user: User | null = getUser(state.user);
   return {
     activeEvents: getActiveEvents(state.events),
+    offset: getNumPastEventsRecieved(state.events),
     pastEvents: getPastEvents(state.events),
     userType: user ? user.userType : 0,
     userId: user ? user.id : "",
@@ -365,7 +364,6 @@ const mapDispatchToProps = (dispatch: any): DispatchProps => ({
   ) => dispatch(fetchPastEventsService(limit, offset, userType, userId)),
   fetchActiveEvents: (userType: number, userId: string) =>
     dispatch(fetchActiveEventsService(userType, userId)),
-  changeFilter: (filter: string) => dispatch(changeFilter(filter)),
 });
 
 export default connect<StateProps, DispatchProps, EventProps>(
