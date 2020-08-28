@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 class SignIn extends React.Component<
-    { login: any, user: User, history: any, location: any }, 
+    { login: any; user: User; history: any; location: any }, 
     { password: string; email: string; failed: boolean; }
   > {
   constructor(props:any) {
