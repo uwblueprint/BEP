@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseURL } from "../../utils/ApiUtils";
+import { baseURL } from "../client/src/utils/ApiUtils";
 
 const volunteerDesiredExternalActivities = [
   //   "Co-op Placement",

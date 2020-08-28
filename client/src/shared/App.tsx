@@ -9,6 +9,7 @@ import EducatorDashboard from '../pages/EducatorDashboard/EducatorDashboard';
 import EventPage from '../pages/EducatorDashboard/IndividualOpportunity/EventPage'
 import Login from '../pages/Auth/SignIn';
 import VolunteerList from '../pages/VolunteerList/VolunteerList';
+import OpportunityList from '../pages/OpportunityList/OpportunityList';
 
 /* Types */
 import { User } from '../data/types/userTypes';
@@ -67,7 +68,7 @@ class App extends React.Component<
             </Switch>
           </React.Fragment>
         </Router>
-      </ThemeProvider >
+      </ThemeProvider>
     )
   }
 }
