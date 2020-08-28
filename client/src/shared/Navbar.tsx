@@ -1,34 +1,114 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Grid from "@material-ui/core/Grid";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import {
     BlackTextTypography,
-    Link
+    SecondaryMainTextTypography,
+    Link,
+    Button,
   } from "../components/index";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "90%",
-    padding: "0.5% 5% 0.5% 5%",
+    padding: "2% 6% 0.5% 6%",
     background: "white",
     position: "fixed",
     marginTop: "-8px",
-    zIndex: 5
+    zIndex: 999, 
+    fontSize: "0.9em",
+    boxShadow: "none"
   },
-  tabs: {
-    backgroundColor: theme.palette.primary.light,
-    boxShadow: "0",
-    paddingTop: "13px",
+  tab: {
+    margin:"0 10%", 
+    display:"inline-block"
   },
 }));
 
 export default function Navbar(props: any) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
 
+  let name = "";
+  if (props.user) {
+    name = props.user.firstName + " " + props.user.lastName;
+  }
+
+  const logout = () => {
+    localStorage.clear();
+    window.location.reload();
+    setAnchorEl(null);
+  }
+
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const content = () => {
+    let userType = localStorage.getItem("userType");
+    // admin
+    if (userType === "0"){
+      return <Grid style={{margin:"0 15%"}}>
+        <Link href="/events" className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
+        <Link href="/volunteers" className={classes.tab}><SecondaryMainTextTypography >Browse Volunteers</SecondaryMainTextTypography></Link>
+        <Link className={classes.tab}><SecondaryMainTextTypography>Admin</SecondaryMainTextTypography></Link>
+      </Grid>;
+    } else if (userType === "1") {
+      // educator
+      return <Grid style={{margin:"0 15%"}}>
+        <Link href="/events" className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
+        <Link href="/volunteers" className={classes.tab}><SecondaryMainTextTypography >Browse Volunteers</SecondaryMainTextTypography></Link>
+      </Grid>;
+    } else if (userType === "2") {
+      // volunteer
+      return <Grid style={{margin:"0 15%"}}>
+        <Link className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
+        <Link href="/opportunities" className={classes.tab}><SecondaryMainTextTypography >Browse Opportunities</SecondaryMainTextTypography></Link>
+      </Grid>;
+    }
+    return null;
+  }
+
   return (
-    <div className={classes.root}>
-        <Link href="\"><BlackTextTypography>Business & Education Partnership</BlackTextTypography></Link>
-        <a onClick={() => { localStorage.clear(); window.location.reload() }}>Logout</a>
-    </div>
+    <AppBar className={classes.root}>
+      <Grid container>
+        <Grid xs={3}>
+          <Link href="\"><BlackTextTypography>Business & Education Partnership</BlackTextTypography></Link>
+        </Grid>
+        <Grid xs={7}>{ props.user ? content() : null}</Grid>
+        { props.user ? 
+          <Grid xs={2}>
+            <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} style={{cursor:"pointer"}}>
+              <BlackTextTypography>{name}</BlackTextTypography>
+            </Button>
+            <Menu 
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MenuItem onClick={handleClose}><Link><BlackTextTypography>Profile</BlackTextTypography></Link></MenuItem>
+              <MenuItem onClick={logout}>Logout</MenuItem>
+            </Menu>
+          </Grid>
+        : null }
+      </Grid>
+    </AppBar>
   );
 }

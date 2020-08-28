@@ -48,6 +48,7 @@ class App extends React.Component<
   render() {
     let user;
     let isLoggedIn = false;
+    let isEducator = false;
     const userString = localStorage.getItem("user")
     
     if (userString) {
@@ -57,7 +58,7 @@ class App extends React.Component<
 
     return (
       <ThemeProvider theme={theme}>
-        <Navbar />
+        <Navbar user={user} />
         <Router>
           <React.Fragment>
             <Switch>

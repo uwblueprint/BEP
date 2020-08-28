@@ -65,6 +65,7 @@ class SignIn extends React.Component<
 
       if (data && data.user) {
         localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("userType", data.user.userType);
         window.location.reload();
       } else {
         this.setState({ ...this.state, failed: true })
@@ -75,7 +76,8 @@ class SignIn extends React.Component<
   render() {
     const { failed, redirect } = this.state;
     if (redirect) {
-      return <Redirect to="/volunteers" />
+      // todo: redirect based on userType
+      return <Redirect to="/events" />
     }
 
     return (
@@ -151,7 +153,7 @@ class SignIn extends React.Component<
                   Login to get started
                 </Typography>
                 <Grid style={{height:"30px", width: "100%"}}>
-                { failed ? <RedTextTypography style={{fontSize: "0.9em"}}>Incorrect email or password. Please try again.</RedTextTypography> : null }
+                { failed ? <RedTextTypography style={{fontSize: "0.85em"}}>Incorrect email or password. Please try again.</RedTextTypography> : null }
                 </Grid>
                 <Typography variant="body1" style={{margin: "1% 0"}}>
                   Email
