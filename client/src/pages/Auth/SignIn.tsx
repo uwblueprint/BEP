@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Redirect } from 'react-router';
 
 import {
   ContainedButton,
@@ -19,24 +20,14 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 /* Services */
 import { loginService } from "../../data/services/authServices";
 
-/* Selectors */
-import { getUser } from "../../data/selectors/userSelector";
-
-/* Type */
-import { User } from "../../data/types/userTypes";
-
-const mapStateToProps = (state: any): any => ({
-  user: getUser(state),
-});
-
 const mapDispatchToProps = (dispatch: any) => ({
   login: (email: string, password: string) =>
     dispatch(loginService(email, password)),
 });
 
 class SignIn extends React.Component<
-    { login: any; user: User; history: any; location: any }, 
-    { password: string; email: string; failed: boolean; }
+    { login: any; history: any; location: any }, 
+    { password: string; email: string; failed: boolean; redirect: boolean; }
   > {
   constructor(props:any) {
     super(props);
@@ -45,16 +36,16 @@ class SignIn extends React.Component<
       email: '',
       password: '',
       failed: false,
+      redirect: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     const user = localStorage.getItem("user");
     if (user) {
-      console.log("already logged in");
+      this.setState({ ...this.state, redirect: true });
     }
   }
   
@@ -65,26 +56,28 @@ class SignIn extends React.Component<
 
   handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     const { email, password } = this.state;
     const { login } = this.props;
 
     if (email && password) {
-      const success = await login(email, password);
-      const { user, history } = this.props;
+      const data = await login(email, password);
 
-      if (user && success) {
-        // todo: if educator, redirect to x; if volunteer, redirect to y
-        this.setState({ email: "", password: "", failed: false });
-        localStorage.setItem("user", JSON.stringify(user));
-        history.push("/volunteers");
-      } else if (!success) {
+      if (data && data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.reload();
+      } else {
         this.setState({ ...this.state, failed: true })
       }
     }
   };
 
   render() {
-    const { failed } = this.state;
+    const { failed, redirect } = this.state;
+    if (redirect) {
+      return <Redirect to="/volunteers" />
+    }
+
     return (
       <PageBody>
         <div style={{ height: "92vh" }}>
@@ -232,4 +225,4 @@ class SignIn extends React.Component<
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default connect(null, mapDispatchToProps)(SignIn);
