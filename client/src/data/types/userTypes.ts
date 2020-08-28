@@ -1,3 +1,5 @@
+import School from "./SchoolTypes";
+
 export enum UserType {
   Educator = 1,
   Volunteer = 2,
@@ -20,8 +22,7 @@ export interface User {
 export interface Educator extends User {
   educatorDesiredActivities: string[];
   position: string;
-  schoolBoard: string;
-  school: string;
+  school: School;
 }
 
 export interface Volunteer extends User {
@@ -69,4 +70,3 @@ export default interface Employer {
   socialMedia: string[];
   website: string;
 }
-
