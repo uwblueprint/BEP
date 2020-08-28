@@ -275,9 +275,7 @@ class OpportunityList extends React.Component<
 
     this.props.fetchEvents(this.props.userType, this.props.userId).then(() => {
       this.setState({
-        filteredEvents: this.state.filteredEvents.concat(
-          this.filterAllFields(this.props.events)
-        ),
+        filteredEvents: this.filterAllFields(this.props.events),
       });
     });
 

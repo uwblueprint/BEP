@@ -1,15 +1,6 @@
-import { getActiveEvents, getPastEvents, getEvents, updateEvent } from "../../utils/EventsApiUtils";
-import { fetchEvents, fetchActiveEvents, fetchPastEvents, updateEvent as updateEventAction } from "../actions/eventsActions";
+import { getActiveEvents, getPastEvents, updateEvent } from "../../utils/EventsApiUtils";
+import { fetchActiveEvents, fetchPastEvents, updateEvent as updateEventAction } from "../actions/eventsActions";
 import { Event } from "../types/EventTypes"
-
-export function fetchEventsService(limit: number, offset: number, userType: number, userId: string) {
-    return (dispatch: any) => {
-        return getEvents(limit, offset).then((res: any) => {
-            dispatch(fetchEvents(res.data, userType, userId));
-            return res;
-        });
-    };
-}
 
 export function fetchActiveEventsService(userType: number, userId: string) {
     return (dispatch: any) => {
