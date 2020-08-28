@@ -12,10 +12,12 @@ import {
   getAllActivitiesPicklist,
   getLocationsPicklist,
 } from "../../data/selectors/picklistSelector";
+import { getUser } from "../../data/selectors/userSelector";
 
 /* Types */
 import { Event } from "../../data/types/EventTypes";
 import { PicklistType } from "../../data/types/picklistTypes";
+import { User } from "../../data/types/userTypes";
 
 /* Components */
 import EventCard from "../EducatorDashboard/EventCard";
@@ -49,6 +51,8 @@ class OpportunityList extends React.Component<
       activities: { displayName: string; list: string[] };
       locations: { displayName: string; list: string[] };
     };
+    userType: number;
+    userId: string;
     fetchEvents: any;
     fetchPicklists: any;
   },
@@ -267,7 +271,7 @@ class OpportunityList extends React.Component<
       PicklistType.locations,
     ];
 
-    this.props.fetchEvents().then(() => {
+    this.props.fetchEvents(this.props.userType, this.props.userId).then(() => {
       this.setState({
         filteredEvents: this.state.filteredEvents.concat(
           this.filterAllFields(this.props.events)
@@ -510,6 +514,7 @@ class OpportunityList extends React.Component<
 }
 
 const mapStateToProps = (state: any) => {
+  const user: User | null = getUser(state.user);
   return {
     events: getActiveEvents(state.events),
     picklists: {
@@ -522,11 +527,14 @@ const mapStateToProps = (state: any) => {
         list: getLocationsPicklist(state.picklists),
       },
     },
+    userType: user ? user.userType : 0,
+    userId: user ? user.id : "",
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchEvents: () => dispatch(fetchActiveEventsService()),
+  fetchEvents: (userType: number, userId: string) =>
+    dispatch(fetchActiveEventsService(userType, userId)),
   fetchPicklists: (picklistType: PicklistType) =>
     dispatch(fetchPicklistsService(picklistType)),
 });

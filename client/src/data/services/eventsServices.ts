@@ -2,28 +2,28 @@ import { getActiveEvents, getPastEvents, getEvents, updateEvent } from "../../ut
 import { fetchEvents, fetchActiveEvents, fetchPastEvents, updateEvent as updateEventAction } from "../actions/eventsActions";
 import { Event } from "../types/EventTypes"
 
-export function fetchEventsService(limit: number, offset: number) {
+export function fetchEventsService(limit: number, offset: number, userType: number, userId: string) {
     return (dispatch: any) => {
         return getEvents(limit, offset).then((res: any) => {
-            dispatch(fetchEvents(res.data));
+            dispatch(fetchEvents(res.data, userType, userId));
             return res;
         });
     };
 }
 
-export function fetchActiveEventsService() {
+export function fetchActiveEventsService(userType: number, userId: string) {
     return (dispatch: any) => {
         return getActiveEvents().then((res: any) => {
-            dispatch(fetchActiveEvents(res.data));
+            dispatch(fetchActiveEvents(res.data, userType, userId));
             return res;
         });
     };
 }
 
-export function fetchPastEventsService(limit: number, offset: number) {
+export function fetchPastEventsService(limit: number, offset: number, userType: number, userId: string) {
     return (dispatch: any) => {
         return getPastEvents(limit, offset).then((res: any) => {
-            dispatch(fetchPastEvents(res.data));
+            dispatch(fetchPastEvents(res.data, userType, userId));
             return res;
         });
     };

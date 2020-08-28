@@ -6,6 +6,7 @@ export interface loginRequestAction {
 }
 
 export const loginRequest = ( data: any ) => {
+  console.log(data)
   return {
     type: LOGIN_SUCCESS,
     payload: { data },

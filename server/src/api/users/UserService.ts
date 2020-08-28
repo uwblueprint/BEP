@@ -89,6 +89,7 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
 
 // Map Saleforce record fields to user model fields.
 const salesforceUserToUserModel = async (record: any): Promise<User> => {
+    console.log(record.Id)
     const user: User = {
         email: record.email__c,
         firstName: record.firstName__c,

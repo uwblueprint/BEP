@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Event } from "../../data/types/EventTypes";
+import { User } from "../../data/types/userTypes";
 import { connect } from "react-redux";
 import {
   fetchActiveEventsService,
@@ -11,6 +12,7 @@ import {
   getActiveEvents,
   getPastEvents,
 } from "../../data/selectors/eventsSelector";
+import { getUser } from "../../data/selectors/userSelector";
 import EventCard from "./EventCard";
 import {
   MuiPickersUtilsProvider,
@@ -34,6 +36,8 @@ type EventProps = {
 interface StateProps {
   activeEvents: Event[];
   pastEvents: Event[];
+  userType: number;
+  userId: string;
 }
 
 interface DispatchProps {
@@ -114,6 +118,8 @@ function a11yProps(index: any) {
 const EducatorDashboard: React.SFC<Props> = ({
   activeEvents,
   pastEvents,
+  userType,
+  userId,
   fetchActiveEvents,
   fetchPastEvents,
   changeFilter,
@@ -152,7 +158,7 @@ const EducatorDashboard: React.SFC<Props> = ({
         if (!loadedAllEvents) {
           if (pastEvents.length > 1) setLastEventListLength(pastEvents.length);
 
-          fetchPastEvents(offset, offset * newPage);
+          fetchPastEvents(offset, offset * newPage, userType, userId);
           setPage(newPage);
         }
       }
@@ -193,9 +199,9 @@ const EducatorDashboard: React.SFC<Props> = ({
     // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
     // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
     (async function test() {
-      await fetchPastEvents(offset, 0);
+      await fetchPastEvents(offset, 0, userType, userId);
       if (!fetchedActiveEvents) {
-        await fetchActiveEvents();
+        await fetchActiveEvents(userType, userId);
         setFetchedActiveEvents(true);
       }
       setRetrievedData(true);
@@ -340,15 +346,25 @@ const EducatorDashboard: React.SFC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: any): StateProps => ({
-  activeEvents: getActiveEvents(state.events),
-  pastEvents: getPastEvents(state.events),
-});
+const mapStateToProps = (state: any): StateProps => {
+  const user: User | null = getUser(state.user);
+  return {
+    activeEvents: getActiveEvents(state.events),
+    pastEvents: getPastEvents(state.events),
+    userType: user ? user.userType : 0,
+    userId: user ? user.id : "",
+  };
+};
 
 const mapDispatchToProps = (dispatch: any): DispatchProps => ({
-  fetchPastEvents: (limit: number, offset: number) =>
-    dispatch(fetchPastEventsService(limit, offset)),
-  fetchActiveEvents: () => dispatch(fetchActiveEventsService()),
+  fetchPastEvents: (
+    limit: number,
+    offset: number,
+    userType: number,
+    userId: string
+  ) => dispatch(fetchPastEventsService(limit, offset, userType, userId)),
+  fetchActiveEvents: (userType: number, userId: string) =>
+    dispatch(fetchActiveEventsService(userType, userId)),
   changeFilter: (filter: string) => dispatch(changeFilter(filter)),
 });
 
