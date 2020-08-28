@@ -7,7 +7,8 @@ import {
   WhiteTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
-  Link,
+  RedTextTypography,
+  Link
 } from "../../components/index";
 
 import Typography from "@material-ui/core/Typography";
@@ -34,27 +35,30 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 class SignIn extends React.Component<
-  { login: any; user: User; history: any },
-  { password: string; email: string }
-> {
-  constructor(props: any) {
+    { login: any; user: User; history: any; location: any }, 
+    { password: string; email: string; failed: boolean; }
+  > {
+  constructor(props:any) {
     super(props);
 
     this.state = {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
+      failed: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    const user = localStorage.getItem("user");
+    if (user) {
+      console.log("already logged in");
+    }
+  }
+  
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if (e.target.id === "email") {
-    //   this.setState({email: e.target.value});
-    // } else if (e.target.id === "password") {
-    //   this.setState({password: e.target.value});
-    // }
     const { id, value } = e.target;
     this.setState({ ...this.state, [id]: value });
   };
@@ -65,22 +69,25 @@ class SignIn extends React.Component<
     const { login } = this.props;
 
     if (email && password) {
-      await login(email, password);
-
+      const success = await login(email, password);
       const { user, history } = this.props;
-      if (user) {
+
+      if (user && success) {
         // todo: if educator, redirect to x; if volunteer, redirect to y
+        this.setState({ email: "", password: "", failed: false });
+        localStorage.setItem("user", JSON.stringify(user));
         history.push("/volunteers");
-      } else {
-        this.setState({ email: "", password: "" });
+      } else if (!success) {
+        this.setState({ ...this.state, failed: true })
       }
     }
   };
 
   render() {
+    const { failed } = this.state;
     return (
       <PageBody>
-        <div style={{ height: "100vh" }}>
+        <div style={{ height: "92vh" }}>
           <Grid container alignItems="center" justify="center">
             <Grid
               item
@@ -141,21 +148,19 @@ class SignIn extends React.Component<
                 connect with a rewarding career
               </GreyBackgroundTextTypography>
             </Grid>
-
-            <Grid
-              item
-              xs={5}
-              style={{
-                background: "white",
-                height: "70vh",
-                marginTop: "10vh",
-                padding: "5%",
-                borderRadius: "1%",
-              }}
-            >
-              <form style={{ width: "100%" }} onSubmit={this.handleSubmit}>
-                <Typography variant="h6">Login to get started</Typography>
-                <Typography variant="body1" style={{ margin: "10% 0 1% 0" }}>
+            
+            <Grid item xs={5} style={{background:"white", height:"70vh", marginTop:"10vh", padding:"5%", borderRadius:"1%"}}>
+              <form
+                style={{ width: "100%" }}
+                onSubmit={this.handleSubmit}
+              >
+                <Typography variant="h6" style={{marginBottom: "4%"}}>
+                  Login to get started
+                </Typography>
+                <Grid style={{height:"30px", width: "100%"}}>
+                { failed ? <RedTextTypography style={{fontSize: "0.9em"}}>Incorrect email or password. Please try again.</RedTextTypography> : null }
+                </Grid>
+                <Typography variant="body1" style={{margin: "1% 0"}}>
                   Email
                 </Typography>
                 <Grid item container direction="row">
