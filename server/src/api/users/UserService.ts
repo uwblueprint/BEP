@@ -13,7 +13,7 @@ import { arrayToPicklistString, picklistStringToArray } from '../../util/Salesfo
 const siteUser: string = 'SiteUser__c';
 const userFields: string =
     'email__c, firstName__c, phoneNumber__c, followedPrograms__c, Id, isSubscribed__c, lastName__c, password__c, ' +
-    'preferredPronouns__c, userType__c, educatorDesiredActivities__c, position__c, schoolName__c, schoolBoard__c, careerDescription__c, ' +
+    'preferredPronouns__c, userType__c, educatorDesiredActivities__c, position__c, schoolBoard__c, careerDescription__c, ' +
     'coopPlacementMode__c, coopPlacementSchoolAffiliation__c, coopPlacementTime__c, jobTitle__c, department__c, employer__c, ' +
     'employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, introductionMethod__c, isVolunteerCoordinator__c, languages__c, ' +
     'linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, professionalAssociations__c, reasonsForVolunteering__c,' +

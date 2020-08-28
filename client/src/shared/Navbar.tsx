@@ -6,14 +6,21 @@ import {
     Link
   } from "../components/index";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
-    padding: "0.5% 0",
-    margin: "0 5%",
+    width: "90%",
+    padding: "0.5% 5% 0.5% 5%",
     background: "white",
+    position: "fixed",
+    marginTop: "-8px",
+    zIndex: 5
   },
-});
+  tabs: {
+    backgroundColor: theme.palette.primary.light,
+    boxShadow: "0",
+    paddingTop: "13px",
+  },
+}));
 
 export default function Navbar(props: any) {
   const classes = useStyles();

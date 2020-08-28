@@ -2,11 +2,11 @@ import { createSelector } from 'reselect';
 import { userObject } from '../reducers/authReducers';
 
 const currentUser = (state: userObject) => {
-    return state.user.user ? state.user && state.user.user : null;
+    return state.user.user && state.user ? state.user.user : null;
 }
 
 const isLoggedIn = (state: userObject) => {
-    return state.user.loggedIn ? state.user && state.user.loggedIn : false;
+    return state.user.loggedIn && state.user ? state.user.loggedIn : false;
 }
 
 // more details on creating selectors:
