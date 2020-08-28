@@ -51,6 +51,13 @@ class SignIn extends React.Component<
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    const user = localStorage.getItem("user");
+    if (user) {
+      console.log("already logged in");
+    }
+  }
+  
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     this.setState({ ...this.state, [id]: value });
@@ -68,6 +75,7 @@ class SignIn extends React.Component<
       if (user && success) {
         // todo: if educator, redirect to x; if volunteer, redirect to y
         this.setState({ email: "", password: "", failed: false });
+        localStorage.setItem("user", JSON.stringify(user));
         history.push("/volunteers");
       } else if (!success) {
         this.setState({ ...this.state, failed: true })

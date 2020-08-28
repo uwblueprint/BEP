@@ -10,9 +10,6 @@ import EventPage from '../pages/EducatorDashboard/IndividualOpportunity/EventPag
 import Login from '../pages/Auth/SignIn';
 import VolunteerList from '../pages/VolunteerList/VolunteerList';
 
-/* Selectors */
-import { getUser } from '../data/selectors/userSelector';
-
 /* Types */
 import { User } from '../data/types/userTypes';
 
@@ -41,18 +38,21 @@ const PrivateRoute = (rProps: IProps) => {
 
 class App extends React.Component<
   { user: User, history: any, location: any }, 
-  { isLoggedIn: boolean; user: User | null }
+  {}
   > {
   constructor(props: any) {
     super(props);
-    this.state = {
-      isLoggedIn: false,
-      user: null
-    };
   };
 
   render() {
-    const { isLoggedIn } = this.state;
+    let user;
+    let isLoggedIn = false;
+    const userString = localStorage.getItem("user")
+    
+    if (userString) {
+      user = JSON.parse(userString);
+      isLoggedIn = true;
+    }
 
     return (
       <ThemeProvider theme={theme}>
@@ -72,8 +72,4 @@ class App extends React.Component<
   }
 }
 
-const mapStateToProps = (state: any): any => ({
-  user: getUser(state)
-});
-
-export default connect(mapStateToProps, null)(App);
+export default App;

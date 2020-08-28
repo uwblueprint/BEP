@@ -28,6 +28,7 @@ export default function Navbar(props: any) {
   return (
     <div className={classes.root}>
         <Link href="\"><BlackTextTypography>Business & Education Partnership</BlackTextTypography></Link>
+        <a onClick={() => { localStorage.clear(); window.location.reload() }}>Logout</a>
     </div>
   );
 }
