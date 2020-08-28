@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 const EventSection = (props: any) => {
-
   const classes = useStyles()
 
   var eventStartDate = new Date(props.event.startDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
@@ -60,7 +59,9 @@ const EventSection = (props: any) => {
                     PREFERRED SECTOR
                 </Typography>
                 <Typography variant="body1" className={classes.fieldText}>
-                    {props.event.preferredSector}
+                  {props.event.preferredSector
+                    ? props.event.preferredSector.join(", ")
+                    : ""}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
