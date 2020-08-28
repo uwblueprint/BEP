@@ -20,6 +20,7 @@ import {
   BlackTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
+  RedTextTypography
 } from "./Typography";
 
 
@@ -40,4 +41,5 @@ export {
   BlackTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
+  RedTextTypography
 };

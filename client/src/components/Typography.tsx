@@ -30,6 +30,13 @@ const greyBackgroundTextStyle = (theme: Theme) =>
     },
   });
 
+const redTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      color: theme.palette.warning.main,
+    },
+  });
+
 const WhiteTextTypography = withStyles(whiteTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
@@ -46,4 +53,8 @@ const GreyBackgroundTextTypography = withStyles(greyBackgroundTextStyle)((props:
   <Typography {...props}>{props.children}</Typography>
 ));
 
-export { WhiteTextTypography, BlackTextTypography, SecondaryMainTextTypography, GreyBackgroundTextTypography };
+const RedTextTypography = withStyles(redTextStyle)((props: any) => (
+  <Typography {...props}>{props.children}</Typography>
+));
+
+export { WhiteTextTypography, BlackTextTypography, SecondaryMainTextTypography, GreyBackgroundTextTypography, RedTextTypography };
