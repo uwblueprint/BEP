@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { connect } from "react-redux";
+
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -7,18 +9,20 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
 import ApplicantCard from './ApplicantCard'
-import { getApplications, getInvitations, getVolunteers } from '../../../utils/EventsApiUtils'
 import InviteCard from './InviteCard';
 import Switch from '@material-ui/core/Switch';
-import { ContainedButton } from '../../../components/Button'
+import { ContainedButton, PageHeader, PageBody } from '../../../components/index'
 import EventSection from './EventSection'
-import { PageHeader, PageBody } from '../../../components/Page';
 import ConfirmedVolunteerCard from './ConfirmedVolunteerCard';
 import { Link } from 'react-router-dom'
 import CreateIcon from '@material-ui/icons/Create';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container'
 import InfoIcon from '@material-ui/icons/Info';
+
+import { Event } from "../../../data/types/EventTypes"
+import { getApplications, getInvitations, getVolunteers } from '../../../utils/EventsApiUtils'
+import { updateEventService } from '../../../data/services/eventsServices'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -85,15 +89,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const EventPage = (props: any) => {
   const classes = useStyles();
+  const eventData = props.location.state.event
   const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState<any>([]);
   const [invitations, setInvitations] = React.useState<any>([])
   const [publicEvent, setPublicEvent] = React.useState({
-    checked: true
+    checked: eventData.isPublic
   });
   const [volunteers, setVolunteers] = React.useState([])
-
-  const eventData = props.location.state.event
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -111,6 +114,10 @@ const EventPage = (props: any) => {
   });
 
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedEvent: Event = eventData;
+    updatedEvent.isPublic = event.target.checked;
+
+    props.updateEvent(updatedEvent)
     setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
   };
 
@@ -334,4 +341,11 @@ const EventPage = (props: any) => {
   );
 }
 
-export default EventPage
+const mapStateToProps = (state: any): {} => ({});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  updateEvent: (event: Event) =>
+    dispatch(updateEventService(event)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EventPage);

@@ -9,6 +9,7 @@ import Login from '../pages/Auth/SignIn';
 import TestSection from '../pages/Requests/TestSection';
 import VolunteerList from '../pages/VolunteerList/VolunteerList';
 import VolunteerProfile from '../pages/VolunteerProfile/VolunteerProfile';
+import OpportunityList from '../pages/OpportunityList/OpportunityList';
 
 interface IProps extends RouteProps {
   component: any;
@@ -56,10 +57,11 @@ export default class App extends React.Component {
               <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
               <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={true} />
               <PrivateRoute path="/volunteers/:name" component={VolunteerProfile} isLoggedIn={true}/>
+              <PrivateRoute component={OpportunityList} exact path="/opportunities" isLoggedIn={true} />
             </Switch>
           </React.Fragment>
         </Router>
-      </ThemeProvider >
+      </ThemeProvider>
     )
   }
 }

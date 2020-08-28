@@ -22,10 +22,10 @@ employerRouter.get('/:id', async (req: Express.Request, res: Express.Response) =
 
     try {
         if (id !== undefined) {
-            const fetchedUser = await EmployerService.get(id);
-            res.status(200).send(fetchedUser);
+            const fetchedEmployer = await EmployerService.get(id);
+            res.status(200).send(fetchedEmployer);
         } else {
-            throw Error(`Invalid query parameters. Either set "email" parameter or set "type" parameter.`);
+            throw Error(`Invalid query parameters. Either set "id" parameter.`);
         }
     } catch (e) {
         res.status(500).send({ msg: e.message });
@@ -46,7 +46,7 @@ employerRouter.post('/', async (req: Express.Request, res: Express.Response) => 
 
 // PUT employers/
 
-employerRouter.put('/', async (req: Express.Request, res: Express.Response) => {
+employerRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
         const id: string = req.body.id;
         await EmployerService.update(req.body);

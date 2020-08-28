@@ -1,24 +1,28 @@
+import EducatorInterface from '../api/users/EducatorInterface';
+
 export default interface EventInterface {
-    eventName: string;
-    isActive: boolean;
-    activityType: string;
-    gradeOfStudents: string;
-    preferredSector: string;
-    startDate: Date;
+    activityType: string[];
+    applicantNumber: number;
+    contact: EducatorInterface;
     endDate: Date;
-    postingExpiry: Date;
+    eventName: string;
+    gradeOfStudents: string;
+    hoursCommitment: number;
+    id?: string;
+    invitationNumber: number;
+    isActive: boolean;
+    isPublic: boolean;
     numberOfStudents: number;
     numberOfVolunteers: number;
-    hoursCommitment: number;
-    schoolName: string;
-    schoolAddress: string;
+    postingExpiry: Date;
+    preferredSector: string[];
     schoolTransportation: string;
-    contactName: string;
-    contactEmail: string;
-    contactPhone: number;
-    contactPosition: string;
-    applicantNumber: number;
-    invitationNumber: number;
+    startDate: Date;
+
+    //   contactName: string;
+    //   contactEmail: string;
+    //   contactPhone: number;
+    //   contactPosition: string;
 }
 
 export interface EventApplicantInterface {

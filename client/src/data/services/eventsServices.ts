@@ -1,10 +1,38 @@
-import { get } from "../../utils/EventsApiUtils";
-import { fetchEvents } from "../actions/eventsActions";
+import { getActiveEvents, getPastEvents, getEvents, updateEvent } from "../../utils/EventsApiUtils";
+import { fetchEvents, fetchActiveEvents, fetchPastEvents, updateEvent as updateEventAction } from "../actions/eventsActions";
+import { Event } from "../types/EventTypes"
 
-export function fetchEventsService(limit: number, offset: number) {
+export function fetchEventsService(limit: number, offset: number, userType: number, userId: string) {
     return (dispatch: any) => {
-        return get(limit, offset).then((res: any) => {
-            dispatch(fetchEvents(res.data));
+        return getEvents(limit, offset).then((res: any) => {
+            dispatch(fetchEvents(res.data, userType, userId));
+            return res;
+        });
+    };
+}
+
+export function fetchActiveEventsService(userType: number, userId: string) {
+    return (dispatch: any) => {
+        return getActiveEvents().then((res: any) => {
+            dispatch(fetchActiveEvents(res.data, userType, userId));
+            return res;
+        });
+    };
+}
+
+export function fetchPastEventsService(limit: number, offset: number, userType: number, userId: string) {
+    return (dispatch: any) => {
+        return getPastEvents(limit, offset).then((res: any) => {
+            dispatch(fetchPastEvents(res.data, userType, userId));
+            return res;
+        });
+    };
+}
+
+export function updateEventService(event: Event){
+    return (dispatch: any) => {
+        return updateEvent(event).then((res: any) => {
+            dispatch(updateEventAction(res.data));
             return res;
         });
     };

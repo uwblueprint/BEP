@@ -19,6 +19,7 @@ import {
   WhiteTextTypography,
   BlackTextTypography,
   SecondaryMainTextTypography,
+  GreyBackgroundTextTypography,
 } from "./Typography";
 
 export { ContainedButton, DarkContainedButton, TextButton, Button };
@@ -37,4 +38,5 @@ export {
   WhiteTextTypography,
   BlackTextTypography,
   SecondaryMainTextTypography,
+  GreyBackgroundTextTypography,
 };
