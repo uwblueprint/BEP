@@ -65,6 +65,7 @@ class App extends React.Component<
               <PrivateRoute exact path="/events" component={EducatorDashboard} isLoggedIn={isLoggedIn} />
               <PrivateRoute path="/events/:name" component={EventPage} isLoggedIn={isLoggedIn} />
               <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={isLoggedIn} />
+              <PrivateRoute component={OpportunityList} exact path="/opportunities" isLoggedIn={isLoggedIn} />
             </Switch>
           </React.Fragment>
         </Router>
