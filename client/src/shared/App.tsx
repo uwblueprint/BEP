@@ -10,6 +10,7 @@ import EventPage from '../pages/EducatorDashboard/IndividualOpportunity/EventPag
 import Login from '../pages/Auth/SignIn';
 import VolunteerList from '../pages/VolunteerList/VolunteerList';
 import OpportunityList from '../pages/OpportunityList/OpportunityList';
+import VolunteerDashboard from '../pages/VolunteerDashboard/VolunteerDashboard';
 
 /* Types */
 import { User } from '../data/types/userTypes';
@@ -67,6 +68,7 @@ class App extends React.Component<
               <PrivateRoute path="/events/:name" component={EventPage} isLoggedIn={isLoggedIn} />
               <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={isLoggedIn} />
               <PrivateRoute component={OpportunityList} exact path="/opportunities" isLoggedIn={isLoggedIn} />
+              <PrivateRoute component={VolunteerDashboard} exact path="/vdash" isLoggedIn={isLoggedIn} />
             </Switch>
           </React.Fragment>
         </Router>
