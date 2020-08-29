@@ -1,4 +1,5 @@
-export enum UserPicklistType {
+export enum PicklistType {
+  allActivities = "allActivities",
   coopPlacementMode = "coopPlacementMode",
   coopPlacementTime = "coopPlacementTime",
   expertiseAreas = "expertiseAreas",
@@ -12,8 +13,7 @@ export enum UserPicklistType {
   volunteerDesiredExternalActivities = "volunteerDesiredExternalActivities",
   volunteerDesiredInternalActivities = "volunteerDesiredInternalActivities",
   educatorDesiredActivities = "educatorDesiredActivities",
-  schoolBoard = "schoolBoard",
-  schoolName = "schoolName",
+  school = "school",
   position = "position",
   introductionMethod = "introductionMethod",
   moreInfo = "moreInfo",

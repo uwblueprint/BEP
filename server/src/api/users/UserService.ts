@@ -4,8 +4,8 @@
 
 import { conn } from '../../server';
 import Educator, { isEducator } from './EducatorInterface';
-import Employer from '../employers/EmployerInterface';
 import * as EmployerService from '../employers/EmployerService';
+import * as SchoolService from '../schools/SchoolService';
 import User, { isUser, UserType } from './UserInterface';
 import Volunteer, { isVolunteer } from './VolunteerInterface';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
@@ -17,7 +17,7 @@ const userFields: string =
     'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
     'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
     'professionalAssociations__c, reasonsForVolunteering__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
-    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, schoolBoard__c, schoolName__c, introductionMethod__c, ';
+    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c introductionMethod__c, ';
 
 // Map fields of user model to Salesforce fields.
 const userModelToSalesforceUser = (user: User, id?: string): any => {
@@ -39,10 +39,12 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
         salesforceUser = {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
-            position__c: arrayToPicklistString((user as Educator).position),
-            schoolName__c: arrayToPicklistString((user as Educator).schoolName),
-            schoolBoard__c: arrayToPicklistString((user as Educator).schoolBoard),
-            introductionMethod__c: arrayToPicklistString((user as Educator).introductionMethod)
+            // position__c: arrayToPicklistString((user as Educator).position),
+            // schoolName__c: arrayToPicklistString((user as Educator).schoolName),
+            // schoolBoard__c: arrayToPicklistString((user as Educator).schoolBoard),
+            introductionMethod__c: (user as Educator).introductionMethod,
+            position__c: (user as Educator).position,
+            school__c: (user as Educator).school.id
         };
     } else if (isVolunteer(user)) {
         salesforceUser = {
@@ -91,6 +93,7 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
 
 // Map Saleforce record fields to user model fields.
 const salesforceUserToUserModel = async (record: any): Promise<User> => {
+    console.log(record.Id);
     const user: User = {
         email: record.email__c,
         firstName: record.firstName__c,
@@ -107,25 +110,19 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
     if (UserType[record.userType__c] === UserType[UserType.Educator]) {
         // User is an educator.
         (user as Educator).educatorDesiredActivities = picklistStringToArray(record.educatorDesiredActivities__c);
-        (user as Educator).position = picklistStringToArray(record.position__c);
-        (user as Educator).schoolBoard = picklistStringToArray(record.schoolBoard__c);
-        (user as Educator).schoolName = picklistStringToArray(record.schoolName__c);
-        (user as Educator).introductionMethod = picklistStringToArray(record.introductionMethod__c);
+        (user as Educator).moreInfo = picklistStringToArray(record.moreInfo__c);
+        (user as Educator).introductionMethod = record.introductionMethod__c;
+        (user as Educator).position = record.position__c;
+        (user as Educator).school = await SchoolService.get(record.school__c);
     } else if (UserType[record.userType__c] === UserType[UserType.Volunteer]) {
         // User is a volunteer.
-        let employer: Employer = null;
-        if (record.employer__c !== null) {
-            const employerId = record.employer__c;
-            employer = await EmployerService.get(employerId);
-        }
-
         (user as Volunteer).careerDescription = record.careerDescription__c;
         (user as Volunteer).coopPlacementMode = record.coopPlacementMode__c;
         (user as Volunteer).coopPlacementSchoolAffiliation = record.coopPlacementSchoolAffiliation__c;
         (user as Volunteer).coopPlacementTime = picklistStringToArray(record.coopPlacementTime__c);
         (user as Volunteer).jobTitle = record.jobTitle__c;
         (user as Volunteer).department = record.department__c;
-        (user as Volunteer).employer = employer;
+        (user as Volunteer).employer = record.employer__c ? await EmployerService.get(record.employer__c) : null;
         (user as Volunteer).employmentStatus = record.employmentStatus__c;
         (user as Volunteer).expertiseAreas = picklistStringToArray(record.expertiseAreas__c);
         (user as Volunteer).extraDescription = record.extraDescription__c;
@@ -161,15 +158,19 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
  */
 
 // Retrieve user by email.
-export const getUser = async (email: string): Promise<User> => {
+export const getUser = async (userInfo: { Id?: string; email?: string }): Promise<User> => {
+    let userIdentifier;
+    if (userInfo.Id) {
+        userIdentifier = { Id: userInfo.Id };
+    } else if (userInfo.email) {
+        userIdentifier = { email__c: userInfo.email };
+    } else {
+        throw Error('No valid user identifier provided.');
+    }
+
     const user: User = conn
         .sobject(siteUser)
-        .find(
-            {
-                email__c: email
-            },
-            userFields
-        )
+        .find(userIdentifier, userFields)
         .limit(1)
         .execute((err: Error, record: any) => {
             if (err) {
@@ -184,12 +185,12 @@ export const getUser = async (email: string): Promise<User> => {
 // Retrieve list of volunteers in alphabetical order
 
 export const getVolunteers = async (limit: number, offset: number): Promise<User[]> => {
-    let volunteers: User[] = [];
+    const volunteers: Array<User> = [];
     let volunteerPromises: Promise<User>[] = [];
     const volunteerUserType: number = 2;
     await conn.query(
         `SELECT ${userFields} FROM ${siteUser} WHERE userType__c=${volunteerUserType} ORDER BY Name LIMIT ${limit} OFFSET ${offset}`,
-        function(err, result) {
+        (err, result) => {
             if (err) {
                 return console.error(err);
             }

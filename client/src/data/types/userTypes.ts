@@ -1,4 +1,7 @@
+import { SchoolListType, School } from "./schoolListTypes";
+
 export enum UserType {
+  Admin = 0,
   Educator = 1,
   Volunteer = 2,
 }
@@ -19,10 +22,10 @@ export interface User {
 
 export interface Educator extends User {
   educatorDesiredActivities: string[];
-  position: string[];
-  schoolBoard: string[];
-  schoolName: string[];
-  introductionMethod: string[];
+  moreInfo: string[];
+  introductionMethod: string;
+  position: string;
+  school: School;
 }
 
 export interface Volunteer extends User {

@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { fetchPicklistsService } from "../../data/services/userPicklistServices";
+
+/* Types */
+import { PicklistType } from "../../data/types/picklistTypes";
+import { SchoolListType } from "../../data/types/schoolListTypes";
+
+/* Services */
+import { fetchPicklistsService } from "../../data/services/picklistServices";
+import { fetchSchoolListService } from "../../data/services/schoolListServices";
+
+/* Selectors */
+import {
+  getSchoolBoardList,
+  getSchoolNameList,
+} from "../../data/selectors/schoolListSelector";
 import {
   getEducatorDesiredActivitiesPicklist,
-  getSchoolBoardPicklist,
-  getSchoolNamePicklist,
   getPositionPicklist,
   getIntroductionMethodPicklist,
   getMoreInfoPicklist,
-} from "../../data/selectors/userPicklistSelector";
+} from "../../data/selectors/picklistSelector";
+
 import { baseURL } from "../../utils/ApiUtils";
 
-import { UserPicklistType } from "../../data/types/userPicklistTypes";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Typography from "@material-ui/core/Typography";
@@ -52,14 +63,17 @@ const styles = () => ({
 
 interface IComponentProps {
   picklists: {
-    educatorDesiredActivities: { displayName: string; list: string[] };
-    schoolBoard: { displayName: string; list: string[] };
-    schoolName: { displayName: string; list: string[] };
-    position: { displayName: string; list: string[] };
-    introductionMethod: { displayName: string; list: string[] };
-    moreInfo: { displayName: string; list: string[] };
+    educatorDesiredActivities: { list: string[] };
+    position: { list: string[] };
+    introductionMethod: { list: string[] };
+    moreInfo: { list: string[] };
+  };
+  schoolLists: {
+    schoolBoard: { list: string[] };
+    schoolName: { list: string[] };
   };
   fetchPicklists: any;
+  fetchSchoolLists: any;
 }
 
 interface IComponentState {
@@ -69,13 +83,15 @@ interface IComponentState {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  showPicklist: {
+  picklistInfo: {
     educatorDesiredActivities: Map<string, boolean>;
+    moreInfo: Map<string, boolean>;
+    position: string;
+    introductionMethod: string;
+  };
+  schoolInfo: {
     schoolBoard: string;
     schoolName: string;
-    position: string;
-    introductionMethod: Map<string, boolean>;
-    moreInfo: Map<string, boolean>;
   };
 }
 
@@ -83,12 +99,11 @@ class EducatorRegistration extends React.Component<
   IComponentProps,
   IComponentState
 > {
-  public educatorDesiredActivitiesList: string[] = [];
   constructor(props: any) {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleShowPicklistChange = this.handleShowPicklistChange.bind(this);
+    this.handlepicklistInfoChange = this.handlepicklistInfoChange.bind(this);
     this.createHandleSelectOption = this.createHandleSelectOption.bind(this);
     this.createUpdateOptions = this.createUpdateOptions.bind(this);
 
@@ -101,27 +116,27 @@ class EducatorRegistration extends React.Component<
       firstName: "",
       lastName: "",
       phoneNumber: "",
-      showPicklist: {
+      picklistInfo: {
         educatorDesiredActivities: new Map(),
+        moreInfo: new Map(),
+        introductionMethod: "",
+        position: "",
+      },
+      schoolInfo: {
         schoolBoard: "",
         schoolName: "",
-        position: "",
-        introductionMethod: new Map(),
-        moreInfo: new Map(),
       },
     };
   }
 
-  // let educatorDesiredActivitiesList = [];
+  public educatorDesiredActivitiesList: string[] = [];
 
   componentDidMount() {
-    const picklistTypes: UserPicklistType[] = [
-      UserPicklistType.educatorDesiredActivities,
-      UserPicklistType.schoolBoard,
-      UserPicklistType.schoolName,
-      UserPicklistType.position,
-      UserPicklistType.introductionMethod,
-      UserPicklistType.moreInfo,
+    const picklistTypes: PicklistType[] = [
+      PicklistType.educatorDesiredActivities,
+      PicklistType.position,
+      PicklistType.introductionMethod,
+      PicklistType.moreInfo,
     ];
 
     const createPicklist = (
@@ -130,36 +145,41 @@ class EducatorRegistration extends React.Component<
       return filterNames.map((item: string) => [item, false]);
     };
 
-    picklistTypes.forEach((type: UserPicklistType) => {
+    picklistTypes.forEach((type: PicklistType) => {
       this.props.fetchPicklists(type).then(() => {
         const picklists = this.props.picklists;
-        const showPicklist = this.state.showPicklist;
+        const picklistInfo = this.state.picklistInfo;
 
-        if (type === UserPicklistType.educatorDesiredActivities) {
-          showPicklist.educatorDesiredActivities = new Map(
+        if (type === PicklistType.educatorDesiredActivities) {
+          picklistInfo.educatorDesiredActivities = new Map(
             createPicklist(picklists.educatorDesiredActivities.list)
           );
-        } else if (type === UserPicklistType.introductionMethod) {
-          showPicklist.introductionMethod = new Map(
-            createPicklist(picklists.introductionMethod.list)
-          );
-        } else if (type === UserPicklistType.moreInfo) {
-          showPicklist.moreInfo = new Map(
+        } else if (type === PicklistType.moreInfo) {
+          picklistInfo.moreInfo = new Map(
             createPicklist(picklists.moreInfo.list)
           );
         }
-        this.setState({ showPicklist });
+        this.setState({ picklistInfo });
       });
+    });
+
+    const schoolListTypes: SchoolListType[] = [
+      SchoolListType.schoolBoard,
+      SchoolListType.name,
+    ];
+
+    schoolListTypes.forEach((type: SchoolListType) => {
+      this.props.fetchSchoolLists(type);
     });
   }
 
   componentDidUpdate(prevProps: IComponentProps, prevState: IComponentState) {
-    if (prevState.showPicklist !== this.state.showPicklist) {
+    if (prevState.picklistInfo !== this.state.picklistInfo) {
       console.log("change");
       this.educatorDesiredActivitiesList = [];
 
       Array.from(
-        this.state.showPicklist.educatorDesiredActivities.entries()
+        this.state.picklistInfo.educatorDesiredActivities.entries()
       ).forEach((entry) => {
         if (entry[1] == true) {
           this.educatorDesiredActivitiesList.push(entry[0]);
@@ -167,7 +187,7 @@ class EducatorRegistration extends React.Component<
       });
 
       // Array.from(
-      //   this.state.showPicklist.educatorDesiredActivities.entries()
+      //   this.state.picklistInfo.educatorDesiredActivities.entries()
       // ).forEach((entry) => {
       //   if (entry[1] == true) {
       //     console.log("Test" + this.educatorDesiredActivitiesList);
@@ -177,12 +197,10 @@ class EducatorRegistration extends React.Component<
   }
 
   getMultiPicklist(picklistName: string) {
-    const picklists = this.state.showPicklist;
+    const picklists = this.state.picklistInfo;
     switch (picklistName) {
       case "educatorDesiredActivities":
         return picklists.educatorDesiredActivities;
-      case "introductionMethod":
-        return picklists.introductionMethod;
       case "moreInfo":
         return picklists.moreInfo;
     }
@@ -190,7 +208,7 @@ class EducatorRegistration extends React.Component<
   }
 
   createUpdateOptions(picklistName: string) {
-    const showPicklists = this.state.showPicklist;
+    const picklistInfos = this.state.picklistInfo;
     const picklistOptions = this.getMultiPicklist(picklistName);
 
     return (selectedOptions: string) => {
@@ -200,8 +218,8 @@ class EducatorRegistration extends React.Component<
       );
 
       this.setState({
-        showPicklist: {
-          ...showPicklists,
+        picklistInfo: {
+          ...picklistInfos,
           [picklistName]: picklistOptions,
         },
       });
@@ -222,10 +240,10 @@ class EducatorRegistration extends React.Component<
   }
 
   test = () => {
-    const myMap = this.state.showPicklist.educatorDesiredActivities;
+    const myMap = this.state.picklistInfo.educatorDesiredActivities;
 
     Array.from(
-      this.state.showPicklist.educatorDesiredActivities.entries()
+      this.state.picklistInfo.educatorDesiredActivities.entries()
     ).forEach((entry) =>
       console.log("Key: " + entry[0] + " Value: " + entry[1])
     );
@@ -237,12 +255,12 @@ class EducatorRegistration extends React.Component<
     this.setState({ ...this.state, [id]: value });
   };
 
-  handleShowPicklistChange = (event: any) => {
+  handlepicklistInfoChange = (event: any) => {
     const { id, value } = event.target;
     this.setState((prevState) => ({
       ...prevState,
-      showPicklist: {
-        ...prevState.showPicklist,
+      picklistInfo: {
+        ...prevState.picklistInfo,
         [id]: value,
       },
     }));
@@ -267,58 +285,62 @@ class EducatorRegistration extends React.Component<
     return (
       <React.Fragment>
         <PageBody>
-          <Link to="/">Back</Link>
-          <Typography variant="h1">Register for an educator account</Typography>
-          <Grid
-            container
-            spacing={4}
-            direction="column"
-            style={{
-              padding: "3em",
-              backgroundColor: "#fff",
-              borderRadius: "2px",
-              margin: "2em 0em",
-            }}
-          >
-            {console.log("List" + this.educatorDesiredActivitiesList)}
-            {console.log(this.state.showPicklist.educatorDesiredActivities)}
-            <BlackTextTypography>
-              Which activities are you interested in?
-            </BlackTextTypography>
-            <Grid style={{ columns: "2 auto" }}>
-              {Array.from(
-                this.state.showPicklist.educatorDesiredActivities.entries(),
-                (entry) => entry
-              ).map(([option, isSelected]) => (
-                <div>
-                  <OutlinedCheckbox
-                    key={option}
-                    value={option}
-                    name={option}
-                    onChange={this.createHandleSelectOption(picklistName)}
-                  />
-                  {option}
-                </div>
-              ))}
+          <div style={{ marginTop: "5em" }}>
+            <Link to="/">Back</Link>
+            <Typography variant="h1">
+              Register for an educator account
+            </Typography>
+            <Grid
+              container
+              spacing={4}
+              direction="column"
+              style={{
+                padding: "3em",
+                backgroundColor: "#fff",
+                borderRadius: "2px",
+                margin: "2em 0em",
+              }}
+            >
+              {console.log("List" + this.educatorDesiredActivitiesList)}
+              {console.log(this.state.picklistInfo.educatorDesiredActivities)}
+              <BlackTextTypography>
+                Which activities are you interested in?
+              </BlackTextTypography>
+              <Grid style={{ columns: "2 auto" }}>
+                {Array.from(
+                  this.state.picklistInfo.educatorDesiredActivities.entries(),
+                  (entry) => entry
+                ).map(([option, isSelected]) => (
+                  <div>
+                    <OutlinedCheckbox
+                      key={option}
+                      value={option}
+                      name={option}
+                      onChange={this.createHandleSelectOption(picklistName)}
+                    />
+                    {option}
+                  </div>
+                ))}
+              </Grid>
+              <BlackTextTypography>
+                Which BEP programs would you like more information about?
+              </BlackTextTypography>
+              <Grid style={{ columns: "2 auto" }}>
+                {Array.from(
+                  this.state.picklistInfo.moreInfo.entries(),
+                  (entry) => entry
+                ).map(([option, isSelected]) => (
+                  <div>
+                    <OutlinedCheckbox key={option} value={option} />
+                    {option}
+                  </div>
+                ))}
+              </Grid>
+              <ContainedButton onClick={this.handleSubmit}>
+                Finish Registration
+              </ContainedButton>
             </Grid>
-            <BlackTextTypography>
-              Which BEP programs would you like more information about?
-            </BlackTextTypography>
-            <Grid style={{ columns: "2 auto" }}>
-              {Array.from(
-                this.state.showPicklist.moreInfo.entries(),
-                (entry) => entry
-              ).map(([option, isSelected]) => (
-                <div>
-                  <OutlinedCheckbox key={option} value={option} />
-                  {option}
-                </div>
-              ))}
-            </Grid>
-            <ContainedButton onClick={this.handleSubmit}>
-              Finish Registration
-            </ContainedButton>
-          </Grid>
+          </div>
         </PageBody>
       </React.Fragment>
     );
@@ -329,36 +351,34 @@ const mapStateToProps = (state: any) => {
   return {
     picklists: {
       educatorDesiredActivities: {
-        displayName: "Educator Desired Activities",
-        list: getEducatorDesiredActivitiesPicklist(state.userPicklists),
-      },
-      schoolBoard: {
-        displayName: "School Board",
-        list: getSchoolBoardPicklist(state.userPicklists),
-      },
-      schoolName: {
-        displayName: "School Name",
-        list: getSchoolNamePicklist(state.userPicklists),
+        list: getEducatorDesiredActivitiesPicklist(state.picklists),
       },
       introductionMethod: {
-        displayName: "Introduction Method",
-        list: getIntroductionMethodPicklist(state.userPicklists),
+        list: getIntroductionMethodPicklist(state.picklists),
       },
       position: {
-        displayName: "Position",
-        list: getPositionPicklist(state.userPicklists),
+        list: getPositionPicklist(state.picklists),
       },
       moreInfo: {
-        displayName: "moreInfo",
-        list: getMoreInfoPicklist(state.userPicklists),
+        list: getMoreInfoPicklist(state.picklists),
+      },
+    },
+    schoolList: {
+      schoolBoard: {
+        list: getSchoolBoardList(state.schoolList),
+      },
+      schoolName: {
+        list: getSchoolNameList(state.schoolList),
       },
     },
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchPicklists: (picklistType: UserPicklistType) =>
+  fetchPicklists: (picklistType: PicklistType) =>
     dispatch(fetchPicklistsService(picklistType)),
+  fetchSchoolLists: (schoolListType: SchoolListType) =>
+    dispatch(fetchSchoolListService(schoolListType)),
 });
 
 export default connect(

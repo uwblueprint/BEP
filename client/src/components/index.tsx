@@ -20,6 +20,7 @@ import {
   BlackTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
+  RedTextTypography
 } from "./Typography";
 import Dialog from "./Dialog";
 import DialogTitle from "./DialogTitle";
@@ -42,6 +43,7 @@ export {
   BlackTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
+  RedTextTypography
 };
 
 export { Dialog };
