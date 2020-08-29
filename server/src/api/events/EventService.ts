@@ -3,14 +3,14 @@
  */
 
 import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
-import Educator from '../api/users/EducatorInterface';
-import * as UserService from '../api/users/UserService';
-import { conn } from '../server';
-import { arrayToPicklistString, picklistStringToArray } from '../util/SalesforcePicklistUtils';
+import Educator from '../users/EducatorInterface';
+import * as UserService from '../users/UserService';
+import { conn } from '../../server';
+import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
-const eventApplicantApi: string = 'EventApplicants__r';
+const eventApplicantApi: string = 'EventApplications__r';
 const eventInvitationApi: string = 'EventInvitations__r';
 const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
@@ -121,13 +121,13 @@ const salesforceEventVolunteerToEventVolunteerModel = (record: any): EventVolunt
     return volunteer;
 };
 
-// Basic query for now to retrieve a user based on first name (should be changed to ID in future)
-export const getEventInfo = async (eventName: string): Promise<Event> => {
+// Basic query for now to retrieve a user based on id
+export const getEventInfo = async (id: string): Promise<Event> => {
     let eventInfo: Event = conn
         .sobject(eventApi)
         .find(
             {
-                Name: eventName
+                Id: id
             },
             eventFields
         )
