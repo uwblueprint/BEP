@@ -5,6 +5,8 @@ import Grid from "@material-ui/core/Grid";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import { UserType } from '../data/types/userTypes';
+
 import {
     BlackTextTypography,
     SecondaryMainTextTypography,
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "none"
   },
   tab: {
-    margin:"0 10%", 
+    margin:"0 8%", 
     display:"inline-block"
   },
 }));
@@ -53,20 +55,23 @@ export default function Navbar(props: any) {
 
   const content = () => {
     let userType = localStorage.getItem("userType");
+    if (!userType) {
+      return null;
+    }
     // admin
-    if (userType === "0"){
-      return <Grid style={{margin:"0 15%"}}>
+    if (parseInt(userType) === UserType.Admin){
+      return <Grid style={{margin:"0 10%"}}>
         <Link href="/events" className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
         <Link href="/volunteers" className={classes.tab}><SecondaryMainTextTypography >Browse Volunteers</SecondaryMainTextTypography></Link>
         <Link className={classes.tab}><SecondaryMainTextTypography>Admin</SecondaryMainTextTypography></Link>
       </Grid>;
-    } else if (userType === "1") {
+    } else if (parseInt(userType) === UserType.Educator) {
       // educator
       return <Grid style={{margin:"0 15%"}}>
         <Link href="/events" className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
         <Link href="/volunteers" className={classes.tab}><SecondaryMainTextTypography >Browse Volunteers</SecondaryMainTextTypography></Link>
       </Grid>;
-    } else if (userType === "2") {
+    } else if (parseInt(userType) === UserType.Volunteer) {
       // volunteer
       return <Grid style={{margin:"0 15%"}}>
         <Link className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
