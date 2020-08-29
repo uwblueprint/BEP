@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 
 import {
   ContainedSelect,
@@ -17,5 +18,11 @@ const useStyles = makeStyles({
 });
 
 export default function VolunteerRegistration() {
-  return <div>This is the volunteer reigstration</div>;
+  return (
+    <React.Fragment>
+      <Link to="/">Back</Link>
+
+      <div>This is the volunteer reigstration</div>
+    </React.Fragment>
+  );
 }

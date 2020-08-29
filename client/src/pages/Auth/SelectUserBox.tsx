@@ -6,6 +6,8 @@ import { ReactComponent as VolunteerImage } from "../../components/assets/undraw
 import { TextButton, Dialog, DialogTitle } from "../../components/index";
 import { Grid } from "@material-ui/core";
 
+import { Link } from "react-router-dom";
+
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
@@ -18,20 +20,15 @@ const useStyles = makeStyles({
 
 export interface SimpleDialogProps {
   open: boolean;
-  selectedUser: string;
-  onClose: (value: string) => void;
+  onClose: any;
 }
 
 function SimpleDialog(props: SimpleDialogProps) {
   const classes = useStyles();
-  const { onClose, selectedUser, open } = props;
+  const { onClose, open } = props;
 
   const handleCloseSelector = () => {
-    onClose(selectedUser);
-  };
-
-  const handleSelectionClick = (value: string) => {
-    onClose(value);
+    onClose();
   };
 
   return (
@@ -44,16 +41,16 @@ function SimpleDialog(props: SimpleDialogProps) {
 
       <Grid container direction="row">
         <Grid item xs={6} className={classes.boxedUser}>
-          <TextButton onClick={() => handleSelectionClick("educator")}>
+          <Link to="/educator-registration">
             Educator
             <EducatorImage />
-          </TextButton>
+          </Link>
         </Grid>
         <Grid item xs={6} className={classes.boxedUser}>
-          <TextButton onClick={() => handleSelectionClick("volunteer")}>
+          <Link to="/volunteer-registration">
             Volunteer
             <VolunteerImage />
-          </TextButton>
+          </Link>
         </Grid>
       </Grid>
     </Dialog>
@@ -62,15 +59,13 @@ function SimpleDialog(props: SimpleDialogProps) {
 
 export default function SelectUserBox(props: any) {
   const [open, setOpen] = React.useState(false);
-  const [selectedUser, setSelectedUser] = useState("");
 
   const handleOpenSelector = () => {
     setOpen(true);
   };
 
-  const handleCloseSelector = (value: string) => {
+  const handleCloseSelector = () => {
     setOpen(false);
-    props.setUserType(value);
   };
 
   return (
@@ -78,11 +73,7 @@ export default function SelectUserBox(props: any) {
       <TextButton onClick={handleOpenSelector}>
         Don't Have An Account? Sign Up
       </TextButton>
-      <SimpleDialog
-        selectedUser={selectedUser}
-        open={open}
-        onClose={handleCloseSelector}
-      />
+      <SimpleDialog open={open} onClose={handleCloseSelector} />
     </div>
   );
 }
