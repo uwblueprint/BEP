@@ -19,7 +19,7 @@ interface IProps extends RouteProps {
   isLoggedIn: boolean;
 }
 
-const PrivateRoute = (rProps: IProps) => {
+export const PrivateRoute = (rProps: IProps) => {
   const { component: Component, isLoggedIn, ...rest } = rProps;
 
   return (
@@ -64,7 +64,7 @@ class App extends React.Component<
               <PrivateRoute path="/events/:name" component={EventPage} isLoggedIn={isLoggedIn} />
               <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={isLoggedIn} />
               <PrivateRoute component={OpportunityList} exact path="/opportunities" isLoggedIn={isLoggedIn} />
-              <PrivateRoute component={VolunteerDashboard} exact path="/vdash" isLoggedIn={isLoggedIn} />
+              <PrivateRoute component={VolunteerDashboard} exact path="/dashboard" isLoggedIn={isLoggedIn} />
             </Switch>
           </React.Fragment>
         </Router>

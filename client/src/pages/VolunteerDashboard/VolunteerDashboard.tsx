@@ -1,86 +1,28 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Event } from "../../data/types/EventTypes";
-import { User } from "../../data/types/userTypes";
+import React, { useEffect } from 'react';
 import { connect } from "react-redux";
-import {
-  fetchActiveEventsService,
-  fetchPastEventsService,
-} from "../../data/services/eventsServices";
-import { changeFilter } from "../../data/actions/eventsActions";
-import {
-  getActiveEvents,
-  getPastEvents,
-} from "../../data/selectors/eventsSelector";
-import { getUser } from "../../data/selectors/userSelector";
-import EventCard from "../EducatorDashboard/EventCard";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import Container from "@material-ui/core/Container";
-import { PageHeader, PageBody } from "../../components/index";
-import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
 
-type EventProps = {
-  eventsFilter: any;
-};
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid'
+import Box from '@material-ui/core/Box';
+import ApplicantCard from '../EducatorDashboard/IndividualOpportunity/ApplicantCard'
+import InviteCard from '../EducatorDashboard/IndividualOpportunity/InviteCard';
+import Switch from '@material-ui/core/Switch';
+import { ContainedButton, PageHeader, PageBody } from '../../components/index'
+import EventSection from '../EducatorDashboard/IndividualOpportunity/EventSection'
+import ConfirmedVolunteerCard from '../EducatorDashboard/IndividualOpportunity/ConfirmedVolunteerCard';
+import { Link } from 'react-router-dom'
+import CreateIcon from '@material-ui/icons/Create';
+import Card from '@material-ui/core/Card';
+import Container from '@material-ui/core/Container'
+import InfoIcon from '@material-ui/icons/Info';
 
-interface StateProps {
-  activeEvents: Event[];
-  pastEvents: Event[];
-  userType: number;
-  userId: string;
-}
-
-interface DispatchProps {
-  fetchActiveEvents: any;
-  fetchPastEvents: any;
-  changeFilter: any;
-}
-
-type Props = StateProps & DispatchProps & EventProps;
-
-const useStyles = makeStyles((theme) => ({
-  tabs: {
-    backgroundColor: theme.palette.primary.light,
-    boxShadow: "0",
-    paddingTop: "13px",
-  },
-  dateFilter: {
-    paddingTop: "3em",
-    display: "flex",
-    flexDirection: "row",
-  },
-  dateFilterText: {
-    padding: "5px 0px",
-  },
-  dateFilterBoxes: {
-    padding: "0px 10px",
-    width: "15vw",
-    backgroundColor: "#fff",
-    border: "1px solid #e5e5e5",
-    borderRadius: "2px",
-    margin: "0em 1em",
-  },
-  noAppsDisc: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    textAlign: "center",
-    paddingTop: "100px",
-    alignItems: "center",
-  },
-}));
-
-// TAB PANEL CODE FROM MATERIAL UI - may want to reuse this or create a global tab component
+import { Event } from "../../data/types/EventTypes"
+import { getApplications, getInvitations, getVolunteers } from '../../utils/EventsApiUtils'
+import { updateEventService } from '../../data/services/eventsServices'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -88,7 +30,7 @@ interface TabPanelProps {
   value: any;
 }
 
-function TabPanel(props: TabPanelProps) {
+const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -100,280 +42,284 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Container>
-          <Box>{children}</Box>
-        </Container>
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
       )}
     </div>
   );
 }
 
-function a11yProps(index: any) {
+const a11yProps = (index: any) => {
   return {
     id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
   };
 }
 
-const VolunteerDashboard: React.SFC<Props> = ({
-  activeEvents,
-  pastEvents,
-  userType,
-  userId,
-  fetchActiveEvents,
-  fetchPastEvents,
-  changeFilter,
-}: Props) => {
+const useStyles = makeStyles((theme: Theme) => ({
+  tabs: {
+    backgroundColor: theme.palette.primary.light,
+    boxShadow: '0',
+    paddingTop: '13px',
+  },
+  tab: {
+    paddingLeft: '10px',
+    paddinRight: '10px',
+  },
+  card: {
+    margin: `${theme.spacing(2)}px auto`,
+    padding: theme.spacing(3),
+    borderRadius: 5,
+    height: 100,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    textAlign: "center"
+  },
+  noAppsDisc: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    textAlign: "center",
+    paddingTop: '100px',
+    alignItems: 'center'
+  }
+}));
+
+const EventPage = (props: any) => {
   const classes = useStyles();
-
-  //State variables for educator dashboard
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [isPastEvent, setIsPastEvent] = useState(false);
-  const [retrievedData, setRetrievedData] = useState(false);
-  const [tabValue, setTabValue] = useState(0);
-  const [fetchedActiveEvents, setFetchedActiveEvents] = useState(false);
-
-  // State variables for infinite scroll functionality
-  const [page, setPage] = useState<number>(0);
-  const [prevY, setPrevY] = useState<number>(0);
-  const [lastEventListLength, setLastEventListLength] = useState<number>(0);
-  const [loadedAllEvents, setLoadedAllEvents] = useState<boolean>(false);
-  const offset = 5;
-
-  const loadingRef = useRef() as React.MutableRefObject<HTMLInputElement>;
-
-  const handleObserver = useCallback(
-    (entities: any) => {
-      const y = entities[0].boundingClientRect.y;
-      const newPage = page + 1;
-
-      if (prevY > y) {
-        if (lastEventListLength === pastEvents.length) {
-          console.log("no new events are available");
-          // If no new events are available, prevent additional calls to backend.
-          setLoadedAllEvents(true);
-        }
-
-        if (!loadedAllEvents) {
-          if (pastEvents.length > 1) setLastEventListLength(pastEvents.length);
-
-          fetchPastEvents(offset, offset * newPage, userType, userId);
-          setPage(newPage);
-        }
-      }
-      setPrevY(y);
-    },
-    [
-      page,
-      prevY,
-      lastEventListLength,
-      loadedAllEvents,
-      pastEvents.length,
-      fetchPastEvents,
-    ]
-  );
+  const deleteThis = localStorage.getItem("event");
+  const eventData = deleteThis ? JSON.parse(deleteThis) : null;
+  const [value, setValue] = React.useState<number>(0);
+  const [applications, setApplications] = React.useState<any>([]);
+  const [invitations, setInvitations] = React.useState<any>([])
+  const [publicEvent, setPublicEvent] = React.useState({
+    checked: eventData.isPublic
+  });
+  const [volunteers, setVolunteers] = React.useState([])
 
   useEffect(() => {
-    var options = {
-      root: null, // Page as root
-      rootMargin: "0px",
-      threshold: 1.0,
-    };
-    // Create an observer
-    const observer = new IntersectionObserver(
-      handleObserver, //callback
-      options
-    );
-
-    //Observe the bottom div of the page
-    if (loadingRef && tabValue === 1) {
-      observer.observe(loadingRef.current);
-      return () => observer.unobserve(loadingRef.current);
+    const fetchdata = async () => {
+     const result =  await getVolunteers(eventData.eventName)
+     setVolunteers(result.data.volunteers)
     }
+    fetchdata()
+  }, [eventData.eventName]);
 
-    return () => observer.unobserve(loadingRef.current);
-  }, [loadingRef, handleObserver, tabValue]);
+  var displayVolunteers = volunteers.map((volunteer) => {
+    var volunteerProps = {
+      volunteer
+    }
+    return <ConfirmedVolunteerCard info={volunteerProps} />
+  });
 
-  useEffect(() => {
-    // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
-    // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
-    (async function test() {
-      await fetchPastEvents(offset, 0, userType, userId);
-      if (!fetchedActiveEvents) {
-        await fetchActiveEvents(userType, userId);
-        setFetchedActiveEvents(true);
-      }
-      setRetrievedData(true);
-    })();
-  }, [fetchActiveEvents, fetchPastEvents]);
+  const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedEvent: Event = eventData;
+    updatedEvent.isPublic = event.target.checked;
 
-  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setTabValue(newValue);
+    props.updateEvent(updatedEvent)
+    setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
   };
 
-  let eventList = activeEvents;
-  if (tabValue === 1)
-    eventList = pastEvents.filter(
-      (event, index) =>
-        new Date(event.startDate) > new Date(startDate || "0") &&
-        new Date(event.endDate) < new Date(endDate || Date.now())
-    );
+  let eventStartDate = new Date(eventData.startDate) //Date for testing
+  let today: Date = new Date()
 
-  return (
-    <div style={{ height: "100vh" }}>
-      <Grid container style={{ height: "100%" }}>
-        <PageHeader>
-          <Grid
-            item
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-end"
-            style={{ height: "100%", width: "100%" }}
-          >
-            <Typography variant="h1" style={{ marginTop: "5%" }}>
-              Dashboard
-            </Typography>
+  let pastEvent: boolean = today > eventStartDate ? true : false
 
-            <AppBar style={{zIndex:1}} elevation={0} position="static" color="transparent">
-              <Tabs
-                className={classes.tabs}
-                value={tabValue}
-                onChange={handleTabChange}
-                aria-label="Simple Tabs"
-              >
-                <Tab
-                  onClick={() =>
-                    changeFilter("ACTIVE") && setIsPastEvent(false)
-                  }
-                  label="Upcoming Opportunities"
-                  {...a11yProps(0)}
-                />
-                <Tab
-                  onClick={() => changeFilter("PAST") && setIsPastEvent(true)}
-                  label="Applications"
-                  {...a11yProps(1)}
-                />
-                <Tab
-                  onClick={() => changeFilter("PAST") && setIsPastEvent(true)}
-                  label="Invitations"
-                  {...a11yProps(1)}
-                />
-              </Tabs>
-            </AppBar>
-          </Grid>
-        </PageHeader>
 
-        <PageBody>
-          <TabPanel value={tabValue} index={1}>
-            <div className={classes.dateFilter}>
-              <Typography variant="body1" className={classes.dateFilterText}>
-                Filter by date:
-              </Typography>
+  var displayApplications = applications.map((applicant: any) => {
 
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  placeholder="Start date"
-                  value={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  id="date-picker-inline"
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                  className={classes.dateFilterBoxes}
-                />
-              </MuiPickersUtilsProvider>
+    var buttonEnabled: boolean;
+    var applicationProps: any;
 
-              <Typography variant="body1" className={classes.dateFilterText}>
-                to
-              </Typography>
+    if (volunteers.length === eventData.numberOfVolunteers) {
+      buttonEnabled = false
 
-              <div className={classes.dateFilterBoxes}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    placeholder="End date"
-                    value={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    format="MM/dd/yyyy"
-                    margin="normal"
-                    id="date-picker-inline"
-                    KeyboardButtonProps={{
-                      "aria-label": "change date",
-                    }}
-                    className={classes.dateFilterBoxes}
-                  />
-                </MuiPickersUtilsProvider>
-              </div>
-            </div>
-          </TabPanel>
+      applicationProps = {
+        eventName: eventData.eventName,
+        applicant,
+        enabled: buttonEnabled
+    };
+    return <ApplicantCard info={applicationProps} />
 
-          <Grid container spacing={4}>
-            <Grid item />
-            {eventList.length === 0 && retrievedData ? (
-              <Container className={classes.noAppsDisc}>
-                <Typography style={{ paddingBottom: "20px" }}>
-                  You do not currently have any listed opportunities. <br></br>
-                  Click 'Create Opportunity' to get started!
-                </Typography>
-              </Container>
-            ) : (
-              eventList.map((event, index) => (
-                <Grid item key={index}>
-                  <Link
-                    to={{
-                      pathname: `/events/${event.eventName}`,
-                      state: { event },
-                    }}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <EventCard
-                      event={event}
-                      isPastEvent={isPastEvent}
-                      showOwner={true}
-                    />
-                  </Link>
-                </Grid>
-              ))
-            )}
-          </Grid>
+    } else {
 
-          <div ref={loadingRef} />
-        </PageBody>
-      </Grid>
-    </div>
-  );
-};
+    buttonEnabled = !(applicant.accepted || applicant.denied)
 
-const mapStateToProps = (state: any): StateProps => {
-  const user: User | null = getUser(state.user);
-  return {
-    activeEvents: getActiveEvents(state.events),
-    pastEvents: getPastEvents(state.events),
-    userType: user ? user.userType : 0,
-    userId: user ? user.id : "",
-  };
-};
-
-const mapDispatchToProps = (dispatch: any): DispatchProps => ({
-  fetchPastEvents: (
-    limit: number,
-    offset: number,
-    userType: number,
-    userId: string
-  ) => dispatch(fetchPastEventsService(limit, offset, userType, userId)),
-  fetchActiveEvents: (userType: number, userId: string) =>
-    dispatch(fetchActiveEventsService(userType, userId)),
-  changeFilter: (filter: string) => dispatch(changeFilter(filter)),
+    applicationProps = {
+        eventName: eventData.eventName,
+        applicant,
+        enabled: buttonEnabled
+    };
+    return <ApplicantCard info={applicationProps} />
+  }
 });
 
-export default connect<StateProps, DispatchProps, EventProps>(
-  mapStateToProps,
-  mapDispatchToProps
-)(VolunteerDashboard);
+  var displayInvitations = invitations.map((invite: any) => {
+    var invitationProps = {
+      invite
+    }
+    return <InviteCard info={invitationProps} />
+  });
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const result = await getApplications(eventData.eventName);
+      setApplications(result.data.applications)
+    }
+    fetchdata();
+
+  }, [eventData.eventName]);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const result = await getInvitations(eventData.eventName);
+      setInvitations(result.data.invitations)
+    }
+    fetchdata()
+  }, [eventData.eventName]);
+
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue);
+  };
+
+  const applicationsLabel = `Applications  ${applications.length}`
+  const invitationsLabel = `Invitations  ${invitations.length}`
+
+return (
+    <React.Fragment>
+    {pastEvent ? 
+        <div style={{ height: "100vh" }}>
+            <Grid container style={{ height: "100%" }}>
+                <PageHeader>
+                <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-end"
+                        style={{ height: "100%", width: "100%" }}
+                    >
+                        <Grid container spacing={4} direction="row" style={{marginBottom: "5%"}}>
+                          <Grid item style={{ width: "80%" }}>
+                          <Typography variant="body1" style={{paddingBottom: '10px'}}>
+                            <Link to="/events" style={{textDecoration: "none"}}>{`<`} Back </Link>
+                          </Typography>
+                            <Typography variant="h1">{eventData.eventName}</Typography>
+                          </Grid>
+                          <Grid item style={{paddingTop: '50px'}}>
+                          <ContainedButton style={{paddingRight: 15, paddingLeft: 15}}>
+                              Duplicate Details
+                          </ContainedButton>
+                        </Grid>
+                        </Grid>
+
+                    </Grid>
+                </PageHeader>
+            <PageBody>
+              <EventSection event={eventData} />
+            <Typography variant="h6" style={{fontSize: '24px', marginTop: 30}}>
+                Attended Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
+
+            </Typography>
+            {volunteers.length === 0 ? 
+          <Card className={classes.card} elevation={0}>
+          <Typography >
+              There were no volunteers confirmed for this event
+          </ Typography> 
+        </Card>
+      : displayVolunteers} 
+            </PageBody>
+      </Grid>
+      </div> :
+        <div style={{ height: "100vh" }}>
+        <Grid container style={{ height: "100%" }}>
+          <PageHeader>
+                    <Grid
+                        item
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-end"
+                        style={{ height: "100%", width: "100%" }}
+                    >
+                          <Grid item direction="column">
+                            <Typography variant="body1">
+                            <Link to="/events" style={{textDecoration: "none"}}>{`<`} Back </Link>
+                            </Typography>
+                            <Typography variant="h1" style={{ marginTop: "5%" }}>
+                                Dashboard
+                            </Typography>
+                          </Grid>
+
+                          <AppBar position="static" color="transparent" elevation={0}>
+                            <Tabs  className={classes.tabs} value={value} onChange={handleChange} aria-label="Simple Tabs">
+                              <Tab label = "Upcoming Opportunities" {...a11yProps(0)} className={classes.tab} />
+                              <Tab label={applicationsLabel} {...a11yProps(1)} className={classes.tab} />
+                              <Tab label={invitationsLabel} {...a11yProps(2)} className={classes.tab}/>
+                            </Tabs>
+                          </AppBar>
+                    </Grid>
+                </PageHeader>
+  <PageBody>
+      <TabPanel value={value} index={0}>
+        <React.Fragment>
+        <EventSection event={eventData} />
+        <React.Fragment>
+            <Typography variant="h6" style={{fontSize: '24px', padding: '5px'}}>
+                Confirmed Volunteers <Typography variant="body1" style={{opacity: '0.5', display: 'inline-block', fontSize: '24px'}}>{volunteers.length}/{eventData.numberOfVolunteers}</Typography>
+
+            </Typography>
+            {volunteers.length === 0 ? 
+            <Card className={classes.card} elevation={0}>
+              <Typography >
+                  Volunteers that have been confirmed for this oppurtunity will show up here.
+              </ Typography> 
+            </Card>
+      : displayVolunteers}
+        </React.Fragment>
+      </React.Fragment>
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        {volunteers.length === eventData.numberOfVolunteers ? <Typography variant="body1" style={{display: 'flex', alignItems: 'center'}}> <InfoIcon /> <Typography style={{paddingLeft: '10px'}}>The positions for this oppurtunity have been filled</Typography></Typography> : null}
+        {applications.length === 0 ? 
+        <React.Fragment>
+        <Container className={classes.noAppsDisc}>
+        <Typography style={{paddingBottom: '20px'}}>
+          There are currently no applications for this oppurtunity. <br></br>
+          Get started by browsing volunteer applications to accept an application!
+        </Typography>
+        <ContainedButton style={{maxWidth: "175px"}}>Browse Volunteers</ContainedButton>
+        </Container> 
+        </React.Fragment>
+      : displayApplications}
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+      {invitations.length === 0 ? 
+      <React.Fragment>
+        <Container className={classes.noAppsDisc}>
+        <Typography style={{paddingBottom: '20px'}}>
+          There are currently no invitations for this oppurtunity. <br></br>
+          Get started by browsing volunteer applications to accept an application!
+        </Typography>
+        <ContainedButton style={{maxWidth: "175px"}}>Browse Volunteers</ContainedButton>
+        </Container> 
+        </React.Fragment> 
+      : displayInvitations}
+      </TabPanel>
+        </PageBody>
+      </Grid>
+    </div>}
+    </React.Fragment>
+  );
+}
+
+const mapStateToProps = (state: any): {} => ({});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  updateEvent: (event: Event) =>
+    dispatch(updateEventService(event)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EventPage);

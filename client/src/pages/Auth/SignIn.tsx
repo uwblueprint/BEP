@@ -77,7 +77,7 @@ class SignIn extends React.Component<
     const { failed, redirect } = this.state;
     if (redirect) {
       // todo: redirect based on userType
-      return <Redirect to="/events" />
+      return <Redirect to="/dashboard" />
     }
 
     return (
