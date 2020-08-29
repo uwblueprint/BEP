@@ -22,7 +22,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { Event } from "../../data/types/EventTypes"
 import { getApplications, getInvitations, getVolunteers } from '../../utils/EventsApiUtils'
-import { updateEventService } from '../../data/services/eventsServices'
+import { fetchActiveEventsService } from '../../data/services/eventsServices'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -90,78 +90,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 const EventPage = (props: any) => {
   const classes = useStyles();
   const deleteThis = localStorage.getItem("event");
+  console.log(deleteThis);
   const eventData = deleteThis ? JSON.parse(deleteThis) : null;
   const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState<any>([]);
   const [invitations, setInvitations] = React.useState<any>([])
-  const [publicEvent, setPublicEvent] = React.useState({
-    checked: eventData.isPublic
-  });
-  const [volunteers, setVolunteers] = React.useState([])
-
-  useEffect(() => {
-    const fetchdata = async () => {
-     const result =  await getVolunteers(eventData.eventName)
-     setVolunteers(result.data.volunteers)
-    }
-    fetchdata()
-  }, [eventData.eventName]);
-
-  var displayVolunteers = volunteers.map((volunteer) => {
-    var volunteerProps = {
-      volunteer
-    }
-    return <ConfirmedVolunteerCard info={volunteerProps} />
-  });
-
-  const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedEvent: Event = eventData;
-    updatedEvent.isPublic = event.target.checked;
-
-    props.updateEvent(updatedEvent)
-    setPublicEvent({...publicEvent, [event.target.name]: event.target.checked});
-  };
-
-  let eventStartDate = new Date(eventData.startDate) //Date for testing
-  let today: Date = new Date()
-
-  let pastEvent: boolean = today > eventStartDate ? true : false
-
-
-  var displayApplications = applications.map((applicant: any) => {
-
-    var buttonEnabled: boolean;
-    var applicationProps: any;
-
-    if (volunteers.length === eventData.numberOfVolunteers) {
-      buttonEnabled = false
-
-      applicationProps = {
-        eventName: eventData.eventName,
-        applicant,
-        enabled: buttonEnabled
-    };
-    return <ApplicantCard info={applicationProps} />
-
-    } else {
-
-    buttonEnabled = !(applicant.accepted || applicant.denied)
-
-    applicationProps = {
-        eventName: eventData.eventName,
-        applicant,
-        enabled: buttonEnabled
-    };
-    return <ApplicantCard info={applicationProps} />
-  }
-});
-
-  var displayInvitations = invitations.map((invite: any) => {
-    var invitationProps = {
-      invite
-    }
-    return <InviteCard info={invitationProps} />
-  });
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -189,128 +122,46 @@ const EventPage = (props: any) => {
   const invitationsLabel = `Invitations  ${invitations.length}`
 
 return (
-    <React.Fragment>
-    {pastEvent ? 
-        <div style={{ height: "100vh" }}>
-            <Grid container style={{ height: "100%" }}>
-                <PageHeader>
-                <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="flex-end"
-                        style={{ height: "100%", width: "100%" }}
-                    >
-                        <Grid container spacing={4} direction="row" style={{marginBottom: "5%"}}>
-                          <Grid item style={{ width: "80%" }}>
-                          <Typography variant="body1" style={{paddingBottom: '10px'}}>
-                            <Link to="/events" style={{textDecoration: "none"}}>{`<`} Back </Link>
-                          </Typography>
-                            <Typography variant="h1">{eventData.eventName}</Typography>
-                          </Grid>
-                          <Grid item style={{paddingTop: '50px'}}>
-                          <ContainedButton style={{paddingRight: 15, paddingLeft: 15}}>
-                              Duplicate Details
-                          </ContainedButton>
-                        </Grid>
-                        </Grid>
-
-                    </Grid>
-                </PageHeader>
-            <PageBody>
-              <EventSection event={eventData} />
-            <Typography variant="h6" style={{fontSize: '24px', marginTop: 30}}>
-                Attended Volunteers {volunteers.length} / {eventData.numberOfVolunteers}
-
+  <React.Fragment>
+    <div style={{ height: "100vh" }}>
+    <Grid container style={{ height: "100%" }}>
+      <PageHeader>
+        <Grid
+            item
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-end"
+            style={{ height: "100%", width: "100%" }}
+        >
+          <Grid item direction="column">
+            <Typography variant="h1" style={{ marginTop: "30%" }}>
+                Dashboard
             </Typography>
-            {volunteers.length === 0 ? 
-          <Card className={classes.card} elevation={0}>
-          <Typography >
-              There were no volunteers confirmed for this event
-          </ Typography> 
-        </Card>
-      : displayVolunteers} 
-            </PageBody>
-      </Grid>
-      </div> :
-        <div style={{ height: "100vh" }}>
-        <Grid container style={{ height: "100%" }}>
-          <PageHeader>
-                    <Grid
-                        item
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="flex-end"
-                        style={{ height: "100%", width: "100%" }}
-                    >
-                          <Grid item direction="column">
-                            <Typography variant="body1">
-                            <Link to="/events" style={{textDecoration: "none"}}>{`<`} Back </Link>
-                            </Typography>
-                            <Typography variant="h1" style={{ marginTop: "5%" }}>
-                                Dashboard
-                            </Typography>
-                          </Grid>
+          </Grid>
 
-                          <AppBar position="static" color="transparent" elevation={0}>
-                            <Tabs  className={classes.tabs} value={value} onChange={handleChange} aria-label="Simple Tabs">
-                              <Tab label = "Upcoming Opportunities" {...a11yProps(0)} className={classes.tab} />
-                              <Tab label={applicationsLabel} {...a11yProps(1)} className={classes.tab} />
-                              <Tab label={invitationsLabel} {...a11yProps(2)} className={classes.tab}/>
-                            </Tabs>
-                          </AppBar>
-                    </Grid>
-                </PageHeader>
+          <AppBar position="static" color="transparent" elevation={0}>
+            <Tabs className={classes.tabs} value={value} onChange={handleChange} aria-label="Simple Tabs">
+              <Tab label = "Upcoming Opportunities" {...a11yProps(0)} className={classes.tab} />
+              <Tab label={applicationsLabel} {...a11yProps(1)} className={classes.tab} />
+              <Tab label={invitationsLabel} {...a11yProps(2)} className={classes.tab}/>
+            </Tabs>
+          </AppBar>
+        </Grid>
+      </PageHeader>
   <PageBody>
       <TabPanel value={value} index={0}>
-        <React.Fragment>
-        <EventSection event={eventData} />
-        <React.Fragment>
-            <Typography variant="h6" style={{fontSize: '24px', padding: '5px'}}>
-                Confirmed Volunteers <Typography variant="body1" style={{opacity: '0.5', display: 'inline-block', fontSize: '24px'}}>{volunteers.length}/{eventData.numberOfVolunteers}</Typography>
-
-            </Typography>
-            {volunteers.length === 0 ? 
-            <Card className={classes.card} elevation={0}>
-              <Typography >
-                  Volunteers that have been confirmed for this oppurtunity will show up here.
-              </ Typography> 
-            </Card>
-      : displayVolunteers}
-        </React.Fragment>
-      </React.Fragment>
+        {/* put the event list here */ }
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {volunteers.length === eventData.numberOfVolunteers ? <Typography variant="body1" style={{display: 'flex', alignItems: 'center'}}> <InfoIcon /> <Typography style={{paddingLeft: '10px'}}>The positions for this oppurtunity have been filled</Typography></Typography> : null}
-        {applications.length === 0 ? 
-        <React.Fragment>
-        <Container className={classes.noAppsDisc}>
-        <Typography style={{paddingBottom: '20px'}}>
-          There are currently no applications for this oppurtunity. <br></br>
-          Get started by browsing volunteer applications to accept an application!
-        </Typography>
-        <ContainedButton style={{maxWidth: "175px"}}>Browse Volunteers</ContainedButton>
-        </Container> 
-        </React.Fragment>
-      : displayApplications}
+        {/* put applications here */}
       </TabPanel>
       <TabPanel value={value} index={2}>
-      {invitations.length === 0 ? 
-      <React.Fragment>
-        <Container className={classes.noAppsDisc}>
-        <Typography style={{paddingBottom: '20px'}}>
-          There are currently no invitations for this oppurtunity. <br></br>
-          Get started by browsing volunteer applications to accept an application!
-        </Typography>
-        <ContainedButton style={{maxWidth: "175px"}}>Browse Volunteers</ContainedButton>
-        </Container> 
-        </React.Fragment> 
-      : displayInvitations}
+        {/* put invitations here */}
       </TabPanel>
         </PageBody>
       </Grid>
-    </div>}
+    </div>
     </React.Fragment>
   );
 }
@@ -318,8 +169,8 @@ return (
 const mapStateToProps = (state: any): {} => ({});
 
 const mapDispatchToProps = (dispatch: any) => ({
-  updateEvent: (event: Event) =>
-    dispatch(updateEventService(event)),
+  fetchActiveEvents: (userType: number, userId: string) =>
+    dispatch(fetchActiveEventsService(userType, userId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventPage);

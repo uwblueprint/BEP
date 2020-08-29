@@ -74,7 +74,7 @@ export default function Navbar(props: any) {
     } else if (parseInt(userType) === UserType.Volunteer) {
       // volunteer
       return <Grid style={{margin:"0 15%"}}>
-        <Link href="/vdash" className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
+        <Link href="/dashboard" className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
         <Link href="/opportunities" className={classes.tab}><SecondaryMainTextTypography >Browse Opportunities</SecondaryMainTextTypography></Link>
       </Grid>;
     }
