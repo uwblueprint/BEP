@@ -234,7 +234,7 @@ const EventPage = (props: any) => {
                       <ContainedButton
                         style={{ paddingRight: 15, paddingLeft: 15 }}
                         onClick={() => console.log("Applied!")}
-                      >
+                      > 
                         {isVolunteer ? "Apply for Event" : "Duplicate Details"}
                       </ContainedButton>
                     </Grid>
