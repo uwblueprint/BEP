@@ -1,4 +1,4 @@
-import { SchoolListType, School } from "./schoolListTypes";
+import { School } from "./schoolListTypes";
 
 export enum UserType {
   Admin = 0,
