@@ -203,12 +203,15 @@ class OpportunityList extends React.Component<
 
   filterSearchBar = (event: Event, filter: string): boolean => {
     filter = filter.toLowerCase();
+    const searchStrs: Array<string> = [
+      event.contact.firstName,
+      event.contact.lastName,
+      event.contact.school.name,
+      event.eventName,
+    ];
     return (
       filter.length === 0 || // ignore search bar input if input is empty.
-      event.contact.firstName.toLowerCase().includes(filter) ||
-      event.contact.lastName.toLowerCase().includes(filter) ||
-      event.contact.school.name.toLowerCase().includes(filter) ||
-      event.eventName.toLowerCase().includes(filter)
+      searchStrs.join(" ").toLowerCase().includes(filter)
     );
   };
 
