@@ -20,6 +20,8 @@ import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container'
 import InfoIcon from '@material-ui/icons/Info';
 
+import { getActiveEvents } from "../../data/selectors/eventsSelector";
+
 import { Event } from "../../data/types/EventTypes"
 import { getApplications, getInvitations, getVolunteers } from '../../utils/EventsApiUtils'
 import { fetchActiveEventsService } from '../../data/services/eventsServices'
@@ -29,6 +31,18 @@ interface TabPanelProps {
   index: any;
   value: any;
 }
+
+interface StateProps {
+  activeEvents: any;
+  userType: number;
+  userId: string;
+}
+
+interface DispatchProps {
+  fetchActiveEvents: any;
+}
+
+type Props = DispatchProps & StateProps;
 
 const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
@@ -87,14 +101,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const EventPage = (props: any) => {
+const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActiveEvents } : Props) => {
   const classes = useStyles();
   const deleteThis = localStorage.getItem("event");
-  console.log(deleteThis);
   const eventData = deleteThis ? JSON.parse(deleteThis) : null;
   const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState<any>([]);
-  const [invitations, setInvitations] = React.useState<any>([])
+  const [invitations, setInvitations] = React.useState<any>([]);
+  const [fetchedActiveEvents, setFetchedActiveEvents] = React.useState(false);
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -113,6 +127,16 @@ const EventPage = (props: any) => {
     fetchdata()
   }, [eventData.eventName]);
 
+  useEffect(() => {
+    // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
+    // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
+    (async function test() {
+      if (!fetchedActiveEvents) {
+        await fetchActiveEvents(userType, userId);
+        setFetchedActiveEvents(true);
+      }
+    })();
+  }, [fetchActiveEvents]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -121,52 +145,62 @@ const EventPage = (props: any) => {
   const applicationsLabel = `Applications  ${applications.length}`
   const invitationsLabel = `Invitations  ${invitations.length}`
 
-return (
-  <React.Fragment>
-    <div style={{ height: "100vh" }}>
-    <Grid container style={{ height: "100%" }}>
-      <PageHeader>
-        <Grid
-            item
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-end"
-            style={{ height: "100%", width: "100%" }}
-        >
-          <Grid item direction="column">
-            <Typography variant="h1" style={{ marginTop: "30%" }}>
-                Dashboard
-            </Typography>
-          </Grid>
+  console.log(activeEvents)
+  return (
+    <React.Fragment>
+      <div style={{ height: "100vh" }}>
+      <Grid container style={{ height: "100%" }}>
+        <PageHeader>
+          <Grid
+              item
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="flex-end"
+              style={{ height: "100%", width: "100%" }}
+          >
+            <Grid item direction="column">
+              <Typography variant="h1" style={{ marginTop: "30%" }}>
+                  Dashboard
+              </Typography>
+            </Grid>
 
-          <AppBar position="static" color="transparent" elevation={0}>
-            <Tabs className={classes.tabs} value={value} onChange={handleChange} aria-label="Simple Tabs">
-              <Tab label = "Upcoming Opportunities" {...a11yProps(0)} className={classes.tab} />
-              <Tab label={applicationsLabel} {...a11yProps(1)} className={classes.tab} />
-              <Tab label={invitationsLabel} {...a11yProps(2)} className={classes.tab}/>
-            </Tabs>
-          </AppBar>
-        </Grid>
-      </PageHeader>
-  <PageBody>
-      <TabPanel value={value} index={0}>
-        {/* put the event list here */ }
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        {/* put applications here */}
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        {/* put invitations here */}
-      </TabPanel>
+            <AppBar position="static" color="transparent" elevation={0}>
+              <Tabs className={classes.tabs} value={value} onChange={handleChange} aria-label="Simple Tabs">
+                <Tab label = "Upcoming Opportunities" {...a11yProps(0)} className={classes.tab} />
+                <Tab label={applicationsLabel} {...a11yProps(1)} className={classes.tab} />
+                <Tab label={invitationsLabel} {...a11yProps(2)} className={classes.tab}/>
+              </Tabs>
+            </AppBar>
+          </Grid>
+        </PageHeader>
+        <PageBody>
+          <TabPanel value={value} index={0}>
+
+            {/* put the event list here */ }
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            {/* put applications here */}
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            {/* put invitations here */}
+          </TabPanel>
         </PageBody>
       </Grid>
-    </div>
+      </div>
     </React.Fragment>
   );
 }
 
-const mapStateToProps = (state: any): {} => ({});
+const mapStateToProps = (state: any): StateProps => {
+  const userObj = localStorage.getItem("user");
+  const user = userObj ? JSON.parse(userObj) : null;
+  return {
+    activeEvents: getActiveEvents(state.events),
+    userType: user ? user.userType : 0,
+    userId: user ? user.id : "",
+  };
+};
 
 const mapDispatchToProps = (dispatch: any) => ({
   fetchActiveEvents: (userType: number, userId: string) =>
