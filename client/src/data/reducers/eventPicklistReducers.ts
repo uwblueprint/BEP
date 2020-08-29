@@ -23,6 +23,7 @@ export type EventPicklistState = {
   ) {
     switch (action.type) {
       case FETCH_EVENT_PICKLIST:
+          console.log("Action payload", action.payload)
         return {
           ...state,
           [EventPicklistType[action.payload.picklistType]]:

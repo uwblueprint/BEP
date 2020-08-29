@@ -9,6 +9,12 @@ import { Select }  from '../../components/Select'
 import { getActivityTypePicklist, getPreferredSectorPicklist } from '../../data/selectors/eventPicklistSelector'
 import { connect } from "react-redux";
 
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+
 import {Link} from 'react-router-dom'
 import { ContainedButton } from '../../components/Button'
 import { EventPicklistType } from '../../data/types/EventPicklistTypes';
@@ -44,13 +50,13 @@ type OpFormProps = {
 }
 
 class OpportunityForm extends React.Component<
-{ opform: OpFormProps,
+{ opform: OpFormProps;
+    fetchPicklists: any;
     picklists: {
         activityType: { displayName: string, list: string[] };
         preferredSector: { displayName: string, list: string[] };
         studentGrades: { displayName: string, list: string[] };
     };
-    fetchPicklists: any;
 }, OpFormProps> {
     constructor(props: Readonly<{ opform: OpFormProps; picklists: { activityType: { displayName: string; list: string[]; }; preferredSector: { displayName: string; list: string[]; }; studentGrades: { displayName: string; list: string[]; }; }; fetchPicklists: any; }>) {
         super(props);
@@ -63,7 +69,7 @@ class OpportunityForm extends React.Component<
                 requiredVolunteers: "",
                 activityType: "",
                 preferredSector: "",
-                singleDayEvent: false,
+                singleDayEvent: true,
                 startDateAndTime: new Date(),
                 endDateAndTime: new Date(),
                 numberOfHours: "",
@@ -76,13 +82,16 @@ class OpportunityForm extends React.Component<
             this.state = props.opform
         }
         this.handleChange = this.handleChange.bind(this);
+        this.handleActivityChange = this.handleActivityChange.bind(this)
         //this.handleSubmit = this.handleSubmit.bind(this)
         console.log("This is the state", this.state)
     }
 
-    // componentDidMount () {
-    //     const pickListTypes: 
-    // }
+    componentDidMount () {
+        const {fetchPicklists} = this.props
+        fetchPicklists(EventPicklistType.activityType)
+        fetchPicklists(EventPicklistType.preferredSector)
+    }
 
     handleChange = (event: any) => {
         console.log(event.target.value);
@@ -91,7 +100,26 @@ class OpportunityForm extends React.Component<
         console.log("State", this.state)
     };
 
+    handleActivityChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        this.setState({activityType: event.target.value as string})
+      }
+
+    handlePreferredSectorChange = (event: React.ChangeEvent<{value: unknown}>) => {
+        this.setState({preferredSector: event.target.value as string})
+    }
+
+    handleDatesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("Target Val", event.target.value)
+        if (event.target.value as string === "Single-day Event") {
+            this.setState({singleDayEvent: true})
+        } else {
+            this.setState({singleDayEvent: false})
+        }
+      };
+
     render () {
+        console.log("State on render", this.state)
+        console.log("Props on render", this.props)
         return (
             <div style={{ height: "100vh" }}>
             <Grid container style={{ height: "100%" }}>
@@ -154,20 +182,64 @@ class OpportunityForm extends React.Component<
                         <BlackTextTypography>
                             Activity Type
                         </BlackTextTypography>
-                        {/* <Select
-                            native
-                            value={this.props.picklist}
-                            onChange={this.handleOtherChange}
-                            style={{ width: "40%", marginBottom: "24px" }}
-                            inputProps={{
-                            id: "schoolBoard",
-                            }}
-                        ></Select> */}
+                        <FormControl variant="outlined">
+                            <Select
+                                native
+                                value="Select Activity Type"
+                                onChange={this.handleActivityChange}
+                                style={{ width: "40%", marginBottom: "24px" }}
+                                inputProps={{
+                                id: "schoolBoard",
+                                }}
+                            >
+                                <option value="">Select activity type</option>
+                                {Array.from(
+                                    this.props.picklists.activityType.list.entries(),
+                                    (entry) => entry
+                                ).map((entry, index) => (
+                                    <option key={index} value={entry[1]}>
+                                        {entry[1]}
+                                    </option> 
+                                ))}
+                            </Select>
+                        </FormControl>
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography>
                             Preferred Sector
                         </BlackTextTypography>
+                        <FormControl variant="outlined">
+                        <Select
+                            native
+                            displayEmpty={true}
+                            onChange={this.handlePreferredSectorChange}
+                            style={{ width: "40%", marginBottom: "24px" }}
+                            inputProps={{
+                            id: "schoolBoard",
+                            }}
+                        >
+                            <option value="">Select preferred sector</option>
+                           {Array.from(
+                                    this.props.picklists.preferredSector.list.entries(),
+                                    (entry) => entry
+                                ).map((entry, index) => (
+                                    <option key={index} value={entry[1]}>
+                                        {entry[1]}
+                                    </option> 
+                            ))}  
+                        </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item direction="column">
+                        <BlackTextTypography>
+                            Date(s) of Event
+                        </BlackTextTypography>
+                        <FormControl component="fieldset">
+                            <RadioGroup aria-label="dates" name="dates" value={this.state.singleDayEvent ? "Single-day Event" : "Multi-day Event"} onChange={this.handleDatesChange}>
+                                <FormControlLabel value="Single-day Event" control={<Radio />} label="Single-day Event" />
+                                <FormControlLabel value="Multi-day Event" control={<Radio />} label="Multi-day Event" />
+                            </RadioGroup>
+                        </FormControl>
                     </Grid>
                 {this.state.singleDayEvent ?
                     <React.Fragment>
@@ -190,11 +262,6 @@ class OpportunityForm extends React.Component<
                     </Grid>
                     </React.Fragment> :
                     <React.Fragment>
-                        <Grid item direction="column">
-                        <BlackTextTypography>
-                            Date(s) of Event
-                        </BlackTextTypography>
-                    </Grid>
                     <Grid 
                         container
                         direction="row"
