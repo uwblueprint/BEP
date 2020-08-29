@@ -4,15 +4,13 @@
 
 import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
 import Educator from '../users/EducatorInterface';
-import Application from '../applications/ApplicationsInterface';
 import * as UserService from '../users/UserService';
-import * as ApplicationsService from '../applications/ApplicationsService';
 import { conn } from '../../server';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
-const eventApplicantApi: string = 'EventApplicatnts__r';
+const eventApplicantApi: string = 'EventApplications__r';
 const eventInvitationApi: string = 'EventInvitations__r';
 const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
