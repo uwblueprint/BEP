@@ -30,7 +30,7 @@ eventRouter.get('/', async (req: Express.Request, res: Express.Response) => {
 eventRouter.get('/active', async (req: Express.Request, res: Express.Response) => {
     try {
         // Return all active events. Limit and offset have no effect.
-        const fetchedEvents = await EventService.getEvents(0, 0, 'active'); 
+        const fetchedEvents = await EventService.getEvents(0, 0, 'active');
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);
@@ -45,23 +45,6 @@ eventRouter.get('/past', async (req: Express.Request, res: Express.Response) => 
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);
-    }
-});
-
-eventRouter.get('/applications', async (req: Express.Request, res: Express.Response) => {
-    const name: string = req.query.name as string;
-
-    try {
-        if (name) {
-            const applications = await EventService.getApplications(name);
-            res.status(200).json({
-                applications
-            });
-        } else {
-            throw Error(`Invalid query parameters. Please set "name" parameter`);
-        }
-    } catch (e) {
-        res.status(500).send({ msg: e.message });
     }
 });
 
@@ -114,9 +97,6 @@ eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Respons
 });
 
 eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
-    // const id: number = parseInt(req.params.id, 10);
-    //const name: string = req.query.name as string;
-
     const name: string = req.params.name as string;
 
     try {

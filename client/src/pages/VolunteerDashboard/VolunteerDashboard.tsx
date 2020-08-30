@@ -23,8 +23,8 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { getActiveEvents } from "../../data/selectors/eventsSelector";
 
-import { Event } from "../../data/types/EventTypes"
-import { getApplications, getInvitations, getVolunteers } from '../../utils/EventsApiUtils'
+import { Event } from "../../data/types/eventTypes"
+import { getApplications, getInvitations, getVolunteers } from '../../utils/eventsApiUtils'
 import { fetchActiveEventsService } from '../../data/services/eventsServices'
 
 interface TabPanelProps {
