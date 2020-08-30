@@ -1,4 +1,5 @@
 export enum PicklistType {
+  // User picklists
   allActivities = "allActivities",
   coopPlacementMode = "coopPlacementMode",
   coopPlacementTime = "coopPlacementTime",
@@ -17,4 +18,10 @@ export enum PicklistType {
   position = "position",
   introductionMethod = "introductionMethod",
   moreInfo = "moreInfo",
+
+  // School picklists
+  schoolBoard = "schoolBoard",
+  province = "province",
+  city = "city",
+  type = "type", // School type
 }

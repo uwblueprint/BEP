@@ -10,7 +10,7 @@ import User, { isUser, UserType } from './UserInterface';
 import Volunteer, { isVolunteer } from './VolunteerInterface';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 
-const siteUser: string = 'SiteUser__c';
+export const siteUser: string = 'SiteUser__c';
 const userFields: string =
     'email__c, firstName__c, phoneNumber__c, followedPrograms__c, Id, isSubscribed__c, lastName__c, password__c, ' +
     'preferredPronouns__c, userType__c, careerDescription__c, coopPlacementMode__c, coopPlacementSchoolAffiliation__c, coopPlacementTime__c, ' +
@@ -93,7 +93,6 @@ const userModelToSalesforceUser = (user: User, id?: string): any => {
 
 // Map Saleforce record fields to user model fields.
 const salesforceUserToUserModel = async (record: any): Promise<User> => {
-    console.log(record.Id);
     const user: User = {
         email: record.email__c,
         firstName: record.firstName__c,

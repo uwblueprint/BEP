@@ -29,9 +29,14 @@ const initialState: PicklistState = {
   [PicklistType.volunteerDesiredInternalActivities]: [],
   [PicklistType.educatorDesiredActivities]: [],
   [PicklistType.introductionMethod]: [],
-  [PicklistType.school]: [],
   [PicklistType.position]: [],
   [PicklistType.moreInfo]: [],
+  [PicklistType.school]: [],
+
+  [PicklistType.schoolBoard]: [],
+  [PicklistType.province]: [],
+  [PicklistType.city]: [],
+  [PicklistType.type]: [],
 };
 
 export default function (

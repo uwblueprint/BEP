@@ -5,7 +5,7 @@
 import { conn } from '../../server';
 import School, { isSchool } from './SchoolInterface';
 
-const schoolObjectName: string = 'School__c';
+export const schoolObjectName: string = 'School__c';
 const schoolFields: string =
     'abbreviatedName__c, email__c, Id, city__c, name__c, phoneNumber__c, postalCode__c, province__c, schoolBoard__c, address__c, type__c';
 

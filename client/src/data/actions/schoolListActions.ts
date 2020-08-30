@@ -1,14 +1,9 @@
-import { FETCH_SCHOOLLIST } from "./actionTypes";
-import { SchoolListType } from "../types/schoolListTypes";
-import { SchoolListPayload } from "../reducers/schoolListReducers";
+import { FETCH_SCHOOLS } from "./actionTypes";
+import { School } from "../types/schoolListTypes";
 
-export interface SchoolListActions {
-  payload: SchoolListPayload;
-}
-
-export const fetchSchoolList = (schoolList: string[]): SchoolListActions => {
+export const fetchSchoolList = (schoolList: School[]) => {
   return {
-    type: FETCH_SCHOOLLIST,
-    payload: { schoolList },
+    type: FETCH_SCHOOLS,
+    payload: { list: schoolList },
   };
 };

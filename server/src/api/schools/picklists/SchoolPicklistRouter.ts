@@ -2,25 +2,25 @@
  * Required External Modules and Interfaces
  */
 
-import * as UserPicklistService from './UserPicklistService';
+import * as SchoolPicklistService from './SchoolPicklistService';
 import * as Express from 'express';
 
 /**
  * Router Definition
  */
 
-export const userPicklistRouter = Express.Router();
+export const schoolPicklistRouter = Express.Router();
 
 /**
  * Controller Definitions
  */
 
-// GET users/:name
+// GET schools/:name
 
-userPicklistRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
+schoolPicklistRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
     const picklistName: string = req.params.name;
     try {
-        const picklist: string[] = await UserPicklistService.getUserPicklist(picklistName);
+        const picklist: string[] = await SchoolPicklistService.getSchoolPicklist(picklistName);
         res.status(200).send(picklist);
     } catch (e) {
         res.status(500).send({ msg: e.message });

@@ -1,28 +1,13 @@
-import { FETCH_SCHOOLLIST } from "../actions/actionTypes";
-import { SchoolListType } from "../types/schoolListTypes";
+import { FETCH_SCHOOLS } from "../actions/actionTypes";
+import { School } from "../types/schoolListTypes";
 import { SchoolListActions } from "../actions/schoolListActions";
 
-export interface SchoolListPayload {
-  schoolListType: SchoolListType;
-  schoolList: string[];
-}
-
 export type SchoolListState = {
-  [key in SchoolListType]: string[];
+  list: School[];
 };
 
 const initialState: SchoolListState = {
-  [SchoolListType.abbreviatedName]: [],
-  [SchoolListType.email]: [],
-  [SchoolListType.id]: [],
-  [SchoolListType.city]: [],
-  [SchoolListType.name]: [],
-  [SchoolListType.phoneNumber]: [],
-  [SchoolListType.postalCode]: [],
-  [SchoolListType.province]: [],
-  [SchoolListType.schoolBoard]: [],
-  [SchoolListType.address]: [],
-  [SchoolListType.type]: [],
+  list: [],
 };
 
 export default function (

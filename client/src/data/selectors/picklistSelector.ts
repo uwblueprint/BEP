@@ -57,3 +57,10 @@ export const getPositionPicklist = createPicklistSelector(
 export const getMoreInfoPicklist = createPicklistSelector(
   PicklistType.moreInfo
 );
+export const getSchoolBoardPicklist = createPicklistSelector(
+  PicklistType.schoolBoard
+);
+
+export const getSchoolTypePicklist = createPicklistSelector(
+  PicklistType.schoolBoard
+);
