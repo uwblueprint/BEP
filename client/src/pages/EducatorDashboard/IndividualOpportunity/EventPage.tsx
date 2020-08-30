@@ -40,6 +40,15 @@ interface TabPanelProps {
   value: any;
 }
 
+// will need a hook + state to store this info
+enum PageViewer {
+  unknown = 0,    // default volunteer or admin
+  applicant = 1,  // application
+  invitee = 2,    // invitation
+  volunteer = 3,  // current volunteer
+  host = 4,       // educator who created this event
+}
+
 const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
 
@@ -96,18 +105,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
   },
 }));
-/*
-  Need enum or something like:
-    application
-    invitation
-    volunteer
-    none
-*/ 
+
 const EventPage = (props: any) => {
   const classes = useStyles();
   const eventData = props.location.state.event;
-  // todo: delete this
-  localStorage.setItem("event", JSON.stringify(eventData));
   const isEducator = props.userType === UserType.Educator;
   const isVolunteer = props.userType === UserType.Volunteer;
   // todo: see if volunteering for this event for bottom functionality + contact details
@@ -205,9 +206,6 @@ const EventPage = (props: any) => {
 
   const applicationsLabel = `Applications  ${applications.length}`;
   const invitationsLabel = `Invitations  ${invitations.length}`;
-
-  console.log(isEducator);
-  console.log(isVolunteer);
 
   return (
     <React.Fragment>

@@ -116,7 +116,7 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
   // todo: filter by my events
   useEffect(() => {
     (async function wrapper() {
-      if (!fetchedActiveEvents) {
+      if (!fetchedActiveEvents && activeEvents.length === 0) {
         await fetchActiveEvents(userType, userId);
         setFetchedActiveEvents(true);
       }
