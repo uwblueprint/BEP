@@ -6,7 +6,7 @@ export default interface EventInterface {
     contact: EducatorInterface;
     endDate: Date;
     eventName: string;
-    gradeOfStudents: string;
+    gradeOfStudents: string[];
     hoursCommitment: number;
     id?: string;
     invitationNumber: number;

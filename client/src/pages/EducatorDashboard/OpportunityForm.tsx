@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { OutlinedTextField, TextField } from '../../components/TextField'
 import { fetchPicklistsService } from "../../data/services/eventPicklistServices";
 import {PageHeader, PageBody} from '../../components/Page'
@@ -10,6 +10,7 @@ import { getActivityTypePicklist, getPreferredSectorPicklist } from '../../data/
 import { connect } from "react-redux";
 import Switch from '@material-ui/core/Switch';
 import 'date-fns';
+import { post } from '../../utils/ApiUtils'
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -28,6 +29,7 @@ import { ContainedButton } from '../../components/Button'
 import { EventPicklistType } from '../../data/types/EventPicklistTypes';
 import { withStyles } from '@material-ui/core';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
+import { Event } from '../../data/types/EventTypes'
 
 const grades = ["Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"]
 
@@ -68,22 +70,22 @@ const styles = () => ({
 
 type OpFormProps = {
     name: string;
-    requiredVolunteers: string;
-    activityType: string;
-    preferredSector: string;
+    requiredVolunteers: number | string;
+    activityType: string[];
+    preferredSector: string[];
     singleDayEvent: boolean;
     startDateAndTime: Date | null;
     endDateAndTime: Date | null;
-    numberOfHours?: string;
+    numberOfHours?: number | string;
     transportation: string;
-    numberOfStudents: string;
+    numberOfStudents: number;
     studentGrades: string[];
     public: boolean;
 }
 
 interface IProps {
-    opform: OpFormProps;
     fetchPicklists: any;
+    location: any;
     picklists: {
         activityType: { displayName: string, list: string[] };
         preferredSector: { displayName: string, list: string[] };
@@ -103,28 +105,44 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     constructor(props: IProps) {
         super(props);
         console.log("These are the props", props)
-        console.log("These are the component opformprops", props.opform)
-        if (!props.opform) {
+        console.log("These are the component opformprops", props)
+        if (!props.location.state) {
             console.log("Setting state")
             this.state = {
                 name: "",
-                requiredVolunteers: "",
-                activityType: "",
-                preferredSector: "",
+                requiredVolunteers: '',
+                activityType: [],
+                preferredSector: [],
                 singleDayEvent: true,
                 startDateAndTime: new Date(),
                 endDateAndTime: new Date(),
-                numberOfHours: "",
+                numberOfHours: '',
                 transportation: "",
-                numberOfStudents: "",
+                numberOfStudents: 0,
                 studentGrades: [],
                 public: false,
             };
         } else {
-            this.state = props.opform
+            var eventData: Event = props.location.state.event
+            var startDay = new Date(eventData.startDate)
+            var endDay = new Date(eventData.endDate)
+            var singleDayEvent = startDay.getDate() === endDay.getDate() ? true : false
+            this.state = {
+                name: eventData.eventName,
+                requiredVolunteers: eventData.numberOfVolunteers,
+                activityType: eventData.activityType,
+                preferredSector: eventData.preferredSector,
+                singleDayEvent: singleDayEvent,
+                startDateAndTime: eventData.startDate,
+                endDateAndTime: eventData.endDate,
+                numberOfHours: eventData.hoursCommitment,
+                transportation: eventData.schoolTransportation,
+                numberOfStudents: eventData.numberOfStudents,
+                studentGrades: eventData.gradeOfStudents,
+                public: eventData.isPublic,
+            }
         }
         this.handleChange = this.handleChange.bind(this);
-        this.handleActivityChange = this.handleActivityChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
@@ -145,14 +163,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
         this.setState({ ...this.state, [event.target.name]: event.target.checked });
       };
 
-    handleActivityChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        this.setState({activityType: event.target.value as string})
-      }
-
-    handlePreferredSectorChange = (event: React.ChangeEvent<{value: unknown}>) => {
-        this.setState({preferredSector: event.target.value as string})
-    }
-
     handleDatesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log("Target Val", event.target.value)
         if (event.target.value as string === "Single-day Event") {
@@ -171,7 +181,17 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     }
 
     handleSubmit = (event: any) => {
+        const sendOpportunity = async (url: string, body: string) => {
+            try {
+                await post(url, body)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
         
+
+       //sendOpportunity()
     }
 
 
@@ -245,26 +265,23 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             Activity Type
                         </BlackTextTypography>
                         <FormControl variant="outlined">
-                            <Select
-                                native
-                                displayEmpty={true}
-                                onChange={this.handleActivityChange}
-                                style={{ width: "454px", height: "40px" }}
-                                inputProps={{
-                                id: "activityType",
-                                classes: { input: this.props.classes.input }
-                                }}
-                            >
-                                <option value="">Select activity type</option>
-                                {Array.from(
-                                    this.props.picklists.activityType.list.entries(),
-                                    (entry) => entry
-                                ).map((entry, index) => (
-                                    <option key={index} value={entry[1]}>
-                                        {entry[1]}
-                                    </option> 
-                                ))}
-                            </Select>
+                        <Autocomplete
+                            multiple
+                            id="tags-outlined"
+                            defaultValue={this.state.activityType}
+                            options={this.props.picklists.activityType.list}
+                            getOptionLabel={(option) => option}
+                            filterSelectedOptions
+                            onChange={(_event, newValue) => {this.setState({activityType: newValue})}}
+                            renderInput={(params) => (
+                            <OutlinedTextField
+                                {...params}
+                                style={{ width: "454px"}}
+                                variant="outlined"
+                                placeholder="Select Activity Type"
+                            />
+                        )}
+                    />
                         </FormControl>
                     </Grid>
                     <Grid item direction="column">
@@ -272,26 +289,23 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             Preferred Sector
                         </BlackTextTypography>
                         <FormControl variant="outlined">
-                        <Select
-                            native
-                            displayEmpty={true}
-                            onChange={this.handlePreferredSectorChange}
-                            style={{ width: "454px", height: "40px" }}
-                            inputProps={{
-                            id: "preferredSector",
-                            classes: { input: this.props.classes.input }
-                            }}
-                        >
-                            <option value="">Select preferred sector</option>
-                           {Array.from(
-                                    this.props.picklists.preferredSector.list.entries(),
-                                    (entry) => entry
-                                ).map((entry, index) => (
-                                    <option key={index} value={entry[1]}>
-                                        {entry[1]}
-                                    </option> 
-                            ))}  
-                        </Select>
+                        <Autocomplete
+                            multiple
+                            id="tags-outlined"
+                            defaultValue={this.state.preferredSector}
+                            options={this.props.picklists.preferredSector.list}
+                            getOptionLabel={(option) => option}
+                            filterSelectedOptions
+                            onChange={(_event, newValue) => {this.setState({preferredSector: newValue})}}
+                            renderInput={(params) => (
+                            <OutlinedTextField
+                                {...params}
+                                style={{ width: "454px"}}
+                                variant="outlined"
+                                placeholder="Preferred Sectors"
+                            />
+                        )}
+                    />
                         </FormControl>
                     </Grid>
                     <Grid item direction="column">
