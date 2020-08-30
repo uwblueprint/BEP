@@ -16,7 +16,9 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import theme from "../../../components/styling/Theme";
 import {
+  BlackTextTypography,
   ContainedButton,
   OutlinedButton,
   PageHeader,
@@ -207,8 +209,6 @@ const EventPage = (props: any) => {
   useEffect(() => {
     const fetchdata = async () => {
       fetchEventApplications(eventData);
-      // const result = await getApplications(eventData.eventName);
-      // setApplications(result.data.applications);
     };
     fetchdata();
   }, [eventData, fetchEventApplications]);
@@ -250,9 +250,16 @@ const EventPage = (props: any) => {
   return (
     <React.Fragment>
       <Dialog open={openDialog}>
-        <DialogTitle>Do you want to apply for this opportunity?</DialogTitle>
+        <DialogTitle disableTypography>
+          <BlackTextTypography variant="h2">
+            Do you want to apply for this opportunity?
+          </BlackTextTypography>
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText
+            variant="body1"
+            style={{ color: theme.palette.text.primary }}
+          >
             You can retract your application later if you change your mind.
           </DialogContentText>
         </DialogContent>
