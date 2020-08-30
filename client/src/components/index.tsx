@@ -20,11 +20,10 @@ import {
   BlackTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
-  RedTextTypography
+  RedTextTypography,
 } from "./Typography";
 import Dialog from "./Dialog";
 import DialogTitle from "./DialogTitle";
-
 
 export { ContainedButton, DarkContainedButton, TextButton, Button };
 export { Link };
@@ -43,7 +42,7 @@ export {
   BlackTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
-  RedTextTypography
+  RedTextTypography,
 };
 
 export { Dialog };

@@ -89,7 +89,7 @@ class App extends React.Component<
                 component={EventPage}
                 isLoggedIn={isLoggedIn}
               />
-              <PrivateRoute
+              <Route
                 component={VolunteerList}
                 exact
                 path="/volunteers"

@@ -1,13 +1,13 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
 
-const get = () => {
+const getSchoolList = () => {
   const config: AxiosRequestConfig = {
-    url: `${baseURL}api/users/schools/`,
+    url: `${baseURL}api/schools`,
     method: "get",
   };
 
   return axios.request(config);
 };
 
-export { get };
+export { getSchoolList };

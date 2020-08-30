@@ -1,26 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 
 /* Types */
 import { PicklistType } from "../../data/types/picklistTypes";
-import { SchoolListType } from "../../data/types/schoolListTypes";
+import { School } from "../../data/types/schoolListTypes";
+
+// import { SchoolListType } from "../../data/types/schoolListTypes";
 
 /* Services */
-import { fetchPicklistsService } from "../../data/services/picklistServices";
+import { fetchSchoolPicklistService } from "../../data/services/picklistServices";
+import { fetchUserPicklistService } from "../../data/services/picklistServices";
 import { fetchSchoolListService } from "../../data/services/schoolListServices";
 
 /* Selectors */
-import {
-  getSchoolBoardList,
-  getSchoolNameList,
-} from "../../data/selectors/schoolListSelector";
+
 import {
   getEducatorDesiredActivitiesPicklist,
   getPositionPicklist,
   getIntroductionMethodPicklist,
   getMoreInfoPicklist,
+  getSchoolTypePicklist,
+  getSchoolBoardPicklist,
 } from "../../data/selectors/picklistSelector";
+
+import { getSchools } from "../../data/selectors/schoolListSelector";
 
 import { baseURL } from "../../utils/ApiUtils";
 
@@ -46,7 +50,6 @@ import {
   TextField,
   Select,
 } from "../../components/index";
-import { eventNames } from "cluster";
 
 const styles = () => ({
   selectTextField: {
@@ -62,18 +65,18 @@ const styles = () => ({
 });
 
 interface IComponentProps {
+  schoolList: School[];
   picklists: {
     educatorDesiredActivities: { list: string[] };
     position: { list: string[] };
     introductionMethod: { list: string[] };
     moreInfo: { list: string[] };
-  };
-  schoolLists: {
     schoolBoard: { list: string[] };
-    schoolName: { list: string[] };
+    type: { list: string[] };
   };
-  fetchPicklists: any;
-  fetchSchoolLists: any;
+  fetchUserPicklists: any;
+  fetchSchoolPicklists: any;
+  fetchSchoolList: any;
 }
 
 interface IComponentState {
@@ -83,6 +86,8 @@ interface IComponentState {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  schoolName: string;
+  filteredSchoolList: School[];
   picklistInfo: {
     educatorDesiredActivities: Map<string, boolean>;
     moreInfo: Map<string, boolean>;
@@ -91,7 +96,7 @@ interface IComponentState {
   };
   schoolInfo: {
     schoolBoard: string;
-    schoolName: string;
+    type: string;
   };
 }
 
@@ -102,10 +107,16 @@ class EducatorRegistration extends React.Component<
   constructor(props: any) {
     super(props);
 
+    const { schoolList } = props;
+
     this.handleChange = this.handleChange.bind(this);
     this.handlepicklistInfoChange = this.handlepicklistInfoChange.bind(this);
+    this.handleschoolInfoChange = this.handleschoolInfoChange.bind(this);
+
     this.createHandleSelectOption = this.createHandleSelectOption.bind(this);
     this.createUpdateOptions = this.createUpdateOptions.bind(this);
+    this.filterAllFields = this.filterAllFields.bind(this);
+    // this.fetchSchoolList = this.fetchSchoolList.bind(this);
 
     this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -116,6 +127,8 @@ class EducatorRegistration extends React.Component<
       firstName: "",
       lastName: "",
       phoneNumber: "",
+      schoolName: "",
+      filteredSchoolList: schoolList,
       picklistInfo: {
         educatorDesiredActivities: new Map(),
         moreInfo: new Map(),
@@ -124,7 +137,7 @@ class EducatorRegistration extends React.Component<
       },
       schoolInfo: {
         schoolBoard: "",
-        schoolName: "",
+        type: "",
       },
     };
   }
@@ -146,7 +159,7 @@ class EducatorRegistration extends React.Component<
     };
 
     picklistTypes.forEach((type: PicklistType) => {
-      this.props.fetchPicklists(type).then(() => {
+      this.props.fetchUserPicklists(type).then(() => {
         const picklists = this.props.picklists;
         const picklistInfo = this.state.picklistInfo;
 
@@ -163,14 +176,30 @@ class EducatorRegistration extends React.Component<
       });
     });
 
-    const schoolListTypes: SchoolListType[] = [
-      SchoolListType.schoolBoard,
-      SchoolListType.name,
+    const schoolListTypes: PicklistType[] = [
+      PicklistType.schoolBoard,
+      PicklistType.type,
     ];
 
-    schoolListTypes.forEach((type: SchoolListType) => {
-      this.props.fetchSchoolLists(type);
+    schoolListTypes.forEach((type: PicklistType) => {
+      this.props.fetchSchoolPicklists(type).then(() => {
+        console.log("hello");
+      });
     });
+
+    this.props.fetchSchoolList().then(() => {
+      this.setState({
+        filteredSchoolList: this.props.schoolList,
+      });
+    });
+
+    // .then(() => {
+    //   this.setState({
+    //     filteredSchoolList: this.state.filteredSchoolList.concat(
+    //       this.filterAllFields(this.props.schoolList)
+    //     ),
+    //   });
+    // });
   }
 
   componentDidUpdate(prevProps: IComponentProps, prevState: IComponentState) {
@@ -195,6 +224,64 @@ class EducatorRegistration extends React.Component<
       // });
     }
   }
+
+  getFilterFunction = (fieldName: string) => {
+    switch (fieldName) {
+      case "schoolBoard":
+        return this.filterSchoolBoard;
+      case "type":
+        return this.filterSchoolType;
+    }
+    return (school: School, filter: string) => true;
+  };
+
+  handleschoolInfoChange = (event: any) => {
+    const { name, value } = event.target;
+    const schoolInfo = this.state.schoolInfo;
+    console.log("School Info Change");
+    console.log(this.state.schoolInfo.schoolBoard); // doesn't show anything
+
+    this.setState({
+      schoolInfo: {
+        ...schoolInfo,
+        [name]: value,
+      },
+      filteredSchoolList: this.filterAllFields(this.props.schoolList),
+    });
+  };
+
+  filterAllFields(schools: School[]) {
+    const newSchools = schools.filter((school: School) => {
+      var pass = true;
+      console.log(this.state.schoolInfo.schoolBoard); // still doesn't show anything
+
+      for (let [fieldName, filterMap] of Object.entries(
+        this.state.schoolInfo
+      )) {
+        const filterFunction = this.getFilterFunction(fieldName);
+
+        if (pass && !filterFunction(school, filterMap)) pass = false;
+        if (!pass) return false;
+      }
+    });
+    return newSchools;
+  }
+
+  filterSchoolBoard = (school: School, filter: string) =>
+    school.schoolBoard.includes(filter);
+
+  filterSchoolType = (school: School, filter: string) =>
+    school.type.includes(filter);
+
+  // fetchSchoolList() {
+  //   this.props.fetchSchoolList.then(() => {
+  //     this.setState({
+  //       filteredSchoolList: this.state.filteredSchoolList.concat(
+  //         this.filterAllFields(this.props.schoolList)
+  //       ),
+  //     });
+  //   });
+  // }
 
   getMultiPicklist(picklistName: string) {
     const picklists = this.state.picklistInfo;
@@ -250,20 +337,23 @@ class EducatorRegistration extends React.Component<
   };
 
   handleChange = (event: any) => {
-    console.log(event.target.value);
-    const { id, value } = event.target;
-    this.setState({ ...this.state, [id]: value });
+    console.log("State Change");
+
+    const { name, value } = event.target;
+    this.setState({ ...this.state, [name]: value });
   };
 
   handlepicklistInfoChange = (event: any) => {
-    const { id, value } = event.target;
-    this.setState((prevState) => ({
-      ...prevState,
+    const { name, value } = event.target;
+    const picklistInfo = this.state.picklistInfo;
+    console.log("Picklist Info Change");
+
+    this.setState({
       picklistInfo: {
-        ...prevState.picklistInfo,
-        [id]: value,
+        ...picklistInfo,
+        [name]: value,
       },
-    }));
+    });
   };
 
   handleSubmit = (event: any) => {
@@ -301,44 +391,124 @@ class EducatorRegistration extends React.Component<
                 margin: "2em 0em",
               }}
             >
-              {console.log("List" + this.educatorDesiredActivitiesList)}
-              {console.log(this.state.picklistInfo.educatorDesiredActivities)}
-              <BlackTextTypography>
-                Which activities are you interested in?
-              </BlackTextTypography>
-              <Grid style={{ columns: "2 auto" }}>
-                {Array.from(
-                  this.state.picklistInfo.educatorDesiredActivities.entries(),
-                  (entry) => entry
-                ).map(([option, isSelected]) => (
-                  <div>
-                    <OutlinedCheckbox
-                      key={option}
-                      value={option}
-                      name={option}
-                      onChange={this.createHandleSelectOption(picklistName)}
-                    />
-                    {option}
-                  </div>
-                ))}
-              </Grid>
-              <BlackTextTypography>
-                Which BEP programs would you like more information about?
-              </BlackTextTypography>
-              <Grid style={{ columns: "2 auto" }}>
-                {Array.from(
-                  this.state.picklistInfo.moreInfo.entries(),
-                  (entry) => entry
-                ).map(([option, isSelected]) => (
-                  <div>
-                    <OutlinedCheckbox key={option} value={option} />
-                    {option}
-                  </div>
-                ))}
-              </Grid>
-              <ContainedButton onClick={this.handleSubmit}>
-                Finish Registration
-              </ContainedButton>
+              <BlackTextTypography>School Board</BlackTextTypography>
+              <FormControl required>
+                <Select
+                  value={this.state.schoolInfo.schoolBoard}
+                  onChange={this.handleschoolInfoChange}
+                  name="schoolBoard"
+                  displayEmpty
+                  disableUnderline={true}
+                  style={{
+                    width: "40%",
+                    border: "1px solid #bcbcbc",
+                    padding: "8px 8px 3px 12px",
+                    borderRadius: "3px",
+                    marginBottom: "24px",
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Select your school board
+                  </MenuItem>
+                  {Array.from(
+                    this.props.picklists.schoolBoard.list.entries(),
+                    (entry) => entry
+                  ).map((entry, index) => (
+                    <MenuItem key={index} value={entry[1]}>
+                      {entry[1]}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <BlackTextTypography>School Type</BlackTextTypography>
+              <FormControl required>
+                <Select
+                  value={this.state.schoolInfo.type}
+                  onChange={this.handleschoolInfoChange}
+                  name="type"
+                  displayEmpty
+                  disableUnderline={true}
+                  style={{
+                    width: "40%",
+                    border: "1px solid #bcbcbc",
+                    padding: "8px 8px 3px 12px",
+                    borderRadius: "3px",
+                    marginBottom: "24px",
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Select your school type
+                  </MenuItem>
+                  {Array.from(
+                    this.props.picklists.type.list.entries(),
+                    (entry) => entry
+                  ).map((entry, index) => (
+                    <MenuItem key={index} value={entry[1]}>
+                      {entry[1]}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {console.log(this.state.schoolInfo)}
+
+              <BlackTextTypography>School Name</BlackTextTypography>
+
+              <FormControl required>
+                <Select
+                  value={this.state.schoolName}
+                  onChange={this.handleChange}
+                  name="schoolName"
+                  displayEmpty
+                  disableUnderline={true}
+                  style={{
+                    width: "40%",
+                    border: "1px solid #bcbcbc",
+                    padding: "8px 8px 3px 12px",
+                    borderRadius: "3px",
+                    marginBottom: "24px",
+                  }}
+                >
+                  {" "}
+                  <MenuItem value="" disabled>
+                    Select your school name
+                  </MenuItem>
+                  {this.state.filteredSchoolList.map((school, index) => (
+                    <MenuItem key={index} value={school.name}>
+                      {school.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <BlackTextTypography>Position</BlackTextTypography>
+              <FormControl required>
+                <Select
+                  value={this.state.picklistInfo.position}
+                  onChange={this.handlepicklistInfoChange}
+                  name="position"
+                  displayEmpty
+                  disableUnderline={true}
+                  style={{
+                    width: "40%",
+                    border: "1px solid #bcbcbc",
+                    padding: "8px 8px 3px 12px",
+                    borderRadius: "3px",
+                    marginBottom: "24px",
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Select your position
+                  </MenuItem>
+                  {Array.from(
+                    this.props.picklists.position.list.entries(),
+                    (entry) => entry
+                  ).map((entry, index) => (
+                    <MenuItem key={index} value={entry[1]}>
+                      {entry[1]}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
           </div>
         </PageBody>
@@ -349,6 +519,7 @@ class EducatorRegistration extends React.Component<
 
 const mapStateToProps = (state: any) => {
   return {
+    schoolList: getSchools(state.schoolList),
     picklists: {
       educatorDesiredActivities: {
         list: getEducatorDesiredActivitiesPicklist(state.picklists),
@@ -362,23 +533,22 @@ const mapStateToProps = (state: any) => {
       moreInfo: {
         list: getMoreInfoPicklist(state.picklists),
       },
-    },
-    schoolList: {
       schoolBoard: {
-        list: getSchoolBoardList(state.schoolList),
+        list: getSchoolBoardPicklist(state.picklists),
       },
-      schoolName: {
-        list: getSchoolNameList(state.schoolList),
+      type: {
+        list: getSchoolTypePicklist(state.picklists),
       },
     },
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchPicklists: (picklistType: PicklistType) =>
-    dispatch(fetchPicklistsService(picklistType)),
-  fetchSchoolLists: (schoolListType: SchoolListType) =>
-    dispatch(fetchSchoolListService(schoolListType)),
+  fetchUserPicklists: (picklistType: PicklistType) =>
+    dispatch(fetchUserPicklistService(picklistType)),
+  fetchSchoolPicklists: (picklistType: PicklistType) =>
+    dispatch(fetchSchoolPicklistService(picklistType)),
+  fetchSchoolList: () => dispatch(fetchSchoolListService()),
 });
 
 export default connect(

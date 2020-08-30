@@ -1,6 +1,10 @@
 import { FETCH_SCHOOLS } from "../actions/actionTypes";
 import { School } from "../types/schoolListTypes";
-import { SchoolListActions } from "../actions/schoolListActions";
+import { SchoolsAction } from "../actions/schoolListActions";
+
+export interface SchoolsPayload {
+  list: School[];
+}
 
 export type SchoolListState = {
   list: School[];
@@ -12,14 +16,13 @@ const initialState: SchoolListState = {
 
 export default function (
   state: SchoolListState = initialState,
-  action: SchoolListActions
+  action: SchoolsAction
 ) {
   switch (action.type) {
-    case FETCH_SCHOOLLIST:
+    case FETCH_SCHOOLS:
       return {
         ...state,
-        [SchoolListType[action.payload.schoolListType]]:
-          action.payload.schoolList,
+        list: state.list.concat(action.payload.list),
       };
 
     default:

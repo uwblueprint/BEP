@@ -61,6 +61,4 @@ export const getSchoolBoardPicklist = createPicklistSelector(
   PicklistType.schoolBoard
 );
 
-export const getSchoolTypePicklist = createPicklistSelector(
-  PicklistType.schoolBoard
-);
+export const getSchoolTypePicklist = createPicklistSelector(PicklistType.type);

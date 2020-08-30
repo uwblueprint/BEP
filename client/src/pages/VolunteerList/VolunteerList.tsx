@@ -102,7 +102,7 @@ class VolunteerList extends React.Component<
     );
     this.createHandleSelectFilter = this.createHandleSelectFilter.bind(this);
     this.handleSearchFormSubmit = this.handleSearchFormSubmit.bind(this);
-    this.filterSingleField = this.filterSingleField.bind(this);
+    // this.filterSingleField = this.filterSingleField.bind(this);
     this.filterAllFields = this.filterAllFields.bind(this);
     this.fetchVolunteers = this.fetchVolunteers.bind(this);
     this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
@@ -310,17 +310,18 @@ class VolunteerList extends React.Component<
     return (volunteer: Volunteer, filter: string) => true;
   };
 
-  filterSingleField(
-    volunteers: Volunteer[],
-    fieldName: string,
-    filter: string
-  ) {
-    let filterFunction = this.getFilterFunction(fieldName);
+  //commented this out because this function never gets used
+  // filterSingleField(
+  //   volunteers: Volunteer[],
+  //   fieldName: string,
+  //   filter: string
+  // ) {
+  //   let filterFunction = this.getFilterFunction(fieldName);
 
-    return volunteers.filter((volunteer: Volunteer) =>
-      filterFunction(volunteer, filter)
-    );
-  }
+  //   return volunteers.filter((volunteer: Volunteer) =>
+  //     filterFunction(volunteer, filter)
+  //   );
+  // }
 
   filterAllFields(volunteers: Volunteer[]) {
     const newVolunteers = volunteers.filter((volunteer: Volunteer) => {
