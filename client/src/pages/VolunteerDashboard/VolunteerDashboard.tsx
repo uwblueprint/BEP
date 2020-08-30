@@ -105,34 +105,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActiveEvents } : Props) => {
   const classes = useStyles();
 
-  // delete these two
-  const deleteThis = localStorage.getItem("event");
-  const eventData = deleteThis ? JSON.parse(deleteThis) : null;
-
   const [value, setValue] = React.useState<number>(0);
-  const [applications, setApplications] = React.useState<any>([]);
-  const [invitations, setInvitations] = React.useState<any>([]);
-  const [fetchedActiveEvents, setFetchedActiveEvents] = React.useState(false);
+  // const [applications, setApplications] = React.useState<any>([]);
+  // const [fetchedApplications, setFetchedApplications] = React.useState(false);
+  // const [invitations, setInvitations] = React.useState<any>([]);
+  // const [fetchedInvitations, setFetchedInvitations] = React.useState(false);
   const [filteredEvents, setFilteredEvents] = React.useState<any>([]);
-
-  // todo: applications, incomplete
-  // useEffect(() => {
-  //   const fetchdata = async () => {
-  //     const result = await getApplications(eventData.eventName);
-  //     setApplications(result.data.applications)
-  //   }
-  //   fetchdata();
-
-  // }, [eventData.eventName]);
-
-  // todo: invitations, incomplete
-  // useEffect(() => {
-  //   const fetchdata = async () => {
-  //     const result = await getInvitations(eventData.eventName);
-  //     setInvitations(result.data.invitations)
-  //   }
-  //   fetchdata()
-  // }, [eventData.eventName]);
+  const [fetchedActiveEvents, setFetchedActiveEvents] = React.useState(false);
 
   // todo: filter by my events
   useEffect(() => {
@@ -143,6 +122,26 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
       }
     })();
   }, [fetchActiveEvents]);
+
+  // todo: applications, incomplete
+  // useEffect(() => {
+  //   const fetchdata = async () => {
+  //     const result = await getApplications(eventData.eventName);
+  //     setApplications(result.data.applications)
+  //   }
+  //   fetchdata();
+  // }, [applications]);
+  let applications = activeEvents;
+
+  // todo: invitations, incomplete
+  // useEffect(() => {
+  //   const fetchdata = async () => {
+  //     const result = await getInvitations(eventData.eventName);
+  //     setInvitations(result.data.invitations)
+  //   }
+  //   fetchdata()
+  // }, [eventData.eventName]);
+  let invitations = activeEvents;
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -184,7 +183,7 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
               </Typography>
             </Grid>
 
-            <AppBar position="static" color="transparent" elevation={0}>
+            <AppBar position="static" color="transparent" elevation={0} style={{zIndex: 1}}>
               <Tabs className={classes.tabs} value={value} onChange={handleChange} aria-label="Simple Tabs">
                 <Tab label = "Upcoming Opportunities" {...a11yProps(0)} className={classes.tab} />
                 <Tab label={applicationsLabel} {...a11yProps(1)} className={classes.tab} />
@@ -199,20 +198,34 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
                 {activeEvents.length === 0 ? 
                   <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
                      <div>You do not currently have any upcoming opportunities.</div>
-                     <div style={{margin:"3% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Invitations' to see if you have been invited to an event!</div>
+                     <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Invitations' to see if you have been invited to an event!</div>
                      <div>You can also click 'Browse Opportunities' to get started.</div>
                   </Typography> :
                 activeEvents.map((event: any) =>
                   createOpportunityCard(event)
                 )}
               </Grid>
-            {/* put the event list here */ }
           </TabPanel>
           <TabPanel value={value} index={1}>
-            {/* put applications here */}
+            {applications.length === 0 ? 
+              <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
+                  <div>You do not currently have any pending applications.</div>
+                  <div style={{margin:"1% 0"}}>Click 'Browse Opportunities' to get started.</div>
+              </Typography> :
+            applications.map((application: any) =>
+              createOpportunityCard(application)
+            )}
           </TabPanel>
           <TabPanel value={value} index={2}>
-            {/* put invitations here */}
+            {invitations.length === 0 ? 
+              <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
+                  <div>You do not currently have any pending invitations.</div>
+                  <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Upcoming Opportunities' to see events you've volunteered for!</div>
+                  <div>You can also click 'Browse Opportunities' to get started.</div>
+              </Typography> :
+            invitations.map((invitation: any) =>
+              createOpportunityCard(invitation)
+            )}
           </TabPanel>
         </PageBody>
       </Grid>
