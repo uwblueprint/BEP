@@ -20,6 +20,9 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 /* Services */
 import { loginService } from "../../data/services/authServices";
 
+/* Types */
+import { UserType } from "../../data/types/userTypes";
+
 const mapDispatchToProps = (dispatch: any) => ({
   login: (email: string, password: string) =>
     dispatch(loginService(email, password)),
@@ -76,8 +79,14 @@ class SignIn extends React.Component<
   render() {
     const { failed, redirect } = this.state;
     if (redirect) {
-      // todo: redirect based on userType
-      return <Redirect to="/events" />
+      const userType = localStorage.getItem("userType");
+      if (userType && parseInt(userType) === UserType.Admin) {
+        return <Redirect to="/opportunities" />
+      } else if (userType && parseInt(userType) === UserType.Educator) {
+        return <Redirect to="/events" />
+      } else if (userType && parseInt(userType) === UserType.Volunteer) {
+        return <Redirect to="/dashboard" />
+      }
     }
 
     return (

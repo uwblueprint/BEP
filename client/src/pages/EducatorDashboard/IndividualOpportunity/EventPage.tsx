@@ -40,6 +40,15 @@ interface TabPanelProps {
   value: any;
 }
 
+// will need a hook + state to store this info
+enum PageViewer {
+  unknown = 0,    // default volunteer or admin
+  applicant = 1,  // application
+  invitee = 2,    // invitation
+  volunteer = 3,  // current volunteer
+  host = 4,       // educator who created this event
+}
+
 const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
 
@@ -102,6 +111,8 @@ const EventPage = (props: any) => {
   const eventData = props.location.state.event;
   const isEducator = props.userType === UserType.Educator;
   const isVolunteer = props.userType === UserType.Volunteer;
+  // todo: see if volunteering for this event for bottom functionality + contact details
+  const isVolunteering = false;
   const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState<any>([]);
   const [invitations, setInvitations] = React.useState<any>([]);
@@ -196,9 +207,6 @@ const EventPage = (props: any) => {
   const applicationsLabel = `Applications  ${applications.length}`;
   const invitationsLabel = `Invitations  ${invitations.length}`;
 
-  console.log(isEducator);
-  console.log(isVolunteer);
-
   return (
     <React.Fragment>
       {pastEvent || !isEducator ? (
@@ -223,9 +231,9 @@ const EventPage = (props: any) => {
                       variant="body1"
                       style={{ paddingBottom: "10px" }}
                     >
-                      <Link to="/events" style={{ textDecoration: "none" }}>
+                      <a href="javascript:history.back()" style={{ textDecoration: "none" }}>
                         {`<`} Back{" "}
-                      </Link>
+                      </a>
                     </Typography>
                     <Typography variant="h1">{eventData.eventName}</Typography>
                   </Grid>
@@ -280,9 +288,9 @@ const EventPage = (props: any) => {
               >
                 <Grid item direction="column">
                   <Typography variant="body1">
-                    <Link to="/events" style={{ textDecoration: "none" }}>
+                    <a href="javascript:history.back()" style={{ textDecoration: "none" }}>
                       {`<`} Back{" "}
-                    </Link>
+                    </a>
                   </Typography>
                   <Typography variant="h1" style={{ marginTop: "5%" }}>
                     {eventData.eventName}
@@ -457,9 +465,8 @@ const EventPage = (props: any) => {
 };
 
 const mapStateToProps = (state: any) => {
-  const user: User | null = getUser(state.user);
-  console.log("HERE2")
-  console.log(user)
+  const userObj = localStorage.getItem("user");
+  const user = userObj ? JSON.parse(userObj) : userObj;
   return {
     userType: user ? user.userType : 0,
   };
