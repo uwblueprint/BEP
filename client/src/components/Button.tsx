@@ -20,6 +20,13 @@ const darkContainedButtonStyle = (theme: Theme) =>
     },
   });
 
+const outlinedButtonStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      borderColor: theme.palette.secondary.main,
+    },
+  });
+
 const textButtonStyle = (theme: Theme) =>
   createStyles({
     root: {
@@ -41,11 +48,11 @@ const TextButton = withStyles(textButtonStyle)((props: any) => (
   </Button>
 ));
 
-const OutlinedButton = (props: any) => (
+const OutlinedButton = withStyles(outlinedButtonStyle)((props: any) => (
   <Button {...props} variant="outlined">
     <SecondaryMainTextTypography>{props.children}</SecondaryMainTextTypography>
   </Button>
-);
+));
 
 export {
   ContainedButton,
