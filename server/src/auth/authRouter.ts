@@ -70,7 +70,6 @@ authRouter.post('/login', async (req: Express.Request, res: Express.Response) =>
         }
 
         if (valid) {
-            console.log(process.env.SECRET_KEY)
             const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: 5000 });
             delete fetchUser.password;
             res.status(200).send({

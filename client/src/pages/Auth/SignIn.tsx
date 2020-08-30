@@ -75,8 +75,8 @@ class SignIn extends React.Component<
         // todo: if educator, redirect to x; if volunteer, redirect to y
         this.setState({ email: "", password: "", failed: false });
         localStorage.setItem("user", JSON.stringify(user));
-        // history.push("/opportunities");
-        history.push("/events");
+        history.push("/opportunities");
+        // history.push("/events");
       } else if (!success) {
         this.setState({ ...this.state, failed: true })
       }

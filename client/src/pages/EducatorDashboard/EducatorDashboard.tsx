@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Event } from "../../data/types/EventTypes";
+import { makeStyles } from "@material-ui/core/styles";
+import { Event } from "../../data/types/eventTypes";
 import { User } from "../../data/types/userTypes";
 import { connect } from "react-redux";
 import {
@@ -164,12 +164,13 @@ const EducatorDashboard: React.SFC<Props> = ({
       setPrevY(y);
     },
     [
+      fetchPastEvents,
       lastOffset,
       loadedAllEvents,
       offset,
-      pastEvents.length,
       prevY,
-      fetchPastEvents,
+      userType,
+      userId,
     ]
   );
 
@@ -206,7 +207,14 @@ const EducatorDashboard: React.SFC<Props> = ({
       }
       setRetrievedData(true);
     })();
-  }, [fetchActiveEvents, fetchPastEvents, offset]);
+  }, [
+    fetchActiveEvents,
+    fetchedActiveEvents,
+    fetchPastEvents,
+    offset,
+    userType,
+    userId,
+  ]);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);

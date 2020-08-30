@@ -1,9 +1,11 @@
 import {
   FETCH_ACTIVE_EVENTS,
+  FETCH_EVENT_APPLICATIONS,
   FETCH_PAST_EVENTS,
   UPDATE_EVENT,
 } from "./actionTypes";
-import { Event } from "../types/EventTypes";
+import { Event } from "../types/eventTypes";
+import Application from "../types/applicationTypes";
 
 export const fetchActiveEvents = (
   events: Event[],
@@ -26,4 +28,12 @@ export const fetchPastEvents = (
 export const updateEvent = (event: Event) => ({
   type: UPDATE_EVENT,
   payload: { event },
+});
+
+export const fetchEventApplications = (
+  event: Event,
+  applications: Application[]
+) => ({
+  type: FETCH_EVENT_APPLICATIONS,
+  payload: { applications, event },
 });

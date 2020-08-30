@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
-import { Event } from "../data/types/EventTypes";
+import { Event } from "../data/types/eventTypes";
 
 const getEvents = (limit: number, offset: number) => {
   const config: AxiosRequestConfig = {

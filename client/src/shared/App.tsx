@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 'react-router-dom';
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../components/styling/Theme";
