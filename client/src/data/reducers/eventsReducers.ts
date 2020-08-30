@@ -105,7 +105,6 @@ export default function eventsFilter(
       };
     case CREATE_APPLICATION:
       newApplicationsMap = state.applications;
-      console.log(action.payload.application.event)
       newApplicationsMap.set(
         action.payload.application.event.id,
         newApplicationsMap

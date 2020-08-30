@@ -152,7 +152,6 @@ const EducatorDashboard: React.SFC<Props> = ({
 
       if (prevY >= y) {
         if (lastOffset === offset) {
-          console.log("no new events are available");
           // If no new events are available, prevent additional calls to backend.
           setLoadedAllEvents(true);
         }
