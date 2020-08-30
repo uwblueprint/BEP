@@ -348,7 +348,7 @@ const EducatorDashboard: React.SFC<Props> = ({
 
 const mapStateToProps = (state: any): StateProps => {
   const userObj = localStorage.getItem("user");
-  const user = userObj ? JSON.parse(userObj) : null;
+  const user = userObj ? JSON.parse(userObj) : userObj;
   return {
     activeEvents: getActiveEvents(state.events),
     pastEvents: getPastEvents(state.events),

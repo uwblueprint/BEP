@@ -467,9 +467,8 @@ const EventPage = (props: any) => {
 };
 
 const mapStateToProps = (state: any) => {
-  const user: User | null = getUser(state.user);
-  console.log("HERE2")
-  console.log(user)
+  const userObj = localStorage.getItem("user");
+  const user = userObj ? JSON.parse(userObj) : userObj;
   return {
     userType: user ? user.userType : 0,
   };
