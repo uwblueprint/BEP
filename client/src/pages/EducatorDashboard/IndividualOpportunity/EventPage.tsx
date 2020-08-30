@@ -571,10 +571,7 @@ const EventPage = (props: any) => {
 };
 
 const mapStateToProps = (state: any, ownProps: any) => {
-  const userObj = localStorage.getItem("user");
-  const user = userObj ? JSON.parse(userObj) : userObj;
-
-  // const user: User | null = getUser(state.user);
+  const user: User | null = getUser(state.user);
   const applications: Application[] = getEventApplications(
     ownProps.location.state.event.id,
     state.events
