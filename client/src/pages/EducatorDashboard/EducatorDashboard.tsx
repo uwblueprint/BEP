@@ -133,7 +133,9 @@ const EducatorDashboard: React.SFC<Props> = ({
   const [isPastEvent, setIsPastEvent] = useState(false);
   const [retrievedData, setRetrievedData] = useState(false);
   const [tabValue, setTabValue] = useState(0);
-  const [fetchedActiveEvents, setFetchedActiveEvents] = useState(false);
+  const [fetchedActiveEvents, setFetchedActiveEvents] = useState(
+    activeEvents.length !== 0
+  );
 
   // State variables for infinite scroll functionality
   const [prevY, setPrevY] = useState<number>(0);
