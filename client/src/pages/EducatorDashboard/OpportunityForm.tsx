@@ -182,40 +182,39 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
         //Retrieve from localstorage
         let localStorageUser = localStorage.getItem("user") as string
         let userJSON = JSON.parse(localStorageUser)
-        console.log(userJSON)
 
-    //     let formattedEvent: any = {
-    //         event: {
-    //             activityType: this.state.activityType,
-    //             contact: {
-    //               email: "userJSON.email",
-    //             },
-    //             endDate: this.state.endDateAndTime,
-    //             eventName: this.state.name,
-    //             gradeOfStudents: ["Grade 1", "Grade 2", "Grade 3"],
-    //             hoursCommitment: this.state.numberOfHours,
-    //             isActive: true,
-    //             isPublic: true,
-    //             numberOfStudents: this.state.numberOfStudents,
-    //             numberOfVolunteers: this.state.numberOfStudents,
-    //             preferredSector: this.state.preferredSector,
-    //             schoolTransportation: this.state.transportation,
-    //             startDate: this.state.startDateAndTime
-    //           }
-    //     }
-    //     const sendOpportunity = async (body) => {
-    //         try {
-    //             await createEvent(body)
-    //         } catch (e) {
-    //             console.error(e)
-    //         }
-    //     }
+        let formattedEvent: any = {
+            event: {
+                activityType: this.state.activityType,
+                contact: {
+                  email: userJSON.email,
+                },
+                endDate: this.state.endDateAndTime,
+                eventName: this.state.name,
+                gradeOfStudents: ["Grade 1", "Grade 2", "Grade 3"],
+                hoursCommitment: this.state.numberOfHours,
+                isActive: true,
+                isPublic: true,
+                numberOfStudents: this.state.numberOfStudents,
+                numberOfVolunteers: this.state.numberOfStudents,
+                preferredSector: this.state.preferredSector,
+                schoolTransportation: this.state.transportation,
+                startDate: this.state.startDateAndTime
+              }
+        }
+        const sendOpportunity = async (body: string) => {
+            try {
+                await createEvent(body)
+            } catch (e) {
+                console.error(e)
+            }
+        }
 
-    //     var user = localStorage.getItem("user");
-    //     console.log("this is the user", user)
+        var user = localStorage.getItem("user");
+        console.log("this is the user", user)
         
 
-    //    sendOpportunity(JSON.stringify(formattedEvent))
+       sendOpportunity(JSON.stringify(formattedEvent))
     }
 
 
