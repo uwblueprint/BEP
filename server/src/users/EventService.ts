@@ -62,7 +62,7 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
         contact: (await UserService.getUser({ Id: record.contact__c })) as Educator,
         endDate: record.endDate__c,
         eventName: record.Name,
-        gradeOfStudents: record.gradeOfStudents__c,
+        gradeOfStudents: picklistStringToArray(record.gradeOfStudents__c),
         hoursCommitment: record.hoursCommitment__c,
         id: record.Id,
         invitationNumber: record.invitationNumber__c,
@@ -161,6 +161,8 @@ export const getEvents = async (limit: number, offset: number, filter: 'active' 
     await Promise.all(eventPromises).then(resolvedEvents => {
         events = resolvedEvents;
     });
+
+    console.log("These are the events", events)
 
     return events;
 };

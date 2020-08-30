@@ -65,7 +65,8 @@ export const getOpportunityPicklist = async (picklistName: string): Promise<stri
     let picklist: string[] = [];
     const picklistFields: string[] = [
         'activityType__c',
-        'preferredSector__c'
+        'preferredSector__c',
+        'gradeOfStudents__c'
     ];
     if (!picklistFields.includes(picklistName)) throw new Error(`${picklistName} is not a valid picklistType.`);
 

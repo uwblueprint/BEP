@@ -108,8 +108,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const EventPage = (props: any) => {
   const classes = useStyles();
-  const eventData = props.location.state.event;
-  const isEducator = props.userType === UserType.Educator;
+  const eventData: Event = props.location.state.event;
+  // const isEducator = props.userType === UserType.Educator;
+  const isEducator = true
   const isVolunteer = props.userType === UserType.Volunteer;
   // todo: see if volunteering for this event for bottom functionality + contact details
   const isVolunteering = false;
@@ -239,11 +240,26 @@ const EventPage = (props: any) => {
                   </Grid>
                   {(isVolunteer || isEducator) && (
                     <Grid item style={{ paddingTop: "50px" }}>
+                      {isVolunteer ? 
                       <ContainedButton
                         style={{ paddingRight: 15, paddingLeft: 15 }}
                       >
-                        {isVolunteer ? "Apply for Event" : "Duplicate Details"}
-                      </ContainedButton>
+                        Apply for event
+                      </ContainedButton> :
+                      <Link
+                      to={{
+                        pathname: `/newevent`,
+                        state: { event: eventData },
+                      }}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <ContainedButton
+                        style={{ paddingRight: 15, paddingLeft: 15 }}
+                      >
+                      Duplicate Details
+                    </ContainedButton>
+                    </Link>
+                      }
                     </Grid>
                   )}
                 </Grid>

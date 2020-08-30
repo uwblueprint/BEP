@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card';
+import {Event} from '../../../data/types/EventTypes'
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -30,14 +31,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+interface IProps {
+  event: Event;
+  isEducator?: boolean;
+  isVolunteer?: boolean;
+}
 
-const EventSection = (props: any) => {
+
+const EventSection = (props: IProps) => {
   const classes = useStyles()
 
   var eventStartDate = new Date(props.event.startDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
   var eventEndDate = new Date(props.event.endDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
   var eventExpiryDate = new Date(props.event.postingExpiry).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
-  
+  console.log("Props for eventsection", props.event)
     return (
       <div className={classes.root}>
           <Card className={classes.card} elevation={0}>
@@ -50,7 +57,9 @@ const EventSection = (props: any) => {
                     ACTIVITY TYPE
                 </Typography>
                 <Typography variant="body1" className={classes.fieldText}>
-                    {props.event.activityType}
+                  {props.event.activityType
+                    ? props.event.activityType.join(", ")
+                    : ""}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
@@ -76,7 +85,9 @@ const EventSection = (props: any) => {
                     GRADES OF PARTICIPATING STUDENTS
                 </Typography>
                 <Typography variant="body1" className={classes.fieldText}> 
-                    {props.event.gradeOfStudents}
+                    {props.event.gradeOfStudents
+                    ? props.event.gradeOfStudents.join(", ")
+                    : ""}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
