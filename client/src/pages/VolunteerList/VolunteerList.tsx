@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 /* Services */
 import { fetchVolunteersService } from "../../data/services/volunteersServices";
-import { fetchPicklistsService } from "../../data/services/picklistServices";
+import { fetchUserPicklistService } from "../../data/services/picklistServices";
 
 /* Selectors */
 import { getVolunteers } from "../../data/selectors/volunteersSelector";
@@ -700,7 +700,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   fetchVolunteers: (limit: number, offset: number) =>
     dispatch(fetchVolunteersService(limit, offset)),
   fetchPicklists: (picklistType: PicklistType) =>
-    dispatch(fetchPicklistsService(picklistType)),
+    dispatch(fetchUserPicklistService(picklistType)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VolunteerList);

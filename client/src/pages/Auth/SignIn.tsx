@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Redirect } from 'react-router';
 
 import {
   ContainedButton,
@@ -7,7 +8,8 @@ import {
   WhiteTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
-  Link,
+  RedTextTypography,
+  Link
 } from "../../components/index";
 
 import Typography from "@material-ui/core/Typography";
@@ -18,69 +20,69 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 /* Services */
 import { loginService } from "../../data/services/authServices";
 
-/* Selectors */
-import { getUser } from "../../data/selectors/userSelector";
-
-/* Type */
-import { User } from "../../data/types/userTypes";
-
-const mapStateToProps = (state: any): any => ({
-  user: getUser(state),
-});
-
 const mapDispatchToProps = (dispatch: any) => ({
   login: (email: string, password: string) =>
     dispatch(loginService(email, password)),
 });
 
 class SignIn extends React.Component<
-  { login: any; user: User; history: any },
-  { password: string; email: string }
-> {
-  constructor(props: any) {
+    { login: any; history: any; location: any }, 
+    { password: string; email: string; failed: boolean; redirect: boolean; }
+  > {
+  constructor(props:any) {
     super(props);
 
     this.state = {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
+      failed: false,
+      redirect: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    const user = localStorage.getItem("user");
+    if (user) {
+      this.setState({ ...this.state, redirect: true });
+    }
+  }
+  
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if (e.target.id === "email") {
-    //   this.setState({email: e.target.value});
-    // } else if (e.target.id === "password") {
-    //   this.setState({password: e.target.value});
-    // }
     const { id, value } = e.target;
     this.setState({ ...this.state, [id]: value });
   };
 
   handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     const { email, password } = this.state;
     const { login } = this.props;
 
     if (email && password) {
-      await login(email, password);
+      const data = await login(email, password);
 
-      const { user, history } = this.props;
-      if (user) {
-        // todo: if educator, redirect to x; if volunteer, redirect to y
-        history.push("/volunteers");
+      if (data && data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("userType", data.user.userType);
+        window.location.reload();
       } else {
-        this.setState({ email: "", password: "" });
+        this.setState({ ...this.state, failed: true })
       }
     }
   };
 
   render() {
+    const { failed, redirect } = this.state;
+    if (redirect) {
+      // todo: redirect based on userType
+      return <Redirect to="/events" />
+    }
+
     return (
       <PageBody>
-        <div style={{ height: "100vh" }}>
+        <div style={{ height: "92vh" }}>
           <Grid container alignItems="center" justify="center">
             <Grid
               item
@@ -141,21 +143,19 @@ class SignIn extends React.Component<
                 connect with a rewarding career
               </GreyBackgroundTextTypography>
             </Grid>
-
-            <Grid
-              item
-              xs={5}
-              style={{
-                background: "white",
-                height: "70vh",
-                marginTop: "10vh",
-                padding: "5%",
-                borderRadius: "1%",
-              }}
-            >
-              <form style={{ width: "100%" }} onSubmit={this.handleSubmit}>
-                <Typography variant="h6">Login to get started</Typography>
-                <Typography variant="body1" style={{ margin: "10% 0 1% 0" }}>
+            
+            <Grid item xs={5} style={{background:"white", height:"70vh", marginTop:"10vh", padding:"5%", borderRadius:"1%"}}>
+              <form
+                style={{ width: "100%" }}
+                onSubmit={this.handleSubmit}
+              >
+                <Typography variant="h6" style={{marginBottom: "4%"}}>
+                  Login to get started
+                </Typography>
+                <Grid style={{height:"30px", width: "100%"}}>
+                { failed ? <RedTextTypography style={{fontSize: "0.85em"}}>Incorrect email or password. Please try again.</RedTextTypography> : null }
+                </Grid>
+                <Typography variant="body1" style={{margin: "1% 0"}}>
                   Email
                 </Typography>
                 <Grid item container direction="row">
@@ -227,4 +227,4 @@ class SignIn extends React.Component<
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default connect(null, mapDispatchToProps)(SignIn);

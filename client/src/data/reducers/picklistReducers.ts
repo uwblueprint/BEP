@@ -27,6 +27,10 @@ const initialState: PicklistState = {
   [PicklistType.professionalAssociations]: [],
   [PicklistType.volunteerDesiredExternalActivities]: [],
   [PicklistType.volunteerDesiredInternalActivities]: [],
+  [PicklistType.schoolBoard]: [],
+  [PicklistType.province]: [],
+  [PicklistType.city]: [],
+  [PicklistType.type]: [],
 };
 
 export default function (
