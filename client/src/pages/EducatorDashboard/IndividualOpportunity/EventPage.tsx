@@ -87,9 +87,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+// todo: if userType is x, back should lead to different pages
 const EventPage = (props: any) => {
   const classes = useStyles();
   const eventData = props.location.state.event
+  localStorage.setItem("event", JSON.stringify(eventData));
   const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState<any>([]);
   const [invitations, setInvitations] = React.useState<any>([])
@@ -300,7 +302,7 @@ const EventPage = (props: any) => {
             {volunteers.length === 0 ? 
             <Card className={classes.card} elevation={0}>
               <Typography >
-                  Volunteers that have been confirmed for this oppurtunity will show up here.
+                  Volunteers that have been confirmed for this opportunity will show up here.
               </ Typography> 
             </Card>
       : displayVolunteers}
@@ -308,12 +310,12 @@ const EventPage = (props: any) => {
       </React.Fragment>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {volunteers.length === eventData.numberOfVolunteers ? <Typography variant="body1" style={{display: 'flex', alignItems: 'center'}}> <InfoIcon /> <Typography style={{paddingLeft: '10px'}}>The positions for this oppurtunity have been filled</Typography></Typography> : null}
+        {volunteers.length === eventData.numberOfVolunteers ? <Typography variant="body1" style={{display: 'flex', alignItems: 'center'}}> <InfoIcon /> <Typography style={{paddingLeft: '10px'}}>The positions for this opportunity have been filled</Typography></Typography> : null}
         {applications.length === 0 ? 
         <React.Fragment>
         <Container className={classes.noAppsDisc}>
         <Typography style={{paddingBottom: '20px'}}>
-          There are currently no applications for this oppurtunity. <br></br>
+          There are currently no applications for this opportunity. <br></br>
           Get started by browsing volunteer applications to accept an application!
         </Typography>
         <ContainedButton style={{maxWidth: "175px"}}>Browse Volunteers</ContainedButton>
@@ -326,7 +328,7 @@ const EventPage = (props: any) => {
       <React.Fragment>
         <Container className={classes.noAppsDisc}>
         <Typography style={{paddingBottom: '20px'}}>
-          There are currently no invitations for this oppurtunity. <br></br>
+          There are currently no invitations for this opportunity. <br></br>
           Get started by browsing volunteer applications to accept an application!
         </Typography>
         <ContainedButton style={{maxWidth: "175px"}}>Browse Volunteers</ContainedButton>

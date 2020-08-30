@@ -60,10 +60,10 @@ export default function Navbar(props: any) {
     }
     // admin
     if (parseInt(userType) === UserType.Admin){
-      return <Grid style={{margin:"0 10%"}}>
-        <Link href="/events" className={classes.tab}><SecondaryMainTextTypography>Dashboard</SecondaryMainTextTypography></Link>
-        <Link href="/volunteers" className={classes.tab}><SecondaryMainTextTypography >Browse Volunteers</SecondaryMainTextTypography></Link>
-        <Link className={classes.tab}><SecondaryMainTextTypography>Admin</SecondaryMainTextTypography></Link>
+      return <Grid style={{margin:"0 5%"}}>
+        <Link href="/opportunities" className={classes.tab} style={{margin: "0 6%"}}><SecondaryMainTextTypography>Browse Opportunities</SecondaryMainTextTypography></Link>
+        <Link href="/volunteers" className={classes.tab} style={{margin: "0 6%"}}><SecondaryMainTextTypography >Browse Volunteers</SecondaryMainTextTypography></Link>
+        <Link className={classes.tab} style={{margin: "0 6%"}}><SecondaryMainTextTypography>Admin</SecondaryMainTextTypography></Link>
       </Grid>;
     } else if (parseInt(userType) === UserType.Educator) {
       // educator
@@ -90,7 +90,7 @@ export default function Navbar(props: any) {
         <Grid xs={7}>{ props.user ? content() : null}</Grid>
         { props.user ? 
           <Grid xs={2}>
-            <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} style={{cursor:"pointer"}}>
+            <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} style={{cursor:"pointer", marginTop: "-3%"}}>
               <BlackTextTypography>{name}</BlackTextTypography>
             </Button>
             <Menu 

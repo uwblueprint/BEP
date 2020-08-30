@@ -11,8 +11,9 @@ import Box from '@material-ui/core/Box';
 import ApplicantCard from '../EducatorDashboard/IndividualOpportunity/ApplicantCard'
 import InviteCard from '../EducatorDashboard/IndividualOpportunity/InviteCard';
 import Switch from '@material-ui/core/Switch';
-import { ContainedButton, PageHeader, PageBody } from '../../components/index'
-import EventSection from '../EducatorDashboard/IndividualOpportunity/EventSection'
+import { ContainedButton, PageHeader, PageBody } from '../../components/index';
+import EventSection from '../EducatorDashboard/IndividualOpportunity/EventSection';
+import EventCard from '../EducatorDashboard/EventCard';
 import ConfirmedVolunteerCard from '../EducatorDashboard/IndividualOpportunity/ConfirmedVolunteerCard';
 import { Link } from 'react-router-dom'
 import CreateIcon from '@material-ui/icons/Create';
@@ -103,13 +104,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActiveEvents } : Props) => {
   const classes = useStyles();
+
+  // delete these two
   const deleteThis = localStorage.getItem("event");
   const eventData = deleteThis ? JSON.parse(deleteThis) : null;
+
   const [value, setValue] = React.useState<number>(0);
   const [applications, setApplications] = React.useState<any>([]);
   const [invitations, setInvitations] = React.useState<any>([]);
   const [fetchedActiveEvents, setFetchedActiveEvents] = React.useState(false);
+  const [filteredEvents, setFilteredEvents] = React.useState<any>([]);
 
+  // todo: applications, incomplete
   useEffect(() => {
     const fetchdata = async () => {
       const result = await getApplications(eventData.eventName);
@@ -119,6 +125,7 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
 
   }, [eventData.eventName]);
 
+  // todo: invitations, incomplete
   useEffect(() => {
     const fetchdata = async () => {
       const result = await getInvitations(eventData.eventName);
@@ -127,10 +134,9 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
     fetchdata()
   }, [eventData.eventName]);
 
+  // todo: filter by my events
   useEffect(() => {
-    // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
-    // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
-    (async function test() {
+    (async function wrapper() {
       if (!fetchedActiveEvents) {
         await fetchActiveEvents(userType, userId);
         setFetchedActiveEvents(true);
@@ -145,6 +151,11 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
   const applicationsLabel = `Applications  ${applications.length}`
   const invitationsLabel = `Invitations  ${invitations.length}`
 
+  const createOpportunityCard = (event: Event) => (
+    <Grid item key={event.id}>
+      <EventCard event={event} />
+    </Grid>
+  );
   console.log(activeEvents)
   return (
     <React.Fragment>
@@ -176,7 +187,11 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
         </PageHeader>
         <PageBody>
           <TabPanel value={value} index={0}>
-
+              <Grid item container spacing={4}>
+                {activeEvents.map((event: any) =>
+                  createOpportunityCard(event)
+                )}
+              </Grid>
             {/* put the event list here */ }
           </TabPanel>
           <TabPanel value={value} index={1}>

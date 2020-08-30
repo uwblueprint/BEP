@@ -12,7 +12,6 @@ import {
   getActiveEvents,
   getPastEvents,
 } from "../../data/selectors/eventsSelector";
-import { getUser } from "../../data/selectors/userSelector";
 import EventCard from "./EventCard";
 import {
   MuiPickersUtilsProvider,
@@ -319,6 +318,7 @@ const EducatorDashboard: React.SFC<Props> = ({
                 </Typography>
               </Container>
             ) : (
+              // BRANDON REMINDER copy this
               eventList.map((event, index) => (
                 <Grid item key={index}>
                   <Link
