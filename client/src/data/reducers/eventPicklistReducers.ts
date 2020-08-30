@@ -14,7 +14,7 @@ export type EventPicklistState = {
   const initialState: EventPicklistState = {
     [EventPicklistType.activityType]: [],
     [EventPicklistType.preferredSector]: [],
-    [EventPicklistType.studentGrades]: [],
+    [EventPicklistType.gradeOfStudents]: [],
   };
   
   export default function (

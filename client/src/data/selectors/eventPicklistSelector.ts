@@ -18,4 +18,4 @@ const createPicklistSelector = (picklistType: EventPicklistType) => createSelect
 );
 export const getActivityTypePicklist = createPicklistSelector(EventPicklistType.activityType)
 export const getPreferredSectorPicklist = createPicklistSelector(EventPicklistType.preferredSector)
-export const studentGrades = createPicklistSelector(EventPicklistType.studentGrades)
+export const gradeOfStudents = createPicklistSelector(EventPicklistType.gradeOfStudents)
