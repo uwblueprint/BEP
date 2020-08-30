@@ -31,8 +31,6 @@ import { withStyles } from '@material-ui/core';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import { Event } from '../../data/types/EventTypes'
 
-const grades = ["Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"]
-
 const styles = () => ({
     selectTextField: {
       width: "40%",
@@ -79,7 +77,7 @@ type OpFormProps = {
     numberOfHours?: number | string;
     transportation: string;
     numberOfStudents: number;
-    studentGrades: string[];
+    gradeOfStudents: string[];
     public: boolean;
 }
 
@@ -89,7 +87,7 @@ interface IProps {
     picklists: {
         activityType: { displayName: string, list: string[] };
         preferredSector: { displayName: string, list: string[] };
-        studentGrades: { displayName: string, list: string[] };
+        gradeOfStudents: { displayName: string, list: string[] };
     };
     classes: {
         selectTextField: any;
@@ -119,7 +117,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 numberOfHours: '',
                 transportation: "",
                 numberOfStudents: 0,
-                studentGrades: [],
+                gradeOfStudents: [],
                 public: false,
             };
         } else {
@@ -138,7 +136,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 numberOfHours: eventData.hoursCommitment,
                 transportation: eventData.schoolTransportation,
                 numberOfStudents: eventData.numberOfStudents,
-                studentGrades: eventData.gradeOfStudents,
+                gradeOfStudents: eventData.gradeOfStudents,
                 public: eventData.isPublic,
             }
         }
@@ -475,10 +473,11 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                         <Autocomplete
                         multiple
                         id="tags-outlined"
-                        options={grades}
+                        options={this.props.picklists.gradeOfStudents.list}
+                        defaultValue={this.state.gradeOfStudents}
                         getOptionLabel={(option) => option}
                         filterSelectedOptions
-                        onChange={(_event, newValue) => {this.setState({studentGrades: newValue})}}
+                        onChange={(_event, newValue) => {this.setState({gradeOfStudents: newValue})}}
                         renderInput={(params) => (
                         <OutlinedTextField
                             {...params}
@@ -531,7 +530,7 @@ const mapStateToProps = (state: any) => {
                 displayName: "Preferred Sector",
                 list: getPreferredSectorPicklist(state.eventPicklists)
             },
-            studentGrades: {
+            gradeOfStudents: {
                 displayName: "Grades",
                 list: getPreferredSectorPicklist(state.eventPicklists),
             }
