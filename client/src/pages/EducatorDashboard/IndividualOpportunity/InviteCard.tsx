@@ -1,6 +1,8 @@
 import React from 'react'
 import { makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import DialogContent from '@material-ui/core/DialogContent';
@@ -11,6 +13,10 @@ import Dialog from '@material-ui/core/Dialog'
 
 import { ContainedButton, Button, OutlinedButton } from '../../../components/Button'
 
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+  
 export interface DialogProps {
     open: boolean;
 }
@@ -54,23 +60,38 @@ const useStyles = makeStyles((theme) => ({
 const InviteCard = (props: any) => {
     const classes = useStyles()
     const [open, setOpen] = React.useState(false);
+    const [snackbarState, setSnackbarState] = React.useState(false)
 
     const handleClickOpen = () => {
         setOpen(true)
     }
 
     const handleClickAcceptClose = () => {
+        //Retract the Invitation
         setOpen(false)
     }
 
     const handleClickClose = () => {
         setOpen(false)
     }
+
+    const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+          return;
+    }
+
+    setSnackbarState(false)
+};
     
     
 
     return (
     <Card className={classes.card} elevation={0}>
+         <Snackbar open={snackbarState} autoHideDuration={6000} onClose={handleSnackbarClose}>
+            <Alert onClose={handleSnackbarClose} severity="info">
+                You have accepted {props.info.invite.invitationName} for this event.
+            </Alert>
+      </Snackbar>
     <Grid container spacing={2}>
         <Grid item xs={9}>
             <Typography variant="h5" component="h2">

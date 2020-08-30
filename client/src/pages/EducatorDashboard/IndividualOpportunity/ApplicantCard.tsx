@@ -1,5 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
@@ -14,6 +16,11 @@ import { updateApplicantStatus } from '../../../utils/eventsApiUtils'
 export interface DialogProps {
     open: boolean;
 }
+
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -54,6 +61,18 @@ const ApplicantCard = (props: any) => {
     const classes = useStyles()
     const [acceptOpen, setAcceptOpen] = React.useState(false);
     const [denyOpen, setDenyOpen] = React.useState(false);
+    const [applicantAcceptedSnackbar, setAcceptSnackbarOpen] = React.useState(false)
+    const [applicantDenySnackbar, setDenySnackbarOpen] = React.useState(false)
+    
+    
+    const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setAcceptSnackbarOpen(false);
+        setDenySnackbarOpen(false)
+    };
 
     const [buttonEnabled, setButtonEnabled] = React.useState(props.info.enabled)
 
@@ -66,6 +85,7 @@ const ApplicantCard = (props: any) => {
         setAcceptOpen(false)
         //Accept the Applicant
         updateApplicantStatus(props.info.eventName, props.info.applicant.applicantName, "accept")
+            setAcceptSnackbarOpen(true)
         setButtonEnabled(false)
     }
 
@@ -73,7 +93,9 @@ const ApplicantCard = (props: any) => {
     const handleDeclineConfirm = () => {
         setDenyOpen(false)
         //Reject the Applicant
-        updateApplicantStatus(props.info.eventName, props.info.applicant.applicantName, "deny")
+        updateApplicantStatus(props.info.eventName, props.info.applicant.applicantName, "deny").then(() => {
+            setDenySnackbarOpen(true)
+        });
         setButtonEnabled(false)
     }
 
@@ -95,6 +117,16 @@ const ApplicantCard = (props: any) => {
 
     return (
     <Card className={classes.card} elevation={0}>
+        <Snackbar open={applicantAcceptedSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
+            <Alert onClose={handleSnackbarClose} severity="info">
+                You have accepted {props.info.applicant.applicantName} for this event.
+            </Alert>
+      </Snackbar>
+        <Snackbar open={applicantDenySnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
+            <Alert onClose={handleSnackbarClose} severity="info">
+                You have declined {props.info.applicant.applicantName} for this event.
+            </Alert>
+      </Snackbar>
     <Grid container spacing={2}>
         <Grid item xs={9}>
             <Typography variant="h5" component="h2" className={classes.title}>

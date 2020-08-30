@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid'
 import {BlackTextTypography, WhiteTextTypography} from '../../components/Typography'
 import Divider from '@material-ui/core/Divider'
 import { Select }  from '../../components/Select'
-import { getActivityTypePicklist, getPreferredSectorPicklist } from '../../data/selectors/eventPicklistSelector'
+import { getActivityTypePicklist, getPreferredSectorPicklist, gradeOfStudents } from '../../data/selectors/eventPicklistSelector'
 import { connect } from "react-redux";
 import Switch from '@material-ui/core/Switch';
 import 'date-fns';
@@ -148,6 +148,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
         const {fetchPicklists} = this.props
         fetchPicklists(EventPicklistType.activityType)
         fetchPicklists(EventPicklistType.preferredSector)
+        fetchPicklists(EventPicklistType.gradeOfStudents)
     }
 
     handleChange = (event: any) => {
@@ -179,14 +180,16 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     }
 
     handleSubmit = (event: any) => {
-        const sendOpportunity = async (url: string, body: string) => {
-            try {
-                await post(url, body)
-            } catch (e) {
-                console.error(e)
-            }
-        }
+        // const sendOpportunity = async (url: string, body: string) => {
+        //     try {
+        //         await post(url, body)
+        //     } catch (e) {
+        //         console.error(e)
+        //     }
+        // }
 
+        var user = localStorage.getItem("user");
+        console.log("this is the user", user)
         
 
        //sendOpportunity()
@@ -532,7 +535,7 @@ const mapStateToProps = (state: any) => {
             },
             gradeOfStudents: {
                 displayName: "Grades",
-                list: getPreferredSectorPicklist(state.eventPicklists),
+                list: gradeOfStudents(state.eventPicklists),
             }
         }
     }
