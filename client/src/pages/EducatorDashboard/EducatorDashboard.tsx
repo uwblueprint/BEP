@@ -318,7 +318,6 @@ const EducatorDashboard: React.SFC<Props> = ({
                 </Typography>
               </Container>
             ) : (
-              // BRANDON REMINDER copy this
               eventList.map((event, index) => (
                 <Grid item key={index}>
                   <Link
