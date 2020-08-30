@@ -2,6 +2,15 @@ import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
 import { Event } from "../data/types/EventTypes";
 
+const createEvent = (body: string) => {
+  const config: AxiosRequestConfig = {
+    url: `${baseURL}api/events/create`,
+    method: 'post',
+    data: body
+  }
+  return axios.request(config)
+} 
+
 const getEvents = (limit: number, offset: number) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/events/?limit=${limit}&offset=${offset}`,
@@ -101,4 +110,5 @@ export {
   getSchoolInfo,
   getVolunteers,
   updateApplicantStatus,
+  createEvent
 };

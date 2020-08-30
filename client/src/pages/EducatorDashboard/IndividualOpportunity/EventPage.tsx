@@ -109,8 +109,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const EventPage = (props: any) => {
   const classes = useStyles();
   const eventData: Event = props.location.state.event;
-  // const isEducator = props.userType === UserType.Educator;
-  const isEducator = true
+  const isEducator = props.userType === UserType.Educator;
   const isVolunteer = props.userType === UserType.Volunteer;
   // todo: see if volunteering for this event for bottom functionality + contact details
   const isVolunteering = false;

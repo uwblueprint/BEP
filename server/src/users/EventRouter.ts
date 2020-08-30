@@ -16,6 +16,16 @@ export const eventRouter = Express.Router();
  * Controller Definitions
  */
 
+eventRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
+    console.log("Hit create endpoint")
+    try {
+        const id: string = await EventService.create(req.body.event);
+        res.status(201).send({ id });
+    } catch (e) {
+        res.status(404).send(e.message);
+    }
+});
+
 eventRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     const limit: number = req.query.limit as any;
     const offset: number = req.query.offset as any;
@@ -132,15 +142,6 @@ eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) =>
 });
 
 // POST requests/
-
-eventRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
-    try {
-        const id: string = await EventService.create(req.body);
-        res.status(201).send({ id });
-    } catch (e) {
-        res.status(404).send(e.message);
-    }
-});
 
 //PUT requests
 

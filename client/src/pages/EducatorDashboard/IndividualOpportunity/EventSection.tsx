@@ -44,7 +44,7 @@ const EventSection = (props: IProps) => {
   var eventStartDate = new Date(props.event.startDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
   var eventEndDate = new Date(props.event.endDate).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
   var eventExpiryDate = new Date(props.event.postingExpiry).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '')
-  console.log("Props for eventsection", props.event)
+  console.log("Props for eventsection", props)
     return (
       <div className={classes.root}>
           <Card className={classes.card} elevation={0}>
