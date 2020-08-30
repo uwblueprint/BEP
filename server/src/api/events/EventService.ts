@@ -2,7 +2,7 @@
  * Data Model Interfaces
  */
 
-import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
+import Event, { EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
 import Educator from '../users/EducatorInterface';
 import * as UserService from '../users/UserService';
 import { conn } from '../../server';

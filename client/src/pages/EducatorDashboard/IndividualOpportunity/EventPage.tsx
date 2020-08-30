@@ -570,7 +570,7 @@ const EventPage = (props: any) => {
   );
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: any, ownProps: any) => {
   const userObj = localStorage.getItem("user");
   const user = userObj ? JSON.parse(userObj) : userObj;
 
