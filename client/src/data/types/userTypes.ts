@@ -1,6 +1,7 @@
 import School from "./SchoolTypes";
 
 export enum UserType {
+  Admin = 0,
   Educator = 1,
   Volunteer = 2,
 }

@@ -42,3 +42,7 @@ export const getLocationsPicklist = createPicklistSelector(
 export const getLanguagesPicklist = createPicklistSelector(
   PicklistType.languages
 );
+
+export const getSchoolBoardPicklist = createPicklistSelector(
+  PicklistType.schoolBoard
+);

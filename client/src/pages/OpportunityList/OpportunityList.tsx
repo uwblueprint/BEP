@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 /* Services */
 import { fetchActiveEventsService } from "../../data/services/eventsServices";
-import { fetchPicklistsService } from "../../data/services/picklistServices";
+import { fetchUserPicklistService } from "../../data/services/picklistServices";
 
 /* Selectors */
 import { getActiveEvents } from "../../data/selectors/eventsSelector";
@@ -546,7 +546,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   fetchEvents: (userType: number, userId: string) =>
     dispatch(fetchActiveEventsService(userType, userId)),
   fetchPicklists: (picklistType: PicklistType) =>
-    dispatch(fetchPicklistsService(picklistType)),
+    dispatch(fetchUserPicklistService(picklistType)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(OpportunityList);
