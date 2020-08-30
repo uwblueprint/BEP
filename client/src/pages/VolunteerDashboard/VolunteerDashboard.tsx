@@ -116,23 +116,23 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
   const [filteredEvents, setFilteredEvents] = React.useState<any>([]);
 
   // todo: applications, incomplete
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getApplications(eventData.eventName);
-      setApplications(result.data.applications)
-    }
-    fetchdata();
+  // useEffect(() => {
+  //   const fetchdata = async () => {
+  //     const result = await getApplications(eventData.eventName);
+  //     setApplications(result.data.applications)
+  //   }
+  //   fetchdata();
 
-  }, [eventData.eventName]);
+  // }, [eventData.eventName]);
 
   // todo: invitations, incomplete
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getInvitations(eventData.eventName);
-      setInvitations(result.data.invitations)
-    }
-    fetchdata()
-  }, [eventData.eventName]);
+  // useEffect(() => {
+  //   const fetchdata = async () => {
+  //     const result = await getInvitations(eventData.eventName);
+  //     setInvitations(result.data.invitations)
+  //   }
+  //   fetchdata()
+  // }, [eventData.eventName]);
 
   // todo: filter by my events
   useEffect(() => {
@@ -153,10 +153,18 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
 
   const createOpportunityCard = (event: Event) => (
     <Grid item key={event.id}>
-      <EventCard event={event} />
-    </Grid>
+        <Link
+          to={{
+            pathname: `/events/${event.eventName}`,
+            state: { event },
+          }}
+          style={{ textDecoration: "none" }}
+        >
+          <EventCard event={event} isPastEvent={false} showOwner={false} />
+        </Link>
+      </Grid>
   );
-  console.log(activeEvents)
+
   return (
     <React.Fragment>
       <div style={{ height: "100vh" }}>
@@ -187,8 +195,14 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
         </PageHeader>
         <PageBody>
           <TabPanel value={value} index={0}>
-              <Grid item container spacing={4}>
-                {activeEvents.map((event: any) =>
+              <Grid item container spacing={4} direction="column" alignItems="center" justify="center">
+                {activeEvents.length === 0 ? 
+                  <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
+                     <div>You do not currently have any upcoming opportunities.</div>
+                     <div style={{margin:"3% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Invitations' to see if you have been invited to an event!</div>
+                     <div>You can also click 'Browse Opportunities' to get started.</div>
+                  </Typography> :
+                activeEvents.map((event: any) =>
                   createOpportunityCard(event)
                 )}
               </Grid>
