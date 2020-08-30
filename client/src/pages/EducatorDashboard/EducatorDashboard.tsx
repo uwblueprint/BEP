@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { Event } from "../../data/types/EventTypes";
 import { User } from "../../data/types/userTypes";
 import { connect } from "react-redux";
@@ -12,7 +12,6 @@ import {
   getActiveEvents,
   getPastEvents,
 } from "../../data/selectors/eventsSelector";
-import { getUser } from "../../data/selectors/userSelector";
 import EventCard from "./EventCard";
 import {
   MuiPickersUtilsProvider,
@@ -347,7 +346,8 @@ const EducatorDashboard: React.SFC<Props> = ({
 };
 
 const mapStateToProps = (state: any): StateProps => {
-  const user: User | null = getUser(state.user);
+  const userObj = localStorage.getItem("user");
+  const user = userObj ? JSON.parse(userObj) : userObj;
   return {
     activeEvents: getActiveEvents(state.events),
     pastEvents: getPastEvents(state.events),

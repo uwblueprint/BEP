@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
-import { Button, ContainedButton, OutlinedButton } from '../../../components/Button'
+import { ContainedButton, OutlinedButton } from '../../../components/Button'
 import { updateApplicantStatus } from '../../../utils/EventsApiUtils'
 
 export interface DialogProps {
