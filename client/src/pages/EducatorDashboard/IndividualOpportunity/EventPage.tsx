@@ -33,7 +33,7 @@ import Container from "@material-ui/core/Container";
 import InfoIcon from "@material-ui/icons/Info";
 
 import { Event } from "../../../data/types/eventTypes";
-import { User, UserType } from "../../../data/types/userTypes";
+import { User, UserType, Volunteer } from "../../../data/types/userTypes";
 import Application, {
   ApplicationStatus,
 } from "../../../data/types/applicationTypes";
@@ -151,11 +151,11 @@ const EventPage = (props: any) => {
     fetchdata();
   }, [eventData.eventName]);
 
-  var displayVolunteers = volunteers.map((volunteer) => {
+  var displayVolunteers = volunteers.map((volunteer: Volunteer) => {
     var volunteerProps = {
       volunteer,
     };
-    return <ConfirmedVolunteerCard info={volunteerProps} />;
+    return <ConfirmedVolunteerCard info={volunteerProps} key={volunteer.id} />;
   });
 
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -371,7 +371,7 @@ const EventPage = (props: any) => {
                 alignItems="flex-end"
                 style={{ height: "100%", width: "100%" }}
               >
-                <Grid item direction="column">
+                <Grid item>
                   <Typography variant="body1">
                     <a
                       href="javascript:history.back()"
@@ -424,15 +424,27 @@ const EventPage = (props: any) => {
                       />
                     </Grid>
                     <Grid item xs={8}>
-                      <Typography variant="body1" style={{ fontSize: "18px" }}>
-                        Make posting visible to the public:{" "}
-                        <Typography
-                          variant="body1"
-                          style={{ color: "#0A79BF", display: "inline-block" }}
-                        >
-                          {publicEvent.checked ? "ON" : "OFF"}
-                        </Typography>
-                      </Typography>
+                      <Grid container>
+                        <Grid item>
+                          <Typography
+                            variant="body1"
+                            style={{ fontSize: "18px" }}
+                          >
+                            Make posting visible to the public:{" "}
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Typography
+                            variant="body1"
+                            style={{
+                              color: "#0A79BF",
+                              marginLeft: "5px",
+                            }}
+                          >
+                            {publicEvent.checked ? "ON" : "OFF"}
+                          </Typography>
+                        </Grid>
+                      </Grid>
                       <Typography variant="body1" style={{ fontSize: "12px" }}>
                         Enabling this feature will allow volunteers to discover
                         your posting on the oppurtunities page.
