@@ -4,13 +4,15 @@
 
 import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
 import Educator from '../users/EducatorInterface';
+import Application from '../applications/ApplicationsInterface';
 import * as UserService from '../users/UserService';
+import * as ApplicationsService from '../applications/ApplicationsService';
 import { conn } from '../../server';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
-const eventApplicantApi: string = 'EventApplications__r';
+const eventApplicantApi: string = 'EventApplicatnts__r';
 const eventInvitationApi: string = 'EventInvitations__r';
 const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
@@ -165,23 +167,22 @@ export const getEvents = async (limit: number, offset: number, filter: 'active' 
     return events;
 };
 
-export const getApplications = async (eventName: string): Promise<EventApplicantInterface> => {
-    let applications: EventApplicantInterface;
-
-    await conn.query(
-        `SELECT (SELECT ${eventApplicantFields} FROM ${eventApplicantApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
-        function(err, result) {
-            if (err) {
-                return console.error(err);
-            }
-            applications = result.records[0].EventApplicants__r.records.map(record =>
-                salesforceApplicantToEventAppliantModel(record)
-            );
-        }
-    );
-
-    return applications;
-};
+// export const getApplications = async (eventId: string): Promise<Array<Application>> => {
+//     // let applications: EventApplicantInterface;
+//     // await conn.query(
+//     //     `SELECT (SELECT ${eventApplicantFields} FROM ${eventApplicantApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
+//     //     function(err, result) {
+//     //         if (err) {
+//     //             return console.error(err);
+//     //         }
+//     //         applications = result.records[0].EventApplicants__r.records.map(record =>
+//     //             salesforceApplicantToEventAppliantModel(record)
+//     //         );
+//     //     }
+//     // );
+//     // return applications;
+//     return ApplicationsService.getEventApplications(eventId);
+// };
 
 export const acceptApplicant = async (eventName: string, applicantName: string, accept: boolean): Promise<void> => {
     let applicantId: string;
