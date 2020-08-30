@@ -36,7 +36,7 @@ const salesforceApplicationToApplicationModel = async (
         id: record.Id,
         status: record.status__c,
         volunteer: getVolunteer
-            ? ((await UserService.getUser({ Id: record.volunteer__c })) as Volunteer)
+            ? ((await UserService.getUser({ id: record.volunteer__c })) as Volunteer)
             : record.volunteer__c
     };
 
@@ -110,9 +110,11 @@ export const getVolunteerApplications = async (volunteerId: string): Promise<Arr
 };
 
 export const update = async (application: Application): Promise<Application> => {
+    const salesforceApplication = applicationModelToSalesforceApplication(application);
+    delete salesforceApplication.event__c;
     let updatedApplication: Application = conn
         .sobject(applicationObjectName)
-        .update(applicationModelToSalesforceApplication(application), function(err, ret) {
+        .update(salesforceApplication, function(err, ret) {
             if (err || !ret.success) {
                 return console.error(err, ret);
             }

@@ -41,19 +41,6 @@ applicationRouter.get('/', async (req: Express.Request, res: Express.Response) =
     }
 });
 
-applicationRouter.get('/', async (req: Express.Request, res: Express.Response) => {
-    // const id: number = parseInt(req.params.id, 10);
-    const id: string = req.params.id;
-
-    try {
-        const application = await ApplicationService.get(id);
-
-        res.status(200).send(application);
-    } catch (e) {
-        res.status(404).send(e.message);
-    }
-});
-
 // POST requests/
 
 applicationRouter.post('/', async (req: Express.Request, res: Express.Response) => {

@@ -61,7 +61,7 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
     const event: Event = {
         activityType: picklistStringToArray(record.activityType__c),
         applicantNumber: record.ApplicantNumber__c,
-        contact: (await UserService.getUser({ Id: record.contact__c })) as Educator,
+        contact: (await UserService.getUser({ id: record.contact__c })) as Educator,
         endDate: record.endDate__c,
         eventName: record.Name,
         gradeOfStudents: record.gradeOfStudents__c,
@@ -148,9 +148,17 @@ export const getEvents = async (limit: number, offset: number, filter: 'active' 
     let events: Event[] = [];
     let eventPromises: Promise<Event>[];
     const date = new Date().toISOString();
-    let query = `SELECT ${eventFields} FROM ${eventApi} ${
-        filter !== 'all' ? `WHERE endDate__c ${filter === 'active' ? '>=' : '<'} ${date}` : ''
-    } ORDER BY endDate__c ${filter !== 'active' ? `LIMIT ${limit} OFFSET ${offset}` : ''}`;
+    let query = '';
+    // let query = `SELECT ${eventFields} FROM ${eventApi} ${
+    //     filter !== 'all' ? `WHERE endDate__c ${filter === 'active' ? '>=' : '<'} ${date}` : ''
+    // } ORDER BY endDate__c ${filter !== 'active' ? `LIMIT ${limit} OFFSET ${offset}` : ''}`;
+    if (filter === 'all') {
+        query = `SELECT ${eventFields} FROM ${eventApi} ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}`;
+    } else if (filter === 'active') {
+        query = `SELECT ${eventFields} FROM ${eventApi} WHERE endDate__c >= ${date} ORDER BY endDate__c`;
+    } else if (filter === 'past') {
+        query = `SELECT ${eventFields} FROM ${eventApi} WHERE endDate__c < ${date} ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}`;
+    }
 
     await conn.query(query, function(err, result) {
         if (err) {

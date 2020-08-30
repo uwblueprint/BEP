@@ -11,8 +11,14 @@ import Box from "@material-ui/core/Box";
 import ApplicantCard from "./ApplicantCard";
 import InviteCard from "./InviteCard";
 import Switch from "@material-ui/core/Switch";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import {
   ContainedButton,
+  OutlinedButton,
   PageHeader,
   PageBody,
 } from "../../../components/index";
@@ -24,15 +30,20 @@ import Card from "@material-ui/core/Card";
 import Container from "@material-ui/core/Container";
 import InfoIcon from "@material-ui/icons/Info";
 
-import { Event } from "../../../data/types/EventTypes";
+import { Event } from "../../../data/types/eventTypes";
 import { User, UserType } from "../../../data/types/userTypes";
-import {
-  getApplications,
-  getInvitations,
-  getVolunteers,
-} from "../../../utils/EventsApiUtils";
+import Application, {
+  ApplicationStatus,
+} from "../../../data/types/applicationTypes";
+
+import { getInvitations, getVolunteers } from "../../../utils/eventsApiUtils";
 import { getUser } from "../../../data/selectors/userSelector";
-import { updateEventService } from "../../../data/services/eventsServices";
+import { getEventApplications } from "../../../data/selectors/eventsSelector";
+import {
+  fetchEventApplicationsService,
+  updateEventService,
+} from "../../../data/services/eventsServices";
+import { createApplicationService } from "../../../data/services/applicationsService";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -99,16 +110,25 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const EventPage = (props: any) => {
   const classes = useStyles();
-  const eventData = props.location.state.event;
-  const isEducator = props.userType === UserType.Educator;
-  const isVolunteer = props.userType === UserType.Volunteer;
+  const {
+    applications,
+    location,
+    user,
+    updateEvent,
+    fetchEventApplications,
+    createApplication,
+  } = props;
+  const userId = user ? user.id : "";
+  const eventData = location.state.event;
+  const isEducator = user.userType === UserType.Educator;
+  const isVolunteer = user.userType === UserType.Volunteer;
   const [value, setValue] = React.useState<number>(0);
-  const [applications, setApplications] = React.useState<any>([]);
   const [invitations, setInvitations] = React.useState<any>([]);
   const [publicEvent, setPublicEvent] = React.useState({
     checked: eventData.isPublic,
   });
   const [volunteers, setVolunteers] = React.useState([]);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -129,7 +149,7 @@ const EventPage = (props: any) => {
     const updatedEvent: Event = eventData;
     updatedEvent.isPublic = event.target.checked;
 
-    props.updateEvent(updatedEvent);
+    updateEvent(updatedEvent);
     setPublicEvent({
       ...publicEvent,
       [event.target.name]: event.target.checked,
@@ -175,11 +195,12 @@ const EventPage = (props: any) => {
 
   useEffect(() => {
     const fetchdata = async () => {
-      const result = await getApplications(eventData.eventName);
-      setApplications(result.data.applications);
+      fetchEventApplications(eventData);
+      // const result = await getApplications(eventData.eventName);
+      // setApplications(result.data.applications);
     };
     fetchdata();
-  }, [eventData.eventName]);
+  }, [eventData, fetchEventApplications]);
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -193,11 +214,56 @@ const EventPage = (props: any) => {
     setValue(newValue);
   };
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const applyToEvent = () => {
+    const application: Application = {
+      event: eventData,
+      id: "",
+      status: ApplicationStatus.PENDING,
+      volunteer: user,
+    };
+    createApplication(application);
+    setOpenDialog(false);
+  };
+
   const applicationsLabel = `Applications  ${applications.length}`;
   const invitationsLabel = `Invitations  ${invitations.length}`;
 
   return (
     <React.Fragment>
+      <Dialog open={openDialog}>
+        <DialogTitle>Do you want to apply for this opportunity?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You can retract your application later if you change your mind.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <OutlinedButton onClick={handleCloseDialog} color="primary">
+            No
+          </OutlinedButton>
+          <ContainedButton
+            onClick={
+              isVolunteer
+                ? applyToEvent
+                : () => {
+                    console.log("duplicate details");
+                  }
+            }
+            color="primary"
+            autoFocus
+          >
+            Yes
+          </ContainedButton>
+        </DialogActions>
+      </Dialog>
       {pastEvent || !isEducator ? (
         <div style={{ height: "100vh" }}>
           <Grid container style={{ height: "100%" }}>
@@ -233,9 +299,17 @@ const EventPage = (props: any) => {
                     <Grid item style={{ paddingTop: "50px" }}>
                       <ContainedButton
                         style={{ paddingRight: 15, paddingLeft: 15 }}
-                        onClick={() => console.log("Applied!")}
-                      > 
-                        {isVolunteer ? "Apply for Event" : "Duplicate Details"}
+                        onClick={handleOpenDialog}
+                        disabled={
+                          isVolunteer
+                            ? applications.filter(
+                                (app: Application) =>
+                                  app.volunteer.id === userId
+                              ).length !== 0
+                            : false
+                        }
+                      >
+                        {isVolunteer ? "Apply For Event" : "Duplicate Details"}
                       </ContainedButton>
                     </Grid>
                   )}
@@ -457,14 +531,24 @@ const EventPage = (props: any) => {
   );
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: any, ownProps: any) => {
   const user: User | null = getUser(state.user);
+  const applications: Application[] = getEventApplications(
+    ownProps.location.state.event.id,
+    state.events
+  );
+
   return {
-    userType: user ? user.userType : 0,
+    applications,
+    user,
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
+  createApplication: (application: Application) =>
+    dispatch(createApplicationService(application)),
+  fetchEventApplications: (event: Event) =>
+    dispatch(fetchEventApplicationsService(event)),
   updateEvent: (event: Event) => dispatch(updateEventService(event)),
 });
 
