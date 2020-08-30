@@ -1,10 +1,10 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 /* Services */
 import { fetchActiveEventsService } from "../../data/services/eventsServices";
-import { fetchPicklistsService } from "../../data/services/picklistServices";
+import { fetchUserPicklistService } from "../../data/services/picklistServices";
 
 /* Selectors */
 import { getActiveEvents } from "../../data/selectors/eventsSelector";
@@ -38,11 +38,13 @@ import {
   SecondaryMainTextTypography,
   OutlinedTextField,
 } from "../../components/index";
-import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import { Grid } from "@material-ui/core";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import {
+  Grid,
+  Typography,
+  MenuItem,
+  FormControl,
+  InputAdornment,
+} from "@material-ui/core";
 
 class OpportunityList extends React.Component<
   {
@@ -305,7 +307,15 @@ class OpportunityList extends React.Component<
     let filtersSelected = false;
     const createOpportunityCard = (event: Event) => (
       <Grid item key={event.id}>
-        <EventCard event={event} isPastEvent={false} showOwner={false} />
+        <Link
+          to={{
+            pathname: `/events/${event.eventName}`,
+            state: { event },
+          }}
+          style={{ textDecoration: "none" }}
+        >
+          <EventCard event={event} isPastEvent={false} showOwner={false} />
+        </Link>
       </Grid>
     );
 
@@ -536,7 +546,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   fetchEvents: (userType: number, userId: string) =>
     dispatch(fetchActiveEventsService(userType, userId)),
   fetchPicklists: (picklistType: PicklistType) =>
-    dispatch(fetchPicklistsService(picklistType)),
+    dispatch(fetchUserPicklistService(picklistType)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(OpportunityList);

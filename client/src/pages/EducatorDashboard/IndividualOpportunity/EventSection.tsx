@@ -136,45 +136,47 @@ const EventSection = (props: any) => {
               </Grid>
             </Grid>
           </Card>
-          <Card className={classes.bottomCard} elevation={0}>
-            <Typography variant="h6" classes={{
-              root: classes.root,
-            }}> Details </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-              <Typography variant="subtitle1" component="h1" className={classes.fieldHeader}>
-                  Educator
-                </Typography>
-                <Typography>
-                  {props.event.contactName}
-                </Typography>
+          {props.isEducator && (
+            <Card className={classes.bottomCard} elevation={0}>
+              <Typography variant="h6" classes={{
+                root: classes.root,
+              }}> Details </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                <Typography variant="subtitle1" component="h1" className={classes.fieldHeader}>
+                    Educator
+                  </Typography>
+                  <Typography>
+                    {props.event.contactName}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                <Typography variant="subtitle1" component="h1" className={classes.fieldHeader}>
+                    Position
+                  </Typography>
+                  <Typography>
+                    {props.event.contactPosition}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                <Typography variant="subtitle1" component="h1" className={classes.fieldHeader}>
+                    Phone Number
+                  </Typography>
+                  <Typography>
+                    {props.event.contactPhone}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                <Typography variant="subtitle1" component="h1" className={classes.fieldHeader}>
+                    Email Address
+                  </Typography>
+                  <Typography>
+                    {props.event.contactEmail}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-              <Typography variant="subtitle1" component="h1" className={classes.fieldHeader}>
-                  Position
-                </Typography>
-                <Typography>
-                  {props.event.contactPosition}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-              <Typography variant="subtitle1" component="h1" className={classes.fieldHeader}>
-                  Phone Number
-                </Typography>
-                <Typography>
-                  {props.event.contactPhone}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-              <Typography variant="subtitle1" component="h1" className={classes.fieldHeader}>
-                  Email Address
-                </Typography>
-                <Typography>
-                  {props.event.contactEmail}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Card>
+            </Card>
+          )}
           <Grid
             container
             direction="row"

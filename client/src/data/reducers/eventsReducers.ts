@@ -6,6 +6,7 @@ import {
   CHANGE_EVENTS_FILTER,
 } from "../actions/actionTypes";
 import { Event } from "../types/EventTypes";
+import { UserType } from "../types/userTypes";
 
 export interface EventsState {
   list: Event[];
@@ -30,7 +31,7 @@ export default function eventsFilter(
 
   const visibilityFilter = (state: EventsState): EventsState => {
     // If the user is not an educator, only show public events
-    if (action.payload.userType !== 1) { 
+    if (action.payload.userType !== UserType.Educator) { 
       const filterFunction = (event: Event) => event.isPublic;
       state.list = state.list.filter(filterFunction);
       state.activeList = state.activeList.filter(filterFunction);
