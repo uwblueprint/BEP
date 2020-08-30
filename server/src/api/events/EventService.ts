@@ -4,9 +4,7 @@
 
 import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
 import Educator from '../users/EducatorInterface';
-import Application from '../applications/ApplicationsInterface';
 import * as UserService from '../users/UserService';
-import * as ApplicationsService from '../applications/ApplicationsService';
 import { conn } from '../../server';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 // import * as express from 'express';
@@ -81,22 +79,22 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
     return event;
 };
 
-const salesforceApplicantToEventAppliantModel = (record: any): EventApplicantInterface => {
-    const applicant: EventApplicantInterface = {
-        applicantName: record.Name,
-        personalPronouns: record.personalPronouns__c,
-        job: record.job__c,
-        sectors: record.sectors__c,
-        linkedinUrl: record.linkedInUrl__c,
-        areasOfExpertise: record.areasOfExpertise__c,
-        employmentStatus: record.employmentStatus__c,
-        accepted: record.accepted__c,
-        denied: record.denied__c,
-        company: record.applicantCompany__c
-    };
+// const salesforceApplicantToEventAppliantModel = (record: any): EventApplicantInterface => {
+//     const applicant: EventApplicantInterface = {
+//         applicantName: record.Name,
+//         personalPronouns: record.personalPronouns__c,
+//         job: record.job__c,
+//         sectors: record.sectors__c,
+//         linkedinUrl: record.linkedInUrl__c,
+//         areasOfExpertise: record.areasOfExpertise__c,
+//         employmentStatus: record.employmentStatus__c,
+//         accepted: record.accepted__c,
+//         denied: record.denied__c,
+//         company: record.applicantCompany__c
+//     };
 
-    return applicant;
-};
+//     return applicant;
+// };
 
 const salesforceInvitationToEventInvitationModel = (record: any): EventInvitationInterface => {
     const invitation: EventInvitationInterface = {
