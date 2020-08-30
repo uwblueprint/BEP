@@ -9,7 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import { ContainedButton, OutlinedButton } from '../../../components/Button'
-import { updateApplicantStatus } from '../../../utils/EventsApiUtils'
+import { updateApplicantStatus } from '../../../utils/eventsApiUtils'
 
 export interface DialogProps {
     open: boolean;

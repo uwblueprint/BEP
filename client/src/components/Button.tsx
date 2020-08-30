@@ -7,6 +7,9 @@ const containedButtonStyle = (theme: Theme) =>
   createStyles({
     root: {
       background: theme.palette.secondary.main,
+      "&:disabled": {
+        background: theme.palette.secondary.contrastText,
+      },
     },
   });
 
@@ -38,12 +41,16 @@ const TextButton = withStyles(textButtonStyle)((props: any) => (
   </Button>
 ));
 
-const OutlinedButton = ((props: any) => (
+const OutlinedButton = (props: any) => (
   <Button {...props} variant="outlined">
-    <SecondaryMainTextTypography>
-    {props.children}
-    </SecondaryMainTextTypography>
+    <SecondaryMainTextTypography>{props.children}</SecondaryMainTextTypography>
   </Button>
-));
+);
 
-export { ContainedButton, DarkContainedButton, TextButton, Button, OutlinedButton };
+export {
+  ContainedButton,
+  DarkContainedButton,
+  TextButton,
+  Button,
+  OutlinedButton,
+};

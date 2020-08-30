@@ -15,7 +15,7 @@ import {
 import { getUser } from "../../data/selectors/userSelector";
 
 /* Types */
-import { Event } from "../../data/types/EventTypes";
+import { Event } from "../../data/types/eventTypes";
 import { PicklistType } from "../../data/types/picklistTypes";
 import { User } from "../../data/types/userTypes";
 
@@ -242,7 +242,7 @@ class OpportunityList extends React.Component<
 
   filterAllFields(events: Event[]) {
     const newEvents = events.filter((event: Event) => {
-      var pass = true;
+      let pass = true;
 
       // Apply filters from picklists
       for (let [fieldName, filterMap] of Object.entries(this.state.filters)) {
