@@ -477,22 +477,28 @@ const EventPage = (props: any) => {
                   </Grid>
                   <EventSection event={eventData} />
                   <React.Fragment>
-                    <Typography
-                      variant="h6"
-                      style={{ fontSize: "24px", padding: "5px" }}
-                    >
-                      Confirmed Volunteers{" "}
-                      <Typography
-                        variant="body1"
-                        style={{
-                          opacity: "0.5",
-                          display: "inline-block",
-                          fontSize: "24px",
-                        }}
-                      >
-                        {volunteers.length}/{eventData.numberOfVolunteers}
-                      </Typography>
-                    </Typography>
+                    <Grid container alignItems="center">
+                      <Grid item>
+                        <Typography
+                          variant="h6"
+                          style={{ fontSize: "24px", padding: "5px" }}
+                        >
+                          Confirmed Volunteers{" "}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          variant="body1"
+                          style={{
+                            opacity: "0.5",
+                            // display: "inline-block",
+                            fontSize: "24px",
+                          }}
+                        >
+                          {volunteers.length}/{eventData.numberOfVolunteers}
+                        </Typography>
+                      </Grid>
+                    </Grid>
                     {volunteers.length === 0 ? (
                       <Card className={classes.card} elevation={0}>
                         <Typography>
