@@ -52,7 +52,7 @@ const OutlinedButton = withStyles(outlinedButtonStyle)((props: any) => (
   <Button {...props} variant="outlined">
     <SecondaryMainTextTypography>{props.children}</SecondaryMainTextTypography>
   </Button>
-);
+));
 
 export {
   ContainedButton,

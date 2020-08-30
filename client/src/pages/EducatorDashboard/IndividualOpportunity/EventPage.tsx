@@ -133,11 +133,8 @@ const EventPage = (props: any) => {
   const eventData = location.state.event;
   const isEducator = user.userType === UserType.Educator;
   const isVolunteer = user.userType === UserType.Volunteer;
-<<<<<<< HEAD
   // todo: see if volunteering for this event for bottom functionality + contact details
   // const isVolunteering = false;
-=======
->>>>>>> feat(event_page): create event application
   const [value, setValue] = React.useState<number>(0);
   const [invitations, setInvitations] = React.useState<any>([]);
   const [publicEvent, setPublicEvent] = React.useState({
@@ -212,11 +209,6 @@ const EventPage = (props: any) => {
   useEffect(() => {
     const fetchdata = async () => {
       fetchEventApplications(eventData);
-<<<<<<< HEAD
-=======
-      // const result = await getApplications(eventData.eventName);
-      // setApplications(result.data.applications);
->>>>>>> feat(event_page): create event application
     };
     fetchdata();
   }, [eventData, fetchEventApplications]);
@@ -258,7 +250,6 @@ const EventPage = (props: any) => {
   return (
     <React.Fragment>
       <Dialog open={openDialog}>
-<<<<<<< HEAD
         <DialogTitle disableTypography>
           <BlackTextTypography variant="h2">
             Do you want to apply for this opportunity?
@@ -269,11 +260,6 @@ const EventPage = (props: any) => {
             variant="body1"
             style={{ color: theme.palette.text.primary }}
           >
-=======
-        <DialogTitle>Do you want to apply for this opportunity?</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
->>>>>>> feat(event_page): create event application
             You can retract your application later if you change your mind.
           </DialogContentText>
         </DialogContent>
@@ -566,16 +552,11 @@ const EventPage = (props: any) => {
   );
 };
 
-<<<<<<< HEAD
 const mapStateToProps = (state: any) => {
   const userObj = localStorage.getItem("user");
   const user = userObj ? JSON.parse(userObj) : userObj;
 
   // const user: User | null = getUser(state.user);
-=======
-const mapStateToProps = (state: any, ownProps: any) => {
-  const user: User | null = getUser(state.user);
->>>>>>> feat(event_page): create event application
   const applications: Application[] = getEventApplications(
     ownProps.location.state.event.id,
     state.events
