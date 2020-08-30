@@ -1,4 +1,4 @@
-import EducatorInterface from '../api/users/EducatorInterface';
+import EducatorInterface from '../users/EducatorInterface';
 
 export default interface EventInterface {
     activityType: string[];
