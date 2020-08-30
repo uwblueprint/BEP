@@ -182,9 +182,7 @@ class EducatorRegistration extends React.Component<
     ];
 
     schoolListTypes.forEach((type: PicklistType) => {
-      this.props.fetchSchoolPicklists(type).then(() => {
-        console.log("hello");
-      });
+      this.props.fetchSchoolPicklists(type);
     });
 
     this.props.fetchSchoolList().then(() => {
@@ -226,6 +224,7 @@ class EducatorRegistration extends React.Component<
   }
 
   getFilterFunction = (fieldName: string) => {
+    console.log(fieldName);
     switch (fieldName) {
       case "schoolBoard":
         return this.filterSchoolBoard;
@@ -239,30 +238,43 @@ class EducatorRegistration extends React.Component<
     const { name, value } = event.target;
     const schoolInfo = this.state.schoolInfo;
     console.log("School Info Change");
-    console.log(this.state.schoolInfo.schoolBoard); // doesn't show anything
+    console.log(event.target.value);
 
-    this.setState({
-      schoolInfo: {
-        ...schoolInfo,
-        [name]: value,
+    this.setState(
+      {
+        schoolInfo: {
+          ...schoolInfo,
+          [name]: value,
+        },
       },
+      this.schoolListCallback
+    );
+  };
+
+  schoolListCallback() {
+    this.setState({
       filteredSchoolList: this.filterAllFields(this.props.schoolList),
     });
-  };
+  }
 
   filterAllFields(schools: School[]) {
     const newSchools = schools.filter((school: School) => {
       var pass = true;
-      console.log(this.state.schoolInfo.schoolBoard); // still doesn't show anything
+      console.log(this.state.schoolInfo);
 
       for (let [fieldName, filterMap] of Object.entries(
         this.state.schoolInfo
       )) {
         const filterFunction = this.getFilterFunction(fieldName);
 
-        if (pass && !filterFunction(school, filterMap)) pass = false;
+        if (pass && !filterFunction(school, filterMap)) {
+          console.log("hello");
+          pass = false;
+        }
         if (!pass) return false;
+        return true;
       }
+      console.log("pass is " + pass);
     });
     return newSchools;
   }
@@ -449,7 +461,6 @@ class EducatorRegistration extends React.Component<
                   ))}
                 </Select>
               </FormControl>
-              {console.log(this.state.schoolInfo)}
 
               <BlackTextTypography>School Name</BlackTextTypography>
 
