@@ -3,22 +3,33 @@ import { OutlinedTextField, TextField } from '../../components/TextField'
 import { fetchPicklistsService } from "../../data/services/eventPicklistServices";
 import {PageHeader, PageBody} from '../../components/Page'
 import Grid from '@material-ui/core/Grid'
-import {BlackTextTypography} from '../../components/Typography'
+import {BlackTextTypography, WhiteTextTypography} from '../../components/Typography'
 import Divider from '@material-ui/core/Divider'
 import { Select }  from '../../components/Select'
 import { getActivityTypePicklist, getPreferredSectorPicklist } from '../../data/selectors/eventPicklistSelector'
 import { connect } from "react-redux";
+import Switch from '@material-ui/core/Switch';
+import 'date-fns';
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    KeyboardDatePicker,
+    KeyboardTimePicker,
+    MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import {Link} from 'react-router-dom'
 import { ContainedButton } from '../../components/Button'
 import { EventPicklistType } from '../../data/types/EventPicklistTypes';
 import { withStyles } from '@material-ui/core';
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
+
+const grades = ["Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"]
 
 const styles = () => ({
     selectTextField: {
@@ -31,6 +42,27 @@ const styles = () => ({
       borderRadius: "2px",
       margin: "2em 0em",
     },
+    datePicker: {
+        padding: "0px 10px",
+        width: "15vw",
+        backgroundColor: "#fff",
+        border: "1px solid #e5e5e5",
+        borderRadius: "2px",
+      },
+    input: {
+        height: 2,
+        backgroundColor: "#fff",
+    },
+    timePicker: {
+        padding: "0px 10px",
+        width: "10vw",
+        backgroundColor: "#fff",
+        border: "1px solid #e5e5e5",
+        borderRadius: "2px",
+    },
+    text: {
+        paddingBottom: 4
+    }
   });
 
 
@@ -40,8 +72,8 @@ type OpFormProps = {
     activityType: string;
     preferredSector: string;
     singleDayEvent: boolean;
-    startDateAndTime: Date;
-    endDateAndTime: Date;
+    startDateAndTime: Date | null;
+    endDateAndTime: Date | null;
     numberOfHours?: string;
     transportation: string;
     numberOfStudents: string;
@@ -49,16 +81,26 @@ type OpFormProps = {
     public: boolean;
 }
 
-class OpportunityForm extends React.Component<
-{ opform: OpFormProps;
+interface IProps {
+    opform: OpFormProps;
     fetchPicklists: any;
     picklists: {
         activityType: { displayName: string, list: string[] };
         preferredSector: { displayName: string, list: string[] };
         studentGrades: { displayName: string, list: string[] };
     };
-}, OpFormProps> {
-    constructor(props: Readonly<{ opform: OpFormProps; picklists: { activityType: { displayName: string; list: string[]; }; preferredSector: { displayName: string; list: string[]; }; studentGrades: { displayName: string; list: string[]; }; }; fetchPicklists: any; }>) {
+    classes: {
+        selectTextField: any;
+        card: any;
+        datePicker: any;
+        input: any;
+        timePicker: any;
+        text: any;
+    };
+}
+
+class OpportunityForm extends React.Component<IProps, OpFormProps> {
+    constructor(props: IProps) {
         super(props);
         console.log("These are the props", props)
         console.log("These are the component opformprops", props.opform)
@@ -83,8 +125,7 @@ class OpportunityForm extends React.Component<
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this)
-        //this.handleSubmit = this.handleSubmit.bind(this)
-        console.log("This is the state", this.state)
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
 
     componentDidMount () {
@@ -99,6 +140,10 @@ class OpportunityForm extends React.Component<
         this.setState({ ...this.state, [id]: value });
         console.log("State", this.state)
     };
+
+    handlePublicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ ...this.state, [event.target.name]: event.target.checked });
+      };
 
     handleActivityChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         this.setState({activityType: event.target.value as string})
@@ -117,10 +162,25 @@ class OpportunityForm extends React.Component<
         }
       };
 
+    handleStartDateChange = (date: Date | null) => {
+        this.setState({startDateAndTime: date})
+    };
+
+    handleEndDateChange = (date: Date | null) => {
+        this.setState({endDateAndTime: date})
+    }
+
+    handleSubmit = (event: any) => {
+        
+    }
+
+
+
     render () {
         console.log("State on render", this.state)
         console.log("Props on render", this.props)
         return (
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <div style={{ height: "100vh" }}>
             <Grid container style={{ height: "100%" }}>
                 <PageHeader>
@@ -155,7 +215,7 @@ class OpportunityForm extends React.Component<
                         }}
                     >
                     <Grid item direction="column">
-                        <BlackTextTypography>
+                        <BlackTextTypography className={this.props.classes.text}>
                             Opportunity Name*
                         </BlackTextTypography>
                         <OutlinedTextField
@@ -163,11 +223,12 @@ class OpportunityForm extends React.Component<
                             id="name"
                             value={this.state.name}
                             onChange={this.handleChange}
-                            style={{ width: "50%", marginBottom: "24px", height: '50%' }}
+                            style={{ width: "454px"}}
+                            InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                     </Grid>
                     <Grid item direction="column">
-                        <BlackTextTypography>
+                        <BlackTextTypography className={this.props.classes.text}>
                             Number of Volunteers Required
                         </BlackTextTypography>
                         <OutlinedTextField
@@ -175,21 +236,23 @@ class OpportunityForm extends React.Component<
                             id="requiredVolunteers"
                             value={this.state.requiredVolunteers}
                             onChange={this.handleChange}
-                            style={{ width: "50%", marginBottom: "24px", height: '50%' }}
+                            style={{ width: "454px"}}
+                            InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                     </Grid>
                     <Grid item direction="column">
-                        <BlackTextTypography>
+                        <BlackTextTypography className={this.props.classes.text}>
                             Activity Type
                         </BlackTextTypography>
                         <FormControl variant="outlined">
                             <Select
                                 native
-                                value="Select Activity Type"
+                                displayEmpty={true}
                                 onChange={this.handleActivityChange}
-                                style={{ width: "40%", marginBottom: "24px" }}
+                                style={{ width: "454px", height: "40px" }}
                                 inputProps={{
-                                id: "schoolBoard",
+                                id: "activityType",
+                                classes: { input: this.props.classes.input }
                                 }}
                             >
                                 <option value="">Select activity type</option>
@@ -205,7 +268,7 @@ class OpportunityForm extends React.Component<
                         </FormControl>
                     </Grid>
                     <Grid item direction="column">
-                        <BlackTextTypography>
+                        <BlackTextTypography className={this.props.classes.text}>
                             Preferred Sector
                         </BlackTextTypography>
                         <FormControl variant="outlined">
@@ -213,9 +276,10 @@ class OpportunityForm extends React.Component<
                             native
                             displayEmpty={true}
                             onChange={this.handlePreferredSectorChange}
-                            style={{ width: "40%", marginBottom: "24px" }}
+                            style={{ width: "454px", height: "40px" }}
                             inputProps={{
-                            id: "schoolBoard",
+                            id: "preferredSector",
+                            classes: { input: this.props.classes.input }
                             }}
                         >
                             <option value="">Select preferred sector</option>
@@ -231,7 +295,7 @@ class OpportunityForm extends React.Component<
                         </FormControl>
                     </Grid>
                     <Grid item direction="column">
-                        <BlackTextTypography>
+                        <BlackTextTypography className={this.props.classes.text}>
                             Date(s) of Event
                         </BlackTextTypography>
                         <FormControl component="fieldset">
@@ -244,20 +308,61 @@ class OpportunityForm extends React.Component<
                 {this.state.singleDayEvent ?
                     <React.Fragment>
                         <Grid item direction="column">
-                            <BlackTextTypography>
-                                Date
+                            <BlackTextTypography className={this.props.classes.text}>
+                                Date*
                             </BlackTextTypography>
+                            <KeyboardDatePicker
+                                disableToolbar
+                                variant="inline"
+                                placeholder="Date"
+                                value={this.state.startDateAndTime}
+                                onChange={this.handleStartDateChange}
+                                format="MM/dd/yyyy"
+                                id="date-picker-inline"
+                                inputVariant="outlined"
+                                KeyboardButtonProps={{
+                                    "aria-label": "change date",
+                                }}
+                                style={{ width: "454px"}}
+                                InputProps={{ classes: { input: this.props.classes.input } }}
+                            />
                         </Grid>
                         <Grid 
                         container
                         direction="row"
                         justify="flex-start"
-                        spacing={2}>
-                        <Grid item direction="column">
-                            <BlackTextTypography>Start Time</BlackTextTypography>
+                        spacing={6}>
+                        <Grid item direction="column" style={{paddingLeft: 40}}>
+                            <BlackTextTypography className={this.props.classes.text}>Start Time</BlackTextTypography>
+                            <KeyboardTimePicker
+                                disableToolbar
+                                variant="inline"
+                                placeholder="Start Time"
+                                value={this.state.startDateAndTime}
+                                onChange={this.handleStartDateChange}
+                                inputVariant="outlined"
+                                id="time-picker-inline"
+                                style={{ width: "202px"}}
+                                InputProps={{ classes: { input: this.props.classes.input } }}
+                                keyboardIcon={<QueryBuilderIcon />}
+                            />
                         </Grid>
+                        
                         <Grid item direction="column">
-                            <BlackTextTypography>End Time</BlackTextTypography>
+                            <BlackTextTypography className={this.props.classes.text}>End Time</BlackTextTypography>
+                            <KeyboardTimePicker
+                                disableToolbar
+                                variant="inline"
+                                placeholder="End Time"
+                                value={this.state.endDateAndTime}
+                                onChange={this.handleEndDateChange}
+                                id="time-picker-inline"
+                                inputVariant="outlined"
+                                style={{ width: "202px"}}
+                                keyboardIcon={<QueryBuilderIcon />}
+
+                                InputProps={{ classes: { input: this.props.classes.input } }}
+                            />
                         </Grid>
                     </Grid>
                     </React.Fragment> :
@@ -266,52 +371,136 @@ class OpportunityForm extends React.Component<
                         container
                         direction="row"
                         justify="flex-start"
-                        spacing={2}>
+                        spacing={6}
+                        style={{paddingLeft: 20}}>
                         <Grid item direction="column">
-                            <BlackTextTypography>Start Date</BlackTextTypography>
+                            <BlackTextTypography className={this.props.classes.text}>Start Date</BlackTextTypography>
+                            <KeyboardDatePicker
+                                disableToolbar
+                                variant="inline" 
+                                placeholder="Date"
+                                value={this.state.startDateAndTime}
+                                onChange={this.handleStartDateChange}
+                                format="MM/dd/yyyy"
+                                margin="normal"
+                                inputVariant="outlined"
+                                id="date-picker-inline"
+                                KeyboardButtonProps={{
+                                    "aria-label": "change date",
+                                }}
+                                style={{ width: "202px"}}
+                                InputProps={{ classes: { input: this.props.classes.input } }}
+                            />
                         </Grid>
                         <Grid item direction="column">
-                            <BlackTextTypography>End Date</BlackTextTypography>
+                            <BlackTextTypography className={this.props.classes.text}>End Date</BlackTextTypography>
+                            <KeyboardDatePicker
+                                disableToolbar
+                                variant="inline"
+                                placeholder="Date"
+                                value={this.state.endDateAndTime}
+                                onChange={this.handleEndDateChange}
+                                format="MM/dd/yyyy"
+                                margin="normal"
+                                inputVariant="outlined"
+                                id="date-picker-inline"
+                                KeyboardButtonProps={{
+                                    "aria-label": "change date",
+                                }}
+                                style={{ width: "202px"}}
+                                InputProps={{ classes: { input: this.props.classes.input } }}
+                            />
                         </Grid>
                     </Grid>
                     <Grid item direction="column">
-                        <BlackTextTypography>
+                        <BlackTextTypography className={this.props.classes.text}>
                             Number of Hours
                         </BlackTextTypography>
+                        <OutlinedTextField
+                            placeholder="eg. 10 hours"
+                            id="numberOfHours"
+                            value={this.state.numberOfHours}
+                            onChange={this.handleChange}
+                            style={{ width: "454px"}}
+                            InputProps={{ classes: { input: this.props.classes.input } }}
+                            />
                     </Grid>
                     </React.Fragment>
                     }                      
                     <Grid item direction="column">
-                        <BlackTextTypography>
-                            Transportation
+                        <BlackTextTypography className={this.props.classes.text}>
+                            Event Description and Logistical Details
                         </BlackTextTypography>
+                        <OutlinedTextField
+                            placeholder="Describe your activity to prospective volunteers and include all necessary details, such as timing, parking info and any specific expectations"
+                            id="transportation"
+                            value={this.state.transportation}
+                            multiline
+                            onChange={this.handleChange}
+                            style={{ width: "454px"}}
+                            InputProps={{ classes: { input: this.props.classes.input } }}
+                            />
                     </Grid>
                     <Grid item direction="column">
-                        <BlackTextTypography>
+                        <BlackTextTypography className={this.props.classes.text}>
                             Number of Students
                         </BlackTextTypography>
+                        <OutlinedTextField
+                            placeholder="Enter number of students attending"
+                            id="numberOfStudents"
+                            value={this.state.numberOfStudents}
+                            onChange={this.handleChange}
+                            style={{ width: "454px"}}
+                            InputProps={{ classes: { input: this.props.classes.input } }}
+                            />
                     </Grid>
-                    <Grid item direction="column">
-                        <BlackTextTypography>
-                            Date(s) of Event
-                        </BlackTextTypography>
-                    </Grid>
-                    <Grid item direction="column">
-                        <BlackTextTypography>
+                    <Grid item direction="column" style={{paddingBottom: "32px"}}>
+                        <BlackTextTypography className={this.props.classes.text}>
                             Grades of Participating Students
                         </BlackTextTypography>
+                        <Autocomplete
+                        multiple
+                        id="tags-outlined"
+                        options={grades}
+                        getOptionLabel={(option) => option}
+                        filterSelectedOptions
+                        onChange={(_event, newValue) => {this.setState({studentGrades: newValue})}}
+                        renderInput={(params) => (
+                        <OutlinedTextField
+                            {...params}
+                            style={{ width: "454px"}}
+                            variant="outlined"
+                            placeholder="Select the Grades of Participating Students"
+                        />
+                        )}
+                    />
                     </Grid>
+                    <Divider />
+                <Grid item direction="column" style={{paddingTop: "33px", paddingBottom: "57px"}}>
+                    <Grid container
+                        direction="row"
+                        justify="flex-start"
+                        spacing={2}>
+                <Switch
+                        checked={this.state.public}
+                        onChange={this.handlePublicChange}
+                        name="public"
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    />
+                    <BlackTextTypography style={{paddingTop: 8}}>Allow all volunteers to see and express interest in this opportunity</BlackTextTypography>
+                    </Grid>
+                    <ContainedButton type="submit" onClick={this.handleSubmit} style={{marginTop: "55px", padding: "15px"}}>
+                        <WhiteTextTypography>
+                            Create Opportunity
+                        </WhiteTextTypography>
+                    </ContainedButton>
                 </Grid>
-                <Divider />
-                <ContainedButton type="submit">
-                    <BlackTextTypography>
-                        Create Opportunity
-                    </BlackTextTypography>
-                </ContainedButton>
+                </Grid>
                 </PageBody>
 
             </Grid>
         </div>
+        </MuiPickersUtilsProvider>
         )
     }
 
