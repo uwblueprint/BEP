@@ -19,6 +19,7 @@ import { applicationRouter } from './api/applications/ApplicationsRouter';
 import { requestsRouter } from './requests/requests.router';
 import {verifyWebToken} from './middleware/jwt'
 import { authRouter } from './auth/authRouter'
+import { eventPicklistRouter } from './users/picklists/EventPicklistRouter'
 
 let result;
 
@@ -80,6 +81,7 @@ class BackendServer extends Server {
         this.app.use("/api/applications", applicationRouter);
         this.app.use("/api/schools",schoolRouter);
         this.app.use("/api/schools/picklists",schoolPicklistRouter);
+        this.app.use("/api/events/picklists")
 
         //If in development, do not mount JWT auth middleware to users route
         if (process.env.NODE_ENV == 'production') {
