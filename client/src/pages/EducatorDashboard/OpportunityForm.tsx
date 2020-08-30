@@ -10,7 +10,7 @@ import { getActivityTypePicklist, getPreferredSectorPicklist, gradeOfStudents } 
 import { connect } from "react-redux";
 import Switch from '@material-ui/core/Switch';
 import 'date-fns';
-import { post } from '../../utils/ApiUtils'
+import { createEvent } from '../../utils/EventsApiUtils'
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -102,8 +102,6 @@ interface IProps {
 class OpportunityForm extends React.Component<IProps, OpFormProps> {
     constructor(props: IProps) {
         super(props);
-        console.log("These are the props", props)
-        console.log("These are the component opformprops", props)
         if (!props.location.state) {
             console.log("Setting state")
             this.state = {
@@ -180,19 +178,44 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     }
 
     handleSubmit = (event: any) => {
-        // const sendOpportunity = async (url: string, body: string) => {
-        //     try {
-        //         await post(url, body)
-        //     } catch (e) {
-        //         console.error(e)
-        //     }
-        // }
 
-        var user = localStorage.getItem("user");
-        console.log("this is the user", user)
+        //Retrieve from localstorage
+        let localStorageUser = localStorage.getItem("user") as string
+        let userJSON = JSON.parse(localStorageUser)
+        console.log(userJSON)
+
+    //     let formattedEvent: any = {
+    //         event: {
+    //             activityType: this.state.activityType,
+    //             contact: {
+    //               email: "userJSON.email",
+    //             },
+    //             endDate: this.state.endDateAndTime,
+    //             eventName: this.state.name,
+    //             gradeOfStudents: ["Grade 1", "Grade 2", "Grade 3"],
+    //             hoursCommitment: this.state.numberOfHours,
+    //             isActive: true,
+    //             isPublic: true,
+    //             numberOfStudents: this.state.numberOfStudents,
+    //             numberOfVolunteers: this.state.numberOfStudents,
+    //             preferredSector: this.state.preferredSector,
+    //             schoolTransportation: this.state.transportation,
+    //             startDate: this.state.startDateAndTime
+    //           }
+    //     }
+    //     const sendOpportunity = async (body) => {
+    //         try {
+    //             await createEvent(body)
+    //         } catch (e) {
+    //             console.error(e)
+    //         }
+    //     }
+
+    //     var user = localStorage.getItem("user");
+    //     console.log("this is the user", user)
         
 
-       //sendOpportunity()
+    //    sendOpportunity(JSON.stringify(formattedEvent))
     }
 
 

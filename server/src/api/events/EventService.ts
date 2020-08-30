@@ -2,11 +2,13 @@
  * Data Model Interfaces
  */
 
-import Event, { EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
-import Educator from '../users/EducatorInterface';
-import * as UserService from '../users/UserService';
-import { conn } from '../../server';
-import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
+import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
+import * as SchoolService from '../api/schools/SchoolService'
+import Educator from '../api/users/EducatorInterface';
+import * as UserService from '../api/users/UserService';
+import { conn } from '../server';
+import { arrayToPicklistString, picklistStringToArray } from '../util/SalesforcePicklistUtils';
+import EducatorInterface from '../api/users/EducatorInterface';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
@@ -39,7 +41,7 @@ const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
         contact__c: event.contact.id,
         endDate__c: event.endDate,
         Name: event.eventName,
-        gradeOfStudents__c: event.gradeOfStudents,
+        gradeOfStudents__c: arrayToPicklistString(event.gradeOfStudents),
         hoursCommitment__c: event.hoursCommitment,
         ...(id && { Id: id }),
         isActive__c: event.isActive,
@@ -326,14 +328,29 @@ export const update = async (id: string, event: Event): Promise<Event> => {
 // create new user object in salesforce with fields
 // Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
 export const create = async (event: Event): Promise<string> => {
+    console.log("This is the email", event.contact.email)
+    const userObject = await UserService.getUser({email: event.contact.email})
+    const school = await SchoolService.get(event.contact.school.id)
+
+    let newContactObject = userObject as EducatorInterface
+    newContactObject.school = school
+    
+    const newEvent: Event = event
+    newEvent.contact = newContactObject
+
+    console.log(newEvent)
+    console.log("Salesforce Event", eventModelToSalesforceEvent(newEvent))
+
     const eventInfo: { id: string; success: boolean; errors: Error[] } = await conn
-        .sobject(event)
-        .create(eventModelToSalesforceEvent(event), (err: Error, result: any) => {
+        .sobject(eventApi)
+        .create(eventModelToSalesforceEvent(newEvent), (err: Error, result: any) => {
             if (err || !result.success) {
                 return console.error(err, result);
             }
-        });
-    return eventInfo.id;
+    });
+
+    return eventInfo.id
+
 };
 
 // Delete a user by name (should be changed to ID in the future once ID field in salesforce is figured out)
