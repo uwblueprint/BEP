@@ -2,13 +2,12 @@
  * Data Model Interfaces
  */
 
-import Event, { EventApplicantInterface, EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
-import * as SchoolService from '../api/schools/SchoolService'
-import Educator from '../api/users/EducatorInterface';
-import * as UserService from '../api/users/UserService';
-import { conn } from '../server';
-import { arrayToPicklistString, picklistStringToArray } from '../util/SalesforcePicklistUtils';
-import EducatorInterface from '../api/users/EducatorInterface';
+import Event, { EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
+import * as SchoolService from '../schools/SchoolService'
+import Educator from '../users/EducatorInterface';
+import * as UserService from '../users/UserService';
+import { conn } from '../../server';
+import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
@@ -23,7 +22,7 @@ const eventFields: string =
 const eventApplicantFields: string =
     'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, applicantCompany__c, accepted__c, denied__c';
 const eventInvitationFields: string =
-    'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c';
+    'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, status__c, EventInvitations__c';
 const eventVolunteerFields: string = 'Name, volunteerJob__c, volunteerPersonalPronouns__c, volunteerCompany__c';
 
 /**
@@ -81,25 +80,9 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
     return event;
 };
 
-// const salesforceApplicantToEventAppliantModel = (record: any): EventApplicantInterface => {
-//     const applicant: EventApplicantInterface = {
-//         applicantName: record.Name,
-//         personalPronouns: record.personalPronouns__c,
-//         job: record.job__c,
-//         sectors: record.sectors__c,
-//         linkedinUrl: record.linkedInUrl__c,
-//         areasOfExpertise: record.areasOfExpertise__c,
-//         employmentStatus: record.employmentStatus__c,
-//         accepted: record.accepted__c,
-//         denied: record.denied__c,
-//         company: record.applicantCompany__c
-//     };
-
-//     return applicant;
-// };
-
 const salesforceInvitationToEventInvitationModel = (record: any): EventInvitationInterface => {
     const invitation: EventInvitationInterface = {
+        id: record.Id,
         invitationName: record.Name,
         personalPronouns: record.personalPronouns__c,
         job: record.job__c,
@@ -108,6 +91,7 @@ const salesforceInvitationToEventInvitationModel = (record: any): EventInvitatio
         areasOfExpertise: record.areasOfExpertise__c,
         employmentStatus: record.employmentStatus__c,
         status: record.status__c,
+        event: record.EventInvitations__c
     };
 
     return invitation;
@@ -115,6 +99,7 @@ const salesforceInvitationToEventInvitationModel = (record: any): EventInvitatio
 
 const invitationModelToSalesforceInvitation = (invitation: EventInvitationInterface): any => {
     const salesforceInvitation: any = {
+        Id: invitation.id,
         Name: invitation.invitationName,
         personalPronouns__c: invitation.personalPronouns,
         job__c: invitation.job,
@@ -122,7 +107,8 @@ const invitationModelToSalesforceInvitation = (invitation: EventInvitationInterf
         linkedinUrl__c: invitation.linkedinUrl,
         areasOfExpertise__c: invitation.areasOfExpertise,
         employmentStatus__c: invitation.employmentStatus,
-        status__c: invitation.status
+        status__c: invitation.status,
+        EventInvitations__c: invitation.event,
     };
     return salesforceInvitation;
 }
@@ -306,11 +292,11 @@ export const getInvitations = async (eventName: string): Promise<EventInvitation
     return invitations;
 };
 
-export const updateInvitations = async (type: string, invitation: EventInvitationInterface): Promise<EventInvitationInterface> => {
-    invitation.status = type
-    const newInvitation: any = invitationModelToSalesforceInvitation(invitation)
+export const updateInvitations = async (invitation: EventInvitationInterface): Promise<EventInvitationInterface> => {
+    delete invitation.event
+    let newInvitation = invitationModelToSalesforceInvitation(invitation)
     let updatedInvitation: EventInvitationInterface = conn
-            .sobject(eventInvitationApi)
+            .sobject("EventInvitation__c")
             .update(newInvitation, function (err, ret) {
                 if (err || !ret.success) {
                     return console.error(err, ret)
@@ -359,15 +345,14 @@ export const update = async (id: string, event: Event): Promise<Event> => {
 // create new user object in salesforce with fields
 // Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
 export const create = async (event: Event): Promise<string> => {
-    console.log("This is the email", event.contact.email)
     const userObject = await UserService.getUser({email: event.contact.email})
-    const school = await SchoolService.get(event.contact.school.id)
 
-    let newContactObject = userObject as EducatorInterface
-    newContactObject.school = school
+    let newContactObject = userObject as Educator
     
     const newEvent: Event = event
     newEvent.contact = newContactObject
+
+    console.log("This is the new event", newEvent)
 
     console.log(newEvent)
     console.log("Salesforce Event", eventModelToSalesforceEvent(newEvent))
@@ -379,6 +364,8 @@ export const create = async (event: Event): Promise<string> => {
                 return console.error(err, result);
             }
     });
+
+    console.log(eventInfo)
 
     return eventInfo.id
 

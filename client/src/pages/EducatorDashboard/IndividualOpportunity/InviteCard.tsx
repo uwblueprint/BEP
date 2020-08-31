@@ -10,6 +10,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog'
+import {retractInvitation} from '../../../utils/eventsApiUtils'
 
 import { ContainedButton, Button, OutlinedButton } from '../../../components/Button'
 
@@ -63,12 +64,17 @@ const InviteCard = (props: any) => {
     const [open, setOpen] = React.useState(false);
     const [snackbarState, setSnackbarState] = React.useState(false)
 
+    const buttonEnabled = props.info.invite.status !== "Retracted" ? true : false;
+
     const handleClickOpen = () => {
         setOpen(true)
     }
 
     const handleClickAcceptClose = () => {
         //Retract the Invitation
+        const id = props.info.invite.id as string
+        console.log("The ID", id)
+        retractInvitation(id)
         setOpen(false)
     }
 
@@ -103,7 +109,7 @@ const InviteCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid container xs={3} alignItems="flex-end" justify="flex-end" style={{paddingBottom: '50px'}}>
-            <Button onClick={handleClickOpen}>
+            <Button onClick={handleClickOpen} disabled={!buttonEnabled}>
             <Typography variant="body2" component="h5" className={classes.retract}>
                     Retract Invitations
             </Typography>

@@ -1,16 +1,15 @@
 import React from 'react'
-import { OutlinedTextField, TextField } from '../../components/TextField'
+import { OutlinedTextField } from '../../components/TextField'
 import { fetchPicklistsService } from "../../data/services/eventPicklistServices";
 import {PageHeader, PageBody} from '../../components/Page'
 import Grid from '@material-ui/core/Grid'
 import {BlackTextTypography, WhiteTextTypography} from '../../components/Typography'
 import Divider from '@material-ui/core/Divider'
-import { Select }  from '../../components/Select'
 import { getActivityTypePicklist, getPreferredSectorPicklist, gradeOfStudents } from '../../data/selectors/eventPicklistSelector'
 import { connect } from "react-redux";
 import Switch from '@material-ui/core/Switch';
 import 'date-fns';
-import { createEvent } from '../../utils/EventsApiUtils'
+import { createEvent } from '../../utils/eventsApiUtils'
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -27,9 +26,10 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {Link} from 'react-router-dom'
 import { ContainedButton } from '../../components/Button'
 import { EventPicklistType } from '../../data/types/EventPicklistTypes';
+import {Event} from '../../data/types/eventTypes';
 import { withStyles } from '@material-ui/core';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
-import { Event } from '../../data/types/EventTypes'
+import { Redirect } from "react-router-dom";
 
 const styles = () => ({
     selectTextField: {
@@ -78,7 +78,9 @@ type OpFormProps = {
     transportation: string;
     numberOfStudents: number;
     gradeOfStudents: string[];
+    postingExpiryDate: Date | null;
     public: boolean;
+    redirect: boolean;
 }
 
 interface IProps {
@@ -116,7 +118,9 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 transportation: "",
                 numberOfStudents: 0,
                 gradeOfStudents: [],
+                postingExpiryDate: new Date(),
                 public: false,
+                redirect: false,
             };
         } else {
             var eventData: Event = props.location.state.event
@@ -135,7 +139,9 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 transportation: eventData.schoolTransportation,
                 numberOfStudents: eventData.numberOfStudents,
                 gradeOfStudents: eventData.gradeOfStudents,
+                postingExpiryDate: eventData.postingExpiry,
                 public: eventData.isPublic,
+                redirect: false,
             }
         }
         this.handleChange = this.handleChange.bind(this);
@@ -177,7 +183,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
         this.setState({endDateAndTime: date})
     }
 
-    handleSubmit = (event: any) => {
+    handleSubmit = () => {
 
         //Retrieve from localstorage
         let localStorageUser = localStorage.getItem("user") as string
@@ -191,7 +197,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 },
                 endDate: this.state.endDateAndTime,
                 eventName: this.state.name,
-                gradeOfStudents: ["Grade 1", "Grade 2", "Grade 3"],
+                gradeOfStudents: this.state.gradeOfStudents,
                 hoursCommitment: this.state.numberOfHours,
                 isActive: true,
                 isPublic: true,
@@ -199,6 +205,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 numberOfVolunteers: this.state.numberOfStudents,
                 preferredSector: this.state.preferredSector,
                 schoolTransportation: this.state.transportation,
+                postingExpiry: this.state.postingExpiryDate,
                 startDate: this.state.startDateAndTime
               }
         }
@@ -210,18 +217,20 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
             }
         }
 
-        var user = localStorage.getItem("user");
-        console.log("this is the user", user)
+        console.log("Submitted Event", formattedEvent)
         
 
-       sendOpportunity(JSON.stringify(formattedEvent))
+       sendOpportunity(formattedEvent).then(() => {
+            this.setState({redirect: true});
+       });
     }
 
 
 
     render () {
-        console.log("State on render", this.state)
-        console.log("Props on render", this.props)
+        if (this.state.redirect) {
+            return <Redirect to="/events" />
+        }
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <div style={{ height: "100vh" }}>
@@ -272,7 +281,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography className={this.props.classes.text}>
-                            Number of Volunteers Required
+                            Number of Volunteers Required*
                         </BlackTextTypography>
                         <OutlinedTextField
                             placeholder="How many volunteers would you need for this event"
@@ -285,7 +294,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography className={this.props.classes.text}>
-                            Activity Type
+                            Activity Type*
                         </BlackTextTypography>
                         <FormControl variant="outlined">
                         <Autocomplete
@@ -309,7 +318,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography className={this.props.classes.text}>
-                            Preferred Sector
+                            Preferred Sector (Optional)
                         </BlackTextTypography>
                         <FormControl variant="outlined">
                         <Autocomplete
@@ -333,7 +342,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography className={this.props.classes.text}>
-                            Date(s) of Event
+                            Date(s) of Event*
                         </BlackTextTypography>
                         <FormControl component="fieldset">
                             <RadioGroup aria-label="dates" name="dates" value={this.state.singleDayEvent ? "Single-day Event" : "Multi-day Event"} onChange={this.handleDatesChange}>
@@ -370,7 +379,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                         justify="flex-start"
                         spacing={6}>
                         <Grid item direction="column" style={{paddingLeft: 40}}>
-                            <BlackTextTypography className={this.props.classes.text}>Start Time</BlackTextTypography>
+                            <BlackTextTypography className={this.props.classes.text}>Start Time*</BlackTextTypography>
                             <KeyboardTimePicker
                                 disableToolbar
                                 variant="inline"
@@ -386,7 +395,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                         </Grid>
                         
                         <Grid item direction="column">
-                            <BlackTextTypography className={this.props.classes.text}>End Time</BlackTextTypography>
+                            <BlackTextTypography className={this.props.classes.text}>End Time*</BlackTextTypography>
                             <KeyboardTimePicker
                                 disableToolbar
                                 variant="inline"
@@ -463,10 +472,25 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             />
                     </Grid>
                     </React.Fragment>
-                    }                      
+                    } 
+                    <Grid item direction="column">
+                            <BlackTextTypography className={this.props.classes.text}>Posting Expiry</BlackTextTypography>
+                            <KeyboardDatePicker
+                                disableToolbar
+                                variant="inline"
+                                placeholder="Posting Expiry Date"
+                                value={this.state.postingExpiryDate}
+                                onChange={(date: Date | null) => this.setState({postingExpiryDate: date})}
+                                id="time-picker-inline"
+                                inputVariant="outlined"
+                                style={{ width: "454px"}}
+
+                                InputProps={{ classes: { input: this.props.classes.input } }}
+                            />
+                        </Grid>                     
                     <Grid item direction="column">
                         <BlackTextTypography className={this.props.classes.text}>
-                            Event Description and Logistical Details
+                            Event Description and Logistical Details*
                         </BlackTextTypography>
                         <OutlinedTextField
                             placeholder="Describe your activity to prospective volunteers and include all necessary details, such as timing, parking info and any specific expectations"
@@ -480,7 +504,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography className={this.props.classes.text}>
-                            Number of Students
+                            Number of Students*
                         </BlackTextTypography>
                         <OutlinedTextField
                             placeholder="Enter number of students attending"
@@ -493,7 +517,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     </Grid>
                     <Grid item direction="column" style={{paddingBottom: "32px"}}>
                         <BlackTextTypography className={this.props.classes.text}>
-                            Grades of Participating Students
+                            Grades of Participating Students*
                         </BlackTextTypography>
                         <Autocomplete
                         multiple

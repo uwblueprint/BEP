@@ -21,9 +21,9 @@ eventRouter.post('/create', async (req: Express.Request, res: Express.Response) 
     console.log("Hit create endpoint", req.body)
     try {
         const id: string = await EventService.create(req.body.event);
-        res.status(201).send({ id });
+        res.status(200).send({ id });
     } catch (e) {
-        res.status(500).send(e.message);
+        res.status(404).send(e.message);
     }
 });
 
@@ -41,7 +41,7 @@ eventRouter.get('/', async (req: Express.Request, res: Express.Response) => {
 eventRouter.get('/active', async (req: Express.Request, res: Express.Response) => {
     try {
         // Return all active events. Limit and offset have no effect.
-        const fetchedEvents = await EventService.getEvents(0, 0, 'active');
+        const fetchedEvents = await EventService.getEvents(0, 0, 'active'); 
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);
@@ -56,6 +56,23 @@ eventRouter.get('/past', async (req: Express.Request, res: Express.Response) => 
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);
+    }
+});
+
+eventRouter.get('/applications', async (req: Express.Request, res: Express.Response) => {
+    const name: string = req.query.name as string;
+
+    try {
+        if (name) {
+            const applications = await EventService.getApplications(name);
+            res.status(200).json({
+                applications
+            });
+        } else {
+            throw Error(`Invalid query parameters. Please set "name" parameter`);
+        }
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
     }
 });
 
@@ -90,11 +107,11 @@ eventRouter.get('/invitations', async (req: Express.Request, res: Express.Respon
     }
 });
 
-eventRouter.patch('/invitations/update', async(req: Express.Request, res: Express.Response) => {
-    console.log("Request Received", req.body)
+eventRouter.post('/invitations/update', async(req: Express.Request, res: Express.Response) => {
     const invitation: EventInvitationInterface = req.body.invitation as EventInvitationInterface
+    const type: string = req.body.string as string
     try {
-        const result = await EventService.updateInvitations(invitation)
+        const result = await EventService.updateInvitations(type, invitation)
         res.status(200).json({
             result
         })
@@ -121,6 +138,9 @@ eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Respons
 });
 
 eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
+    // const id: number = parseInt(req.params.id, 10);
+    //const name: string = req.query.name as string;
+
     const name: string = req.params.name as string;
 
     try {

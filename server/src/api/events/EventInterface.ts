@@ -39,6 +39,7 @@ export interface EventApplicantInterface {
 }
 
 export interface EventInvitationInterface {
+    id?: string;
     invitationName: string;
     personalPronouns: string;
     job: string;
@@ -47,6 +48,7 @@ export interface EventInvitationInterface {
     areasOfExpertise: string;
     employmentStatus: string;
     status: string;
+    event: any;
 }
 
 export interface EventVolunteerInterface {

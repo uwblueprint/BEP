@@ -66,6 +66,16 @@ const getInvitations = async (eventName: string) => {
   return await axios.request(config);
 };
 
+const retractInvitation = async (id: string) => {
+  const config: AxiosRequestConfig = {
+    url: `${baseURL}api/events/invitations/update`,
+    method: "patch",
+    data: {
+    }
+  };
+  return await axios.request(config)
+}
+
 const getVolunteers = async (eventName: string) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/events/volunteers/?name=${eventName}`,
@@ -110,5 +120,6 @@ export {
   getSchoolInfo,
   getVolunteers,
   updateApplicantStatus,
-  createEvent
+  createEvent,
+  retractInvitation
 };
