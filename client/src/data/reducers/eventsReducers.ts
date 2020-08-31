@@ -2,6 +2,7 @@ import {
   FETCH_ACTIVE_EVENTS,
   FETCH_EVENT_APPLICATIONS,
   FETCH_PAST_EVENTS,
+  FETCH_VOLUNTEERS_OF_EVENT,
   UPDATE_EVENT,
   UPDATE_APPLICATION,
   CREATE_APPLICATION,
@@ -9,6 +10,7 @@ import {
 import { Event } from "../types/eventTypes";
 import { UserType } from "../types/userTypes";
 import Application from "../types/applicationTypes";
+import { Volunteer } from "../types/userTypes";
 
 export interface EventsState {
   activeList: Event[];
@@ -19,6 +21,8 @@ export interface EventsState {
   // match `numPastEventsRecieved`.
   numPastEventsRecieved: number;
   pastList: Event[];
+  // `volunteers` maps an event ID to an array of volunteers.
+  volunteers: Map<string, Volunteer[]>;
 }
 
 const initialState: EventsState = {
@@ -26,6 +30,7 @@ const initialState: EventsState = {
   applications: new Map<string, Application[]>(),
   numPastEventsRecieved: 0,
   pastList: [],
+  volunteers: new Map<string, Volunteer[]>(),
 };
 
 export default function eventsFilter(
@@ -33,6 +38,7 @@ export default function eventsFilter(
   action: { type: string; payload: any; filter: any }
 ) {
   let newApplicationsMap = new Map<string, Application[]>();
+  let newVolunteersMap = new Map<string, Volunteer[]>();
   const visibilityFilter =
     action.payload &&
     action.payload.userType &&
@@ -114,6 +120,13 @@ export default function eventsFilter(
       return {
         ...state,
         applications: newApplicationsMap,
+      };
+    case FETCH_VOLUNTEERS_OF_EVENT:
+      newVolunteersMap = state.volunteers;
+      newVolunteersMap.set(action.payload.event.id, action.payload.volunteers);
+      return {
+        ...state,
+        volunteers: newVolunteersMap,
       };
     default:
       return state;
