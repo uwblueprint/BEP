@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 const ConfirmedVolunteerCard = (props: any) => {
   const classes = useStyles();
   const volunteer: Volunteer = props.info.volunteer;
-  console.log(props);
 
   return (
     <Card className={classes.card} elevation={0}>
