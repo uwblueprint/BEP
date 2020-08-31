@@ -42,7 +42,18 @@ const useStyles = makeStyles({
 });
 
 interface IComponentProps {
-  picklists: {};
+  picklists: {
+    localPostSecondaryAlumni: { list: string[] };
+    membershipsAssociations: { list: string[] };
+    employmentStatus: {list: string[]};
+    orgSector: {list: string[]};
+    orgNumberStaff: {list: string[]};
+    expertiseAreas: {list: string[]};
+    introductionMethod: {list: string[]};
+    languages: {list: string[]};
+    volunteerDesiredExternalActivities: {list: string[]};
+    volunteerDesiredInternalActivities: {list: string[]};
+  };
   fetchUserPicklists: any;
 }
 
@@ -54,10 +65,13 @@ interface IComponentState {
   firstName: string;
   lastName: string;
   preferredPronouns: string;
-  isSubscribed: boolean;
   phoneNumber: string;
+  linkedinUrl: string;
+  isSubscribed: boolean;
   agreeConditions: boolean;
-  picklistInfo: {};
+  picklistInfo: {  ;
+    ;
+  };
 }
 
 class Master extends React.Component<IComponentProps, IComponentState> {
@@ -66,16 +80,19 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 
     this.state = {
       currentStep: 1,
+
       email: "",
       password: "",
       confirmPassword: "",
       firstName: "",
       lastName: "",
       preferredPronouns: "",
-      isSubscribed: false,
       phoneNumber: "",
+      linkedinUrl: "",
+      membershipsAssociations: [],
       agreeConditions: false,
-      picklistInfo: {},
+      isSubscribed: false,
+      picklistInfo: { localPostSecondaryAlumni: "", employmentStatus: "" },
     };
     this.handleChange = this.handleChange.bind(this);
     this._next = this._next.bind(this);
@@ -105,6 +122,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   handleSubmit = (event: any) => {
+    //todo
     event.preventDefault();
     const { email, password } = this.state;
   };
@@ -171,6 +189,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
                   email={this.state.email}
+                  password={this.state.password}
+                  confirmPassword={this.state.confirmPassword}
+                  firstName={this.state.firstName}
                 />
                 <Involvement
                   currentStep={this.state.currentStep}
