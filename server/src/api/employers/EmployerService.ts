@@ -6,7 +6,7 @@ import { conn } from '../../server';
 import Employer, { isEmployer } from './EmployerInterface';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 
-const employerObjectName: string = 'Employer__c';
+export const employerObjectName: string = 'Employer__c';
 const employerFields: string =
     'Name, address__c, city__c, phoneNumber__c, postalCode__c, sectors__c, size__c, ' +
     'socialMedia__c, website__c, Id';
