@@ -12,16 +12,18 @@ import { PageHeader, PageBody } from "./Page";
 import Checkbox, { OutlinedCheckbox } from "./Checkbox";
 import {
   BlackExpandMoreIcon,
+  BlueSearchIcon,
+  SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
   WhiteCloseIcon,
-  BlueSearchIcon,
 } from "./Icons";
 import {
-  WhiteTextTypography,
   BlackTextTypography,
-  SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
   RedTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
+  WhiteTextTypography,
 } from "./Typography";
 
 export {
@@ -38,14 +40,16 @@ export { PageHeader, PageBody };
 export { Checkbox, OutlinedCheckbox };
 export {
   BlackExpandMoreIcon,
+  BlueSearchIcon,
+  SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
   WhiteCloseIcon,
-  BlueSearchIcon,
 };
 export {
-  WhiteTextTypography,
   BlackTextTypography,
-  SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
   RedTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
+  WhiteTextTypography,
 };

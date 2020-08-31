@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { EventsState } from "../reducers/eventsReducers";
 import Application from "../types/applicationTypes";
 import Invitation from "../types/invitationTypes";
+import { Volunteer } from "../types/userTypes";
 
 const getActiveEventsData = (state: EventsState) => {
   return state.activeList ? state.activeList : [];
@@ -23,6 +24,10 @@ const getAllInvitationsData = (state: EventsState) => {
   return state.invitations
     ? state.invitations
     : new Map<string, Invitation[]>();
+};
+
+const getAllVolunteersData = (state: EventsState) => {
+  return state.volunteers ? state.volunteers : new Map<string, Volunteer[]>();
 };
 
 export const getActiveEvents = createSelector(
@@ -50,4 +55,10 @@ export const getEventApplications = (eventId: string, state: EventsState) =>
   createSelector([getAllInvitationsData], (invitationsMap) => {
     const invitations = invitationsMap.get(eventId);
     return invitations ? invitations : [];
+  })(state);
+
+export const getEventVolunteers = (eventId: string, state: EventsState) =>
+  createSelector([getAllVolunteersData], (volunteersMap) => {
+    const volunteers = volunteersMap.get(eventId);
+    return volunteers ? volunteers : [];
   })(state);

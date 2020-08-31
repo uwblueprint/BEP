@@ -55,15 +55,17 @@ export default function VolunteerCard(props: any) {
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1">LinkedIn URL</Typography>
-            <Link target="_blank" href={props.linkedIn}>
-              <SecondaryMainTextTypography variant="body1">
-                {
-                  props.linkedIn
-                    .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
-                    .split("/")[0] // Remove protocol and 'www'
-                }
-              </SecondaryMainTextTypography>
-            </Link>
+            {props.linkedIn && (
+              <Link target="_blank" href={props.linkedIn}>
+                <SecondaryMainTextTypography variant="body1">
+                  {
+                    props.linkedIn
+                      .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
+                      .split("/")[0] // Remove protocol and 'www'
+                  }
+                </SecondaryMainTextTypography>
+              </Link>
+            )}
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1">Employment Status</Typography>
