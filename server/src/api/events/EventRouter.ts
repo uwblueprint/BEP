@@ -4,6 +4,7 @@
 
 import * as Express from 'express';
 import * as EventService from './EventService';
+import { EventInvitationInterface } from './EventInterface';
 // import Event from './EventInterface';
 
 /**
@@ -87,6 +88,19 @@ eventRouter.get('/invitations', async (req: Express.Request, res: Express.Respon
     } catch (e) {
         res.status(500).send({ msg: e.message });
     }
+});
+
+eventRouter.post('/invitations/update', async(req: Express.Request, res: Express.Response) => {
+    const invitation: EventInvitationInterface = req.body.invitation as EventInvitationInterface
+    const type: string = req.body.string as string
+    try {
+        const result = await EventService.updateInvitations(type, invitation)
+        res.status(200).json({
+            result
+        })
+    } catch (e) {
+        res.status(500).send({msg: e.message});
+    } 
 });
 
 eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Response) => {

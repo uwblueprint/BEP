@@ -106,11 +106,26 @@ const salesforceInvitationToEventInvitationModel = (record: any): EventInvitatio
         sectors: record.sectors__c,
         linkedinUrl: record.linkedInUrl__c,
         areasOfExpertise: record.areasOfExpertise__c,
-        employmentStatus: record.employmentStatus__c
+        employmentStatus: record.employmentStatus__c,
+        status: record.status__c,
     };
 
     return invitation;
 };
+
+const invitationModelToSalesforceInvitation = (invitation: EventInvitationInterface): any => {
+    const salesforceInvitation: any = {
+        Name: invitation.invitationName,
+        personalPronouns__c: invitation.personalPronouns,
+        job__c: invitation.job,
+        sectors__c: invitation.sectors,
+        linkedinUrl__c: invitation.linkedinUrl,
+        areasOfExpertise__c: invitation.areasOfExpertise,
+        employmentStatus__c: invitation.employmentStatus,
+        status__c: invitation.status
+    };
+    return salesforceInvitation;
+}
 
 const salesforceEventVolunteerToEventVolunteerModel = (record: any): EventVolunteerInterface => {
     const volunteer: EventVolunteerInterface = {
@@ -290,6 +305,22 @@ export const getInvitations = async (eventName: string): Promise<EventInvitation
     console.log(invitations);
     return invitations;
 };
+
+export const updateInvitations = async (type: string, invitation: EventInvitationInterface): Promise<EventInvitationInterface> => {
+    invitation.status = type
+    const newInvitation: any = invitationModelToSalesforceInvitation(invitation)
+    let updatedInvitation: EventInvitationInterface = conn
+            .sobject(eventInvitationApi)
+            .update(newInvitation, function (err, ret) {
+                if (err || !ret.success) {
+                    return console.error(err, ret)
+                }
+            });
+
+    return updatedInvitation
+}
+
+
 
 export const getVolunteers = async (eventName: string): Promise<EventVolunteerInterface> => {
     let volunteers: EventVolunteerInterface;
