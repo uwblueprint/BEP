@@ -37,7 +37,7 @@ import Application, {
   ApplicationStatus,
 } from "../../../data/types/applicationTypes";
 
-import { getInvitations, getVolunteers } from "../../../utils/eventsApiUtils";
+import { getInvitations } from "../../../utils/eventsApiUtils";
 import { getUser } from "../../../data/selectors/userSelector";
 import {
   getEventApplications,
