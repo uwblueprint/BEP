@@ -16,10 +16,11 @@ import { schoolRouter } from './api/schools/SchoolRouter';
 import { schoolPicklistRouter } from './api/schools/picklists/SchoolPicklistRouter';
 import { applicationRouter } from './api/applications/ApplicationsRouter';
 import { invitationRouter } from './api/invitations/InvitationsRouter';
-import { requestsRouter } from './requests/requests.router';
 import { eventVolunteerRouter } from './api/eventVolunteers/EventVolunteerRouter';
-import { verifyWebToken } from './middleware/jwt';
 import { authRouter } from './auth/authRouter';
+import { emailRouter } from './api/emails/EmailRouter';
+import { requestsRouter } from './requests/requests.router';
+import { verifyWebToken } from './middleware/jwt';
 
 let result;
 
@@ -79,6 +80,7 @@ class BackendServer extends Server {
         this.app.use('/api/invitations', invitationRouter);
         this.app.use('/api/schools', schoolRouter);
         this.app.use('/api/schools/picklists', schoolPicklistRouter);
+        this.app.use('/api/emails', emailRouter);
 
         //If in development, do not mount JWT auth middleware to users route
         if (process.env.NODE_ENV == 'production') {
