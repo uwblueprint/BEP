@@ -63,7 +63,7 @@ export default function Navbar(props: any) {
       return <Grid style={{margin:"0 5%"}}>
         <Link href="/opportunities" className={classes.tab} style={{margin: "0 6%"}}><SecondaryMainTextTypography>Browse Opportunities</SecondaryMainTextTypography></Link>
         <Link href="/volunteers" className={classes.tab} style={{margin: "0 6%"}}><SecondaryMainTextTypography >Browse Volunteers</SecondaryMainTextTypography></Link>
-        <Link className={classes.tab} style={{margin: "0 6%"}}><SecondaryMainTextTypography>Admin</SecondaryMainTextTypography></Link>
+        <Link href="/email" className={classes.tab} style={{margin: "0 6%"}}><SecondaryMainTextTypography>Admin</SecondaryMainTextTypography></Link>
       </Grid>;
     } else if (parseInt(userType) === UserType.Educator) {
       // educator

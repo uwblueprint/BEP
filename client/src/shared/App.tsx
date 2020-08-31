@@ -15,11 +15,12 @@ import EducatorDashboard from "../pages/EducatorDashboard/EducatorDashboard";
 import EventPage from "../pages/EducatorDashboard/IndividualOpportunity/EventPage";
 import Login from "../pages/Auth/SignIn";
 import VolunteerList from "../pages/VolunteerList/VolunteerList";
-import VolunteerProfile from '../pages/VolunteerProfile/VolunteerProfile';
+import VolunteerProfile from "../pages/VolunteerProfile/VolunteerProfile";
 import OpportunityList from "../pages/OpportunityList/OpportunityList";
 import VolunteerDashboard from "../pages/VolunteerDashboard/VolunteerDashboard";
 import VolunteerRegistration from "../pages/Auth/VolunteerRegistration";
 import EducatorRegistration from "../pages/Auth/EducatorRegistration";
+import EmailPanel from "../pages/Admin/EmailPanel";
 
 import { User } from "../data/types/userTypes";
 import OpportunityForm from "../pages/EducatorDashboard/OpportunityForm";
@@ -91,7 +92,7 @@ class App extends React.Component<
                 path="/volunteers"
                 isLoggedIn={isLoggedIn}
               />
-              <PrivateRoute 
+              <PrivateRoute
                 path="/volunteers/:name"
                 component={VolunteerProfile}
                 isLoggedIn={isLoggedIn}
@@ -120,6 +121,12 @@ class App extends React.Component<
                 exact
                 path="/newevent"
                 component={OpportunityForm}
+                isLoggedIn={isLoggedIn}
+              />
+              <PrivateRoute
+                component={EmailPanel}
+                exact
+                path="/email"
                 isLoggedIn={isLoggedIn}
               />
             </Switch>
