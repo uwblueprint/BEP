@@ -269,6 +269,7 @@ export const acceptApplicant = async (eventName: string, applicantName: string, 
     }
 };
 
+// deprecated
 export const getInvitations = async (eventName: string): Promise<EventInvitationInterface> => {
     let invitations: EventInvitationInterface;
     console.log('This is the event Name:', eventName);

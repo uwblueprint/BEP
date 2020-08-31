@@ -4,12 +4,14 @@ import {
   updateEvent,
 } from "../../utils/eventsApiUtils";
 import { getEventApplications } from "../../utils/applicationsApiUtils";
+import { getEventInvitations } from "../../utils/invitationsApiUtils";
 import { getVolunteersOfEvent } from "../../utils/eventVolunteersApiUtils";
 import {
   fetchActiveEvents,
   fetchPastEvents,
   fetchEventApplications,
   fetchVolunteersOfEvent,
+  fetchEventInvitations,
   updateEvent as updateEventAction,
 } from "../actions/eventsActions";
 
@@ -80,4 +82,13 @@ export function fetchVolunteersOfEventService(event: Event) {
       return res;
     });
   };
+}
+
+export function fetchEventInvitationsService(event:Event){
+    return (dispatch: any) => {
+        return getEventInvitations(event.id).then((res: any) => {
+            dispatch(fetchEventInvitations(event, res.data));
+            return res;
+        });
+    };
 }

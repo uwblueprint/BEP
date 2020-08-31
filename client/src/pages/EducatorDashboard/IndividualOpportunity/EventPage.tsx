@@ -37,16 +37,14 @@ import Application, {
   ApplicationStatus,
 } from "../../../data/types/applicationTypes";
 
-import { getInvitations } from "../../../utils/eventsApiUtils";
+import { getEventApplications, getEventInvitations, getEventVolunteers } from "../../../data/selectors/eventsSelector";
 import { getUser } from "../../../data/selectors/userSelector";
-import {
-  getEventApplications,
-  getEventVolunteers,
-} from "../../../data/selectors/eventsSelector";
+
 import {
   fetchEventApplicationsService,
   fetchVolunteersOfEventService,
   updateEventService,
+  fetchEventInvitationsService,
 } from "../../../data/services/eventsServices";
 import { createApplicationService } from "../../../data/services/applicationsService";
 
@@ -125,11 +123,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 const EventPage = (props: any) => {
   const classes = useStyles();
   const {
+    invitations,
     applications,
     user,
+    fetchEventApplications,
+    fetchEventInvitations,
     volunteers,
     createApplication,
-    fetchEventApplications,
     fetchEventVolunteers,
     updateEvent,
   } = props;
@@ -140,7 +140,6 @@ const EventPage = (props: any) => {
   // todo: see if volunteering for this event for bottom functionality + contact details
   // const isVolunteering = false;
   const [value, setValue] = React.useState<number>(0);
-  const [invitations, setInvitations] = React.useState<any>([]);
   const [publicEvent, setPublicEvent] = React.useState({
     checked: eventData.isPublic,
   });
@@ -168,7 +167,7 @@ const EventPage = (props: any) => {
 
   var displayInvitations = invitations.map((invite: any) => {
     var invitationProps = {
-      invite,
+      invite: invite.volunteer,
     };
     return <InviteCard info={invitationProps} />;
   });
@@ -211,17 +210,10 @@ const EventPage = (props: any) => {
     const fetchdata = async () => {
       fetchEventApplications(eventData);
       fetchEventVolunteers(eventData);
+      fetchEventInvitations(eventData);
     };
     fetchdata();
-  }, [eventData, fetchEventApplications, fetchEventVolunteers]);
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getInvitations(eventData.eventName);
-      setInvitations(result.data.invitations);
-    };
-    fetchdata();
-  }, [eventData.eventName]);
+  }, [eventData, fetchEventApplications, fetchEventVolunteers, fetchEventInvitations]);
 
   return (
     <React.Fragment>
@@ -552,6 +544,7 @@ const mapStateToProps = (state: any, ownProps: any) => {
 
   return {
     applications: getEventApplications(event.id, state.events),
+    invitations: getEventInvitations(event.id, state.events),
     user,
     volunteers: getEventVolunteers(event.id, state.events),
   };
@@ -562,6 +555,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(createApplicationService(application)),
   fetchEventApplications: (event: Event) =>
     dispatch(fetchEventApplicationsService(event)),
+  fetchEventInvitations: (event: Event) =>
+    dispatch(fetchEventInvitationsService(event)),
   updateEvent: (event: Event) => dispatch(updateEventService(event)),
   fetchEventVolunteers: (event: Event) =>
     dispatch(fetchVolunteersOfEventService(event)),

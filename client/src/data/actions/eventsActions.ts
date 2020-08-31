@@ -2,11 +2,13 @@ import {
   FETCH_ACTIVE_EVENTS,
   FETCH_EVENT_APPLICATIONS,
   FETCH_PAST_EVENTS,
+  FETCH_EVENT_INVITATIONS,
   FETCH_VOLUNTEERS_OF_EVENT,
   UPDATE_EVENT,
 } from "./actionTypes";
 import { Event } from "../types/eventTypes";
 import Application from "../types/applicationTypes";
+import Invitation from "../types/invitationTypes";
 import { Volunteer } from "../types/userTypes";
 
 export const fetchActiveEvents = (
@@ -38,6 +40,14 @@ export const fetchEventApplications = (
 ) => ({
   type: FETCH_EVENT_APPLICATIONS,
   payload: { applications, event },
+});
+
+export const fetchEventInvitations = (
+  event: Event,
+  invitations: Invitation[]
+) => ({
+  type: FETCH_EVENT_INVITATIONS,
+  payload: { invitations, event },
 });
 
 export const fetchVolunteersOfEvent = (

@@ -62,6 +62,7 @@ eventRouter.patch('/applications/updatestate', async (req: Express.Request, res:
     }
 });
 
+// deprecated
 eventRouter.get('/invitations', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.query.name as string;
 
