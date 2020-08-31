@@ -15,7 +15,7 @@ const login = (email: string, password: string) => {
   return axios.request(config);
 };
 
-const registerUser = (body: string) => {
+const registerUser = (body: any) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/auth/register`,
     method: "post",

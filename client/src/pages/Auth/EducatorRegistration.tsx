@@ -388,7 +388,7 @@ class EducatorRegistration extends React.Component<
 
     console.log(formattedData);
 
-    const sendUser = async (body: string) => {
+    const sendUser = async (body: any) => {
       try {
         await registerUser(body);
         console.log("success");
@@ -396,7 +396,7 @@ class EducatorRegistration extends React.Component<
         console.log(e);
       }
     };
-    sendUser(JSON.stringify(formattedData));
+    sendUser(formattedData);
   };
 
   render() {

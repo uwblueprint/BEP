@@ -3,6 +3,9 @@ import * as Express from 'express';
 import * as jwt from 'jsonwebtoken';
 
 import * as UserService from './../api/users/UserService';
+import SchoolInterface from '../api/schools/SchoolInterface';
+import { UserType } from '../api/users/UserInterface';
+import EducatorInterface from '../api/users/EducatorInterface';
 
 const BCRYPT_ROUNDS = 4;
 
@@ -58,12 +61,41 @@ export const authRouter = Express.Router();
 
 authRouter.post('/register', async (req: Express.Request, res: Express.Response) => {
     try {
-        //Hash Password
         const email: string = req.body.email;
+        const firstName: string = req.body.firstName;
+        const isSubscribed: boolean = req.body.isSubscribed;
+        const password: string = req.body.password;
+        const phoneNumber: string = req.body.phoneNumber;
+        const lastName: string = req.body.lastName;
+        const preferredPronouns: string = req.body.preferredPronouns;
+        const userType: UserType = req.body.userType;
+        const position: string = req.body.position;
+        const school: SchoolInterface = req.body.school;
+        const moreInfo: string[] = req.body.moreInfo;
+        const introductionMethod: string = req.body.introductionMethod;
+        const educatorDesiredActivities: string[] = req.body.educatorDesiredActivities;
 
-        req.body.password = await bcrypt.hash(req.body.password, BCRYPT_ROUNDS);
 
-        await UserService.create(req.body).then(response => {
+        //Hash Password
+        const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+
+        const user: EducatorInterface = {
+            email,
+            firstName,
+            isSubscribed,
+            lastName,
+            preferredPronouns,
+            password: hash,
+            phoneNumber,
+            userType,
+            introductionMethod,
+            position,
+            school,
+            moreInfo,
+            educatorDesiredActivities
+        };
+
+        await UserService.create(user).then(response => {
             try {
                 if (response['success']) {
                     const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: 5000 });

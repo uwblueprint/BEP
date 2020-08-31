@@ -35,6 +35,7 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
     };
 
     if (isEducator(user)) {
+        console.log("IS EDUCATOR");
         salesforceUser = {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
@@ -222,15 +223,17 @@ export const update = async (id: string, user: User): Promise<User> => {
 };
 
 // Create new user and return ID.
-export const create = async (user: User): Promise<string> => {
+export const create = async (user: Educator): Promise<string> => {
+    console.log(user);
     const userInfo: { id: string; success: boolean; errors: Error[] } = await conn
         .sobject(siteUser)
         .create(userModelToSalesforceUser(user), (err: Error, result: any) => {
             if (err || !result.success) {
+                console.log("1");
                 return console.error(err, result);
             }
         });
-
+    console.log("2");
     return userInfo.id;
 };
 
