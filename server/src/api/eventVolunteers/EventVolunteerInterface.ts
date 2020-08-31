@@ -1,5 +1,5 @@
-import Event from '../EventInterface';
-import Volunteer from '../../users/VolunteerInterface';
+import Event from '../events/EventInterface';
+import Volunteer from '../users/VolunteerInterface';
 
 export default interface EventVolunteerInterface {
     event: Event | string;

@@ -136,6 +136,9 @@ export const getEventInfo = async (id: string): Promise<Event> => {
             if (err) {
                 return console.error(err);
             }
+            if (record.length === 0) {
+                throw Error(`No event with ID ${id} found.`);
+            }
             return salesforceEventToEventModel(record[0]);
         });
 

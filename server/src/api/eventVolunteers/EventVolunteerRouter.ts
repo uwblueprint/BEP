@@ -57,7 +57,7 @@ eventVolunteerRouter.post('/', async (req: Express.Request, res: Express.Respons
 eventVolunteerRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
         const id: string = req.params.id;
-        await EventVolunteerService.remove(id);
+        await EventVolunteerService.remove({ id });
 
         res.sendStatus(200);
     } catch (e) {

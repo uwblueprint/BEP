@@ -56,6 +56,7 @@ applicationRouter.post('/', async (req: Express.Request, res: Express.Response) 
 
 applicationRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
+        console.log("HERE2")
         await ApplicationService.update(req.body);
         res.sendStatus(200);
     } catch (e) {

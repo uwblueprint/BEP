@@ -72,6 +72,9 @@ export const get = async (id: string): Promise<School> => {
             if (err) {
                 return console.error(err);
             }
+            if (record.length === 0) {
+                throw Error(`No school with ID ${id} found.`);
+            }
             return salesforceSchoolToSchoolModel(record[0]);
         });
 

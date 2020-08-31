@@ -57,6 +57,9 @@ export const get = async (id: string): Promise<EventVolunteer> => {
             if (err) {
                 return console.error(err);
             }
+            if (record.length === 0) {
+                throw Error(`No event volunteer with ID ${id} found.`);
+            }
             return salesforceEventVolunteerToEventVolunteerModel(record[0], true, true);
         });
 
@@ -121,12 +124,25 @@ export const create = async (eventVolunteer: EventVolunteer): Promise<string> =>
     return eventVolunteerInfo.id;
 };
 
-export const remove = async (id: string): Promise<void> => {
+export const remove = async (eventVolunteerInfo: {
+    id?: string;
+    eventId?: string;
+    volunteerId?: string;
+}): Promise<void> => {
+    let objectIdentifier;
+    if (eventVolunteerInfo.id) {
+        objectIdentifier = { Id: eventVolunteerInfo.id };
+    } else if (eventVolunteerInfo.eventId && eventVolunteerInfo.volunteerId) {
+        objectIdentifier = { event__c: eventVolunteerInfo.eventId, volunteer__c: eventVolunteerInfo.volunteerId };
+    } else {
+        throw Error(
+            'No valid user identifier provided. Either provide event volunteer id or provide both the event id and the volunteer id.'
+        );
+    }
+
     return conn
         .sobject(eventVolunteerObjectName)
-        .find({
-            Id: id
-        })
+        .find(objectIdentifier)
         .destroy((err: Error) => {
             if (err) {
                 return console.error(err);
