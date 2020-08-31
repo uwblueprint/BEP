@@ -62,3 +62,7 @@ export const getSchoolBoardPicklist = createPicklistSelector(
 );
 
 export const getSchoolTypePicklist = createPicklistSelector(PicklistType.type);
+
+export const getEmployerSectorsPicklist = createPicklistSelector(PicklistType.sectors);
+
+export const getEmployerSizePicklist = createPicklistSelector(PicklistType.size)

@@ -24,4 +24,9 @@ export enum PicklistType {
   province = "province",
   city = "city",
   type = "type", // School type
+
+  //Employer Picklist
+  sectors = "sectors",
+  size = "size"
+
 }

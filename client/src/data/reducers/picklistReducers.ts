@@ -37,6 +37,8 @@ const initialState: PicklistState = {
   [PicklistType.province]: [],
   [PicklistType.city]: [],
   [PicklistType.type]: [],
+  [PicklistType.sectors]: [],
+  [PicklistType.size]: [],
 };
 
 export default function (
