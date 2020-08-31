@@ -1,6 +1,7 @@
 import { getActiveEvents, getPastEvents, updateEvent } from "../../utils/eventsApiUtils";
-import { getEventApplications } from "../../utils/applicationsApiUtils"
-import { fetchActiveEvents, fetchPastEvents, fetchEventApplications, updateEvent as updateEventAction } from "../actions/eventsActions";
+import { getEventApplications } from "../../utils/applicationsApiUtils";
+import { getEventInvitations } from "../../utils/invitationsApiUtils";
+import { fetchActiveEvents, fetchPastEvents, fetchEventApplications, fetchEventInvitations, updateEvent as updateEventAction } from "../actions/eventsActions";
 import { Event } from "../types/eventTypes"
 
 export function fetchActiveEventsService(userType: number, userId: string) {
@@ -34,6 +35,15 @@ export function fetchEventApplicationsService(event:Event){
     return (dispatch: any) => {
         return getEventApplications(event.id).then((res: any) => {
             dispatch(fetchEventApplications(event, res.data));
+            return res;
+        });
+    };
+}
+
+export function fetchEventInvitationsService(event:Event){
+    return (dispatch: any) => {
+        return getEventInvitations(event.id).then((res: any) => {
+            dispatch(fetchEventInvitations(event, res.data));
             return res;
         });
     };

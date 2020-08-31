@@ -20,17 +20,16 @@ export const invitationRouter = Express.Router();
 invitationRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     const id: string = req.query.id as string;
     const relatedTo: string = req.query.relatedTo as string;
-
     if (!id) {
         throw Error(`Invalid query parameters. Must set "id" parameter.`);
     }
 
     try {
         if (relatedTo === 'volunteer') {
-            const invitations = await InvitationsService.getVolunteerApplications(id);
+            const invitations = await InvitationsService.getVolunteerInvitations(id);
             res.status(200).send(invitations);
         } else if (relatedTo === 'event') {
-            const invitations = await InvitationsService.getEventApplications(id);
+            const invitations = await InvitationsService.getEventInvitations(id);
             res.status(200).send(invitations);
         } else {
             const invitations = await InvitationsService.get(id);

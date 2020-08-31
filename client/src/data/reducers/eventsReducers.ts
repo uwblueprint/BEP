@@ -1,6 +1,7 @@
 import {
   FETCH_ACTIVE_EVENTS,
   FETCH_EVENT_APPLICATIONS,
+  FETCH_EVENT_INVITATIONS,
   FETCH_PAST_EVENTS,
   UPDATE_EVENT,
   UPDATE_APPLICATION,
@@ -9,11 +10,13 @@ import {
 import { Event } from "../types/eventTypes";
 import { UserType } from "../types/userTypes";
 import Application from "../types/applicationTypes";
+import Invitation from "../types/invitationTypes";
 
 export interface EventsState {
   activeList: Event[];
   // `applications` maps an event ID to an array of applications.
   applications: Map<string, Application[]>;
+  invitations: Map<string, Invitation[]>;
   // Number of past events recieved from the backend. Since past events are filtered before
   // being assigned to `state.events.pastList`, the length of the `pastList` array will not
   // match `numPastEventsRecieved`.
@@ -26,6 +29,7 @@ const initialState: EventsState = {
   applications: new Map<string, Application[]>(),
   numPastEventsRecieved: 0,
   pastList: [],
+  invitations: new Map<string, Invitation[]>()
 };
 
 export default function eventsFilter(
@@ -33,6 +37,7 @@ export default function eventsFilter(
   action: { type: string; payload: any; filter: any }
 ) {
   let newApplicationsMap = new Map<string, Application[]>();
+  let newInvitationsMap = new Map<string, Invitation[]>();
   const visibilityFilter =
     action.payload &&
     action.payload.userType &&
@@ -85,6 +90,16 @@ export default function eventsFilter(
         ...state,
         applications: newApplicationsMap,
       };
+    case FETCH_EVENT_INVITATIONS:
+      newInvitationsMap = state.invitations;
+      newInvitationsMap.set(
+        action.payload.event.id,
+        action.payload.invitations
+      );
+      return {
+        ...state,
+        invitations: newInvitationsMap
+      }
     case UPDATE_APPLICATION:
       newApplicationsMap = state.applications;
       const applicationsArr = newApplicationsMap
