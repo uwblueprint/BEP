@@ -13,7 +13,7 @@ import { conn } from '../../server';
 export const applicationObjectName: string = 'EventApplication__c';
 export const applicationFields: string = 'Id, event__c, status__c, volunteer__c';
 
-// Map fields of employer model to Salesforce fields.
+// Map fields of application model to Salesforce fields.
 const applicationModelToSalesforceApplication = (application: Application): any => {
     const salesforceApplication: any = {
         event__c: typeof application.event === 'string' ? application.event : application.event.id,
@@ -25,7 +25,7 @@ const applicationModelToSalesforceApplication = (application: Application): any 
     return salesforceApplication;
 };
 
-// Map Saleforce record fields to user model fields.
+// Map Saleforce record fields to application model fields.
 const salesforceApplicationToApplicationModel = async (
     record: any,
     getVolunteer: boolean,
@@ -47,7 +47,6 @@ const salesforceApplicationToApplicationModel = async (
  * Service Methods
  */
 
-// Basic query for now to retrieve a user based on first name (should be changed to ID in future)
 export const get = async (id: string): Promise<Application> => {
     let application: Application = conn
         .sobject(applicationObjectName)
