@@ -21,7 +21,7 @@ export interface EventsState {
   pastList: Event[];
 }
 
-const initialState: EventsState = {
+const initialState: EventsState = { 
   activeList: [],
   applications: new Map<string, Application[]>(),
   numPastEventsRecieved: 0,

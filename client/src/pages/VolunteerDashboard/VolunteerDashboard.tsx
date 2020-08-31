@@ -23,9 +23,10 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { getActiveEvents } from "../../data/selectors/eventsSelector";
 
-import { Event } from "../../data/types/eventTypes"
-import { getApplications, getInvitations, getVolunteers } from '../../utils/eventsApiUtils'
-import { fetchActiveEventsService } from '../../data/services/eventsServices'
+import { Event } from "../../data/types/eventTypes";
+import { fetchActiveEventsService } from '../../data/services/eventsServices';
+import { fetchApplicationsByVolunteer } from '../../data/services/applicationsService';
+import { getApplications } from '../../utils/eventsApiUtils';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -41,6 +42,7 @@ interface StateProps {
 
 interface DispatchProps {
   fetchActiveEvents: any;
+  fetchApplications: any;
 }
 
 type Props = DispatchProps & StateProps;
@@ -102,12 +104,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActiveEvents } : Props) => {
+const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActiveEvents, fetchApplications } : Props) => {
   const classes = useStyles();
 
   const [value, setValue] = React.useState<number>(0);
-  // const [applications, setApplications] = React.useState<any>([]);
-  // const [fetchedApplications, setFetchedApplications] = React.useState(false);
+  const [applications, setApplications] = React.useState<any>([]);
+  const [fetchedApplications, setFetchedApplications] = React.useState(false);
   // const [invitations, setInvitations] = React.useState<any>([]);
   // const [fetchedInvitations, setFetchedInvitations] = React.useState(false);
   const [filteredEvents, setFilteredEvents] = React.useState<any>([]);
@@ -123,15 +125,15 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
     })();
   }, [fetchActiveEvents]);
 
-  // todo: applications, incomplete
-  // useEffect(() => {
-  //   const fetchdata = async () => {
-  //     const result = await getApplications(eventData.eventName);
-  //     setApplications(result.data.applications)
-  //   }
-  //   fetchdata();
-  // }, [applications]);
-  let applications = activeEvents;
+  useEffect(() => {
+    (async function wrapper() {
+      if (!fetchedApplications && applications.length === 0) {
+        const data = await fetchApplications(userId);
+        setApplications(data);
+        setFetchedApplications(true);
+      }
+    })();
+  }, [applications, fetchedApplications]);
 
   // todo: invitations, incomplete
   // useEffect(() => {
@@ -213,7 +215,7 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
                   <div style={{margin:"1% 0"}}>Click 'Browse Opportunities' to get started.</div>
               </Typography> :
             applications.map((application: any) =>
-              createOpportunityCard(application)
+              createOpportunityCard(application.event)
             )}
           </TabPanel>
           <TabPanel value={value} index={2}>
@@ -247,6 +249,8 @@ const mapStateToProps = (state: any): StateProps => {
 const mapDispatchToProps = (dispatch: any) => ({
   fetchActiveEvents: (userType: number, userId: string) =>
     dispatch(fetchActiveEventsService(userType, userId)),
+  fetchApplications: (userId: string) =>
+    dispatch(fetchApplicationsByVolunteer(userId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventPage);

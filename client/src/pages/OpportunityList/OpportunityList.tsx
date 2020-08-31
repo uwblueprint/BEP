@@ -72,11 +72,6 @@ class OpportunityList extends React.Component<
 
     const { history, user, events } = props;
 
-    if (user) {
-      // whatever the redirect route is supposed to be
-      history.push("/opportunities");
-    }
-
     this.getFilters = this.getFilters.bind(this);
     this.createUpdateMultipleFilters = this.createUpdateMultipleFilters.bind(
       this
