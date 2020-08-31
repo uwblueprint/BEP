@@ -8,7 +8,7 @@ import {
 export function updateApplicationService(application: Application) {
   return (dispatch: any) => {
     return update(application).then((res: any) => {
-      dispatch(updateApplication(res.data));
+      dispatch(updateApplication(application));
       return res;
     });
   };

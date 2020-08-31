@@ -49,13 +49,11 @@ const salesforceApplicationToApplicationModel = async (
  */
 
 export const get = async (id: string): Promise<Application> => {
-    console.log('HERE4');
     let application: Application = conn
         .sobject(applicationObjectName)
         .find({ Id: id }, applicationFields)
         .limit(1)
         .execute(function(err: Error, record: any) {
-            console.log(record);
             if (err) {
                 return console.error(err);
             }
@@ -127,9 +125,6 @@ export const update = async (application: Application): Promise<Application> => 
     }
     const salesforceApplication = applicationModelToSalesforceApplication(application);
 
-    console.log('HERE');
-    console.log(oldApplication);
-    console.log(salesforceApplication);
     if (oldApplication) {
         // If the application status is changed to accepted, then create a new event volunteer object.
         // If the application status is changes from accepted, then delete.
@@ -150,7 +145,7 @@ export const update = async (application: Application): Promise<Application> => 
     }
 
     delete salesforceApplication.event__c;
-    let updatedApplication: Application = conn
+    let res = conn
         .sobject(applicationObjectName)
         .update(salesforceApplication, function(err, ret) {
             if (err || !ret.success) {
@@ -158,7 +153,7 @@ export const update = async (application: Application): Promise<Application> => 
             }
         });
 
-    return updatedApplication;
+    return res;
 };
 
 // create new volunteer application object in salesforce with fields
