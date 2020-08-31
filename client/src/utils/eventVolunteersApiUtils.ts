@@ -12,7 +12,7 @@ const getVolunteersOfEvent = (eventId: string) => {
 
 const getEventsOfVolunteer = (volunteerId: string) => {
   const config: AxiosRequestConfig = {
-    url: `${baseURL}api/applications?relatedTo=volunteer&id={volunteerId}`,
+    url: `${baseURL}api/applications?relatedTo=volunteer&id=${volunteerId}`,
     method: "get",
   };
 

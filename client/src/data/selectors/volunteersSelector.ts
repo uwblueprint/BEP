@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 import { VolunteersState } from "../reducers/volunteersReducers";
 import { Volunteer } from "../types/userTypes";
+import { create } from "lodash";
 
 const getVolunteersData = (state: VolunteersState) => {
   return state.list ? state.list : [];
@@ -27,4 +28,14 @@ const getVolunteerInvitationsData = (state: any) => {
 export const getVolunteerInvitations = createSelector(
   [getVolunteerInvitationsData],
   (invitations) => invitations
+)
+
+const getVolunteerEventsData = (state: any) => {
+  console.log(state);
+  return state.volunteers && state.volunteers.events ? state.volunteers.events : [];
+}
+
+export const getVolunteerEvents = createSelector(
+  [getVolunteerEventsData],
+  (events) => events
 )
