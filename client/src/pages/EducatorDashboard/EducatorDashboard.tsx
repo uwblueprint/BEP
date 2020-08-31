@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Event } from "../../data/types/eventTypes";
-import { User } from "../../data/types/userTypes";
 import { connect } from "react-redux";
 import {
   fetchActiveEventsService,
@@ -135,6 +134,7 @@ const EducatorDashboard: React.SFC<Props> = ({
   const [fetchedActiveEvents, setFetchedActiveEvents] = useState(
     activeEvents.length !== 0
   );
+  const [loadingEvents, setLoadingEvents] = useState(false);
 
   // State variables for infinite scroll functionality
   const [prevY, setPrevY] = useState<number>(0);
@@ -155,10 +155,12 @@ const EducatorDashboard: React.SFC<Props> = ({
           setLoadedAllEvents(true);
         }
 
-        if (!loadedAllEvents) {
+        if (!loadedAllEvents && !loadingEvents) {
           if (offset > 1) setLastOffset(offset);
-
-          fetchPastEvents(blockSize, offset, userType, userId);
+          setLoadingEvents(true);
+          fetchPastEvents(blockSize, offset, userType, userId).then(() => {
+            setLoadingEvents(false);
+          });
         }
       }
       setPrevY(y);
@@ -167,6 +169,7 @@ const EducatorDashboard: React.SFC<Props> = ({
       fetchPastEvents,
       lastOffset,
       loadedAllEvents,
+      loadingEvents,
       offset,
       prevY,
       userType,
@@ -199,7 +202,12 @@ const EducatorDashboard: React.SFC<Props> = ({
     // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
     // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
     (async function test() {
-      await fetchPastEvents(blockSize, offset, userType, userId);
+      setLoadingEvents(true);
+
+      if (tabValue === 1)
+        await fetchPastEvents(blockSize, offset, userType, userId);
+
+      setLoadingEvents(false);
       setLastOffset(offset);
       if (!fetchedActiveEvents) {
         await fetchActiveEvents(userType, userId);
@@ -212,6 +220,7 @@ const EducatorDashboard: React.SFC<Props> = ({
     fetchedActiveEvents,
     fetchPastEvents,
     offset,
+    tabValue,
     userType,
     userId,
   ]);
@@ -355,6 +364,7 @@ const EducatorDashboard: React.SFC<Props> = ({
 const mapStateToProps = (state: any): StateProps => {
   const userObj = localStorage.getItem("user");
   const user = userObj ? JSON.parse(userObj) : userObj;
+
   return {
     activeEvents: getActiveEvents(state.events),
     offset: getNumPastEventsRecieved(state.events),
