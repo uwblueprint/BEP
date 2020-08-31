@@ -105,7 +105,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     constructor(props: IProps) {
         super(props);
         if (!props.location.state) {
-            console.log("Setting state")
             this.state = {
                 name: "",
                 requiredVolunteers: '',
@@ -156,10 +155,8 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     }
 
     handleChange = (event: any) => {
-        console.log(event.target.value);
         const { id, value } = event.target;
         this.setState({ ...this.state, [id]: value });
-        console.log("State", this.state)
     };
 
     handlePublicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,7 +164,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
       };
 
     handleDatesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("Target Val", event.target.value)
         if (event.target.value as string === "Single-day Event") {
             this.setState({singleDayEvent: true})
         } else {
@@ -216,8 +212,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 console.error(e)
             }
         }
-
-        console.log("Submitted Event", formattedEvent)
         
 
        sendOpportunity(formattedEvent).then(() => {

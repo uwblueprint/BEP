@@ -11,6 +11,15 @@ const createEvent = (body: string) => {
   return axios.request(config)
 } 
 
+const createEvent = (body: string) => {
+  const config: AxiosRequestConfig = {
+    url: `${baseURL}api/events/create`,
+    method: 'post',
+    data: body
+  }
+  return axios.request(config)
+} 
+
 const getEvents = (limit: number, offset: number) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/events/?limit=${limit}&offset=${offset}`,
