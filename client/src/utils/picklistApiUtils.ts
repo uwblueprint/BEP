@@ -20,4 +20,13 @@ const getSchoolPicklist = (picklistType: PicklistType) => {
   return axios.request(config);
 };
 
-export { getUserPicklist, getSchoolPicklist };
+const getEmployerPicklist = (picklistType: PicklistType) => {
+  const config: AxiosRequestConfig = {
+    url: `${baseURL}api/employers/picklists/${PicklistType[picklistType]}`,
+    method: "get",
+  };
+
+  return axios.request(config)
+}
+
+export { getUserPicklist, getSchoolPicklist, getEmployerPicklist };

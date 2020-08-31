@@ -26,8 +26,7 @@ import {
 
 import { Grid } from "@material-ui/core";
 
-import { fetchUserPicklistService } from "../../../data/services/picklistServices";
-// import { fetchEmployerPicklistService } from "../../../data/services/picklistServices";
+import { fetchUserPicklistService, fetchEmployerPicklistService } from "../../../data/services/picklistServices";
 
 import Experience from "./Experience";
 import PersonalInfo from "./PersonalInfo";
@@ -61,7 +60,7 @@ interface IComponentProps {
     // postSecondaryTraining: { list: string[] };
   };
   fetchUserPicklists: any;
-  //   fetchEmployerPicklists: any;
+  fetchEmployerPicklists: any;
 }
 
 interface IComponentState {
@@ -338,7 +337,7 @@ const mapStateToProps = (state: any) => {
       grades: {
         list: getGradesPicklist(state.picklists),
       },
-      //add more here Faizaan
+      
     },
   };
 };
@@ -346,8 +345,8 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: any) => ({
   fetchUserPicklists: (picklistType: PicklistType) =>
     dispatch(fetchUserPicklistService(picklistType)),
-  // fetchEmployerPicklists: (picklistType: PicklistType) =>
-  //     dispatch(fetchEmployerPicklistService(picklistType)),
+  fetchEmployerPicklistService: (picklistType: PicklistType) =>
+    dispatch(fetchUserPicklistService(picklistType)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Master);

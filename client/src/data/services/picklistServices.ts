@@ -1,6 +1,7 @@
 import {
   getUserPicklist,
   getSchoolPicklist,
+  getEmployerPicklist
 } from "../../utils/picklistApiUtils";
 import { fetchPicklist } from "../actions/picklistActions";
 import { PicklistType } from "../types/picklistTypes";
@@ -21,4 +22,13 @@ export function fetchSchoolPicklistService(picklistType: PicklistType) {
       return res;
     });
   };
+}
+
+export function fetchEmployerPicklistService(picklistType: PicklistType) {
+  return (dispatch: any) => {
+    return getEmployerPicklist(picklistType).then((res: any) => {
+      dispatch(fetchPicklist(picklistType, res.date));
+      return res;
+    });
+  }
 }
