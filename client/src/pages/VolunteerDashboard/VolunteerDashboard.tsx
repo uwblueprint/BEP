@@ -8,25 +8,17 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box';
-import ApplicantCard from '../EducatorDashboard/IndividualOpportunity/ApplicantCard'
-import InviteCard from '../EducatorDashboard/IndividualOpportunity/InviteCard';
-import Switch from '@material-ui/core/Switch';
-import { ContainedButton, PageHeader, PageBody } from '../../components/index';
-import EventSection from '../EducatorDashboard/IndividualOpportunity/EventSection';
+import { PageHeader, PageBody } from '../../components/index';
 import EventCard from '../EducatorDashboard/EventCard';
-import ConfirmedVolunteerCard from '../EducatorDashboard/IndividualOpportunity/ConfirmedVolunteerCard';
 import { Link } from 'react-router-dom'
-import CreateIcon from '@material-ui/icons/Create';
-import Card from '@material-ui/core/Card';
-import Container from '@material-ui/core/Container'
-import InfoIcon from '@material-ui/icons/Info';
 
 import { getActiveEvents } from "../../data/selectors/eventsSelector";
+import { getVolunteerApplications } from "../../data/selectors/volunteersSelector";
 
 import { Event } from "../../data/types/eventTypes";
+import Application from "../../data/types/applicationTypes";
 import { fetchActiveEventsService } from '../../data/services/eventsServices';
 import { fetchApplicationsByVolunteer } from '../../data/services/applicationsService';
-import { getApplications } from '../../utils/eventsApiUtils';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,6 +28,7 @@ interface TabPanelProps {
 
 interface StateProps {
   activeEvents: any;
+  applications: Application[];
   userType: number;
   userId: string;
 }
@@ -104,11 +97,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActiveEvents, fetchApplications } : Props) => {
+const EventPage: React.SFC<Props> = ({ applications, activeEvents, userType, userId, fetchActiveEvents, fetchApplications } : Props) => {
   const classes = useStyles();
 
   const [value, setValue] = React.useState<number>(0);
-  const [applications, setApplications] = React.useState<any>([]);
+  // const [applications, setApplications] = React.useState<any>([]);
   const [fetchedApplications, setFetchedApplications] = React.useState(false);
   // const [invitations, setInvitations] = React.useState<any>([]);
   // const [fetchedInvitations, setFetchedInvitations] = React.useState(false);
@@ -127,13 +120,12 @@ const EventPage: React.SFC<Props> = ({ activeEvents, userType, userId, fetchActi
 
   useEffect(() => {
     (async function wrapper() {
-      if (!fetchedApplications && applications.length === 0) {
-        const data = await fetchApplications(userId);
-        setApplications(data);
+      if (!fetchedApplications) { //&& applications.length === 0) {
+        await fetchApplications(userId);
         setFetchedApplications(true);
       }
     })();
-  }, [applications, fetchedApplications]);
+  }, [fetchedApplications]);
 
   // todo: invitations, incomplete
   // useEffect(() => {
@@ -241,6 +233,7 @@ const mapStateToProps = (state: any): StateProps => {
   const user = userObj ? JSON.parse(userObj) : null;
   return {
     activeEvents: getActiveEvents(state.events),
+    applications: getVolunteerApplications(state),
     userType: user ? user.userType : 0,
     userId: user ? user.id : "",
   };

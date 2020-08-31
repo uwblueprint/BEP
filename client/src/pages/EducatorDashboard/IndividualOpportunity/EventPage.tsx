@@ -202,9 +202,8 @@ const EventPage = (props: any) => {
   });
 
   var displayInvitations = invitations.map((invite: any) => {
-    console.log(invite);
     var invitationProps = {
-      invite,
+      invite: invite.volunteer,
     };
     return <InviteCard info={invitationProps} />;
   });

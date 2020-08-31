@@ -27,7 +27,7 @@ export function createApplicationService(application: Application) {
 export function fetchApplicationsByVolunteer(id: string) {
   return (dispatch: any) => {
     return getVolunteerApplications(id).then((res: any) => {
-      // dispatch(fetchUserApplications(res.data));
+      dispatch(fetchUserApplications(res.data));
       return res.data;
     });
   };
