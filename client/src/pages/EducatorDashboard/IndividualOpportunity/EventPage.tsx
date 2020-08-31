@@ -26,7 +26,6 @@ import {
 } from "../../../components/index";
 import EventSection from "./EventSection";
 import ConfirmedVolunteerCard from "./ConfirmedVolunteerCard";
-import { Link } from "react-router-dom";
 import CreateIcon from "@material-ui/icons/Create";
 import Card from "@material-ui/core/Card";
 import Container from "@material-ui/core/Container";
