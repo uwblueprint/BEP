@@ -12,7 +12,7 @@ import { arrayToPicklistString, picklistStringToArray } from '../../util/Salesfo
 
 export const siteUser: string = 'SiteUser__c';
 const userFields: string =
-    'email__c, firstName__c, phoneNumber__c, followedPrograms__c, Id, isSubscribed__c, lastName__c, password__c, ' +
+    'email__c, firstName__c, phoneNumber__c, Id, isSubscribed__c, lastName__c, password__c, ' +
     'preferredPronouns__c, userType__c, careerDescription__c, coopPlacementMode__c, coopPlacementSchoolAffiliation__c, coopPlacementTime__c, ' +
     'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
     'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
@@ -20,11 +20,10 @@ const userFields: string =
     'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c introductionMethod__c, ';
 
 // Map fields of user model to Salesforce fields.
-const userModelToSalesforceUser = (user: User, id?: string): any => {
+export const userModelToSalesforceUser = (user: User, id?: string): any => {
     let salesforceUser: any = {
         email__c: user.email,
         firstName__c: user.firstName,
-        followedPrograms__c: arrayToPicklistString(user.followedPrograms),
         ...(id && { Id: id }),
         isSubscribed__c: user.isSubscribed,
         lastName__c: user.lastName,
@@ -96,7 +95,6 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
     const user: User = {
         email: record.email__c,
         firstName: record.firstName__c,
-        followedPrograms: record.followedPrograms__c,
         id: record.Id,
         isSubscribed: record.isSubscribed__c,
         lastName: record.lastName__c,

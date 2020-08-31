@@ -3,7 +3,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as EducatorImage } from "../../components/assets/undraw_teacher.svg";
 import { ReactComponent as VolunteerImage } from "../../components/assets/undraw_candidate.svg";
 
-import { TextButton, Dialog, DialogTitle } from "../../components/index";
+import {
+  TextButton,
+  Dialog,
+  DialogTitle,
+  SecondaryMainTextTypography,
+} from "../../components/index";
 import { Grid } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -12,9 +17,32 @@ const useStyles = makeStyles({
   root: {
     minWidth: 275,
   },
-  boxedUser: {
+  boxedUser1: {
     border: "3px solid #0A79BF",
     borderRadius: "2.93603px",
+    margin: "0px 12px 24px 24px",
+  },
+  boxedUser2: {
+    border: "3px solid #0A79BF",
+    borderRadius: "2.93603px",
+    margin: "0px 24px 24px 12px",
+  },
+  userImage: {
+    position: "relative",
+    display: "block",
+    margin: "0 auto",
+    left: "0",
+    top: "0",
+    width: "90%",
+    height: "100%",
+  },
+  link: {
+    textDecoration: "none",
+    textAlign: "center",
+  },
+  userText: {
+    fontWeight: 700,
+    padding: "1em",
   },
 });
 
@@ -40,16 +68,29 @@ function SimpleDialog(props: SimpleDialogProps) {
       <DialogTitle id="simple-dialog-title">Which one are you?</DialogTitle>
 
       <Grid container direction="row">
-        <Grid item xs={6} className={classes.boxedUser}>
-          <Link to="/educator-registration">
-            Educator
-            <EducatorImage />
+        <Grid item xs={5} className={classes.boxedUser1}>
+          <Link to="/educator-registration" className={classes.link}>
+            <Grid>
+              <SecondaryMainTextTypography className={classes.userText}>
+                Educator
+              </SecondaryMainTextTypography>
+            </Grid>
+            <Grid>
+              <EducatorImage className={classes.userImage} />
+            </Grid>
           </Link>
         </Grid>
-        <Grid item xs={6} className={classes.boxedUser}>
-          <Link to="/volunteer-registration">
-            Volunteer
-            <VolunteerImage />
+        <Grid item xs={5} className={classes.boxedUser2}>
+          <Link to="/volunteer-registration" className={classes.link}>
+            <Grid>
+              {" "}
+              <SecondaryMainTextTypography className={classes.userText}>
+                Volunteer
+              </SecondaryMainTextTypography>
+            </Grid>
+            <Grid>
+              <VolunteerImage className={classes.userImage} />
+            </Grid>
           </Link>
         </Grid>
       </Grid>

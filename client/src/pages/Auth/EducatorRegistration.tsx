@@ -27,10 +27,13 @@ import {
 import { getSchools } from "../../data/selectors/schoolListSelector";
 
 import { baseURL } from "../../utils/ApiUtils";
+import { registerUser } from "../../utils/authApiUtils";
 
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Typography from "@material-ui/core/Typography";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Divider from "@material-ui/core/Divider";
 
 import { Grid } from "@material-ui/core";
 
@@ -43,6 +46,7 @@ import {
   ContainedButton,
   DarkContainedButton,
   OutlinedTextField,
+  BlackHeaderTypography,
   BlackTextTypography,
   PageHeader,
   OutlinedCheckbox,
@@ -52,15 +56,28 @@ import {
 } from "../../components/index";
 
 const styles = () => ({
-  selectTextField: {
-    width: "40%",
-    marginBottom: "24px",
+  textField: {
+    width: "45%",
+    marginBottom: "26px",
+    marginTop: "4px",
   },
-  card: {
-    padding: "3em",
-    backgroundColor: "#fff",
-    borderRadius: "2px",
-    margin: "2em 0em",
+
+  formSection: {
+    padding: "2.5em 3em 0.5em 3em",
+  },
+  multiSelect: {
+    marginBottom: "26px",
+    columns: "2 auto",
+  },
+  dropDowns: {
+    marginTop: "4px",
+    width: "45%",
+  },
+  selectField: {
+    border: "1px solid #bcbcbc",
+    padding: "8px 8px 3px 20px",
+    borderRadius: "1px",
+    marginBottom: "24px",
   },
 });
 
@@ -77,6 +94,13 @@ interface IComponentProps {
   fetchUserPicklists: any;
   fetchSchoolPicklists: any;
   fetchSchoolList: any;
+  classes: {
+    textField: any;
+    formSection: any;
+    multiSelect: any;
+    dropDowns: any;
+    selectField: any;
+  };
 }
 
 interface IComponentState {
@@ -85,8 +109,11 @@ interface IComponentState {
   confirmPassword: string;
   firstName: string;
   lastName: string;
+  preferredPronouns: string;
+  isSubscribed: boolean;
   phoneNumber: string;
   schoolName: string;
+  agreeConditions: boolean;
   filteredSchoolList: School[];
   picklistInfo: {
     educatorDesiredActivities: Map<string, boolean>;
@@ -116,7 +143,6 @@ class EducatorRegistration extends React.Component<
     this.createHandleSelectOption = this.createHandleSelectOption.bind(this);
     this.createUpdateOptions = this.createUpdateOptions.bind(this);
     this.filterAllFields = this.filterAllFields.bind(this);
-    // this.fetchSchoolList = this.fetchSchoolList.bind(this);
 
     this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -126,9 +152,12 @@ class EducatorRegistration extends React.Component<
       confirmPassword: "",
       firstName: "",
       lastName: "",
+      preferredPronouns: "",
       phoneNumber: "",
       schoolName: "",
+      isSubscribed: false,
       filteredSchoolList: schoolList,
+      agreeConditions: false,
       picklistInfo: {
         educatorDesiredActivities: new Map(),
         moreInfo: new Map(),
@@ -141,7 +170,7 @@ class EducatorRegistration extends React.Component<
       },
     };
   }
-
+  public moreInfoList: string[] = [];
   public educatorDesiredActivitiesList: string[] = [];
 
   componentDidMount() {
@@ -151,12 +180,6 @@ class EducatorRegistration extends React.Component<
       PicklistType.introductionMethod,
       PicklistType.moreInfo,
     ];
-
-    const createPicklist = (
-      filterNames: string[]
-    ): Array<[string, boolean]> => {
-      return filterNames.map((item: string) => [item, false]);
-    };
 
     picklistTypes.forEach((type: PicklistType) => {
       this.props.fetchUserPicklists(type).then(() => {
@@ -176,34 +199,27 @@ class EducatorRegistration extends React.Component<
       });
     });
 
-    const schoolListTypes: PicklistType[] = [
-      PicklistType.schoolBoard,
-      PicklistType.type,
-    ];
+    const createPicklist = (
+      filterNames: string[]
+    ): Array<[string, boolean]> => {
+      return filterNames.map((item: string) => [item, false]);
+    };
 
-    schoolListTypes.forEach((type: PicklistType) => {
-      this.props.fetchSchoolPicklists(type);
-    });
+    this.props.fetchSchoolPicklists(PicklistType.type);
+    this.props.fetchSchoolPicklists(PicklistType.schoolBoard);
 
     this.props.fetchSchoolList().then(() => {
       this.setState({
-        filteredSchoolList: this.props.schoolList,
+        filteredSchoolList: this.props.schoolList, //populate the state to have the schoolList from the api
       });
     });
-
-    // .then(() => {
-    //   this.setState({
-    //     filteredSchoolList: this.state.filteredSchoolList.concat(
-    //       this.filterAllFields(this.props.schoolList)
-    //     ),
-    //   });
-    // });
   }
 
   componentDidUpdate(prevProps: IComponentProps, prevState: IComponentState) {
+    // This takes all the options that were selected true (in the map string bool) and pushes it into an array
     if (prevState.picklistInfo !== this.state.picklistInfo) {
-      console.log("change");
       this.educatorDesiredActivitiesList = [];
+      this.moreInfoList = [];
 
       Array.from(
         this.state.picklistInfo.educatorDesiredActivities.entries()
@@ -213,18 +229,17 @@ class EducatorRegistration extends React.Component<
         }
       });
 
-      // Array.from(
-      //   this.state.picklistInfo.educatorDesiredActivities.entries()
-      // ).forEach((entry) => {
-      //   if (entry[1] == true) {
-      //     console.log("Test" + this.educatorDesiredActivitiesList);
-      //   }
-      // });
+      Array.from(this.state.picklistInfo.moreInfo.entries()).forEach(
+        (entry) => {
+          if (entry[1] == true) {
+            this.moreInfoList.push(entry[0]);
+          }
+        }
+      );
     }
   }
 
   getFilterFunction = (fieldName: string) => {
-    console.log(fieldName);
     switch (fieldName) {
       case "schoolBoard":
         return this.filterSchoolBoard;
@@ -232,23 +247,6 @@ class EducatorRegistration extends React.Component<
         return this.filterSchoolType;
     }
     return (school: School, filter: string) => true;
-  };
-
-  handleschoolInfoChange = (event: any) => {
-    const { name, value } = event.target;
-    const schoolInfo = this.state.schoolInfo;
-    console.log("School Info Change");
-    console.log(event.target.value);
-
-    this.setState(
-      {
-        schoolInfo: {
-          ...schoolInfo,
-          [name]: value,
-        },
-      },
-      this.schoolListCallback
-    );
   };
 
   schoolListCallback() {
@@ -260,21 +258,17 @@ class EducatorRegistration extends React.Component<
   filterAllFields(schools: School[]) {
     const newSchools = schools.filter((school: School) => {
       var pass = true;
-      console.log(this.state.schoolInfo);
-
       for (let [fieldName, filterMap] of Object.entries(
         this.state.schoolInfo
       )) {
         const filterFunction = this.getFilterFunction(fieldName);
 
         if (pass && !filterFunction(school, filterMap)) {
-          console.log("hello");
           pass = false;
         }
         if (!pass) return false;
-        return true;
       }
-      console.log("pass is " + pass);
+      return true;
     });
     return newSchools;
   }
@@ -284,16 +278,6 @@ class EducatorRegistration extends React.Component<
 
   filterSchoolType = (school: School, filter: string) =>
     school.type.includes(filter);
-
-  // fetchSchoolList() {
-  //   this.props.fetchSchoolList.then(() => {
-  //     this.setState({
-  //       filteredSchoolList: this.state.filteredSchoolList.concat(
-  //         this.filterAllFields(this.props.schoolList)
-  //       ),
-  //     });
-  //   });
-  // }
 
   getMultiPicklist(picklistName: string) {
     const picklists = this.state.picklistInfo;
@@ -338,21 +322,28 @@ class EducatorRegistration extends React.Component<
     return handleSelectOption.bind(this);
   }
 
-  test = () => {
-    const myMap = this.state.picklistInfo.educatorDesiredActivities;
-
-    Array.from(
-      this.state.picklistInfo.educatorDesiredActivities.entries()
-    ).forEach((entry) =>
-      console.log("Key: " + entry[0] + " Value: " + entry[1])
-    );
-  };
-
   handleChange = (event: any) => {
     console.log("State Change");
 
     const { name, value } = event.target;
     this.setState({ ...this.state, [name]: value });
+  };
+
+  handleschoolInfoChange = (event: any) => {
+    const { name, value } = event.target;
+
+    const schoolInfo = this.state.schoolInfo;
+    console.log("School Info Change");
+
+    this.setState(
+      {
+        schoolInfo: {
+          ...schoolInfo,
+          [name]: value,
+        },
+      },
+      this.schoolListCallback
+    );
   };
 
   handlepicklistInfoChange = (event: any) => {
@@ -371,24 +362,51 @@ class EducatorRegistration extends React.Component<
   handleSubmit = (event: any) => {
     event.preventDefault();
     console.log(this.state);
-    axios
-      .post(`${baseURL}/api/users/`, this.state)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+    let test = this.props.schoolList.filter(
+      (school: School) => school.name === this.state.schoolName
+    );
+
+    console.log(test);
+    console.log(test[0]);
+
+    const formattedData = {
+      userType: 1,
+      email: this.state.email,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      password: this.state.password,
+      phoneNumber: this.state.phoneNumber,
+      preferredPronouns: this.state.preferredPronouns,
+      isSubscribed: this.state.isSubscribed,
+      position: this.state.picklistInfo.position,
+      school: test[0], //test
+      introductionMethod: this.state.picklistInfo.introductionMethod,
+      moreInfo: this.moreInfoList,
+      educatorDesiredActivities: this.educatorDesiredActivitiesList,
+    };
+
+    console.log(formattedData);
+
+    const sendUser = async (body: string) => {
+      try {
+        await registerUser(body);
+        console.log("success");
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    sendUser(JSON.stringify(formattedData));
   };
 
   render() {
-    const picklistName = "educatorDesiredActivities";
-
     return (
       <React.Fragment>
         <PageBody>
           <div style={{ marginTop: "5em" }}>
-            <Link to="/">Back</Link>
+            <BlackTextTypography>
+              <Link to="/">Back</Link>{" "}
+            </BlackTextTypography>
             <Typography variant="h1">
               Register for an educator account
             </Typography>
@@ -397,129 +415,356 @@ class EducatorRegistration extends React.Component<
               spacing={4}
               direction="column"
               style={{
-                padding: "3em",
                 backgroundColor: "#fff",
                 borderRadius: "2px",
                 margin: "2em 0em",
               }}
             >
-              <BlackTextTypography>School Board</BlackTextTypography>
-              <FormControl required>
-                <Select
-                  value={this.state.schoolInfo.schoolBoard}
-                  onChange={this.handleschoolInfoChange}
-                  name="schoolBoard"
-                  displayEmpty
-                  disableUnderline={true}
-                  style={{
-                    width: "40%",
-                    border: "1px solid #bcbcbc",
-                    padding: "8px 8px 3px 12px",
-                    borderRadius: "3px",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <MenuItem value="" disabled>
-                    Select your school board
-                  </MenuItem>
-                  {Array.from(
-                    this.props.picklists.schoolBoard.list.entries(),
-                    (entry) => entry
-                  ).map((entry, index) => (
-                    <MenuItem key={index} value={entry[1]}>
-                      {entry[1]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <BlackTextTypography>School Type</BlackTextTypography>
-              <FormControl required>
-                <Select
-                  value={this.state.schoolInfo.type}
-                  onChange={this.handleschoolInfoChange}
-                  name="type"
-                  displayEmpty
-                  disableUnderline={true}
-                  style={{
-                    width: "40%",
-                    border: "1px solid #bcbcbc",
-                    padding: "8px 8px 3px 12px",
-                    borderRadius: "3px",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <MenuItem value="" disabled>
-                    Select your school type
-                  </MenuItem>
-                  {Array.from(
-                    this.props.picklists.type.list.entries(),
-                    (entry) => entry
-                  ).map((entry, index) => (
-                    <MenuItem key={index} value={entry[1]}>
-                      {entry[1]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <form onSubmit={this.handleSubmit}>
+                <div className={this.props.classes.formSection}>
+                  <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                    Account Information
+                  </BlackHeaderTypography>
 
-              <BlackTextTypography>School Name</BlackTextTypography>
+                  <BlackHeaderTypography>Email*</BlackHeaderTypography>
+                  <OutlinedTextField
+                    placeholder="e.g. name@email.com"
+                    name="email"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                    required={true}
+                    isRequired="true"
+                    className={this.props.classes.textField}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start" />,
+                      required: true,
+                    }}
+                  />
+                  <BlackHeaderTypography>
+                    Account Password*
+                  </BlackHeaderTypography>
+                  <OutlinedTextField
+                    placeholder="At least 8 characters"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={this.state.password}
+                    onChange={this.handleChange}
+                    className={this.props.classes.textField}
+                    InputProps={{
+                      required: true,
+                    }}
+                  />
+                  <BlackHeaderTypography>
+                    Confirm Password*
+                  </BlackHeaderTypography>
+                  <OutlinedTextField
+                    placeholder="At least 8 characters"
+                    name="confirmPassword"
+                    value={this.state.confirmPassword}
+                    type="password"
+                    autoComplete="current-password"
+                    onChange={this.handleChange}
+                    className={this.props.classes.textField}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start" />,
+                      required: true,
+                    }}
+                  />
+                </div>
+                <Divider />
+                <div className={this.props.classes.formSection}>
+                  <BlackHeaderTypography style={{ marginBottom: "1.5em" }}>
+                    About You
+                  </BlackHeaderTypography>
+                  <BlackHeaderTypography>First Name*</BlackHeaderTypography>
+                  <OutlinedTextField
+                    placeholder="Enter first name"
+                    name="firstName"
+                    value={this.state.firstName}
+                    onChange={this.handleChange}
+                    className={this.props.classes.textField}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start" />,
+                      required: true,
+                    }}
+                  />
+                  <BlackHeaderTypography>Last Name*</BlackHeaderTypography>
+                  <OutlinedTextField
+                    placeholder="Enter last name"
+                    name="lastName"
+                    value={this.state.lastName}
+                    onChange={this.handleChange}
+                    className={this.props.classes.textField}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start" />,
+                      required: true,
+                    }}
+                  />
 
-              <FormControl required>
-                <Select
-                  value={this.state.schoolName}
-                  onChange={this.handleChange}
-                  name="schoolName"
-                  displayEmpty
-                  disableUnderline={true}
-                  style={{
-                    width: "40%",
-                    border: "1px solid #bcbcbc",
-                    padding: "8px 8px 3px 12px",
-                    borderRadius: "3px",
-                    marginBottom: "24px",
-                  }}
-                >
-                  {" "}
-                  <MenuItem value="" disabled>
-                    Select your school name
-                  </MenuItem>
-                  {this.state.filteredSchoolList.map((school, index) => (
-                    <MenuItem key={index} value={school.name}>
-                      {school.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  <BlackHeaderTypography>
+                    Preferred Pronouns*
+                  </BlackHeaderTypography>
+                  <FormControl
+                    required
+                    className={this.props.classes.dropDowns}
+                  >
+                    <Select
+                      value={this.state.preferredPronouns}
+                      onChange={this.handleChange}
+                      name="preferredPronouns"
+                      displayEmpty
+                      disableUnderline={true}
+                      className={this.props.classes.selectField}
+                    >
+                      <MenuItem value="" disabled>
+                        Select your preferred pronoun
+                      </MenuItem>
+                      <MenuItem value="she/her">She/Her</MenuItem>
+                      <MenuItem value="he/him">He/Him</MenuItem>
+                      <MenuItem value="other">Other</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <BlackHeaderTypography>School Board*</BlackHeaderTypography>
+                  <FormControl
+                    required
+                    className={this.props.classes.dropDowns}
+                  >
+                    <Select
+                      value={this.state.schoolInfo.schoolBoard}
+                      onChange={this.handleschoolInfoChange}
+                      name="schoolBoard"
+                      displayEmpty
+                      disableUnderline={true}
+                      className={this.props.classes.selectField}
+                    >
+                      <MenuItem value="" disabled>
+                        Select your school board
+                      </MenuItem>
+                      {Array.from(
+                        this.props.picklists.schoolBoard.list.entries(),
+                        (entry) => entry
+                      ).map((entry, index) => (
+                        <MenuItem key={index} value={entry[1]}>
+                          {entry[1]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <BlackHeaderTypography>School Type*</BlackHeaderTypography>
+                  <FormControl
+                    required
+                    className={this.props.classes.dropDowns}
+                  >
+                    <Select
+                      value={this.state.schoolInfo.type}
+                      onChange={this.handleschoolInfoChange}
+                      name="type"
+                      displayEmpty
+                      disableUnderline={true}
+                      className={this.props.classes.selectField}
+                    >
+                      <MenuItem value="" disabled>
+                        Select your school type
+                      </MenuItem>
+                      {Array.from(
+                        this.props.picklists.type.list.entries(),
+                        (entry) => entry
+                      ).map((entry, index) => (
+                        <MenuItem key={index} value={entry[1]}>
+                          {entry[1]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <BlackHeaderTypography>School Name*</BlackHeaderTypography>
+                  <FormControl
+                    required
+                    className={this.props.classes.dropDowns}
+                  >
+                    <Select
+                      value={this.state.schoolName}
+                      onChange={this.handleChange}
+                      name="schoolName"
+                      displayEmpty
+                      disableUnderline={true}
+                      className={this.props.classes.selectField}
+                    >
+                      {" "}
+                      <MenuItem value="" disabled>
+                        Select your school name
+                      </MenuItem>
+                      {this.state.filteredSchoolList.map((school, index) => (
+                        <MenuItem key={index} value={school.name}>
+                          {school.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <BlackHeaderTypography>Position*</BlackHeaderTypography>
+                  <FormControl
+                    required
+                    className={this.props.classes.dropDowns}
+                  >
+                    <Select
+                      value={this.state.picklistInfo.position}
+                      onChange={this.handlepicklistInfoChange}
+                      name="position"
+                      displayEmpty
+                      disableUnderline={true}
+                      className={this.props.classes.selectField}
+                    >
+                      <MenuItem value="" disabled>
+                        Select your position
+                      </MenuItem>
+                      {Array.from(
+                        this.props.picklists.position.list.entries(),
+                        (entry) => entry
+                      ).map((entry, index) => (
+                        <MenuItem key={index} value={entry[1]}>
+                          {entry[1]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <BlackHeaderTypography>Phone Number*</BlackHeaderTypography>
+                  <OutlinedTextField
+                    placeholder="At least 8 characters"
+                    name="phoneNumber"
+                    value={this.state.phoneNumber}
+                    onChange={this.handleChange}
+                    className={this.props.classes.textField}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start" />,
+                      required: true,
+                    }}
+                  />
+                </div>
+                <Divider />
+                <div className={this.props.classes.formSection}>
+                  <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                    BEP Information
+                  </BlackHeaderTypography>
+                  <BlackHeaderTypography style={{ padding: "1em 0em" }}>
+                    Which activities are you interested in?*
+                  </BlackHeaderTypography>
+                  <Grid className={this.props.classes.multiSelect}>
+                    {Array.from(
+                      this.state.picklistInfo.educatorDesiredActivities.entries(),
+                      (entry) => entry
+                    ).map(([option, isSelected]) => (
+                      <Grid
+                        container
+                        key={option}
+                        spacing={0}
+                        justify="flex-end"
+                        alignItems="center"
+                      >
+                        <Grid item xs={1}>
+                          <OutlinedCheckbox
+                            key={option}
+                            value={option}
+                            name={option}
+                            onChange={this.createHandleSelectOption(
+                              "educatorDesiredActivities"
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={11}>
+                          <BlackTextTypography> {option}</BlackTextTypography>
+                        </Grid>
+                      </Grid>
+                    ))}
+                  </Grid>
+                  <BlackHeaderTypography>
+                    How did you hear about us?*
+                  </BlackHeaderTypography>
+                  <FormControl className={this.props.classes.dropDowns}>
+                    <Select
+                      value={this.state.picklistInfo.introductionMethod}
+                      onChange={this.handlepicklistInfoChange}
+                      name="introductionMethod"
+                      displayEmpty
+                      disableUnderline={true}
+                      className={this.props.classes.selectField}
+                    >
+                      <MenuItem value="" disabled>
+                        e.g. Event, internet search, etc.
+                      </MenuItem>
+                      {Array.from(
+                        this.props.picklists.introductionMethod.list.entries(),
+                        (entry) => entry
+                      ).map((entry, index) => (
+                        <MenuItem key={index} value={entry[1]}>
+                          {entry[1]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <BlackHeaderTypography style={{ padding: "1em 0em" }}>
+                    Which BEP programs would you like more information about?*
+                  </BlackHeaderTypography>
+                  <Grid className={this.props.classes.multiSelect}>
+                    {Array.from(
+                      this.state.picklistInfo.moreInfo.entries(),
+                      (entry) => entry
+                    ).map(([option, isSelected]) => (
+                      <Grid
+                        container
+                        key={option}
+                        spacing={0}
+                        justify="flex-end"
+                        alignItems="center"
+                      >
+                        <Grid item xs={1}>
+                          <OutlinedCheckbox
+                            key={option}
+                            value={option}
+                            name={option}
+                            onChange={this.createHandleSelectOption("moreInfo")}
+                          />
+                        </Grid>
+                        <Grid item xs={11}>
+                          <BlackTextTypography> {option}</BlackTextTypography>
+                        </Grid>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </div>
 
-              <BlackTextTypography>Position</BlackTextTypography>
-              <FormControl required>
-                <Select
-                  value={this.state.picklistInfo.position}
-                  onChange={this.handlepicklistInfoChange}
-                  name="position"
-                  displayEmpty
-                  disableUnderline={true}
-                  style={{
-                    width: "40%",
-                    border: "1px solid #bcbcbc",
-                    padding: "8px 8px 3px 12px",
-                    borderRadius: "3px",
-                    marginBottom: "24px",
-                  }}
-                >
-                  <MenuItem value="" disabled>
-                    Select your position
-                  </MenuItem>
-                  {Array.from(
-                    this.props.picklists.position.list.entries(),
-                    (entry) => entry
-                  ).map((entry, index) => (
-                    <MenuItem key={index} value={entry[1]}>
-                      {entry[1]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                <Divider />
+                <div className={this.props.classes.formSection}>
+                  <Grid container spacing={0} alignItems="center">
+                    <OutlinedCheckbox
+                      name="isSubscribed"
+                      onChange={() =>
+                        this.setState({
+                          isSubscribed: !this.state.isSubscribed,
+                        })
+                      }
+                    />
+                    <BlackHeaderTypography>
+                      I would like to subscribe to the BEP newsletter
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <Grid container spacing={0} alignItems="center">
+                    <OutlinedCheckbox
+                      name="agreeConditions"
+                      onChange={() =>
+                        this.setState({
+                          agreeConditions: !this.state.agreeConditions,
+                        })
+                      }
+                    />
+                    <BlackHeaderTypography>
+                      I agree to the BEP terms and conditions*
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <ContainedButton type="submit" style={{ marginTop: "3em" }}>
+                    Finish Registration
+                  </ContainedButton>
+                </div>
+              </form>
             </Grid>
           </div>
         </PageBody>

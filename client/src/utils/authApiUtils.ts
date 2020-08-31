@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
+import { School } from "../data/types/schoolListTypes";
 
 const login = (email: string, password: string) => {
   const config: AxiosRequestConfig = {
@@ -14,38 +15,14 @@ const login = (email: string, password: string) => {
   return axios.request(config);
 };
 
-const register = (
-  email: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-  phoneNumber: string,
-  educatorDesiredActivities: string[],
-  schoolBoard: string,
-  schoolName: string,
-  position: string,
-  introductionMethod: string,
-  moreInfo: string[]
-) => {
+const registerUser = (body: string) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/auth/register`,
     method: "post",
-    data: {
-      email: `${email}`,
-      password: `${password}`,
-      firstName: `${firstName}`,
-      lastName: `${lastName}`,
-      phoneNumber: `${phoneNumber}`,
-      educatorDesiredActivities: `${educatorDesiredActivities}`,
-      schoolBoard: `${schoolBoard}`,
-      schoolName: `${schoolName}`,
-      position: `${position}`,
-      introductionMethod: `${introductionMethod}`,
-      moreInfo: `${moreInfo}`,
-    },
+    data: body,
   };
 
   return axios.request(config);
 };
 
-export { login, register };
+export { login, registerUser };

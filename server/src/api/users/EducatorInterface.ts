@@ -3,9 +3,6 @@ import SchoolInterface, { isSchool } from '../schools/SchoolInterface';
 
 export default interface EducatorInterface extends UserInterface {
     educatorDesiredActivities: string[];
-    // schoolName: string[];
-    // schoolBoard: string[];
-    // position: string[];
     introductionMethod: string;
     moreInfo: string[];
     position: string;

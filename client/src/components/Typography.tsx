@@ -37,6 +37,14 @@ const redTextStyle = (theme: Theme) =>
     },
   });
 
+const blackHeaderTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      color: theme.palette.text.primary,
+      fontWeight: 700,
+    },
+  });
+
 const WhiteTextTypography = withStyles(whiteTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
@@ -45,16 +53,27 @@ const BlackTextTypography = withStyles(blackTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
 
-const SecondaryMainTextTypography = withStyles(secondaryMainTextStyle)((props: any) => (
+const BlackHeaderTypography = withStyles(blackHeaderTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
 
-const GreyBackgroundTextTypography = withStyles(greyBackgroundTextStyle)((props: any) => (
-  <Typography {...props}>{props.children}</Typography>
-));
+const SecondaryMainTextTypography = withStyles(
+  secondaryMainTextStyle
+)((props: any) => <Typography {...props}>{props.children}</Typography>);
+
+const GreyBackgroundTextTypography = withStyles(
+  greyBackgroundTextStyle
+)((props: any) => <Typography {...props}>{props.children}</Typography>);
 
 const RedTextTypography = withStyles(redTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
 
-export { WhiteTextTypography, BlackTextTypography, SecondaryMainTextTypography, GreyBackgroundTextTypography, RedTextTypography };
+export {
+  BlackHeaderTypography,
+  WhiteTextTypography,
+  BlackTextTypography,
+  SecondaryMainTextTypography,
+  GreyBackgroundTextTypography,
+  RedTextTypography,
+};

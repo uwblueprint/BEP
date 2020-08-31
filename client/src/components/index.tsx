@@ -17,6 +17,7 @@ import {
 } from "./Icons";
 import {
   WhiteTextTypography,
+  BlackHeaderTypography,
   BlackTextTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
@@ -40,6 +41,7 @@ export {
 export {
   WhiteTextTypography,
   BlackTextTypography,
+  BlackHeaderTypography,
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
   RedTextTypography,
