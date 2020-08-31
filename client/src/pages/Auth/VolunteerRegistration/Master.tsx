@@ -201,19 +201,23 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     this.setState({ ...this.state, [name]: value });
   }
 
+  // @HERE I'm trying to find a global way to manipulate nested states, but for now I think I'm just going to create
+  // three functions to handle the different nested states (when I get back. this functional only handles personalInfo nested state)
   handleNestedChange = (inputName: any) => {
+    console.log("handle nested change");
+    console.log(inputName);
+    const personalInfo = this.state.personalInfo;
+
     return (event: any) => {
       event.preventDefault();
       const newValue = event.target.value;
       const name = event.target.name;
 
-      this.setState((prevState) => {
-        return {
-          ...prevState,
-          [inputName]: {
-            name: newValue,
-          },
-        };
+      this.setState({
+        personalInfo: {
+          ...inputName,
+          [name]: newValue,
+        },
       });
     };
   };
