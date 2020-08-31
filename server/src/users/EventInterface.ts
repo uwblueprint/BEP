@@ -46,6 +46,7 @@ export interface EventInvitationInterface {
     linkedinUrl: string;
     areasOfExpertise: string;
     employmentStatus: string;
+    status: string;
 }
 
 export interface EventVolunteerInterface {
