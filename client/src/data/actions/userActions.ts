@@ -1,5 +1,6 @@
-import { FETCH_VOLUNTEER_APPLICATIONS } from "./actionTypes";
+import { FETCH_VOLUNTEER_APPLICATIONS, FETCH_VOLUNTEER_INVITATIONS } from "./actionTypes";
 import Application from "../types/applicationTypes";
+import Invitation from "../types/invitationTypes";
 
 export const fetchUserApplications = (applications: Application[]) => {
   return {
@@ -7,3 +8,10 @@ export const fetchUserApplications = (applications: Application[]) => {
     payload: { applications },
   };
 };
+
+export const fetchUserInvitations = (invitations: Invitation[]) => {
+  return {
+    type: FETCH_VOLUNTEER_INVITATIONS,
+    payload: { invitations },
+  }
+}

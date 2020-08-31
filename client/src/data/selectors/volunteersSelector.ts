@@ -12,7 +12,6 @@ export const getVolunteers = createSelector(
 );
 
 const getVolunteerApplicationsData = (state: any) => {
-  console.log(state.volunteers);
   return state.volunteers && state.volunteers.applications ? state.volunteers.applications : [];
 }
 

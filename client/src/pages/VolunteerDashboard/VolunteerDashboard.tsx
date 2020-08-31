@@ -19,6 +19,7 @@ import { Event } from "../../data/types/eventTypes";
 import Application from "../../data/types/applicationTypes";
 import { fetchActiveEventsService } from '../../data/services/eventsServices';
 import { fetchApplicationsByVolunteer } from '../../data/services/applicationsService';
+import { fetchInvitationsByVolunteer } from '../../data/services/invitationsService';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,6 +37,7 @@ interface StateProps {
 interface DispatchProps {
   fetchActiveEvents: any;
   fetchApplications: any;
+  fetchInvitations: any;
 }
 
 type Props = DispatchProps & StateProps;
@@ -97,15 +99,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const EventPage: React.SFC<Props> = ({ applications, activeEvents, userType, userId, fetchActiveEvents, fetchApplications } : Props) => {
+const EventPage: React.SFC<Props> = 
+  ({ applications, activeEvents, userType, userId, fetchActiveEvents, fetchApplications, fetchInvitations } : Props) => {
   const classes = useStyles();
 
   const [value, setValue] = React.useState<number>(0);
-  // const [applications, setApplications] = React.useState<any>([]);
   const [fetchedApplications, setFetchedApplications] = React.useState(false);
-  // const [invitations, setInvitations] = React.useState<any>([]);
-  // const [fetchedInvitations, setFetchedInvitations] = React.useState(false);
-  const [filteredEvents, setFilteredEvents] = React.useState<any>([]);
+  const [invitations, setInvitations] = React.useState<any>([]);
+  const [fetchedInvitations, setFetchedInvitations] = React.useState(false);
   const [fetchedActiveEvents, setFetchedActiveEvents] = React.useState(false);
 
   // todo: filter by my events
@@ -120,22 +121,22 @@ const EventPage: React.SFC<Props> = ({ applications, activeEvents, userType, use
 
   useEffect(() => {
     (async function wrapper() {
-      if (!fetchedApplications) { //&& applications.length === 0) {
+      if (!fetchedApplications) {
         await fetchApplications(userId);
         setFetchedApplications(true);
       }
     })();
   }, [fetchedApplications]);
 
-  // todo: invitations, incomplete
-  // useEffect(() => {
-  //   const fetchdata = async () => {
-  //     const result = await getInvitations(eventData.eventName);
-  //     setInvitations(result.data.invitations)
-  //   }
-  //   fetchdata()
-  // }, [eventData.eventName]);
-  let invitations = activeEvents;
+  useEffect(() => {
+    (async function wrapper() {
+      if (!fetchedInvitations) {
+        const data = await fetchInvitations(userId);
+        setInvitations(data);
+        setFetchedInvitations(true);
+      }
+    })();
+  }, [invitations, fetchedInvitations]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -218,7 +219,7 @@ const EventPage: React.SFC<Props> = ({ applications, activeEvents, userType, use
                   <div>You can also click 'Browse Opportunities' to get started.</div>
               </Typography> :
             invitations.map((invitation: any) =>
-              createOpportunityCard(invitation)
+              createOpportunityCard(invitation.event)
             )}
           </TabPanel>
         </PageBody>
@@ -244,6 +245,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(fetchActiveEventsService(userType, userId)),
   fetchApplications: (userId: string) =>
     dispatch(fetchApplicationsByVolunteer(userId)),
+  fetchInvitations: (userId: string) =>
+    dispatch(fetchInvitationsByVolunteer(userId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventPage);
