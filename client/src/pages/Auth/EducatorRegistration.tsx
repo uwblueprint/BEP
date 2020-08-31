@@ -26,7 +26,6 @@ import {
 
 import { getSchools } from "../../data/selectors/schoolListSelector";
 
-import { baseURL } from "../../utils/ApiUtils";
 import { registerUser } from "../../utils/authApiUtils";
 
 import MenuItem from "@material-ui/core/MenuItem";
@@ -37,7 +36,6 @@ import Divider from "@material-ui/core/Divider";
 
 import { Grid } from "@material-ui/core";
 
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 import {
