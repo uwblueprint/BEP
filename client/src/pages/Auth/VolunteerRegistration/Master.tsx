@@ -22,6 +22,14 @@ import {
   getPostSecondaryTrainingPicklist,
   getGradesPicklist,
   getLanguagesPicklist,
+  getEmployerSectorsPicklist,
+  getEmployerSizePicklist,
+  getProfessionalAssociations,
+  getLocalPostSecondaryInstitutions,
+  getIntroductionMethod,
+  getEmploymentStatus,
+  getVolunteerDesiredExternalActivities,
+  getVolunteerDesiredInternalActivities
 } from "../../../data/selectors/picklistSelector";
 
 import { Grid } from "@material-ui/core";
@@ -48,16 +56,16 @@ interface IComponentProps {
     grades: { list: string[] }; // grade levels willing to volunteer with
     locations: { list: string[] };
 
-    //uncomment these out once you set up all these routes Faizaan
-    // localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
-    // professionalAssociations: { list: string[] };
-    // employmentStatus: { list: string[] };
-    // orgSector: { list: string[] }; // somehow need to get picklist of
-    // orgNumberStaff: { list: string[] };
-    // introductionMethod: { list: string[] };
-    // volunteerDesiredExternalActivities: { list: string[] };
-    // volunteerDesiredInternalActivities: { list: string[] };
-    // postSecondaryTraining: { list: string[] };
+    // uncomment these out once you set up all these routes Faizaan
+    localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
+    professionalAssociations: { list: string[] };
+    employmentStatus: { list: string[] };
+    orgSector: { list: string[] }; // somehow need to get picklist of
+    orgNumberStaff: { list: string[] };
+    introductionMethod: { list: string[] };
+    volunteerDesiredExternalActivities: { list: string[] };
+    volunteerDesiredInternalActivities: { list: string[] };
+    postSecondaryTraining: { list: string[] };
   };
   fetchUserPicklists: any;
   fetchEmployerPicklists: any;
@@ -319,28 +327,54 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 const mapStateToProps = (state: any) => {
   return {
     picklists: {
-      activities: {
-        list: getAllActivitiesPicklist(state.picklists),
-      },
-      expertiseAreas: {
-        list: getExpertiesAreasPicklist(state.picklists),
-      },
-      locations: {
-        list: getLocationsPicklist(state.picklists),
-      },
-      training: {
-        list: getPostSecondaryTrainingPicklist(state.picklists),
-      },
-      languages: {
-        list: getLanguagesPicklist(state.picklists),
-      },
-      grades: {
-        list: getGradesPicklist(state.picklists),
-      },
-      
+        activities: {
+            list: getAllActivitiesPicklist(state.picklists),
+        },
+        expertiseAreas: {
+            list: getExpertiesAreasPicklist(state.picklists),
+        },
+        locations: {
+            list: getLocationsPicklist(state.picklists),
+        },
+        training: {
+            list: getPostSecondaryTrainingPicklist(state.picklists),
+        },
+        languages: {
+            list: getLanguagesPicklist(state.picklists),
+        },
+        grades: {
+            list: getGradesPicklist(state.picklists),
+        },
+        localPostSecondaryInstitutions: { 
+            list: getLocalPostSecondaryInstitutions(state.picklists)
+        }, //local post secondary alumni
+        professionalAssociations: { 
+            list: getProfessionalAssociations(state.picklists)
+        },
+        employmentStatus: { 
+            list: getEmploymentStatus(state.picklists)
+        },
+        orgSector: { 
+            list: getEmployerSectorsPicklist(state.picklists)
+        }, // somehow need to get picklist of
+        orgNumberStaff: { 
+            list: getEmployerSizePicklist(state.picklists)
+        },
+        introductionMethod: { 
+            list: getIntroductionMethod(state.picklists)
+        },
+        volunteerDesiredExternalActivities: { 
+            list: getVolunteerDesiredExternalActivities(state.picklists)
+        },
+        volunteerDesiredInternalActivities: { 
+            list: getVolunteerDesiredInternalActivities(state.picklists)
+        },
+        postSecondaryTraining: { 
+            list: getPostSecondaryTrainingPicklist(state.picklists)
+        },
     },
-  };
-};
+  }
+}
 
 const mapDispatchToProps = (dispatch: any) => ({
   fetchUserPicklists: (picklistType: PicklistType) =>

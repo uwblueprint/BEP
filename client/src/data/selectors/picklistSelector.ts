@@ -63,6 +63,23 @@ export const getSchoolBoardPicklist = createPicklistSelector(
 
 export const getSchoolTypePicklist = createPicklistSelector(PicklistType.type);
 
-export const getEmployerSectorsPicklist = createPicklistSelector(PicklistType.sectors);
+//Additional Picklists required for volunteer registration
 
-export const getEmployerSizePicklist = createPicklistSelector(PicklistType.size)
+export const getEmployerSectorsPicklist = createPicklistSelector(PicklistType.sectors); //orgSector
+
+export const getEmployerSizePicklist = createPicklistSelector(PicklistType.size); //orgSize
+
+export const getLocalPostSecondaryInstitutions = createPicklistSelector(PicklistType.localPostSecondaryInstitutions);
+
+export const getProfessionalAssociations = createPicklistSelector(PicklistType.professionalAssociations);
+
+export const getEmploymentStatus = createPicklistSelector(PicklistType.employmentStatus);
+
+export const getIntroductionMethod = createPicklistSelector(PicklistType.introductionMethod);
+
+export const getVolunteerDesiredExternalActivities = createPicklistSelector(PicklistType.volunteerDesiredExternalActivities);
+
+export const getVolunteerDesiredInternalActivities = createPicklistSelector(PicklistType.volunteerDesiredInternalActivities);
+
+
+

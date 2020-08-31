@@ -40,6 +40,7 @@ const initialState: PicklistState = {
   
   [PicklistType.sectors]: [],
   [PicklistType.size]: [],
+  [PicklistType.employmentStatus]: [],
 };
 
 export default function (
