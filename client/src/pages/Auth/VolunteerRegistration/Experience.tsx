@@ -1,4 +1,9 @@
 import React from "react";
+import Grid from "@material-ui/core/Grid";
+import Select from "@material-ui/core/Select";
+
+import { BlackHeaderTypography } from "../../../components/index";
+import FormControl from "@material-ui/core/FormControl";
 
 interface IComponentProps {
   currentStep: number;
