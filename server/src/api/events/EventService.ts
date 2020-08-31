@@ -3,7 +3,6 @@
  */
 
 import Event, { EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
-import * as SchoolService from '../schools/SchoolService'
 import Educator from '../users/EducatorInterface';
 import * as UserService from '../users/UserService';
 import { conn } from '../../server';
