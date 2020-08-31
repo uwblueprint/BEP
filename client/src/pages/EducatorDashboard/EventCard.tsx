@@ -126,7 +126,8 @@ export default function EventCard(props: any) {
           </Grid>
         </CardContent>
 
-        {!props.isPastEvent ? (
+        { /* todo: don't show this for current volunteers, applications, or invitations */
+        !props.isPastEvent ? (
           <CardContent>
             <Grid container spacing={0}>
               <Grid item xs={3}>
