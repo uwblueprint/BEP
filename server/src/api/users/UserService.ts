@@ -35,7 +35,6 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
     };
 
     if (isEducator(user)) {
-        console.log("IS EDUCATOR");
         salesforceUser = {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
