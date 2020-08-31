@@ -23,8 +23,6 @@ const useStyles = makeStyles((theme) => ({
 const ConfirmedVolunteerCard = (props: any) => {
     const classes = useStyles()
 
-    console.log(props)
-
     return (
         <Card className={classes.card} elevation={0}>
             <Typography variant="h4" classes={{
