@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const InviteCard = (props: any) => {
+    console.log("The Invite Card Props", props)
     const classes = useStyles()
     const [open, setOpen] = React.useState(false);
     const [snackbarState, setSnackbarState] = React.useState(false)
