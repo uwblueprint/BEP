@@ -72,6 +72,9 @@ export const get = async (id: string): Promise<School> => {
             if (err) {
                 return console.error(err);
             }
+            if (record.length === 0) {
+                throw Error(`No school with ID ${id} found.`);
+            }
             return salesforceSchoolToSchoolModel(record[0]);
         });
 
@@ -97,7 +100,7 @@ export const update = async (school: School): Promise<School> => {
         throw Error('Input is not a valid school.');
     }
 
-    const updatedSchool: School = conn
+    const res = conn
         .sobject(schoolObjectName)
         .update(schoolModelToSalesforceSchool(school), (err: Error, result: any) => {
             if (err || !result.success) {
@@ -105,7 +108,7 @@ export const update = async (school: School): Promise<School> => {
             }
         });
 
-    return updatedSchool;
+    return res;
 };
 
 // Create new school and return ID.

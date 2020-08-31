@@ -2,18 +2,19 @@
  * Data Model Interfaces
  */
 
-import Application from './ApplicationsInterface';
+import Application, { ApplicationStatus } from './ApplicationsInterface';
 import Volunteer from '../users/VolunteerInterface';
 import Event from '../events/EventInterface';
 import * as UserService from '../users/UserService';
 import * as EventService from '../events/EventService';
+import * as EventVolunteerService from '../eventVolunteers/EventVolunteerService';
 import { conn } from '../../server';
 // import * as express from 'express';
 
 export const applicationObjectName: string = 'EventApplication__c';
 export const applicationFields: string = 'Id, event__c, status__c, volunteer__c';
 
-// Map fields of employer model to Salesforce fields.
+// Map fields of application model to Salesforce fields.
 const applicationModelToSalesforceApplication = (application: Application): any => {
     const salesforceApplication: any = {
         event__c: typeof application.event === 'string' ? application.event : application.event.id,
@@ -25,7 +26,7 @@ const applicationModelToSalesforceApplication = (application: Application): any 
     return salesforceApplication;
 };
 
-// Map Saleforce record fields to user model fields.
+// Map Saleforce record fields to application model fields.
 const salesforceApplicationToApplicationModel = async (
     record: any,
     getVolunteer: boolean,
@@ -47,7 +48,6 @@ const salesforceApplicationToApplicationModel = async (
  * Service Methods
  */
 
-// Basic query for now to retrieve a user based on first name (should be changed to ID in future)
 export const get = async (id: string): Promise<Application> => {
     let application: Application = conn
         .sobject(applicationObjectName)
@@ -56,6 +56,9 @@ export const get = async (id: string): Promise<Application> => {
         .execute(function(err: Error, record: any) {
             if (err) {
                 return console.error(err);
+            }
+            if (record.length === 0) {
+                throw Error(`No application with ID ${id} found.`);
             }
             return salesforceApplicationToApplicationModel(record[0], true, true);
         });
@@ -110,9 +113,39 @@ export const getVolunteerApplications = async (volunteerId: string): Promise<Arr
 };
 
 export const update = async (application: Application): Promise<Application> => {
+    if (!application.id) {
+        throw Error("Application provided must have an 'id' field.");
+    }
+
+    let oldApplication: Application;
+    try {
+        oldApplication = await get(application.id);
+    } catch (e) {
+        console.error('Unable to get old application with ID ${applicaiton.id}');
+    }
     const salesforceApplication = applicationModelToSalesforceApplication(application);
+
+    if (oldApplication) {
+        // If the application status is changed to accepted, then create a new event volunteer object.
+        // If the application status is changes from accepted, then delete.
+        if (oldApplication.status !== ApplicationStatus.ACCEPTED && application.status === ApplicationStatus.ACCEPTED) {
+            await EventVolunteerService.create({
+                event: salesforceApplication.event__c,
+                volunteer: salesforceApplication.volunteer__c
+            });
+        } else if (
+            oldApplication.status === ApplicationStatus.ACCEPTED &&
+            application.status !== ApplicationStatus.ACCEPTED
+        ) {
+            await EventVolunteerService.remove({
+                eventId: salesforceApplication.event__c,
+                volunteerId: salesforceApplication.volunteer__c
+            });
+        }
+    }
+
     delete salesforceApplication.event__c;
-    let updatedApplication: Application = conn
+    let res = conn
         .sobject(applicationObjectName)
         .update(salesforceApplication, function(err, ret) {
             if (err || !ret.success) {
@@ -120,7 +153,7 @@ export const update = async (application: Application): Promise<Application> => 
             }
         });
 
-    return updatedApplication;
+    return res;
 };
 
 // create new volunteer application object in salesforce with fields

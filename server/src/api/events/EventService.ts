@@ -136,6 +136,9 @@ export const getEventInfo = async (id: string): Promise<Event> => {
             if (err) {
                 return console.error(err);
             }
+            if (record.length === 0) {
+                throw Error(`No event with ID ${id} found.`);
+            }
             return salesforceEventToEventModel(record[0]);
         });
 
@@ -266,6 +269,7 @@ export const acceptApplicant = async (eventName: string, applicantName: string, 
     }
 };
 
+// deprecated
 export const getInvitations = async (eventName: string): Promise<EventInvitationInterface> => {
     let invitations: EventInvitationInterface;
     console.log('This is the event Name:', eventName);
@@ -310,7 +314,7 @@ export const getVolunteers = async (eventName: string): Promise<EventVolunteerIn
 };
 
 export const update = async (id: string, event: Event): Promise<Event> => {
-    let updatedEvent: Event = conn
+    const res = conn
         .sobject(eventApi)
         .update(eventModelToSalesforceEvent(event, id), (err: Error, result: any) => {
             if (err || !result.success) {
@@ -318,7 +322,7 @@ export const update = async (id: string, event: Event): Promise<Event> => {
             }
         });
 
-    return updatedEvent;
+    return res;
 };
 
 // create new user object in salesforce with fields
