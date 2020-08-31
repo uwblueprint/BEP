@@ -2,8 +2,10 @@ import React from "react";
 
 interface IComponentProps {
   currentStep: number;
-  lastName: string;
+  experience: any;
+  picklistInfo: any;
   handleChange: any; // () => void????
+  handleNestedChange: any;
 }
 
 interface IComponentState {
@@ -26,7 +28,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
           name="lastName"
           type="text"
           placeholder="Enter lastName"
-          value={this.props.lastName} // Prop: The email input data
+          value={this.props.experience.jobTitle} // Prop: The email input data
           onChange={this.props.handleChange} // Prop: Puts data into state
         />
       </div>

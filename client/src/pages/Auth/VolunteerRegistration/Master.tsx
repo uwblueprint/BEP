@@ -27,6 +27,7 @@ import {
 import { Grid } from "@material-ui/core";
 
 import { fetchUserPicklistService } from "../../../data/services/picklistServices";
+// import { fetchEmployerPicklistService } from "../../../data/services/picklistServices";
 
 import Experience from "./Experience";
 import PersonalInfo from "./PersonalInfo";
@@ -43,34 +44,77 @@ const useStyles = makeStyles({
 
 interface IComponentProps {
   picklists: {
-    localPostSecondaryAlumni: { list: string[] };
-    membershipsAssociations: { list: string[] };
-    employmentStatus: {list: string[]};
-    orgSector: {list: string[]};
-    orgNumberStaff: {list: string[]};
-    expertiseAreas: {list: string[]};
-    introductionMethod: {list: string[]};
-    languages: {list: string[]};
-    volunteerDesiredExternalActivities: {list: string[]};
-    volunteerDesiredInternalActivities: {list: string[]};
+    expertiseAreas: { list: string[] };
+    languages: { list: string[] };
+    grades: { list: string[] }; // grade levels willing to volunteer with
+    locations: { list: string[] };
+
+    //uncomment these out once you set up all these routes Faizaan
+    // localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
+    // professionalAssociations: { list: string[] };
+    // employmentStatus: { list: string[] };
+    // orgSector: { list: string[] }; // somehow need to get picklist of
+    // orgNumberStaff: { list: string[] };
+    // introductionMethod: { list: string[] };
+    // volunteerDesiredExternalActivities: { list: string[] };
+    // volunteerDesiredInternalActivities: { list: string[] };
+    // postSecondaryTraining: { list: string[] };
   };
   fetchUserPicklists: any;
+  //   fetchEmployerPicklists: any;
 }
 
 interface IComponentState {
+  // Not feasible by soft deadline:
+  //Co-op placement details --> (on click appear) When are you willing to host a student, how are you willing to host a student
   currentStep: number;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  firstName: string;
-  lastName: string;
-  preferredPronouns: string;
-  phoneNumber: string;
-  linkedinUrl: string;
-  isSubscribed: boolean;
-  agreeConditions: boolean;
-  picklistInfo: {  ;
-    ;
+  personalInfo: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    firstName: string;
+    lastName: string;
+    preferredPronouns: string;
+    phoneNumber: string;
+    linkedinUrl: string;
+    shareWithEmployer: boolean;
+  };
+  experience: {
+    jobTitle: string;
+    orgName: string;
+    orgWebsite: string;
+    orgSocialMedia: string[]; // this seems hard a low priority (need to add)
+    orgStreetAddr: string;
+    orgCity: string;
+    orgPostalCode: string;
+    orgPhone: string;
+    departmentDivision: string; // currenlty not in userTYpes
+    careerDescription: string;
+    involveMethod: string; // currently not in userTypes
+    extraDescription: string; // other info i'd like schools to read
+  };
+  involvement: {
+    reasonsForVolunteering: string;
+    futureAdvice: string;
+    introductionMethod: string;
+    isSubscribed: boolean;
+    agreeConditions: boolean;
+  };
+  picklistInfo: {
+    localPostSecondaryInstitutions: Map<string, boolean>; //local post secondary alumni
+    professionalAssociations: Map<string, boolean>;
+    employmentStatus: string;
+    orgSector: string; // somehow need to get picklist of
+    orgNumberStaff: string;
+    expertiseAreas: Map<string, boolean>;
+    introductionMethod: string;
+    languages: Map<string, boolean>;
+    volunteerDesiredExternalActivities: Map<string, boolean>;
+    volunteerDesiredInternalActivities: Map<string, boolean>;
+    postSecondaryTraining: Map<string, boolean>;
+    moreInfo: Map<string, boolean>;
+    grades: Map<string, boolean>; // grade levels willing to volunteer with
+    locations: Map<string, boolean>;
   };
 }
 
@@ -80,20 +124,56 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 
     this.state = {
       currentStep: 1,
-
-      email: "",
-      password: "",
-      confirmPassword: "",
-      firstName: "",
-      lastName: "",
-      preferredPronouns: "",
-      phoneNumber: "",
-      linkedinUrl: "",
-      membershipsAssociations: [],
-      agreeConditions: false,
-      isSubscribed: false,
-      picklistInfo: { localPostSecondaryAlumni: "", employmentStatus: "" },
+      personalInfo: {
+        email: "",
+        password: "",
+        confirmPassword: "",
+        firstName: "",
+        lastName: "",
+        preferredPronouns: "",
+        phoneNumber: "",
+        linkedinUrl: "",
+        shareWithEmployer: false,
+      },
+      experience: {
+        jobTitle: "",
+        orgName: "",
+        orgWebsite: "",
+        orgSocialMedia: [""],
+        orgStreetAddr: "",
+        orgCity: "",
+        orgPostalCode: "",
+        orgPhone: "",
+        departmentDivision: "",
+        careerDescription: "",
+        involveMethod: "",
+        extraDescription: "",
+      },
+      involvement: {
+        reasonsForVolunteering: "",
+        futureAdvice: "",
+        introductionMethod: "",
+        isSubscribed: false,
+        agreeConditions: false,
+      },
+      picklistInfo: {
+        localPostSecondaryInstitutions: new Map(),
+        professionalAssociations: new Map(),
+        employmentStatus: "",
+        orgSector: "",
+        orgNumberStaff: "",
+        expertiseAreas: new Map(),
+        introductionMethod: "",
+        languages: new Map(),
+        volunteerDesiredExternalActivities: new Map(),
+        volunteerDesiredInternalActivities: new Map(),
+        postSecondaryTraining: new Map(),
+        moreInfo: new Map(),
+        grades: new Map(),
+        locations: new Map(),
+      },
     };
+    this.handleNestedChange = this.handleNestedChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this._next = this._next.bind(this);
     this._prev = this._prev.bind(this);
@@ -121,10 +201,26 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     this.setState({ ...this.state, [name]: value });
   }
 
+  handleNestedChange = (inputName: any) => {
+    return (event: any) => {
+      event.preventDefault();
+      const newValue = event.target.value;
+      const name = event.target.name;
+
+      this.setState((prevState) => {
+        return {
+          ...prevState,
+          [inputName]: {
+            name: newValue,
+          },
+        };
+      });
+    };
+  };
+
   handleSubmit = (event: any) => {
     //todo
     event.preventDefault();
-    const { email, password } = this.state;
   };
 
   get previousButton() {
@@ -188,20 +284,23 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                 <PersonalInfo
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
-                  email={this.state.email}
-                  password={this.state.password}
-                  confirmPassword={this.state.confirmPassword}
-                  firstName={this.state.firstName}
+                  handleNestedChange={this.handleNestedChange}
+                  personalInfo={this.state.personalInfo}
+                  picklistInfo={this.state.picklistInfo}
                 />
                 <Involvement
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
-                  firstName={this.state.firstName}
+                  handleNestedChange={this.handleNestedChange}
+                  involvement={this.state.involvement}
+                  picklistInfo={this.state.picklistInfo}
                 />
                 <Experience
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
-                  lastName={this.state.lastName}
+                  handleNestedChange={this.handleNestedChange}
+                  experience={this.state.experience}
+                  picklistInfo={this.state.picklistInfo}
                 />
                 {this.previousButton}
                 {this.nextButton}
@@ -218,29 +317,24 @@ const mapStateToProps = (state: any) => {
   return {
     picklists: {
       activities: {
-        displayName: "Activities",
         list: getAllActivitiesPicklist(state.picklists),
       },
       expertiseAreas: {
-        displayName: "Areas of Expertise",
         list: getExpertiesAreasPicklist(state.picklists),
       },
       locations: {
-        displayName: "Location",
         list: getLocationsPicklist(state.picklists),
       },
       training: {
-        displayName: "Level of Training",
         list: getPostSecondaryTrainingPicklist(state.picklists),
       },
       languages: {
-        displayName: "Language",
         list: getLanguagesPicklist(state.picklists),
       },
       grades: {
-        displayName: "Audience Grade Level",
         list: getGradesPicklist(state.picklists),
       },
+      //add more here Faizaan
     },
   };
 };
@@ -248,6 +342,8 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: any) => ({
   fetchUserPicklists: (picklistType: PicklistType) =>
     dispatch(fetchUserPicklistService(picklistType)),
+  // fetchEmployerPicklists: (picklistType: PicklistType) =>
+  //     dispatch(fetchEmployerPicklistService(picklistType)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Master);

@@ -2,7 +2,9 @@ import React from "react";
 
 interface IComponentProps {
   currentStep: number;
-  email: string;
+  personalInfo: any;
+  picklistInfo: any;
+  handleNestedChange: any;
   handleChange: any; // () => void????
 }
 
@@ -16,6 +18,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
       // Prop: The current step
       return null;
     }
+
     // The markup for the Step 1 UI
     return (
       <div className="form-group">
@@ -26,7 +29,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
           name="email"
           type="text"
           placeholder="Enter email"
-          value={this.props.email} // Prop: The email input data
+          value={this.props.personalInfo.email} // Prop: The email input data
           onChange={this.props.handleChange} // Prop: Puts data into state
         />
       </div>
