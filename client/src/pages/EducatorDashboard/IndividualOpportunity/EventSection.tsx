@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card';
-import {Event} from '../../../data/types/EventTypes'
+import {Event} from '../../../data/types/eventTypes'
 
 
 const useStyles = makeStyles((theme: Theme) => ({
