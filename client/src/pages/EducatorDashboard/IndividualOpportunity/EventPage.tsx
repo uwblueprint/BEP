@@ -36,17 +36,9 @@ import { User, UserType, Volunteer } from "../../../data/types/userTypes";
 import Application, {
   ApplicationStatus,
 } from "../../../data/types/applicationTypes";
-import Invitation from "../../../data/types/invitationTypes";
 
-import { getVolunteers } from "../../../utils/eventsApiUtils";
+import { getEventApplications, getEventInvitations, getEventVolunteers } from "../../../data/selectors/eventsSelector";
 import { getUser } from "../../../data/selectors/userSelector";
-import { getEventApplications, getEventInvitations } from "../../../data/selectors/eventsSelector";
-import { getInvitations } from "../../../utils/eventsApiUtils";
-import { getUser } from "../../../data/selectors/userSelector";
-import {
-  getEventApplications,
-  getEventVolunteers,
-} from "../../../data/selectors/eventsSelector";
 
 import {
   fetchEventApplicationsService,
@@ -134,12 +126,10 @@ const EventPage = (props: any) => {
     invitations,
     applications,
     user,
-    updateEvent,
     fetchEventApplications,
     fetchEventInvitations,
     volunteers,
     createApplication,
-    fetchEventApplications,
     fetchEventVolunteers,
     updateEvent,
   } = props;
@@ -182,14 +172,6 @@ const EventPage = (props: any) => {
     return <InviteCard info={invitationProps} />;
   });
 
-  useEffect(() => {
-    const fetchdata = async () => {
-      fetchEventApplications(eventData);
-      fetchEventInvitations(eventData);
-    };
-    fetchdata();
-  }, [eventData, fetchEventApplications, fetchEventInvitations]);
-
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedEvent: Event = eventData;
     updatedEvent.isPublic = event.target.checked;
@@ -228,17 +210,10 @@ const EventPage = (props: any) => {
     const fetchdata = async () => {
       fetchEventApplications(eventData);
       fetchEventVolunteers(eventData);
+      fetchEventInvitations(eventData);
     };
     fetchdata();
-  }, [eventData, fetchEventApplications, fetchEventVolunteers]);
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getInvitations(eventData.eventName);
-      setInvitations(result.data.invitations);
-    };
-    fetchdata();
-  }, [eventData.eventName]);
+  }, [eventData, fetchEventApplications, fetchEventVolunteers, fetchEventInvitations]);
 
   return (
     <React.Fragment>

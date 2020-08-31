@@ -33,7 +33,7 @@ const initialState: EventsState = {
   applications: new Map<string, Application[]>(),
   numPastEventsRecieved: 0,
   pastList: [],
-  invitations: new Map<string, Invitation[]>()
+  invitations: new Map<string, Invitation[]>(),
   volunteers: new Map<string, Volunteer[]>(),
 };
 
