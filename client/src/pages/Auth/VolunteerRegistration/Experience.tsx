@@ -1,4 +1,11 @@
 import React from "react";
+import Grid from "@material-ui/core/Grid";
+import Select from "@material-ui/core/Select"
+
+import {
+    BlackHeaderTypography
+  } from "../../../components/index";
+import FormControl from "@material-ui/core/FormControl";
 
 interface IComponentProps {
   currentStep: number;
@@ -19,16 +26,29 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
     // The markup for the Step 1 UI
     return (
       <div className="form-group">
-        <label htmlFor="lastName">Last Name</label>
-        <input
-          className="form-control"
-          id="lastName"
-          name="lastName"
-          type="text"
-          placeholder="Enter lastName"
-          value={this.props.lastName} // Prop: The email input data
-          onChange={this.props.handleChange} // Prop: Puts data into state
-        />
+        <React.Fragment>
+                 <div style={{ height: "100vh" }}>
+                    <Grid container style={{ height: "100%" }}>
+                        <BlackHeaderTypography>About Your Work</BlackHeaderTypography>
+                        <BlackHeaderTypography>
+                            Preferred Pronouns*
+                        </BlackHeaderTypography>
+                        <FormControl
+                            required
+                            className={this.props.classes.dropDowns}
+                            >
+                        <Select
+                        value={this.state.preferredPronouns}
+                        onChange={this.handleChange}
+                        name="preferredPronouns"
+                        displayEmpty
+                        disableUnderline={true}
+                        className={this.props.classes.selectField}
+                        ></Select>
+                        </FormControl>
+                    </Grid>
+                    </div>
+            </React.Fragment>
       </div>
     );
   }
