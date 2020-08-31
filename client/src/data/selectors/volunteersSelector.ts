@@ -19,3 +19,12 @@ export const getVolunteerApplications = createSelector(
   [getVolunteerApplicationsData],
   (applications) => applications
 )
+
+const getVolunteerInvitationsData = (state: any) => {
+  return state.volunteers && state.volunteers.invitations ? state.volunteers.invitations : [];
+}
+
+export const getVolunteerInvitations = createSelector(
+  [getVolunteerInvitationsData],
+  (invitations) => invitations
+)
