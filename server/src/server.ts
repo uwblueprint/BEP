@@ -9,10 +9,13 @@ import express from 'express';
 import session from 'express-session';
 import jsforce from 'jsforce';
 import { userRouter } from './api/users/UserRouter';
-import { employerRouter } from './api/employers/EmployerRouter';
 import { userPicklistRouter } from './api/users/picklists/UserPicklistRouter';
-import { eventRouter } from './users/EventRouter';
+import { employerRouter } from './api/employers/EmployerRouter';
+import { eventRouter } from './api/events/EventRouter';
+import { schoolRouter } from './api/schools/SchoolRouter';
+import { schoolPicklistRouter } from './api/schools/picklists/SchoolPicklistRouter';
 import { inviteRouter } from './users/VolunteerInviteRouter';
+import { applicationRouter } from './api/applications/ApplicationsRouter';
 import { requestsRouter } from './requests/requests.router';
 import {verifyWebToken} from './middleware/jwt'
 import { authRouter } from './auth/authRouter'
@@ -68,23 +71,15 @@ class BackendServer extends Server {
     }
 
     public start(port: string): void {
-        // Sanity check test method
-        this.app.get('/test', (req, res) => {
-            conn.query('SELECT Name,Email__c FROM Test__c', (err, result) => {
-                if (err) {
-                    console.log("query error");
-                    return console.error(err);
-                }
-                console.log(result.records);
-                res.send(result.records);
-            });
-        });
         this.app.use("/api/events", eventRouter);
         this.app.use("/api/invites", inviteRouter);
         this.app.use("/api/auth", authRouter)
         this.app.use("/api/requests", requestsRouter);
         this.app.use("/api/users/picklists", userPicklistRouter);
         this.app.use("/api/employers", employerRouter);
+        this.app.use("/api/applications", applicationRouter);
+        this.app.use("/api/schools",schoolRouter);
+        this.app.use("/api/schools/picklists",schoolPicklistRouter);
 
         //If in development, do not mount JWT auth middleware to users route
         if (process.env.NODE_ENV == 'production') {
@@ -92,7 +87,6 @@ class BackendServer extends Server {
         } else {
             this.app.use("/api/users", userRouter);
         }
-
 
         //Uncomment soon. Test method to prevent non-logged in users from accessing '/'
         // this.app.get('/', (req, res)  => {

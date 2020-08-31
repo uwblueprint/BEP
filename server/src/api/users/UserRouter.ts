@@ -26,7 +26,7 @@ userRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     try {
         if (email !== undefined) {
             // If email provided in query parameters, return user with email address.
-            const fetchedUser = await UserService.getUser(email);
+            const fetchedUser = await UserService.getUser({ email });
             res.status(200).send(fetchedUser);
         } else if (type === 'volunteer') {
             // If query parameters specify "volunteer", then return a paginated list of volunteers.
@@ -59,7 +59,7 @@ userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
         const id: string = req.params.id;
         await UserService.update(id, req.body);
 
-        res.status(200).send({ id: id });
+        res.status(200).send({ id });
     } catch (e) {
         res.status(500).send({ msg: e.message });
     }
@@ -69,7 +69,7 @@ userRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
 
 userRouter.delete('/:id', async (req: Express.Request, res: Express.Response) => {
     try {
-        let id: string = req.params.id;
+        const id: string = req.params.id;
         await UserService.remove(id);
 
         res.sendStatus(200);

@@ -1,10 +1,17 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Event } from "../../data/types/EventTypes";
+import { makeStyles } from "@material-ui/core/styles";
+import { Event } from "../../data/types/eventTypes";
+import { User } from "../../data/types/userTypes";
 import { connect } from "react-redux";
-import { fetchEventsService } from "../../data/services/eventsServices";
-import { changeFilter } from "../../data/actions/eventsActions";
-import { getFilteredEvents } from "../../data/selectors/eventsSelector";
+import {
+  fetchActiveEventsService,
+  fetchPastEventsService,
+} from "../../data/services/eventsServices";
+import {
+  getActiveEvents,
+  getPastEvents,
+  getNumPastEventsRecieved,
+} from "../../data/selectors/eventsSelector";
 import EventCard from "./EventCard";
 import {
   MuiPickersUtilsProvider,
@@ -26,12 +33,16 @@ type EventProps = {
 };
 
 interface StateProps {
-  events: Event[];
+  activeEvents: Event[];
+  offset: number;
+  pastEvents: Event[];
+  userType: number;
+  userId: string;
 }
 
 interface DispatchProps {
-  fetchEvents: any;
-  changeFilter: any;
+  fetchActiveEvents: any;
+  fetchPastEvents: any;
 }
 
 type Props = StateProps & DispatchProps & EventProps;
@@ -104,11 +115,16 @@ function a11yProps(index: any) {
 }
 
 const EducatorDashboard: React.SFC<Props> = ({
-  events,
-  fetchEvents,
-  changeFilter,
+  activeEvents,
+  offset,
+  pastEvents,
+  userType,
+  userId,
+  fetchActiveEvents,
+  fetchPastEvents,
 }: Props) => {
   const classes = useStyles();
+  const blockSize = 5;
 
   //State variables for educator dashboard
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -116,44 +132,45 @@ const EducatorDashboard: React.SFC<Props> = ({
   const [isPastEvent, setIsPastEvent] = useState(false);
   const [retrievedData, setRetrievedData] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const [fetchedActiveEvents, setFetchedActiveEvents] = useState(
+    activeEvents.length !== 0
+  );
 
   // State variables for infinite scroll functionality
-  const [page, setPage] = useState<number>(0);
   const [prevY, setPrevY] = useState<number>(0);
-  const [lastEventListLength, setLastEventListLength] = useState<number>(0);
+  const [lastOffset, setLastOffset] = useState<number>(
+    offset < blockSize ? 0 : offset - blockSize
+  );
   const [loadedAllEvents, setLoadedAllEvents] = useState<boolean>(false);
-  const offset = 10;
 
   const loadingRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const handleObserver = useCallback(
     (entities: any) => {
       const y = entities[0].boundingClientRect.y;
-      const newPage = page + 1;
 
-      if (prevY > y) {
-        if (lastEventListLength === events.length) {
-          console.log("no new events are available");
+      if (prevY >= y) {
+        if (lastOffset === offset) {
           // If no new events are available, prevent additional calls to backend.
           setLoadedAllEvents(true);
         }
 
         if (!loadedAllEvents) {
-          if (events.length > 1) setLastEventListLength(events.length);
+          if (offset > 1) setLastOffset(offset);
 
-          fetchEvents(offset, offset * newPage);
-          setPage(newPage);
+          fetchPastEvents(blockSize, offset, userType, userId);
         }
       }
       setPrevY(y);
     },
     [
-      page,
-      prevY,
-      lastEventListLength,
+      fetchPastEvents,
+      lastOffset,
       loadedAllEvents,
-      events.length,
-      fetchEvents,
+      offset,
+      prevY,
+      userType,
+      userId,
     ]
   );
 
@@ -170,25 +187,46 @@ const EducatorDashboard: React.SFC<Props> = ({
     );
 
     //Observe the bottom div of the page
-    if (loadingRef) {
+    if (loadingRef && tabValue === 1) {
       observer.observe(loadingRef.current);
+      return () => observer.unobserve(loadingRef.current);
     }
 
     return () => observer.unobserve(loadingRef.current);
-  }, [loadingRef, handleObserver]);
+  }, [loadingRef, handleObserver, tabValue]);
 
   useEffect(() => {
     // When loading data, there is a 1-2 second delay - using an async function waits for the data to be fetched and then sets retrieved data to true
     // the brackets around the async function is an IIFE (Immediately Invoked Function Expression) - it protects scope of function and variables within it
     (async function test() {
-      await fetchEvents(offset, 0);
+      await fetchPastEvents(blockSize, offset, userType, userId);
+      setLastOffset(offset);
+      if (!fetchedActiveEvents) {
+        await fetchActiveEvents(userType, userId);
+        setFetchedActiveEvents(true);
+      }
       setRetrievedData(true);
     })();
-  }, [fetchEvents]);
+  }, [
+    fetchActiveEvents,
+    fetchedActiveEvents,
+    fetchPastEvents,
+    offset,
+    userType,
+    userId,
+  ]);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
+
+  let eventList = activeEvents;
+  if (tabValue === 1)
+    eventList = pastEvents.filter(
+      (event, index) =>
+        new Date(event.startDate) > new Date(startDate || "0") &&
+        new Date(event.endDate) < new Date(endDate || Date.now())
+    );
 
   return (
     <div style={{ height: "100vh" }}>
@@ -214,14 +252,12 @@ const EducatorDashboard: React.SFC<Props> = ({
                 aria-label="Simple Tabs"
               >
                 <Tab
-                  onClick={() =>
-                    changeFilter("ACTIVE") && setIsPastEvent(false)
-                  }
+                  onClick={() => setIsPastEvent(false)}
                   label="Current"
                   {...a11yProps(0)}
                 />
                 <Tab
-                  onClick={() => changeFilter("PAST") && setIsPastEvent(true)}
+                  onClick={() => setIsPastEvent(true)}
                   label="Past"
                   {...a11yProps(1)}
                 />
@@ -278,22 +314,19 @@ const EducatorDashboard: React.SFC<Props> = ({
               </div>
             </div>
           </TabPanel>
-          <div>
-            {events.length === 0 && retrievedData ? (
+
+          <Grid container spacing={4}>
+            <Grid item />
+            {eventList.length === 0 && retrievedData ? (
               <Container className={classes.noAppsDisc}>
                 <Typography style={{ paddingBottom: "20px" }}>
                   You do not currently have any listed opportunities. <br></br>
                   Click 'Create Opportunity' to get started!
                 </Typography>
               </Container>
-            ) : isPastEvent ? (
-              events
-                .filter(
-                  (event, index) =>
-                    new Date(event.startDate) > new Date(startDate || "0") &&
-                    new Date(event.endDate) < new Date(endDate || Date.now())
-                )
-                .map((event, index) => (
+            ) : (
+              eventList.map((event, index) => (
+                <Grid item key={index}>
                   <Link
                     to={{
                       pathname: `/events/${event.eventName}`,
@@ -302,30 +335,15 @@ const EducatorDashboard: React.SFC<Props> = ({
                     style={{ textDecoration: "none" }}
                   >
                     <EventCard
-                      key={index}
                       event={event}
                       isPastEvent={isPastEvent}
+                      showOwner={true}
                     />
                   </Link>
-                ))
-            ) : (
-              events.map((event, index) => (
-                <Link
-                  to={{
-                    pathname: `/events/${event.eventName}`,
-                    state: { event },
-                  }}
-                  style={{ textDecoration: "none" }}
-                >
-                  <EventCard
-                    key={index}
-                    event={event}
-                    isPastEvent={isPastEvent}
-                  />
-                </Link>
+                </Grid>
               ))
             )}
-          </div>
+          </Grid>
 
           <div ref={loadingRef} />
         </PageBody>
@@ -334,14 +352,27 @@ const EducatorDashboard: React.SFC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: any): StateProps => ({
-  events: getFilteredEvents(state.events),
-});
+const mapStateToProps = (state: any): StateProps => {
+  const userObj = localStorage.getItem("user");
+  const user = userObj ? JSON.parse(userObj) : userObj;
+  return {
+    activeEvents: getActiveEvents(state.events),
+    offset: getNumPastEventsRecieved(state.events),
+    pastEvents: getPastEvents(state.events),
+    userType: user ? user.userType : 0,
+    userId: user ? user.id : "",
+  };
+};
 
 const mapDispatchToProps = (dispatch: any): DispatchProps => ({
-  fetchEvents: (limit: number, offset: number) =>
-    dispatch(fetchEventsService(limit, offset)),
-  changeFilter: (filter: string) => dispatch(changeFilter(filter)),
+  fetchPastEvents: (
+    limit: number,
+    offset: number,
+    userType: number,
+    userId: string
+  ) => dispatch(fetchPastEventsService(limit, offset, userType, userId)),
+  fetchActiveEvents: (userType: number, userId: string) =>
+    dispatch(fetchActiveEventsService(userType, userId)),
 });
 
 export default connect<StateProps, DispatchProps, EventProps>(

@@ -1,21 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, RouteProps } from 'react-router-dom';
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../components/styling/Theme";
 import './App.css';
+import Navbar from './Navbar';
 import EducatorDashboard from '../pages/EducatorDashboard/EducatorDashboard';
 import EventPage from '../pages/EducatorDashboard/IndividualOpportunity/EventPage'
 import Login from '../pages/Auth/SignIn';
-import TestSection from '../pages/Requests/TestSection';
 import VolunteerList from '../pages/VolunteerList/VolunteerList';
+import OpportunityList from '../pages/OpportunityList/OpportunityList';
+import VolunteerDashboard from '../pages/VolunteerDashboard/VolunteerDashboard';
+
+/* Types */
+import { User } from '../data/types/userTypes';
+import OpportunityForm from '../pages/EducatorDashboard/OpportunityForm'
 
 interface IProps extends RouteProps {
   component: any;
   isLoggedIn: boolean;
 }
 
-const PrivateRoute = (props: IProps) => {
-  const { component: Component, isLoggedIn, ...rest } = props;
+export const PrivateRoute = (rProps: IProps) => {
+  const { component: Component, isLoggedIn, ...rest } = rProps;
+
   return (
     <Route {...rest} render={routeProps => (
       // replace true with check for login
@@ -31,33 +38,41 @@ const PrivateRoute = (props: IProps) => {
   );
 };
 
-export default class App extends React.Component {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      loading: true,
-    };
-  };
-
-  componentDidMount() {
-    // update state with user info and loading:false
-  }
+class App extends React.Component<
+  { user: User, history: any, location: any }, 
+  {}
+  > {
 
   render() {
+    let user;
+    let isLoggedIn = false;
+    let isEducator = false;
+    const userString = localStorage.getItem("user")
+    
+    if (userString) {
+      user = JSON.parse(userString);
+      isLoggedIn = true;
+    }
+
     return (
       <ThemeProvider theme={theme}>
+        <Navbar user={user} />
         <Router>
           <React.Fragment>
             <Switch>
               <Route exact path="/" component={Login} />
-              <Route exact path="/events" component={EducatorDashboard} />
-              <Route path="/events/:name" component={EventPage} />
-              <PrivateRoute component={TestSection} exact path="/test" isLoggedIn={true} />
-              <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={true} />
+              <PrivateRoute exact path="/events" component={EducatorDashboard} isLoggedIn={isLoggedIn} />
+              <PrivateRoute path="/events/:name" component={EventPage} isLoggedIn={isLoggedIn} />
+              <PrivateRoute component={VolunteerList} exact path="/volunteers" isLoggedIn={isLoggedIn} />
+              <PrivateRoute component={OpportunityList} exact path="/opportunities" isLoggedIn={isLoggedIn} />
+              <PrivateRoute component={VolunteerDashboard} exact path="/dashboard" isLoggedIn={isLoggedIn} />
+              <Route exact path="/newevent" component={OpportunityForm} />
             </Switch>
           </React.Fragment>
         </Router>
-      </ThemeProvider >
+      </ThemeProvider>
     )
   }
 }
+
+export default App;

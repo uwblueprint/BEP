@@ -25,7 +25,6 @@ const useStyles = makeStyles({
 
 export default function VolunteerCard(props: any) {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
 
   return (
     <Card className={classes.root} elevation={0}>

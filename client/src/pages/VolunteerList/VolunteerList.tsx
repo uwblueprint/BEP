@@ -1,27 +1,25 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
 import { connect } from "react-redux";
 
 /* Services */
 import { fetchVolunteersService } from "../../data/services/volunteersServices";
-import { fetchPicklistsService } from "../../data/services/userPicklistServices";
+import { fetchUserPicklistService } from "../../data/services/picklistServices";
 
 /* Selectors */
 import { getVolunteers } from "../../data/selectors/volunteersSelector";
 import {
-  getExternalActivitesPicklist,
-  getInternalActivitesPicklist,
+  getAllActivitiesPicklist,
   getExpertiesAreasPicklist,
   getLocationsPicklist,
   getPostSecondaryTrainingPicklist,
   getGradesPicklist,
   getLanguagesPicklist,
-} from "../../data/selectors/userPicklistSelector";
+} from "../../data/selectors/picklistSelector";
 
 /* Types */
 import { Volunteer } from "../../data/types/userTypes";
-import { UserPicklistType } from "../../data/types/userPicklistTypes";
+import { PicklistType } from "../../data/types/picklistTypes";
 
 /* Components */
 import VolunteerCard from "./VolunteerCard";
@@ -40,12 +38,12 @@ import {
   WhiteTextTypography,
   BlackTextTypography,
   SecondaryMainTextTypography,
+  OutlinedTextField,
 } from "../../components/index";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import { Grid } from "@material-ui/core";
-import { OutlinedTextField } from "../../components/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
 class VolunteerList extends React.Component<
@@ -81,15 +79,15 @@ class VolunteerList extends React.Component<
     };
     filteredVolunteers: Volunteer[];
   }
-  > {
+> {
   constructor(props: any) {
     super(props);
 
-    const { history, user, volunteers, picklists } = props;
+    const { history, user, volunteers } = props;
 
     if (user) {
       // whatever the redirect route is supposed to be
-      history.push("/volunteer-list");
+      history.push("/volunteers");
     }
 
     this.getFilters = this.getFilters.bind(this);
@@ -249,7 +247,6 @@ class VolunteerList extends React.Component<
 
   handleSearchFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const searchBarValue = this.state.searchBar;
     this.setState({
       filteredVolunteers: this.filterAllFields(this.props.volunteers),
     });
@@ -368,14 +365,13 @@ class VolunteerList extends React.Component<
   }
 
   componentDidMount() {
-    const picklistTypes: UserPicklistType[] = [
-      UserPicklistType.expertiseAreas,
-      UserPicklistType.volunteerDesiredExternalActivities,
-      UserPicklistType.volunteerDesiredInternalActivities,
-      UserPicklistType.locations,
-      UserPicklistType.postSecondaryTraining,
-      UserPicklistType.languages,
-      UserPicklistType.grades,
+    const picklistTypes: PicklistType[] = [
+      PicklistType.expertiseAreas,
+      PicklistType.allActivities,
+      PicklistType.locations,
+      PicklistType.postSecondaryTraining,
+      PicklistType.languages,
+      PicklistType.grades,
     ];
 
     this.fetchVolunteers(
@@ -387,29 +383,26 @@ class VolunteerList extends React.Component<
       return filterNames.map((item: string) => [item, false]);
     };
 
-    picklistTypes.forEach((type: UserPicklistType) => {
+    picklistTypes.forEach((type: PicklistType) => {
       this.props.fetchPicklists(type).then(() => {
         const picklists = this.props.picklists;
         const filters = this.state.filters;
 
-        if (type === UserPicklistType.expertiseAreas) {
+        if (type === PicklistType.expertiseAreas) {
           filters.expertiseAreas = new Map(
             createFilters(picklists.expertiseAreas.list)
           );
-        } else if (
-          type === UserPicklistType.volunteerDesiredExternalActivities ||
-          type === UserPicklistType.volunteerDesiredInternalActivities
-        ) {
-          picklists.activities.list.forEach((acitivity) =>
-            filters.activities.set(acitivity, false)
+        } else if (type === PicklistType.allActivities) {
+          filters.activities = new Map(
+            createFilters(picklists.activities.list)
           );
-        } else if (type === UserPicklistType.locations) {
+        } else if (type === PicklistType.locations) {
           filters.locations = new Map(createFilters(picklists.locations.list));
-        } else if (type === UserPicklistType.postSecondaryTraining) {
+        } else if (type === PicklistType.postSecondaryTraining) {
           filters.training = new Map(createFilters(picklists.training.list));
-        } else if (type === UserPicklistType.languages) {
+        } else if (type === PicklistType.languages) {
           filters.languages = new Map(createFilters(picklists.languages.list));
-        } else if (type === UserPicklistType.grades) {
+        } else if (type === PicklistType.grades) {
           filters.grades = new Map(createFilters(picklists.grades.list));
         }
 
@@ -497,12 +490,7 @@ class VolunteerList extends React.Component<
                   </ContainedButton>
                 </Grid>
               </form>
-              <Grid
-                item
-                container
-                spacing={7}
-                direction="row"
-              >
+              <Grid item container spacing={7} direction="row">
                 {Object.entries(this.props.picklists).map((entry) => {
                   // Display picklists.
                   const picklistName: string = entry[0];
@@ -542,11 +530,11 @@ class VolunteerList extends React.Component<
                           disableUnderline={true}
                           IconComponent={() =>
                             document.activeElement &&
-                              document.activeElement.id === picklistName ? (
-                                <SecondaryMainExpandMoreIcon />
-                              ) : (
-                                <BlackExpandMoreIcon />
-                              )
+                            document.activeElement.id === picklistName ? (
+                              <SecondaryMainExpandMoreIcon />
+                            ) : (
+                              <BlackExpandMoreIcon />
+                            )
                           }
                           displayEmpty={true}
                           renderValue={() => {
@@ -560,21 +548,21 @@ class VolunteerList extends React.Component<
                                 >
                                   <Grid item>
                                     {document.activeElement.id ===
-                                      picklistName ? (
-                                        <SecondaryMainTextTypography
-                                          align="center"
-                                          variant="button"
-                                        >
-                                          {picklistDisplayName}
-                                        </SecondaryMainTextTypography>
-                                      ) : (
-                                        <BlackTextTypography
-                                          align="center"
-                                          variant="button"
-                                        >
-                                          {picklistDisplayName}
-                                        </BlackTextTypography>
-                                      )}
+                                    picklistName ? (
+                                      <SecondaryMainTextTypography
+                                        align="center"
+                                        variant="button"
+                                      >
+                                        {picklistDisplayName}
+                                      </SecondaryMainTextTypography>
+                                    ) : (
+                                      <BlackTextTypography
+                                        align="center"
+                                        variant="button"
+                                      >
+                                        {picklistDisplayName}
+                                      </BlackTextTypography>
+                                    )}
                                   </Grid>
                                 </Grid>
                               )
@@ -673,33 +661,27 @@ const mapStateToProps = (state: any) => {
     picklists: {
       activities: {
         displayName: "Activities",
-        list: [
-          ...new Set( // Ensure list only has unique elements
-            getExternalActivitesPicklist(state.userPicklists).concat(
-              getInternalActivitesPicklist(state.userPicklists)
-            )
-          ),
-        ],
+        list: getAllActivitiesPicklist(state.picklists),
       },
       expertiseAreas: {
         displayName: "Areas of Expertise",
-        list: getExpertiesAreasPicklist(state.userPicklists),
+        list: getExpertiesAreasPicklist(state.picklists),
       },
       locations: {
         displayName: "Location",
-        list: getLocationsPicklist(state.userPicklists),
+        list: getLocationsPicklist(state.picklists),
       },
       training: {
         displayName: "Level of Training",
-        list: getPostSecondaryTrainingPicklist(state.userPicklists),
+        list: getPostSecondaryTrainingPicklist(state.picklists),
       },
       languages: {
         displayName: "Language",
-        list: getLanguagesPicklist(state.userPicklists),
+        list: getLanguagesPicklist(state.picklists),
       },
       grades: {
         displayName: "Audience Grade Level",
-        list: getGradesPicklist(state.userPicklists),
+        list: getGradesPicklist(state.picklists),
       },
     },
   };
@@ -708,8 +690,8 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: any) => ({
   fetchVolunteers: (limit: number, offset: number) =>
     dispatch(fetchVolunteersService(limit, offset)),
-  fetchPicklists: (picklistType: UserPicklistType) =>
-    dispatch(fetchPicklistsService(picklistType)),
+  fetchPicklists: (picklistType: PicklistType) =>
+    dispatch(fetchUserPicklistService(picklistType)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VolunteerList);

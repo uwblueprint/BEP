@@ -1,6 +1,7 @@
 import {
   ContainedButton,
   DarkContainedButton,
+  OutlinedButton,
   TextButton,
   Button,
 } from "./Button";
@@ -19,10 +20,17 @@ import {
   WhiteTextTypography,
   BlackTextTypography,
   SecondaryMainTextTypography,
+  GreyBackgroundTextTypography,
+  RedTextTypography,
 } from "./Typography";
 
-
-export { ContainedButton, DarkContainedButton, TextButton, Button };
+export {
+  ContainedButton,
+  DarkContainedButton,
+  OutlinedButton,
+  TextButton,
+  Button,
+};
 export { Link };
 export { OutlinedTextField, TextField };
 export { ContainedSelect, Select };
@@ -38,4 +46,6 @@ export {
   WhiteTextTypography,
   BlackTextTypography,
   SecondaryMainTextTypography,
+  GreyBackgroundTextTypography,
+  RedTextTypography,
 };
