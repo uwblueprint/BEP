@@ -12,19 +12,19 @@ export const getVolunteers = createSelector(
 );
 
 const getVolunteerApplicationsData = (state: any) => {
-  return state.volunteers && state.volunteers.applications ? state.volunteers.applications : [];
-}
+  return state.applications ? state.applications : [];
+};
 
 export const getVolunteerApplications = createSelector(
   [getVolunteerApplicationsData],
   (applications) => applications
-)
+);
 
 const getVolunteerInvitationsData = (state: any) => {
-  return state.volunteers && state.volunteers.invitations ? state.volunteers.invitations : [];
-}
+  return state.invitations ? state.invitations : [];
+};
 
 export const getVolunteerInvitations = createSelector(
   [getVolunteerInvitationsData],
   (invitations) => invitations
-)
+);
