@@ -4,8 +4,9 @@ import { PicklistType } from "../types/picklistTypes";
 
 const getPicklistData = (picklistType: PicklistType) => (
   state: PicklistState
-) =>
-  state[PicklistType[picklistType]] ? state[PicklistType[picklistType]] : [];
+) => {
+  return state[PicklistType[picklistType]] ? state[PicklistType[picklistType]] : [];
+}
 
 const createPicklistSelector = (picklistType: PicklistType) =>
   createSelector([getPicklistData(picklistType)], (picklist) => picklist);

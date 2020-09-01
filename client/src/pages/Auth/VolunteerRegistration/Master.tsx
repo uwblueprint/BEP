@@ -67,8 +67,7 @@ interface IComponentProps {
     volunteerDesiredInternalActivities: { list: string[] };
     postSecondaryTraining: { list: string[] };
   };
-  fetchUserPicklists: any;
-  fetchEmployerPicklists: any;
+  fetchPicklists: any
 }
 
 interface IComponentState {
@@ -181,9 +180,29 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       },
     };
     this.handleNestedChange = this.handleNestedChange.bind(this);
+    this.handleNestedChangeExperience = this.handleNestedChangeExperience.bind(this)
     this.handleChange = this.handleChange.bind(this);
     this._next = this._next.bind(this);
     this._prev = this._prev.bind(this);
+  }
+
+  componentDidMount() {
+
+    const { fetchPicklists } = this.props
+    fetchPicklists(PicklistType.allActivities)
+    fetchPicklists(PicklistType.expertiseAreas)
+    fetchPicklists(PicklistType.locations)
+    fetchPicklists(PicklistType.postSecondaryTraining)
+    fetchPicklists(PicklistType.languages)
+    fetchPicklists(PicklistType.grades)
+    fetchPicklists(PicklistType.localPostSecondaryInstitutions)
+    fetchPicklists(PicklistType.professionalAssociations)
+    fetchPicklists(PicklistType.employmentStatus)
+    fetchPicklists(PicklistType.sectors)
+    fetchPicklists(PicklistType.size)
+    fetchPicklists(PicklistType.introductionMethod)
+    fetchPicklists(PicklistType.volunteerDesiredExternalActivities)
+    fetchPicklists(PicklistType.volunteerDesiredInternalActivities)
   }
 
   _next() {
@@ -229,6 +248,25 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
   };
 
+  handleNestedChangeExperience = (inputName: any) => {
+      console.log(inputName)
+      const experience = this.state.experience
+
+      return (event: any) => {
+      event.preventDefault()
+      const newValue = event.target.value;
+      const name = event.target.name;
+
+      this.setState({
+        experience: {
+          ...inputName,
+          [name]: newValue,
+        },
+      });
+    };
+  };
+
+
   handleSubmit = (event: any) => {
     //todo
     event.preventDefault();
@@ -271,6 +309,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   render() {
+      console.log("The props", this.props)
     return (
       <React.Fragment>
         <PageBody>
@@ -309,7 +348,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                 <Experience
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
-                  handleNestedChange={this.handleNestedChange}
+                  handleNestedChange={this.handleNestedChangeExperience}
                   experience={this.state.experience}
                   picklistInfo={this.state.picklistInfo}
                 />
@@ -336,7 +375,7 @@ const mapStateToProps = (state: any) => {
         locations: {
             list: getLocationsPicklist(state.picklists),
         },
-        training: {
+        postSecondaryTraining: {
             list: getPostSecondaryTrainingPicklist(state.picklists),
         },
         languages: {
@@ -369,18 +408,15 @@ const mapStateToProps = (state: any) => {
         volunteerDesiredInternalActivities: { 
             list: getVolunteerDesiredInternalActivities(state.picklists)
         },
-        postSecondaryTraining: { 
-            list: getPostSecondaryTrainingPicklist(state.picklists)
-        },
     },
   }
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchUserPicklists: (picklistType: PicklistType) =>
+  fetchPicklists: (picklistType: PicklistType) =>
     dispatch(fetchUserPicklistService(picklistType)),
   fetchEmployerPicklistService: (picklistType: PicklistType) =>
-    dispatch(fetchUserPicklistService(picklistType)),
+    dispatch(fetchEmployerPicklistService(picklistType)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Master);
