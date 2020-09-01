@@ -5,22 +5,26 @@ import { conn } from '../../server';
 import Event from '../events/EventInterface';
 import * as EventService from '../events/EventService';
 import * as UserService from '../users/UserService';
+import * as EventVolunteerService from '../eventVolunteers/EventVolunteerService';
 import Volunteer from '../users/VolunteerInterface';
-import Invitation from './InvitationsInterface';
+import Invitation, { InvitationStatus } from './InvitationsInterface';
 
 export const invitationObjectName: string = 'EventInvitations__c';
 export const invitationFields: string = 'Id, event__c, status__c, volunteer__c';
 
 // Map fields of employer model to Salesforce fields.
 const invitationModelToSalesforceInvitation = (invitation: Invitation): any => {
-    const salesforceApplication: any = {
-        event__c: typeof invitation.event === 'string' ? invitation.event : invitation.event.id,
+    const eventId = typeof invitation.event === 'string' ? invitation.event : invitation.event.id;
+    const volunteerId = typeof invitation.volunteer === 'string' ? invitation.volunteer : invitation.volunteer.id;
+    const salesforceInvitation: any = {
+        combinedId__c: eventId + '_' + volunteerId,
+        event__c: eventId,
         Id: invitation.id,
         status__c: invitation.status,
-        volunteer__c: typeof invitation.volunteer === 'string' ? invitation.volunteer : invitation.volunteer.id
+        volunteer__c: volunteerId
     };
 
-    return salesforceApplication;
+    return salesforceInvitation;
 };
 
 // Map Saleforce record fields to user model fields.
@@ -108,20 +112,48 @@ export const getVolunteerInvitations = async (volunteerId: string): Promise<Invi
 };
 
 export const update = async (invitation: Invitation): Promise<Invitation> => {
-    const salesforceApplication = invitationModelToSalesforceInvitation(invitation);
-    delete salesforceApplication.event__c;
-    const updatedInvitation: Invitation = conn
-        .sobject(invitationObjectName)
-        .update(salesforceApplication, (err, ret) => {
-            if (err || !ret.success) {
-                return console.error(err, ret);
-            }
-        });
+    if (!invitation.id) {
+        throw Error("Invitation provided must have an 'id' field.");
+    }
 
-    return updatedInvitation;
+    let oldInvitation: Invitation;
+    try {
+        oldInvitation = await get(invitation.id);
+    } catch (e) {
+        console.error('Unable to get old invitation with ID ${applicaiton.id}');
+    }
+    const salesforceInvitation = invitationModelToSalesforceInvitation(invitation);
+
+    if (oldInvitation) {
+        // If the invitation status is changed to accepted, then create a new event volunteer object.
+        // If the invitation status is changes from accepted, then delete.
+        if (oldInvitation.status !== InvitationStatus.ACCEPTED && invitation.status === InvitationStatus.ACCEPTED) {
+            await EventVolunteerService.create({
+                event: salesforceInvitation.event__c,
+                volunteer: salesforceInvitation.volunteer__c
+            });
+        } else if (
+            oldInvitation.status === InvitationStatus.ACCEPTED &&
+            invitation.status !== InvitationStatus.ACCEPTED
+        ) {
+            await EventVolunteerService.remove({
+                eventId: salesforceInvitation.event__c,
+                volunteerId: salesforceInvitation.volunteer__c
+            });
+        }
+    }
+
+    delete salesforceInvitation.event__c;
+    let res = conn.sobject(invitationObjectName).update(salesforceInvitation, function(err, ret) {
+        if (err || !ret.success) {
+            return console.error(err, ret);
+        }
+    });
+
+    return res;
 };
 
-// create new volunteer application object in salesforce with fields
+// create new volunteer invitation object in salesforce with fields
 // Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
 export const create = async (invitation: Invitation): Promise<string> => {
     const invitationInfo: { id: string; success: boolean; errors: Error[] } = await conn

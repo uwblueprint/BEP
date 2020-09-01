@@ -18,6 +18,7 @@ import {
 import Application from "../types/applicationTypes";
 import { Event } from "../types/eventTypes";
 import EventVolunteer from "../types/eventVolunteerTypes";
+import Invitation from "../types/invitationTypes";
 
 export function fetchActiveEventsService(userType: number, userId: string) {
   return (dispatch: any) => {
@@ -84,11 +85,19 @@ export function fetchVolunteersOfEventService(event: Event) {
   };
 }
 
-export function fetchEventInvitationsService(event:Event){
-    return (dispatch: any) => {
-        return getEventInvitations(event.id).then((res: any) => {
-            dispatch(fetchEventInvitations(event, res.data));
-            return res;
-        });
-    };
+export function fetchEventInvitationsService(event: Event) {
+  return (dispatch: any) => {
+    return getEventInvitations(event.id).then((res: any) => {
+      dispatch(
+        fetchEventInvitations(
+          event,
+          res.data.map((invitation: Invitation) => {
+            invitation.event = event;
+            return invitation;
+          })
+        )
+      );
+      return res;
+    });
+  };
 }

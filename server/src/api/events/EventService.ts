@@ -148,17 +148,16 @@ export const getEventInfo = async (id: string): Promise<Event> => {
 export const getEvents = async (limit: number, offset: number, filter: 'active' | 'past' | 'all'): Promise<Event[]> => {
     let events: Event[] = [];
     let eventPromises: Promise<Event>[];
-    const date = new Date().toISOString();
+    const date = new Date();
+    date.setHours(24, 0, 0, 0);
+    const dateStr = date.toISOString();
     let query = '';
-    // let query = `SELECT ${eventFields} FROM ${eventApi} ${
-    //     filter !== 'all' ? `WHERE endDate__c ${filter === 'active' ? '>=' : '<'} ${date}` : ''
-    // } ORDER BY endDate__c ${filter !== 'active' ? `LIMIT ${limit} OFFSET ${offset}` : ''}`;
     if (filter === 'all') {
         query = `SELECT ${eventFields} FROM ${eventApi} ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}`;
     } else if (filter === 'active') {
-        query = `SELECT ${eventFields} FROM ${eventApi} WHERE endDate__c >= ${date} ORDER BY endDate__c`;
+        query = `SELECT ${eventFields} FROM ${eventApi} WHERE startDate__c > ${dateStr} ORDER BY startDate__c`;
     } else if (filter === 'past') {
-        query = `SELECT ${eventFields} FROM ${eventApi} WHERE endDate__c < ${date} ORDER BY endDate__c LIMIT ${limit} OFFSET ${offset}`;
+        query = `SELECT ${eventFields} FROM ${eventApi} WHERE startDate__c <= ${dateStr} ORDER BY startDate__c LIMIT ${limit} OFFSET ${offset}`;
     }
 
     await conn.query(query, function(err, result) {
@@ -314,13 +313,11 @@ export const getVolunteers = async (eventName: string): Promise<EventVolunteerIn
 };
 
 export const update = async (id: string, event: Event): Promise<Event> => {
-    const res = conn
-        .sobject(eventApi)
-        .update(eventModelToSalesforceEvent(event, id), (err: Error, result: any) => {
-            if (err || !result.success) {
-                return console.error(err, result);
-            }
-        });
+    const res = conn.sobject(eventApi).update(eventModelToSalesforceEvent(event, id), (err: Error, result: any) => {
+        if (err || !result.success) {
+            return console.error(err, result);
+        }
+    });
 
     return res;
 };
