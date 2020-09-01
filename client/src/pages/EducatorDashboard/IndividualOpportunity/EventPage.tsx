@@ -266,7 +266,7 @@ const EventPage = (props: any) => {
         </DialogActions>
       </Dialog>
       {pastEvent || !isEducator ? (
-        <div style={{ height: "100vh" }}>
+        <div style={{ height: "100vh", marginTop: "30px" }}>
           <Grid container style={{ height: "100%" }}>
             <PageHeader>
               <Grid
@@ -364,7 +364,7 @@ const EventPage = (props: any) => {
           </Grid>
         </div>
       ) : (
-        <div style={{ height: "100vh" }}>
+        <div style={{ height: "100vh", marginTop: "30px" }}>
           <Grid container style={{ height: "100%" }}>
             <PageHeader>
               <Grid

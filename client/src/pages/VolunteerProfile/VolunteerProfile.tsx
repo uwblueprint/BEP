@@ -70,7 +70,7 @@ class VolunteerProfile extends React.Component <
         <Grid container spacing={3} direction="column">
           <Grid item xs={12}  style={{ marginTop: "70px", padding: "0px 12%"}}>
             <Typography variant="body1" style={{paddingBottom: '10px'}}>
-              <Link to={this.props.location.state.back} style={{textDecoration: "none"}}>{`<`} Back </Link>
+              <a href="javascript:history.back()" style={{textDecoration: "none"}}>{`<`} Back </a>
             </Typography>
           </Grid>
           <Grid container direction="row" item xs={12}
