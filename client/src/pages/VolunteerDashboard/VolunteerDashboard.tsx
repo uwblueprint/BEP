@@ -23,6 +23,7 @@ import {
 import { Event } from "../../data/types/eventTypes";
 import Application, { ApplicationStatus } from "../../data/types/applicationTypes";
 import Invitation, { InvitationStatus } from "../../data/types/invitationTypes";
+import { PageViewer } from "../../data/types/pageTypes";
 
 /* Services */
 import { fetchApplicationsByVolunteer } from '../../data/services/applicationsService';
@@ -152,7 +153,7 @@ const EventPage: React.SFC<Props> =
   const applicationsLabel = `Applications  ${applications.length}`
   const invitationsLabel = `Invitations  ${invitations.length}`
 
-  const createOpportunityCard = (event: Event) => (
+  const createOpportunityCard = (event: Event, type: number = PageViewer.unknown) => (
     <Grid item key={event.id}>
         <Link
           to={{
@@ -161,7 +162,7 @@ const EventPage: React.SFC<Props> =
           }}
           style={{ textDecoration: "none" }}
         >
-          <EventCard event={event} isPastEvent={false} showOwner={false} />
+          <EventCard event={event} isPastEvent={false} showOwner={false} type={type} />
         </Link>
       </Grid>
   );
@@ -204,7 +205,7 @@ const EventPage: React.SFC<Props> =
                      <div>You can also click 'Browse Opportunities' to get started.</div>
                   </Typography> :
                 activeEvents.map((event: any) => 
-                  event.status === "accepted" ? createOpportunityCard(event.event) : null
+                  createOpportunityCard(event.event, PageViewer.volunteer)
                 )}
               </Grid>
           </TabPanel>
@@ -216,7 +217,7 @@ const EventPage: React.SFC<Props> =
                     <div style={{margin:"1% 0"}}>Click 'Browse Opportunities' to get started.</div>
                 </Typography> :
               applications.map((application: any) =>
-                createOpportunityCard(application.event)
+                createOpportunityCard(application.event, PageViewer.applicant)
               )}
             </Grid>
           </TabPanel>
@@ -229,7 +230,7 @@ const EventPage: React.SFC<Props> =
                     <div>You can also click 'Browse Opportunities' to get started.</div>
                 </Typography> :
               invitations.map((invitation: any) =>
-                createOpportunityCard(invitation.event)
+                createOpportunityCard(invitation.event, PageViewer.invitee)
               )}
             </Grid>
           </TabPanel>
@@ -248,8 +249,6 @@ const mapStateToProps = (state: any): StateProps => {
   const activeEvents = activeEventsUnfiltered.filter((event: any) => 
     event.status === ApplicationStatus.ACCEPTED
   );
-  console.log(activeEventsUnfiltered)
-
 
   const applicationUnfiltered = getVolunteerApplications(state);
   const applications = applicationUnfiltered.filter((application: any) =>

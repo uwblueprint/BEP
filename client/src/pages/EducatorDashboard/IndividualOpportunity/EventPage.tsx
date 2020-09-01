@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -24,7 +25,6 @@ import {
   PageHeader,
   PageBody,
   SecondaryMainContrastInfoIcon,
-  Link,
 } from "../../../components/index";
 import EventSection from "./EventSection";
 import ConfirmedVolunteerCard from "./ConfirmedVolunteerCard";
@@ -53,15 +53,6 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
   value: any;
-}
-
-// will need a hook + state to store this info
-enum PageViewer {
-  unknown = 0, // default volunteer or admin
-  applicant = 1, // application
-  invitee = 2, // invitation
-  volunteer = 3, // current volunteer
-  host = 4, // educator who created this event
 }
 
 const TabPanel = (props: TabPanelProps) => {
