@@ -17,7 +17,6 @@ export const eventRouter = Express.Router();
  */
 
 eventRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
-    console.log("Hit create endpoint", req.body)
     try {
         const id: string = await EventService.create(req.body.event);
         res.status(201).send({ id });
@@ -55,38 +54,6 @@ eventRouter.get('/past', async (req: Express.Request, res: Express.Response) => 
         res.status(200).send(fetchedEvents);
     } catch (e) {
         res.status(404).send(e.message);
-    }
-});
-
-eventRouter.patch('/applications/updatestate', async (req: Express.Request, res: Express.Response) => {
-    const type: string = req.body.type as string;
-    const eventName: string = req.body.event_name as string;
-    const applicantName: string = req.body.applicant_name as string;
-
-    if (type === 'accept') {
-        EventService.acceptApplicant(eventName, applicantName, true);
-    } else if (type === 'deny') {
-        EventService.acceptApplicant(eventName, applicantName, false);
-    } else {
-        res.status(400).send({ msg: 'Bad Request' });
-    }
-});
-
-// deprecated
-eventRouter.get('/invitations', async (req: Express.Request, res: Express.Response) => {
-    const name: string = req.query.name as string;
-
-    try {
-        if (name) {
-            const invitations = await EventService.getInvitations(name);
-            res.status(200).json({
-                invitations
-            });
-        } else {
-            throw Error(`Invalid query parameters. Please set "name" parameter`);
-        }
-    } catch (e) {
-        res.status(500).send({ msg: e.message });
     }
 });
 
