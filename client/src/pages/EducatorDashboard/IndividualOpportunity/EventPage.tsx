@@ -578,9 +578,14 @@ const mapStateToProps = (state: any, ownProps: any) => {
   const event: Event = ownProps.location.state.event;
   const user: User | null = getUser(state.user);
 
+  const rawApplications = getEventApplications(event.id, state.events);
+  const applications = rawApplications.filter((app) => app.status === ApplicationStatus.PENDING);
+  const rawInvitations = getEventInvitations(event.id, state.events);
+  const invitations = rawInvitations.filter((invite) => invite.status === InvitationStatus.PENDING);
+
   return {
-    applications: getEventApplications(event.id, state.events),
-    invitations: getEventInvitations(event.id, state.events),
+    applications,
+    invitations,
     user,
     volunteers: getEventVolunteers(event.id, state.events),
   };
