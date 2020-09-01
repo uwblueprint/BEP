@@ -11,6 +11,7 @@ import jsforce from 'jsforce';
 import { userRouter } from './api/users/UserRouter';
 import { userPicklistRouter } from './api/users/picklists/UserPicklistRouter';
 import { employerRouter } from './api/employers/EmployerRouter';
+import { employerPicklistRouter } from './api/employers/picklists/EmployerPicklistRouter';
 import { eventRouter } from './api/events/EventRouter';
 import { schoolRouter } from './api/schools/SchoolRouter';
 import { schoolPicklistRouter } from './api/schools/picklists/SchoolPicklistRouter';

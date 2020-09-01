@@ -25,10 +25,11 @@ export default interface VolunteerInterface extends UserInterface {
     postSecondaryTraining: string[];
     professionalAssociations: string[];
     reasonsForVolunteering: string[];
+    shareEmployerInfo: boolean;
     shareWithEmployer: boolean;
     volunteerDesiredExternalActivities: string[];
     volunteerDesiredInternalActivities: string[];
-    
+
     // professionalAssociations?: {
     //     name: string;
     //     shareActivity: boolean;
@@ -75,6 +76,8 @@ export const isVolunteer = (obj: any): boolean => {
         Array.isArray(obj.volunteerDesiredExternalActivities) &&
         obj.volunteerDesiredExternalActivities.every(item => typeof item === 'string') &&
         Array.isArray(obj.volunteerDesiredInternalActivities) &&
-        obj.volunteerDesiredInternalActivities.every(item => typeof item === 'string')
+        obj.volunteerDesiredInternalActivities.every(item => typeof item === 'string') &&
+        typeof obj.shareEmployerInfo === 'boolean' &&
+        typeof obj.shareWithEmployer === 'boolean'
     );
 };

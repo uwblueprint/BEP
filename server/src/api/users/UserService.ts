@@ -16,7 +16,7 @@ const userFields: string =
     'preferredPronouns__c, userType__c, careerDescription__c, coopPlacementMode__c, coopPlacementSchoolAffiliation__c, coopPlacementTime__c, ' +
     'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
     'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
-    'professionalAssociations__c, reasonsForVolunteering__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
+    'professionalAssociations__c, reasonsForVolunteering__c, shareEmployerInfo__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
     'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c ';
 
 // Map fields of user model to Salesforce fields.
@@ -35,7 +35,7 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
     };
 
     if (isEducator(user)) {
-        console.log("IS EDUCATOR");
+        console.log('IS EDUCATOR');
         salesforceUser = {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
@@ -77,6 +77,8 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
             postSecondaryTraining__c: arrayToPicklistString((user as Volunteer).postSecondaryTraining),
             professionalAssociations__c: arrayToPicklistString((user as Volunteer).professionalAssociations),
             reasonsForVolunteering__c: arrayToPicklistString((user as Volunteer).reasonsForVolunteering),
+            shareEmployerInfo__c: (user as Volunteer).shareEmployerInfo,
+            shareWithEmployer__c: (user as Volunteer).shareWithEmployer,
             volunteerDesiredExternalActivities__c: arrayToPicklistString(
                 (user as Volunteer).volunteerDesiredExternalActivities
             ),
@@ -136,6 +138,8 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Volunteer).postSecondaryTraining = picklistStringToArray(record.postSecondaryTraining__c);
         (user as Volunteer).professionalAssociations = picklistStringToArray(record.professionalAssociations__c);
         (user as Volunteer).reasonsForVolunteering = picklistStringToArray(record.reasonsForVolunteering__c);
+        (user as Volunteer).shareEmployerInfo = record.shareEmployerInfo__c;
+        (user as Volunteer).shareWithEmployer = record.shareWithEmployer__c;
         (user as Volunteer).volunteerDesiredExternalActivities = picklistStringToArray(
             record.volunteerDesiredExternalActivities__c
         );

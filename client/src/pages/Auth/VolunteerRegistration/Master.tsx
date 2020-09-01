@@ -29,12 +29,15 @@ import {
   getIntroductionMethod,
   getEmploymentStatus,
   getVolunteerDesiredExternalActivities,
-  getVolunteerDesiredInternalActivities
+  getVolunteerDesiredInternalActivities,
 } from "../../../data/selectors/picklistSelector";
 
 import { Grid } from "@material-ui/core";
 
-import { fetchUserPicklistService, fetchEmployerPicklistService } from "../../../data/services/picklistServices";
+import {
+  fetchUserPicklistService,
+  fetchEmployerPicklistService,
+} from "../../../data/services/picklistServices";
 
 import Experience from "./Experience";
 import PersonalInfo from "./PersonalInfo";
@@ -43,16 +46,33 @@ import Involvement from "./Involvement";
 import { PicklistType } from "../../../data/types/picklistTypes";
 import { connect } from "react-redux";
 
-
 const styles = () => ({
   multiSelect: {
-      marginBottom: "26px",
-      columns: "2 auto",
+    marginBottom: "26px",
+    columns: "2 auto",
   },
   root: {
     minWidth: 275,
   },
 });
+
+export interface ExperienceState {
+  jobTitle: string;
+  orgName: string;
+  orgWebsite: string;
+  orgSocialMedia: string; // this seems hard a low priority (need to add)
+  orgStreetAddr: string;
+  orgCity: string;
+  orgPostalCode: string;
+  orgPhone: string;
+  departmentDivision: string; // currenlty not in userTYpes
+  careerDescription: string;
+  involveMethod: string; // currently not in userTypes
+  extraDescription: string; // other info i'd like schools to read
+  shareWithEmployer: boolean;
+  shareEmployerInfo: boolean;
+  isVolunteerCoordinator: boolean;
+}
 
 interface IComponentProps {
   picklists: {
@@ -73,11 +93,11 @@ interface IComponentProps {
     postSecondaryTraining: { list: string[] };
   };
   fetchPicklists: any;
-  fetchEmployerPicklists: any
+  fetchEmployerPicklists: any;
   classes: {
     multiSelect: any;
     root: any;
-  }
+  };
 }
 
 interface IComponentState {
@@ -95,20 +115,7 @@ interface IComponentState {
     linkedinUrl: string;
     shareWithEmployer: boolean;
   };
-  experience: {
-    jobTitle: string;
-    orgName: string;
-    orgWebsite: string;
-    orgSocialMedia: string; // this seems hard a low priority (need to add)
-    orgStreetAddr: string;
-    orgCity: string;
-    orgPostalCode: string;
-    orgPhone: string;
-    departmentDivision: string; // currenlty not in userTYpes
-    careerDescription: string;
-    involveMethod: string; // currently not in userTypes
-    extraDescription: string; // other info i'd like schools to read
-  };
+  experience: ExperienceState,
   involvement: {
     reasonsForVolunteering: string;
     futureAdvice: string;
@@ -164,6 +171,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         careerDescription: "",
         involveMethod: "",
         extraDescription: "",
+        shareWithEmployer: false,
+        shareEmployerInfo: false,
+        isVolunteerCoordinator: false,
       },
       involvement: {
         reasonsForVolunteering: "",
@@ -190,11 +200,11 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       },
     };
     this.handleNestedChange = this.handleNestedChange.bind(this);
-    this.handleNestedChangeExperience = this.handleNestedChangeExperience.bind(this)
-    this.handleNestedChangePicklist = this.handleNestedChangePicklist.bind(this)
+    this.handleNestedChangeExperience = this.handleNestedChangeExperience.bind(this);
+    this.handleNestedChangePicklist = this.handleNestedChangePicklist.bind(this);
     this.createHandleSelectOption = this.createHandleSelectOption.bind(this);
     this.createUpdateOptions = this.createUpdateOptions.bind(this);
-    this.handleNestedChangeMultiAutocomplete = this.handleNestedChangeMultiAutocomplete.bind(this)
+    this.handleNestedChangeMultiAutocomplete = this.handleNestedChangeMultiAutocomplete.bind(this);
 
     this.handleChange = this.handleChange.bind(this);
     this._next = this._next.bind(this);
@@ -220,18 +230,17 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
   }
 
-
   getMultiPicklist(picklistName: string) {
-      const picklists = this.state.picklistInfo;
-      switch (picklistName) {
-        case "postSecondaryTraining":
-          return picklists.postSecondaryTraining;
-        case "volunteerDesiredExternalActivities":
-          return picklists.volunteerDesiredExternalActivities;
-        case "volunteerDesiredInternalActivities":
-          return picklists.volunteerDesiredInternalActivities
-      }
-      return new Map<string, boolean>();
+    const picklists = this.state.picklistInfo;
+    switch (picklistName) {
+      case "postSecondaryTraining":
+        return picklists.postSecondaryTraining;
+      case "volunteerDesiredExternalActivities":
+        return picklists.volunteerDesiredExternalActivities;
+      case "volunteerDesiredInternalActivities":
+        return picklists.volunteerDesiredInternalActivities;
+    }
+    return new Map<string, boolean>();
   }
 
   createHandleSelectOption(picklistName: string) {
@@ -247,11 +256,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     return handleSelectOption.bind(this);
   }
 
-
   componentDidMount() {
-
-    const { fetchPicklists } = this.props
-    const { fetchEmployerPicklists } = this.props
+    const { fetchPicklists } = this.props;
+    const { fetchEmployerPicklists } = this.props;
 
     const picklistTypes: PicklistType[] = [
       PicklistType.expertiseAreas,
@@ -264,7 +271,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       PicklistType.grades,
       PicklistType.localPostSecondaryInstitutions,
       PicklistType.professionalAssociations,
-      PicklistType.employmentStatus, 
+      PicklistType.employmentStatus,
       PicklistType.introductionMethod,
       PicklistType.volunteerDesiredExternalActivities,
       PicklistType.volunteerDesiredInternalActivities,
@@ -279,7 +286,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     picklistTypes.forEach((type: PicklistType) => {
       fetchPicklists(type).then(() => {
         const picklists = this.props.picklists;
-        console.log("picklists right now", picklists)
+        console.log("picklists right now", picklists);
         const picklistInfo = this.state.picklistInfo;
 
         if (type === PicklistType.postSecondaryTraining) {
@@ -287,9 +294,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
             createPicklist(picklists.postSecondaryTraining.list)
           );
         } else if (type === PicklistType.volunteerDesiredExternalActivities) {
-            picklistInfo.volunteerDesiredExternalActivities = new Map(
-              createPicklist(picklists.volunteerDesiredExternalActivities.list)
-            );
+          picklistInfo.volunteerDesiredExternalActivities = new Map(
+            createPicklist(picklists.volunteerDesiredExternalActivities.list)
+          );
         } else if (type === PicklistType.volunteerDesiredInternalActivities) {
           picklistInfo.volunteerDesiredInternalActivities = new Map(
             createPicklist(picklists.volunteerDesiredInternalActivities.list)
@@ -300,12 +307,11 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         //     createPicklist(picklists.languages.list)
         //   );
         // }
-        console.log("The Info", picklistInfo)
+        console.log("The Info", picklistInfo);
         this.setState({ picklistInfo });
+      });
     });
-  })
-
-}
+  }
 
   _next() {
     let currentStep = this.state.currentStep;
@@ -351,13 +357,16 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   };
 
   handleNestedChangeExperience = (inputName: any) => {
-      console.log(inputName)
-      const experience = this.state.experience
+    const experience = this.state.experience;
 
-      return (event: any) => {
-      event.preventDefault()
-      const newValue = event.target.value;
+    return (event: any) => {
+      event.preventDefault();
+      let newValue = event.target.value;
       const name = event.target.name;
+
+      if(event.target.type === "checkbox"){
+        newValue = event.target.checked;
+      }
 
       this.setState({
         experience: {
@@ -369,60 +378,55 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   };
 
   handleNestedChangeInvolvement = (inputName: any) => {
-    console.log(inputName)
-    const involvement = this.state.involvement
+    console.log(inputName);
+    const involvement = this.state.involvement;
 
     return (event: any) => {
-    event.preventDefault()
-    const newValue = event.target.value;
-    const name = event.target.name;
+      event.preventDefault();
+      const newValue = event.target.value;
+      const name = event.target.name;
 
-    this.setState({
-      involvement: {
-        ...inputName,
-        [name]: newValue,
-      },
-    });
+      this.setState({
+        involvement: {
+          ...inputName,
+          [name]: newValue,
+        },
+      });
+    };
   };
-};
-
 
   handleNestedChangeMultiAutocomplete = (field: any, newValue: any) => {
-    console.log("New Value")
-    this.setState(prevState => ({
+    console.log("New Value");
+    this.setState((prevState) => ({
       ...prevState,
       picklistInfo: {
         ...prevState.picklistInfo,
         [field]: newValue,
-      }
+      },
     }));
-  }
+  };
 
   handleNestedChangePicklist = (event: any, newValue: any, inputName: any) => {
-    const experience = this.state.picklistInfo
+    const experience = this.state.picklistInfo;
 
     // console.log("New event value", inputName.target.value)
     // console.log("New event id", inputName.target.id)
 
-
     return (event: any) => {
-    event.preventDefault()
-    const newValue = event.target.value;
-    const name = event.target.id;
-    
-    console.log("Reacted", event.target)
+      event.preventDefault();
+      const newValue = event.target.value;
+      const name = event.target.id;
 
-    this.setState({
-      picklistInfo: {
-        ...inputName,
-        [name]: newValue,
-      },
-    });
+      console.log("Reacted", event.target);
+
+      this.setState({
+        picklistInfo: {
+          ...inputName,
+          [name]: newValue,
+        },
+      });
+    };
   };
-};
-
-
-
 
   handleSubmit = (event: any) => {
     //todo
@@ -466,7 +470,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   render() {
-    console.log("The state", this.state)
+    console.log("The state", this.state);
     return (
       <React.Fragment>
         <PageBody>
@@ -504,7 +508,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   picklists={this.props.picklists}
                   createHandleSelectOption={this.createHandleSelectOption}
                   classes={this.props.classes}
-                  handleNestedChangeMultiAutocomplete={this.handleNestedChangeMultiAutocomplete}
+                  handleNestedChangeMultiAutocomplete={
+                    this.handleNestedChangeMultiAutocomplete
+                  }
                   handleNestedChangePicklist={this.handleNestedChangePicklist}
                 />
                 <Experience
@@ -512,7 +518,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   handleChange={this.handleChange}
                   handleNestedChange={this.handleNestedChangeExperience}
                   handleNestedChangePicklist={this.handleNestedChangePicklist}
-                  handleNestedChangeMultiAutocomplete={this.handleNestedChangeMultiAutocomplete}
+                  handleNestedChangeMultiAutocomplete={
+                    this.handleNestedChangeMultiAutocomplete
+                  }
                   experience={this.state.experience}
                   picklists={this.props.picklists}
                   picklistInfo={this.state.picklistInfo}
@@ -533,51 +541,51 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 const mapStateToProps = (state: any) => {
   return {
     picklists: {
-        activities: {
-            list: getAllActivitiesPicklist(state.picklists),
-        },
-        expertiseAreas: {
-            list: getExpertiesAreasPicklist(state.picklists),
-        },
-        locations: {
-            list: getLocationsPicklist(state.picklists),
-        },
-        postSecondaryTraining: {
-            list: getPostSecondaryTrainingPicklist(state.picklists),
-        },
-        languages: {
-            list: getLanguagesPicklist(state.picklists),
-        },
-        grades: {
-            list: getGradesPicklist(state.picklists),
-        },
-        localPostSecondaryInstitutions: { 
-            list: getLocalPostSecondaryInstitutions(state.picklists)
-        }, //local post secondary alumni
-        professionalAssociations: { 
-            list: getProfessionalAssociations(state.picklists)
-        },
-        employmentStatus: { 
-            list: getEmploymentStatus(state.picklists)
-        },
-        sectors: { 
-            list: getEmployerSectorsPicklist(state.picklists)
-        }, // somehow need to get picklist of
-        size: { 
-            list: getEmployerSizePicklist(state.picklists)
-        },
-        introductionMethod: { 
-            list: getIntroductionMethod(state.picklists)
-        },
-        volunteerDesiredExternalActivities: { 
-            list: getVolunteerDesiredExternalActivities(state.picklists)
-        },
-        volunteerDesiredInternalActivities: { 
-            list: getVolunteerDesiredInternalActivities(state.picklists)
-        },
+      activities: {
+        list: getAllActivitiesPicklist(state.picklists),
+      },
+      expertiseAreas: {
+        list: getExpertiesAreasPicklist(state.picklists),
+      },
+      locations: {
+        list: getLocationsPicklist(state.picklists),
+      },
+      postSecondaryTraining: {
+        list: getPostSecondaryTrainingPicklist(state.picklists),
+      },
+      languages: {
+        list: getLanguagesPicklist(state.picklists),
+      },
+      grades: {
+        list: getGradesPicklist(state.picklists),
+      },
+      localPostSecondaryInstitutions: {
+        list: getLocalPostSecondaryInstitutions(state.picklists),
+      }, //local post secondary alumni
+      professionalAssociations: {
+        list: getProfessionalAssociations(state.picklists),
+      },
+      employmentStatus: {
+        list: getEmploymentStatus(state.picklists),
+      },
+      sectors: {
+        list: getEmployerSectorsPicklist(state.picklists),
+      }, // somehow need to get picklist of
+      size: {
+        list: getEmployerSizePicklist(state.picklists),
+      },
+      introductionMethod: {
+        list: getIntroductionMethod(state.picklists),
+      },
+      volunteerDesiredExternalActivities: {
+        list: getVolunteerDesiredExternalActivities(state.picklists),
+      },
+      volunteerDesiredInternalActivities: {
+        list: getVolunteerDesiredInternalActivities(state.picklists),
+      },
     },
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch: any) => ({
   fetchPicklists: (picklistType: PicklistType) =>
@@ -586,4 +594,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(fetchEmployerPicklistService(picklistType)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Master));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Master));
