@@ -21,8 +21,8 @@ import {
 
 /* Types */
 import { Event } from "../../data/types/eventTypes";
-import Application from "../../data/types/applicationTypes";
-import Invitation from "../../data/types/invitationTypes";
+import Application, { ApplicationStatus } from "../../data/types/applicationTypes";
+import Invitation, { InvitationStatus } from "../../data/types/invitationTypes";
 
 /* Services */
 import { fetchApplicationsByVolunteer } from '../../data/services/applicationsService';
@@ -203,10 +203,9 @@ const EventPage: React.SFC<Props> =
                      <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Invitations' to see if you have been invited to an event!</div>
                      <div>You can also click 'Browse Opportunities' to get started.</div>
                   </Typography> :
-                activeEvents.map((event: any) => {
-                  console.log(event)
-                  createOpportunityCard(event.event)
-                })}
+                activeEvents.map((event: any) => 
+                  event.status === "accepted" ? createOpportunityCard(event.event) : null
+                )}
               </Grid>
           </TabPanel>
           <TabPanel value={value} index={1}>
@@ -244,10 +243,28 @@ const EventPage: React.SFC<Props> =
 const mapStateToProps = (state: any): StateProps => {
   const userObj = localStorage.getItem("user");
   const user = userObj ? JSON.parse(userObj) : null;
+
+  const activeEventsUnfiltered = getVolunteerEvents(state);
+  const activeEvents = activeEventsUnfiltered.filter((event: any) => 
+    event.status === ApplicationStatus.ACCEPTED
+  );
+  console.log(activeEventsUnfiltered)
+
+
+  const applicationUnfiltered = getVolunteerApplications(state);
+  const applications = applicationUnfiltered.filter((application: any) =>
+    application.status === ApplicationStatus.PENDING
+  );
+
+  const invitationsUnfiltered = getVolunteerInvitations(state);
+  const invitations = invitationsUnfiltered.filter((invitation: any) =>
+    invitation.status === InvitationStatus.PENDING
+  );
+  
   return {
-    activeEvents: getVolunteerEvents(state),
-    applications: getVolunteerApplications(state),
-    invitations: getVolunteerInvitations(state),
+    activeEvents,
+    applications,
+    invitations,
     userType: user ? user.userType : 0,
     userId: user ? user.id : "",
   };
