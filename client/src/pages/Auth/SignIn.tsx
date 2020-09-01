@@ -72,7 +72,9 @@ class SignIn extends React.Component<
       search = search.replace("?", "");
     }
     const isRegistered = (search === "registered");
-    this.setState({ ...this.state, isRegistered })
+    if (isRegistered && !user) {
+      this.setState({ ...this.state, isRegistered })
+    }
   }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
