@@ -10,7 +10,7 @@ import Volunteer from '../users/VolunteerInterface';
 import EventVolunteer from './EventVolunteerInterface';
 
 export const eventVolunteerObjectName: string = 'EventVolunteers__c';
-export const eventVolunteerFields: string = 'Id, event__c, combinedId__c, volunteer__c';
+export const eventVolunteerFields: string = 'Id, event__c, combinedId__c, volunteer__c, status__c';
 
 // Map fields of Event Volunteer model to Salesforce fields.
 const eventVolunteerModelToSalesforceEventVolunteer = (eventVolunteer: EventVolunteer): any => {
@@ -21,6 +21,7 @@ const eventVolunteerModelToSalesforceEventVolunteer = (eventVolunteer: EventVolu
         event__c: eventId,
         ...(eventVolunteer.id && { Id: eventVolunteer.id }),
         combinedId__c: eventId + '_' + volunteerId,
+        status__c: eventVolunteer.status,
         volunteer__c: volunteerId
     };
     return salesforceApplication;
@@ -35,6 +36,7 @@ const salesforceEventVolunteerToEventVolunteerModel = async (
     const eventVolunteer: EventVolunteer = {
         event: getEvent ? ((await EventService.getEventInfo(record.event__c)) as Event) : record.event__c,
         id: record.Id,
+        status: record.status__c,
         volunteer: getVolunteer
             ? ((await UserService.getUser({ id: record.volunteer__c })) as Volunteer)
             : record.volunteer__c

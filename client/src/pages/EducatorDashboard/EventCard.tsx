@@ -4,6 +4,10 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+import {
+  ContainedButton,
+  OutlinedButton,
+} from "../../components/index";
 
 import { PageViewer } from "../../data/types/pageTypes";
 
@@ -75,7 +79,7 @@ export default function EventCard(props: any) {
       <Card className={classes.card} elevation={0}>
         <CardContent>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={9}>
               <Typography variant="h2" className={classes.eventName}>
                 {props.event.eventName}
               </Typography>
@@ -130,7 +134,6 @@ export default function EventCard(props: any) {
             </Grid>
           </Grid>
         </CardContent>
-
 
         { !props.isPastEvent && type === PageViewer.applicant ? (
           <CardContent>

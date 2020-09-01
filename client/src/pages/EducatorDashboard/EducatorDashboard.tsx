@@ -268,6 +268,12 @@ const EducatorDashboard: React.SFC<Props> = ({
             </Grid>
             <Grid item xs={3}>
               <Grid container alignItems="flex-end" justify="flex-end">
+              <Link 
+                to={{
+                  pathname: `/newevent`,
+                }}
+                style={{ textDecoration: "none" }}
+              >
                 <ContainedButton>
                   <Typography
                     variant="body1"
@@ -282,6 +288,7 @@ const EducatorDashboard: React.SFC<Props> = ({
                     Create Opportunity
                   </Typography>
                 </ContainedButton>
+              </Link>
               </Grid>
             </Grid>
 
@@ -349,7 +356,8 @@ const EducatorDashboard: React.SFC<Props> = ({
                     KeyboardButtonProps={{
                       "aria-label": "change date",
                     }}
-                    className={classes.dateFilterBoxes}
+                    className={classes.dateFilterBoxes} 
+                    style ={{ border: "none" }}
                   />
                 </MuiPickersUtilsProvider>
               </div>

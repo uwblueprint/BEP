@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 
 import SelectUserBox from "./SelectUserBox";
-import VolunteerRegistration from "./VolunteerRegistration";
-import EducatorRegistration from "./EducatorRegistration";
 
 import {
   ContainedButton,
@@ -40,6 +38,9 @@ class SignIn extends React.Component<
     selectUser: string;
     failed: boolean;
     redirect: boolean;
+    isRegistered: boolean;
+    // remove this after beta
+    gatedUser: boolean;
   }
 > {
   constructor(props: any) {
@@ -51,6 +52,9 @@ class SignIn extends React.Component<
       failed: false,
       redirect: false,
       selectUser: "",
+      // remove this after beta
+      gatedUser: false,
+      isRegistered: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -62,6 +66,13 @@ class SignIn extends React.Component<
     if (user) {
       this.setState({ ...this.state, redirect: true });
     }
+
+    let search = this.props.location.search;
+    if (search) {
+      search = search.replace("?", "");
+    }
+    const isRegistered = (search === "registered");
+    this.setState({ ...this.state, isRegistered })
   }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +86,12 @@ class SignIn extends React.Component<
     const { email, password } = this.state;
     const { login } = this.props;
 
+    // remove this after beta
+    const accepted = ["bepwr.ca", "uwblueprint.org", "gmail.com", "himandher.ca"];
+    if (email && !(accepted.includes(email.split("@")[1]))) {
+      this.setState({ password: '', email: '', gatedUser: true, failed: false });
+    }
+
     if (email && password) {
       const data = await login(email, password);
 
@@ -83,7 +100,7 @@ class SignIn extends React.Component<
         localStorage.setItem("userType", data.user.userType);
         window.location.reload();
       } else {
-        this.setState({ ...this.state, failed: true });
+        this.setState({ ...this.state, failed: true, isRegistered: false });
       }
     }
   };
@@ -93,7 +110,8 @@ class SignIn extends React.Component<
   };
 
   render() {
-    const { failed, redirect } = this.state;
+
+    const { failed, redirect, gatedUser, isRegistered } = this.state;
     if (redirect) {
       const userType = localStorage.getItem("userType");
       if (userType && parseInt(userType) === UserType.Admin) {
@@ -190,8 +208,19 @@ class SignIn extends React.Component<
                       Incorrect email or password. Please try again.
                     </RedTextTypography>
                   ) : null}
+                  { /* remove this after beta */ 
+                  gatedUser ? (
+                    <RedTextTypography style={{ fontSize: "0.85em" }}>
+                      Our site is currently in beta. Please check back September 8th.
+                    </RedTextTypography>
+                  ) : null}
+                  {isRegistered && !(gatedUser || failed) ? (
+                    <SecondaryMainTextTypography style={{ fontSize: "0.85em" }}>
+                      Registration complete. Please login.
+                    </SecondaryMainTextTypography>
+                  ) : null}
                 </Grid>
-                <Typography variant="body1" style={{ margin: "1% 0" }}>
+                <Typography variant="body1" style={{ margin: "4% 0" }}>
                   Email
                 </Typography>
                 <Grid item container direction="row">
@@ -228,7 +257,7 @@ class SignIn extends React.Component<
                     style={{ width: "90%" }}
                   />
                 </Grid>
-                <Link target="_blank" href="/">
+                <Link href="/">
                   <SecondaryMainTextTypography
                     style={{ fontSize: "0.9em", marginTop: "2%" }}
                   >

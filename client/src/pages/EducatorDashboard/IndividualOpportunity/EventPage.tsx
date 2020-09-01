@@ -456,26 +456,34 @@ const EventPage = (props: any) => {
                     </Grid>
                     <Grid item xs={3}>
                       <Grid container alignItems="flex-end" justify="flex-end">
-                        <ContainedButton>
-                          <Typography
-                            variant="body1"
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              fontWeight: 800,
-                              fontSize: "16px",
-                              lineHeight: "22px",
-                            }}
-                          >
-                            <CreateIcon
+                        <Link
+                          to={{
+                            pathname: `/newevent`,
+                            state: { event: eventData },
+                          }}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <ContainedButton>
+                            <Typography
+                              variant="body1"
                               style={{
-                                paddingRight: "10px",
-                                paddingBottom: "5px",
+                                display: "flex",
+                                alignItems: "center",
+                                fontWeight: 800,
+                                fontSize: "16px",
+                                lineHeight: "22px",
                               }}
-                            />
-                            Edit Opportunity
-                          </Typography>
-                        </ContainedButton>
+                            >
+                              <CreateIcon
+                                style={{
+                                  paddingRight: "10px",
+                                  paddingBottom: "5px",
+                                }}
+                              />
+                              Edit Opportunity
+                            </Typography>
+                          </ContainedButton>
+                        </Link>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -538,9 +546,16 @@ const EventPage = (props: any) => {
                         Get started by browsing volunteer applications to accept
                         an application!
                       </Typography>
-                      <ContainedButton style={{ maxWidth: "175px" }}>
-                        Browse Volunteers
-                      </ContainedButton>
+                      <Link 
+                        to={{
+                          pathname: `/volunteers`,
+                        }}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ContainedButton style={{ maxWidth: "175px" }}>
+                          Browse Volunteers
+                        </ContainedButton>
+                      </Link>
                     </Container>
                   </React.Fragment>
                 ) : (
@@ -557,9 +572,16 @@ const EventPage = (props: any) => {
                         Get started by browsing volunteer applications to accept
                         an application!
                       </Typography>
-                      <ContainedButton style={{ maxWidth: "175px" }}>
-                        Browse Volunteers
-                      </ContainedButton>
+                      <Link 
+                        to={{
+                          pathname: `/volunteers`,
+                        }}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ContainedButton style={{ maxWidth: "175px" }}>
+                          Browse Volunteers
+                        </ContainedButton>
+                      </Link>
                     </Container>
                   </React.Fragment>
                 ) : (
@@ -578,9 +600,14 @@ const mapStateToProps = (state: any, ownProps: any) => {
   const event: Event = ownProps.location.state.event;
   const user: User | null = getUser(state.user);
 
+  const rawApplications = getEventApplications(event.id, state.events);
+  const applications = rawApplications.filter((app) => app.status === ApplicationStatus.PENDING);
+  const rawInvitations = getEventInvitations(event.id, state.events);
+  const invitations = rawInvitations.filter((invite) => invite.status === InvitationStatus.PENDING);
+
   return {
-    applications: getEventApplications(event.id, state.events),
-    invitations: getEventInvitations(event.id, state.events),
+    applications,
+    invitations,
     user,
     volunteers: getEventVolunteers(event.id, state.events),
   };

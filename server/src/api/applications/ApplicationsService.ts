@@ -2,14 +2,14 @@
  * Data Model Interfaces
  */
 
-import Application, { ApplicationStatus } from './ApplicationsInterface';
-import Volunteer from '../users/VolunteerInterface';
-import Event from '../events/EventInterface';
-import * as UserService from '../users/UserService';
-import * as EventService from '../events/EventService';
-import * as EventVolunteerService from '../eventVolunteers/EventVolunteerService';
 import { conn } from '../../server';
-// import * as express from 'express';
+import Event from '../events/EventInterface';
+import * as EventService from '../events/EventService';
+import { EventVolunteerStatus } from '../eventVolunteers/EventVolunteerInterface';
+import * as EventVolunteerService from '../eventVolunteers/EventVolunteerService';
+import * as UserService from '../users/UserService';
+import Volunteer from '../users/VolunteerInterface';
+import Application, { ApplicationStatus } from './ApplicationsInterface';
 
 export const applicationObjectName: string = 'EventApplication__c';
 export const applicationFields: string = 'Id, event__c, status__c, volunteer__c';
@@ -134,6 +134,7 @@ export const update = async (application: Application): Promise<Application> => 
         if (oldApplication.status !== ApplicationStatus.ACCEPTED && application.status === ApplicationStatus.ACCEPTED) {
             await EventVolunteerService.create({
                 event: salesforceApplication.event__c,
+                status: EventVolunteerStatus.ACTIVE,
                 volunteer: salesforceApplication.volunteer__c
             });
         } else if (

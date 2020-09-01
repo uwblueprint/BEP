@@ -3,7 +3,18 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card';
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
+import { TextButton, ContainedButton, OutlinedButton } from "../../../components/index";
+
 import { PageViewer } from "../../../data/types/pageTypes";
+
+export interface DialogProps {
+  open: boolean;
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -28,10 +39,24 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(3),
     borderRadius: 5,
   },
+  dialogTitle: {
+    fontSize: "24px",
+    fontWeight: 800,
+  },
+  dialogText: {
+    color: "black",
+  },
+  dialogBody: {
+    paddingLeft: "25px",
+  },
 }));
 
 const EventSection = (props: any) => {
   const classes = useStyles();
+  const [withdrawOpen, setWithdrawOpen] = React.useState(false);
+  const [cancelOpen, setCancelOpen] = React.useState(false);
+  const [acceptOpen, setAcceptOpen] = React.useState(false);
+  const [denyOpen, setDenyOpen] = React.useState(false);
 
   var eventStartDate = new Date(props.event.startDate)
     .toLocaleString("default", {
@@ -54,6 +79,35 @@ const EventSection = (props: any) => {
       year: "numeric",
     })
     .replace(",", "");
+  
+  const handleOpenCancelConfirm = () => {
+    setCancelOpen(true);
+  }
+
+  const handleOpenWithdrawConfirm = () => {
+    setWithdrawOpen(true);
+  }
+
+  const handleStopConfirm = () => {
+    setWithdrawOpen(false);
+    setCancelOpen(false);
+  }
+
+  const handleWithdrawConfirm = () => {
+    setWithdrawOpen(false);
+  }
+
+  const handleCancelConfirm = () => {
+    setCancelOpen(false);
+  }
+
+  const handleOpenAcceptConfirm = () => {
+    setAcceptOpen(true);
+  }
+
+  const handleOpenDeclineConfirm = () => {
+    setDenyOpen(true);
+  }
 
   return (
     <div className={classes.root}>
@@ -277,16 +331,136 @@ const EventSection = (props: any) => {
       { props.viewerType === PageViewer.volunteer ? 
         <Grid container direction="column" justify="center" alignItems="center" style={{ marginTop:"8%" }}>
           <Typography variant="body1">Can't make the event anymore?</Typography>
-          <Typography variant="body2">Cancel Attendance</Typography>
+            <TextButton onClick={handleOpenCancelConfirm}>
+              <Typography variant="body2">Cancel Attendance</Typography>
+            </TextButton>
+            <Dialog
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                open={cancelOpen}
+            >
+              <DialogTitle id="alert-dialog-title">
+                <Typography variant="h5" className={classes.dialogTitle}>
+                  Are you sure you want to{" "}
+                  <Typography
+                    className={classes.dialogTitle}
+                    style={{ color: "red", display: "inline" }}
+                  >
+                    cancel
+                  </Typography>{" "}
+                    your attendance of this event?
+                </Typography>
+              </DialogTitle>
+              <DialogContent
+                  classes={{
+                    root: classes.dialogBody,
+                  }}
+                >
+                  <DialogContentText id="alert-dialog-description">
+                    <Typography className={classes.dialogText}>
+                      You cannot change your decision after this
+                    </Typography>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions style={{ margin: 15 }}>
+                  <OutlinedButton
+                    onClick={handleStopConfirm}
+                    style={{ paddingRight: 22, paddingLeft: 22 }}
+                  >
+                    No
+                  </OutlinedButton>
+                  <ContainedButton
+                    onClick={handleCancelConfirm}
+                    style={{ paddingRight: 22, paddingLeft: 22 }}
+                  >
+                    Yes
+                  </ContainedButton>
+                </DialogActions>
+            </Dialog>
         </Grid>
         : null 
       }
       { props.viewerType === PageViewer.applicant ? 
         <Grid container direction="column" justify="center" alignItems="center" style={{ marginTop:"8%" }}>
           <Typography variant="body1">No longer interested in the event?</Typography>
-          <Typography variant="body2">Withdraw Application</Typography>
+          <TextButton onClick={handleOpenWithdrawConfirm}>
+              <Typography variant="body2">Withdraw Application</Typography>
+            </TextButton>
+            <Dialog
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                open={withdrawOpen}
+            >
+              <DialogTitle id="alert-dialog-title">
+                <Typography variant="h5" className={classes.dialogTitle}>
+                  Are you sure you want to{" "}
+                  <Typography
+                    className={classes.dialogTitle}
+                    style={{ color: "red", display: "inline" }}
+                  >
+                    withdraw
+                  </Typography>{" "}
+                    from the event?
+                </Typography>
+              </DialogTitle>
+              <DialogContent
+                  classes={{
+                    root: classes.dialogBody,
+                  }}
+                >
+                  <DialogContentText id="alert-dialog-description">
+                    <Typography className={classes.dialogText}>
+                      You cannot change your decision after this
+                    </Typography>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions style={{ margin: 15 }}>
+                  <OutlinedButton
+                    onClick={handleStopConfirm}
+                    style={{ paddingRight: 22, paddingLeft: 22 }}
+                  >
+                    No
+                  </OutlinedButton>
+                  <ContainedButton
+                    onClick={handleWithdrawConfirm}
+                    style={{ paddingRight: 22, paddingLeft: 22 }}
+                  >
+                    Yes
+                  </ContainedButton>
+                </DialogActions>
+            </Dialog>
         </Grid>
         : null 
+      }
+
+      { props.viewerType === PageViewer.invitee ? 
+        <Grid item xs={12}>
+          <Grid
+            spacing={10}
+            container
+            alignItems="center"
+            justify="center"
+            style={{ paddingRight: 100 }}
+          >
+            <Grid item xs={1} style={{ marginRight: 40 }}>
+              <OutlinedButton
+                onClick={handleOpenDeclineConfirm}
+                style={{ paddingRight: 22, paddingLeft: 22 }}
+              >
+                Decline
+              </OutlinedButton>
+            </Grid>
+            <Grid item xs={1}>
+              <ContainedButton
+                onClick={handleOpenAcceptConfirm}
+                style={{ paddingRight: 25, paddingLeft: 25 }}
+              >
+                Accept
+              </ContainedButton>
+            </Grid>
+          </Grid>
+        </Grid> 
+      : null
       }
     </div>
   );
