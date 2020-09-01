@@ -24,36 +24,3 @@ export default interface EventInterface {
     //   contactPhone: number;
     //   contactPosition: string;
 }
-
-export interface EventApplicantInterface {
-    applicantName: string;
-    personalPronouns: string;
-    job: string;
-    sectors: string;
-    linkedinUrl: string;
-    areasOfExpertise: string;
-    employmentStatus: string;
-    accepted: boolean;
-    denied: boolean;
-    company: string;
-}
-
-export interface EventInvitationInterface {
-    id?: string;
-    invitationName: string;
-    personalPronouns: string;
-    job: string;
-    sectors: string;
-    linkedinUrl: string;
-    areasOfExpertise: string;
-    employmentStatus: string;
-    status: string;
-    event: any;
-}
-
-export interface EventVolunteerInterface {
-    volunteerName: string;
-    job: string;
-    company: string;
-    personalPronouns: string;
-}
