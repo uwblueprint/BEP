@@ -2,7 +2,7 @@
  * Data Model Interfaces
  */
 
-import Event, { EventInvitationInterface, EventVolunteerInterface } from './EventInterface';
+import Event from './EventInterface';
 import Educator from '../users/EducatorInterface';
 import * as UserService from '../users/UserService';
 import { conn } from '../../server';
@@ -10,19 +10,10 @@ import { arrayToPicklistString, picklistStringToArray } from '../../util/Salesfo
 // import * as express from 'express';
 
 const eventApi: string = 'Event__c';
-const eventApplicantApi: string = 'EventApplicatnts__r';
-const eventInvitationApi: string = 'EventInvitations__r';
-const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
     'Id, Name, isActive__c, isPublic__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
     'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, ' +
     'schoolTransportation__c, contact__c, ApplicantNumber__c, invitationNumber__c, School__c';
-
-const eventApplicantFields: string =
-    'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, applicantCompany__c, accepted__c, denied__c';
-const eventInvitationFields: string =
-    'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, status__c, EventInvitations__c';
-const eventVolunteerFields: string = 'Name, volunteerJob__c, volunteerPersonalPronouns__c, volunteerCompany__c';
 
 /**
  * Service Methods
@@ -79,53 +70,9 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
     return event;
 };
 
-const salesforceInvitationToEventInvitationModel = (record: any): EventInvitationInterface => {
-    const invitation: EventInvitationInterface = {
-        id: record.Id,
-        invitationName: record.Name,
-        personalPronouns: record.personalPronouns__c,
-        job: record.job__c,
-        sectors: record.sectors__c,
-        linkedinUrl: record.linkedInUrl__c,
-        areasOfExpertise: record.areasOfExpertise__c,
-        employmentStatus: record.employmentStatus__c,
-        status: record.status__c,
-        event: record.EventInvitations__c
-    };
-
-    return invitation;
-};
-
-const invitationModelToSalesforceInvitation = (invitation: EventInvitationInterface): any => {
-    const salesforceInvitation: any = {
-        Id: invitation.id,
-        Name: invitation.invitationName,
-        personalPronouns__c: invitation.personalPronouns,
-        job__c: invitation.job,
-        sectors__c: invitation.sectors,
-        linkedinUrl__c: invitation.linkedinUrl,
-        areasOfExpertise__c: invitation.areasOfExpertise,
-        employmentStatus__c: invitation.employmentStatus,
-        status__c: invitation.status,
-        EventInvitations__c: invitation.event,
-    };
-    return salesforceInvitation;
-}
-
-const salesforceEventVolunteerToEventVolunteerModel = (record: any): EventVolunteerInterface => {
-    const volunteer: EventVolunteerInterface = {
-        volunteerName: record.Name,
-        job: record.volunteerJob__c,
-        company: record.volunteerCompany__c,
-        personalPronouns: record.volunteerPersonalPronouns__c
-    };
-
-    return volunteer;
-};
-
 // Basic query for now to retrieve a user based on id
 export const getEventInfo = async (id: string): Promise<Event> => {
-    let eventInfo: Event = conn
+    const eventInfo: Event = conn
         .sobject(eventApi)
         .find(
             {
@@ -175,172 +122,15 @@ export const getEvents = async (limit: number, offset: number, filter: 'active' 
         events = resolvedEvents;
     });
 
-    console.log("These are the events", events)
-
     return events;
 };
 
-// export const getApplications = async (eventId: string): Promise<Array<Application>> => {
-//     // let applications: EventApplicantInterface;
-//     // await conn.query(
-//     //     `SELECT (SELECT ${eventApplicantFields} FROM ${eventApplicantApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
-//     //     function(err, result) {
-//     //         if (err) {
-//     //             return console.error(err);
-//     //         }
-//     //         applications = result.records[0].EventApplicants__r.records.map(record =>
-//     //             salesforceApplicantToEventAppliantModel(record)
-//     //         );
-//     //     }
-//     // );
-//     // return applications;
-//     return ApplicationsService.getEventApplications(eventId);
-// };
-
-export const acceptApplicant = async (eventName: string, applicantName: string, accept: boolean): Promise<void> => {
-    let applicantId: string;
-    let applicantJob: string;
-    let applicantPersonalPronouns: string;
-    let applicantCompany: string;
-    let eventId: string;
-    console.log(eventName);
-
-    await conn.query(
-        `SELECT Id, (SELECT ${eventApplicantFields} FROM ${eventApplicantApi} WHERE Name='${applicantName}') FROM ${eventApi} WHERE Name='${eventName}'`,
-        function(err, result) {
-            if (err) {
-                return console.error(err);
-            }
-            eventId = result.records[0].Id;
-            let data = result.records[0].EventApplicants__r.records[0];
-            console.log('This is the result', data);
-            applicantId = data.Id;
-            console.log('This is the applicantID', applicantId);
-            applicantJob = data.job__c;
-            applicantPersonalPronouns = data.personalPronouns__c;
-            applicantCompany = data.applicantCompany__c;
-            console.log('this is the applicantCompany', applicantCompany);
-        }
-    );
-
-    if (accept) {
-        await conn.sobject('EventApplicant__c').update(
-            {
-                Id: applicantId,
-                accepted__c: true,
-                denied__c: false
-            },
-            function(err, ret) {
-                if (err || !ret.success) {
-                    return console.error(err, ret);
-                }
-                console.log('Updated Successfully : ' + ret.id);
-            }
-        );
-
-        //Add to confirmed volunteers
-
-        await conn.sobject('EventVolunteer__c').create(
-            {
-                Name: applicantName,
-                volunteerJob__c: applicantJob,
-                volunteerCompany__c: applicantCompany,
-                volunteerPersonalPronouns__c: applicantPersonalPronouns,
-                EventVolunteer__c: eventId
-            },
-            function(err, ret) {
-                if (err || !ret.success) {
-                    // handle exception
-                    return console.error(err, ret);
-                }
-                console.log('Created record id : ' + ret.id);
-            }
-        );
-    } else {
-        await conn.sobject('EventApplicant__c').update(
-            {
-                Id: applicantId,
-                accepted__c: false,
-                denied__c: true
-            },
-            function(err, ret) {
-                if (err || !ret.success) {
-                    return console.error(err, ret);
-                }
-                console.log('Updated Successfully : ' + ret.id);
-            }
-        );
-    }
-};
-
-// deprecated
-export const getInvitations = async (eventName: string): Promise<EventInvitationInterface> => {
-    let invitations: EventInvitationInterface;
-    console.log('This is the event Name:', eventName);
-
-    await conn.query(
-        `SELECT (SELECT ${eventInvitationFields} FROM ${eventInvitationApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
-        function(err, result) {
-            if (err) {
-                return console.error(err);
-            }
-            console.log(result.records[0].EventInvitations__r.records);
-
-            invitations = result.records[0].EventInvitations__r.records.map(record =>
-                salesforceInvitationToEventInvitationModel(record)
-            );
-        }
-    );
-    console.log(invitations);
-    return invitations;
-};
-
-export const updateInvitations = async (invitation: EventInvitationInterface): Promise<EventInvitationInterface> => {
-    delete invitation.event
-    let newInvitation = invitationModelToSalesforceInvitation(invitation)
-    let updatedInvitation: EventInvitationInterface = conn
-            .sobject("EventInvitation__c")
-            .update(newInvitation, function (err, ret) {
-                if (err || !ret.success) {
-                    return console.error(err, ret)
-                }
-            });
-
-    return updatedInvitation
-}
-
-
-
-export const getVolunteers = async (eventName: string): Promise<EventVolunteerInterface> => {
-    let volunteers: EventVolunteerInterface;
-    console.log('This is the event Name:', eventName);
-
-    await conn.query(
-        `SELECT (SELECT ${eventVolunteerFields} FROM ${eventVolunteerApi}) FROM ${eventApi} WHERE Name='${eventName}'`,
-        function(err, result) {
-            if (err) {
-                return console.error(err);
-            }
-            console.log(result.records[0].EventVolunteers__r.records);
-
-            volunteers = result.records[0].EventVolunteers__r.records.map(record =>
-                salesforceEventVolunteerToEventVolunteerModel(record)
-            );
-        }
-    );
-    console.log(volunteers);
-
-    return volunteers;
-};
-
 export const update = async (id: string, event: Event): Promise<Event> => {
-    const res = conn
-        .sobject(eventApi)
-        .update(eventModelToSalesforceEvent(event, id), (err: Error, result: any) => {
-            if (err || !result.success) {
-                return console.error(err, result);
-            }
-        });
+    const res = conn.sobject(eventApi).update(eventModelToSalesforceEvent(event, id), (err: Error, result: any) => {
+        if (err || !result.success) {
+            return console.error(err, result);
+        }
+    });
 
     return res;
 };
@@ -348,17 +138,12 @@ export const update = async (id: string, event: Event): Promise<Event> => {
 // create new user object in salesforce with fields
 // Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
 export const create = async (event: Event): Promise<string> => {
-    const userObject = await UserService.getUser({email: event.contact.email})
+    const userObject = await UserService.getUser({ email: event.contact.email });
 
-    let newContactObject = userObject as Educator
-    
-    const newEvent: Event = event
-    newEvent.contact = newContactObject
+    const newContactObject = userObject as Educator;
 
-    console.log("This is the new event", newEvent)
-
-    console.log(newEvent)
-    console.log("Salesforce Event", eventModelToSalesforceEvent(newEvent))
+    const newEvent: Event = event;
+    newEvent.contact = newContactObject;
 
     const eventInfo: { id: string; success: boolean; errors: Error[] } = await conn
         .sobject(eventApi)
@@ -366,12 +151,9 @@ export const create = async (event: Event): Promise<string> => {
             if (err || !result.success) {
                 return console.error(err, result);
             }
-    });
+        });
 
-    console.log(eventInfo)
-
-    return eventInfo.id
-
+    return eventInfo.id;
 };
 
 // Delete a user by name (should be changed to ID in the future once ID field in salesforce is figured out)
