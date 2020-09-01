@@ -75,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
 const InviteCard = (props: any) => {
   const classes = useStyles();
 
-  const buttonEnabled = props.info.invite.status !== "Retracted" ? true : false;
   const [snackbarState, setSnackbarState] = React.useState(false);
 
   const invitation: Invitation = props.info.invitation;
@@ -116,7 +115,7 @@ const InviteCard = (props: any) => {
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity="info">
-          You have accepted {props.info.invite.invitationName} for this event.
+          You have accepted {volunteerFullName} for this event.
         </Alert>
       </Snackbar>
       <Grid container spacing={2}>
@@ -269,7 +268,7 @@ const InviteCard = (props: any) => {
   );
 };
 
-const mapStateToProps = (state: any, ownProps: any) => {};
+const mapStateToProps = (state: any, ownProps: any) => ({});
 
 const mapDispatchToProps = (dispatch: any) => ({
   updateInvitation: (invitation: Invitation) =>
