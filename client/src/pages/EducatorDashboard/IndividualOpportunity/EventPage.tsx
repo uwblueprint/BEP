@@ -538,9 +538,16 @@ const EventPage = (props: any) => {
                         Get started by browsing volunteer applications to accept
                         an application!
                       </Typography>
-                      <ContainedButton style={{ maxWidth: "175px" }}>
-                        Browse Volunteers
-                      </ContainedButton>
+                      <Link 
+                        to={{
+                          pathname: `/volunteers`,
+                        }}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ContainedButton style={{ maxWidth: "175px" }}>
+                          Browse Volunteers
+                        </ContainedButton>
+                      </Link>
                     </Container>
                   </React.Fragment>
                 ) : (
@@ -557,9 +564,16 @@ const EventPage = (props: any) => {
                         Get started by browsing volunteer applications to accept
                         an application!
                       </Typography>
-                      <ContainedButton style={{ maxWidth: "175px" }}>
-                        Browse Volunteers
-                      </ContainedButton>
+                      <Link 
+                        to={{
+                          pathname: `/volunteers`,
+                        }}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ContainedButton style={{ maxWidth: "175px" }}>
+                          Browse Volunteers
+                        </ContainedButton>
+                      </Link>
                     </Container>
                   </React.Fragment>
                 ) : (
