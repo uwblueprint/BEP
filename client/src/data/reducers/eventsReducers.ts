@@ -1,7 +1,9 @@
 import {
   FETCH_ACTIVE_EVENTS,
   FETCH_EVENT_APPLICATIONS,
+  FETCH_EVENT_INVITATIONS,
   FETCH_PAST_EVENTS,
+  FETCH_VOLUNTEERS_OF_EVENT,
   UPDATE_EVENT,
   UPDATE_APPLICATION,
   CREATE_APPLICATION,
@@ -9,23 +11,30 @@ import {
 import { Event } from "../types/eventTypes";
 import { UserType } from "../types/userTypes";
 import Application from "../types/applicationTypes";
+import Invitation from "../types/invitationTypes";
+import { Volunteer } from "../types/userTypes";
 
 export interface EventsState {
   activeList: Event[];
   // `applications` maps an event ID to an array of applications.
   applications: Map<string, Application[]>;
+  invitations: Map<string, Invitation[]>;
   // Number of past events recieved from the backend. Since past events are filtered before
   // being assigned to `state.events.pastList`, the length of the `pastList` array will not
   // match `numPastEventsRecieved`.
   numPastEventsRecieved: number;
   pastList: Event[];
+  // `volunteers` maps an event ID to an array of volunteers.
+  volunteers: Map<string, Volunteer[]>;
 }
 
-const initialState: EventsState = {
+const initialState: EventsState = { 
   activeList: [],
   applications: new Map<string, Application[]>(),
   numPastEventsRecieved: 0,
   pastList: [],
+  invitations: new Map<string, Invitation[]>(),
+  volunteers: new Map<string, Volunteer[]>(),
 };
 
 export default function eventsFilter(
@@ -33,6 +42,9 @@ export default function eventsFilter(
   action: { type: string; payload: any; filter: any }
 ) {
   let newApplicationsMap = new Map<string, Application[]>();
+  let newInvitationsMap = new Map<string, Invitation[]>();
+  let newVolunteersMap = new Map<string, Volunteer[]>();
+
   const visibilityFilter =
     action.payload &&
     action.payload.userType &&
@@ -85,6 +97,16 @@ export default function eventsFilter(
         ...state,
         applications: newApplicationsMap,
       };
+    case FETCH_EVENT_INVITATIONS:
+      newInvitationsMap = state.invitations;
+      newInvitationsMap.set(
+        action.payload.event.id,
+        action.payload.invitations
+      );
+      return {
+        ...state,
+        invitations: newInvitationsMap
+      }
     case UPDATE_APPLICATION:
       newApplicationsMap = state.applications;
       const applicationsArr = newApplicationsMap
@@ -114,6 +136,13 @@ export default function eventsFilter(
       return {
         ...state,
         applications: newApplicationsMap,
+      };
+    case FETCH_VOLUNTEERS_OF_EVENT:
+      newVolunteersMap = state.volunteers;
+      newVolunteersMap.set(action.payload.event.id, action.payload.volunteers);
+      return {
+        ...state,
+        volunteers: newVolunteersMap,
       };
     default:
       return state;

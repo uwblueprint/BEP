@@ -3,8 +3,8 @@ import * as bodyParser from 'body-parser';
 
 // import * as controllers from './controllers';
 import { Server } from 'http';
-import cors from "cors";
-import helmet from "helmet";
+import cors from 'cors';
+import helmet from 'helmet';
 import express from 'express';
 import session from 'express-session';
 import jsforce from 'jsforce';
@@ -16,30 +16,29 @@ import { schoolRouter } from './api/schools/SchoolRouter';
 import { schoolPicklistRouter } from './api/schools/picklists/SchoolPicklistRouter';
 import { inviteRouter } from './users/VolunteerInviteRouter';
 import { applicationRouter } from './api/applications/ApplicationsRouter';
+import { invitationRouter } from './api/invitations/InvitationsRouter';
 import { requestsRouter } from './requests/requests.router';
-import {verifyWebToken} from './middleware/jwt'
-import { authRouter } from './auth/authRouter'
+import { eventVolunteerRouter } from './api/eventVolunteers/EventVolunteerRouter';
+import { verifyWebToken } from './middleware/jwt';
+import { authRouter } from './auth/authRouter';
 
 let result;
 
 // Display environment variables
-if (process.env.NODE_ENV !== 'production'){ 
-
+if (process.env.NODE_ENV !== 'production') {
     const dotenv = require('dotenv');
-    
+
     result = dotenv.config();
 
     if (result.error) {
         throw result.error;
     }
-      
+
     console.log(result.parsed);
 }
 let conn;
 
-
 class BackendServer extends Server {
-
     public app = express();
     private readonly SERVER_STARTED = 'Example server started on port: ';
 
@@ -64,28 +63,30 @@ class BackendServer extends Server {
         });
         conn.login(process.env.SALESFORCE_USERNAME, process.env.SALESFORCE_PASSWORD, (err, userInfo) => {
             if (err) {
-                return console.error("err in salesforce login", err);
+                return console.error('err in salesforce login', err);
             }
-            console.log("salesforce connection established successfully");
+            console.log('salesforce connection established successfully');
         });
     }
 
     public start(port: string): void {
-        this.app.use("/api/events", eventRouter);
-        this.app.use("/api/invites", inviteRouter);
-        this.app.use("/api/auth", authRouter)
-        this.app.use("/api/requests", requestsRouter);
-        this.app.use("/api/users/picklists", userPicklistRouter);
-        this.app.use("/api/employers", employerRouter);
-        this.app.use("/api/applications", applicationRouter);
-        this.app.use("/api/schools",schoolRouter);
-        this.app.use("/api/schools/picklists",schoolPicklistRouter);
+        this.app.use('/api/events', eventRouter);
+        this.app.use('/api/event-volunteers', eventVolunteerRouter);
+        this.app.use('/api/invites', inviteRouter);
+        this.app.use('/api/auth', authRouter);
+        this.app.use('/api/requests', requestsRouter);
+        this.app.use('/api/users/picklists', userPicklistRouter);
+        this.app.use('/api/employers', employerRouter);
+        this.app.use('/api/applications', applicationRouter);
+        this.app.use('/api/invitations', invitationRouter);
+        this.app.use('/api/schools', schoolRouter);
+        this.app.use('/api/schools/picklists', schoolPicklistRouter);
 
         //If in development, do not mount JWT auth middleware to users route
         if (process.env.NODE_ENV == 'production') {
-            this.app.use("/api/users/userRouter", verifyWebToken(), userRouter);
+            this.app.use('/api/users/userRouter', verifyWebToken(), userRouter);
         } else {
-            this.app.use("/api/users", userRouter);
+            this.app.use('/api/users', userRouter);
         }
 
         //Uncomment soon. Test method to prevent non-logged in users from accessing '/'
@@ -103,7 +104,4 @@ class BackendServer extends Server {
     }
 }
 
-export {
-    BackendServer,
-    conn
-}
+export { BackendServer, conn };

@@ -12,17 +12,22 @@ import { PageHeader, PageBody } from "./Page";
 import Checkbox, { OutlinedCheckbox } from "./Checkbox";
 import {
   BlackExpandMoreIcon,
+  BlueSearchIcon,
+  SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
   WhiteCloseIcon,
-  BlueSearchIcon,
 } from "./Icons";
 import {
   WhiteTextTypography,
+  BlackHeaderTypography,
   BlackTextTypography,
-  SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
   RedTextTypography,
 } from "./Typography";
+import Dialog from "./Dialog";
+import DialogTitle from "./DialogTitle";
 
 export {
   ContainedButton,
@@ -38,14 +43,20 @@ export { PageHeader, PageBody };
 export { Checkbox, OutlinedCheckbox };
 export {
   BlackExpandMoreIcon,
+  BlueSearchIcon,
+  SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
   WhiteCloseIcon,
-  BlueSearchIcon,
 };
 export {
-  WhiteTextTypography,
   BlackTextTypography,
-  SecondaryMainTextTypography,
-  GreyBackgroundTextTypography,
+  BlackHeaderTypography,
   RedTextTypography,
+  GreyBackgroundTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
+  WhiteTextTypography,
 };
+
+export { Dialog };
+export { DialogTitle };

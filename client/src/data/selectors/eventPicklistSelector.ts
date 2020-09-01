@@ -6,7 +6,6 @@ import { EventPicklistType } from "../types/EventPicklistTypes"
 const getPicklistData = (picklistType: EventPicklistType) => (
   state: EventPicklistState
 ) => {
-    console.log("Selectorstate", state)
   return state[EventPicklistType[picklistType]]
     ? state[EventPicklistType[picklistType]]
     : [];

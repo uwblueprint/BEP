@@ -57,14 +57,25 @@ const getApplications = async (eventName: string) => {
   return await axios.request(config);
 };
 
-const getInvitations = async (eventName: string) => {
-  const config: AxiosRequestConfig = {
-    url: `${baseURL}api/events/invitations/?name=${eventName}`,
-    method: "get",
-  };
+// deprecated
+// const getInvitations = async (eventName: string) => {
+//   const config: AxiosRequestConfig = {
+//     url: `${baseURL}api/events/invitations/?name=${eventName}`,
+//     method: "get",
+//   };
 
-  return await axios.request(config);
-};
+//   return await axios.request(config);
+// };
+
+const retractInvitation = async (id: string) => {
+  const config: AxiosRequestConfig = {
+    url: `${baseURL}api/events/invitations/update`,
+    method: "patch",
+    data: {
+    }
+  };
+  return await axios.request(config)
+}
 
 const retractInvitation = async (id: string) => {
   const config: AxiosRequestConfig = {
@@ -116,7 +127,6 @@ export {
   getPastEvents,
   updateEvent,
   getApplications,
-  getInvitations,
   getSchoolInfo,
   getVolunteers,
   updateApplicantStatus,

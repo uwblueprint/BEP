@@ -27,6 +27,12 @@ const initialState: PicklistState = {
   [PicklistType.professionalAssociations]: [],
   [PicklistType.volunteerDesiredExternalActivities]: [],
   [PicklistType.volunteerDesiredInternalActivities]: [],
+  [PicklistType.educatorDesiredActivities]: [],
+  [PicklistType.introductionMethod]: [],
+  [PicklistType.position]: [],
+  [PicklistType.moreInfo]: [],
+  [PicklistType.school]: [],
+
   [PicklistType.schoolBoard]: [],
   [PicklistType.province]: [],
   [PicklistType.city]: [],

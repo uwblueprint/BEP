@@ -76,7 +76,7 @@ type OpFormProps = {
     endDateAndTime: Date | null;
     numberOfHours?: number | string;
     transportation: string;
-    numberOfStudents: number;
+    numberOfStudents: number|string;
     gradeOfStudents: string[];
     postingExpiryDate: Date | null;
     public: boolean;
@@ -105,7 +105,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     constructor(props: IProps) {
         super(props);
         if (!props.location.state) {
-            console.log("Setting state")
             this.state = {
                 name: "",
                 requiredVolunteers: '',
@@ -116,7 +115,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 endDateAndTime: new Date(),
                 numberOfHours: '',
                 transportation: "",
-                numberOfStudents: 0,
+                numberOfStudents: "",
                 gradeOfStudents: [],
                 postingExpiryDate: new Date(),
                 public: false,
@@ -156,10 +155,8 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     }
 
     handleChange = (event: any) => {
-        console.log(event.target.value);
         const { id, value } = event.target;
         this.setState({ ...this.state, [id]: value });
-        console.log("State", this.state)
     };
 
     handlePublicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,7 +164,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
       };
 
     handleDatesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("Target Val", event.target.value)
         if (event.target.value as string === "Single-day Event") {
             this.setState({singleDayEvent: true})
         } else {
@@ -183,7 +179,8 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
         this.setState({endDateAndTime: date})
     }
 
-    handleSubmit = () => {
+    handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
         //Retrieve from localstorage
         let localStorageUser = localStorage.getItem("user") as string
@@ -216,12 +213,10 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 console.error(e)
             }
         }
-
-        console.log("Submitted Event", formattedEvent)
         
 
        sendOpportunity(formattedEvent).then(() => {
-            this.setState({redirect: true});
+           this.setState({redirect: true})
        });
     }
 
@@ -231,7 +226,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
         if (this.state.redirect) {
             return <Redirect to="/events" />
         }
-        return (
+         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <div style={{ height: "100vh" }}>
             <Grid container style={{ height: "100%" }}>
@@ -255,6 +250,10 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 </Grid>
                 </PageHeader>
                 <PageBody>
+                    <form
+                        style={{ width: "100%" }}
+                        onSubmit={this.handleSubmit}
+                    >
                     <Grid
                         container
                         spacing={4}
@@ -274,6 +273,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             placeholder="Grade 12 Career Panel"
                             id="name"
                             value={this.state.name}
+                            required
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
                             InputProps={{ classes: { input: this.props.classes.input } }}
@@ -287,6 +287,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             placeholder="How many volunteers would you need for this event"
                             id="requiredVolunteers"
                             value={this.state.requiredVolunteers}
+                            required
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
                             InputProps={{ classes: { input: this.props.classes.input } }}
@@ -420,7 +421,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                         spacing={6}
                         style={{paddingLeft: 20}}>
                         <Grid item direction="column">
-                            <BlackTextTypography className={this.props.classes.text}>Start Date</BlackTextTypography>
+                            <BlackTextTypography className={this.props.classes.text}>Start Date*</BlackTextTypography>
                             <KeyboardDatePicker
                                 disableToolbar
                                 variant="inline" 
@@ -439,7 +440,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             />
                         </Grid>
                         <Grid item direction="column">
-                            <BlackTextTypography className={this.props.classes.text}>End Date</BlackTextTypography>
+                            <BlackTextTypography className={this.props.classes.text}>End Date*</BlackTextTypography>
                             <KeyboardDatePicker
                                 disableToolbar
                                 variant="inline"
@@ -460,7 +461,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography className={this.props.classes.text}>
-                            Number of Hours
+                            Number of Hours*
                         </BlackTextTypography>
                         <OutlinedTextField
                             placeholder="eg. 10 hours"
@@ -479,6 +480,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                                 disableToolbar
                                 variant="inline"
                                 placeholder="Posting Expiry Date"
+                                required
                                 value={this.state.postingExpiryDate}
                                 onChange={(date: Date | null) => this.setState({postingExpiryDate: date})}
                                 id="time-picker-inline"
@@ -497,6 +499,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             id="transportation"
                             value={this.state.transportation}
                             multiline
+                            required
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
                             InputProps={{ classes: { input: this.props.classes.input } }}
@@ -509,6 +512,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                         <OutlinedTextField
                             placeholder="Enter number of students attending"
                             id="numberOfStudents"
+                            required
                             value={this.state.numberOfStudents}
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
@@ -551,15 +555,15 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     />
                     <BlackTextTypography style={{paddingTop: 8}}>Allow all volunteers to see and express interest in this opportunity</BlackTextTypography>
                     </Grid>
-                    <ContainedButton type="submit" onClick={this.handleSubmit} style={{marginTop: "55px", padding: "15px"}}>
+                    <ContainedButton type="submit" style={{marginTop: "55px", padding: "15px"}}>
                         <WhiteTextTypography>
                             Create Opportunity
                         </WhiteTextTypography>
                     </ContainedButton>
                 </Grid>
                 </Grid>
+                </form>
                 </PageBody>
-
             </Grid>
         </div>
         </MuiPickersUtilsProvider>

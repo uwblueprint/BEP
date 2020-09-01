@@ -15,7 +15,7 @@ export const applicationRouter = Express.Router();
  * Controller Definitions
  */
 
-// GET requests/:id currently using the applicationId field
+// GET requests/
 
 applicationRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     const id: string = req.query.id as string;
