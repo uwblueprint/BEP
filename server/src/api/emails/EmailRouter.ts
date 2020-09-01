@@ -32,6 +32,15 @@ emailRouter.get('/:id', async (req: Express.Request, res: Express.Response) => {
     }
 });
 
+emailRouter.get('/', async (req: Express.Request, res: Express.Response) => {
+    try {
+        const emails = await EmailService.getAll();
+        res.status(200).send(emails);
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
+    }
+});
+
 // POST employers/
 
 emailRouter.post('/', async (req: Express.Request, res: Express.Response) => {
@@ -55,4 +64,3 @@ emailRouter.put('/:id', async (req: Express.Request, res: Express.Response) => {
         res.status(500).send({ msg: e.message });
     }
 });
-
