@@ -356,7 +356,8 @@ const EducatorDashboard: React.SFC<Props> = ({
                     KeyboardButtonProps={{
                       "aria-label": "change date",
                     }}
-                    className={classes.dateFilterBoxes}
+                    className={classes.dateFilterBoxes} 
+                    style ={{ border: "none" }}
                   />
                 </MuiPickersUtilsProvider>
               </div>
