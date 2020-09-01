@@ -75,24 +75,23 @@ authRouter.post('/register', async (req: Express.Request, res: Express.Response)
         const introductionMethod: string = req.body.introductionMethod;
         const educatorDesiredActivities: string[] = req.body.educatorDesiredActivities;
 
-
-        //Hash Password
+        // Hash Password
         const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
         const user: EducatorInterface = {
+            educatorDesiredActivities,
             email,
             firstName,
+            introductionMethod,
             isSubscribed,
             lastName,
-            preferredPronouns,
+            moreInfo,
             password: hash,
             phoneNumber,
-            userType,
-            introductionMethod,
             position,
+            preferredPronouns,
             school,
-            moreInfo,
-            educatorDesiredActivities
+            userType
         };
 
         await UserService.create(user).then(response => {
@@ -124,7 +123,6 @@ authRouter.post('/login', async (req: Express.Request, res: Express.Response) =>
         }
 
         if (valid) {
-            console.log(process.env.SECRET_KEY);
             const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: 5000 });
             delete fetchUser.password;
             res.status(200).send({
