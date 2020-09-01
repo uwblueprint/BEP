@@ -65,5 +65,9 @@
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.5",
     "webpack-cli": "^3.3.11"
-  }
+  },
+  "engines": {
+    "node": "12.18.3",
+    "npm": "6.14.6"
+  },
 }
