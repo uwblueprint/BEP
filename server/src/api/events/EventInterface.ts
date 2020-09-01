@@ -6,7 +6,7 @@ export default interface EventInterface {
     contact: EducatorInterface;
     endDate: Date;
     eventName: string;
-    gradeOfStudents: string;
+    gradeOfStudents: string[];
     hoursCommitment: number;
     id?: string;
     invitationNumber: number;
@@ -39,6 +39,7 @@ export interface EventApplicantInterface {
 }
 
 export interface EventInvitationInterface {
+    id?: string;
     invitationName: string;
     personalPronouns: string;
     job: string;
@@ -46,6 +47,8 @@ export interface EventInvitationInterface {
     linkedinUrl: string;
     areasOfExpertise: string;
     employmentStatus: string;
+    status: string;
+    event: any;
 }
 
 export interface EventVolunteerInterface {
