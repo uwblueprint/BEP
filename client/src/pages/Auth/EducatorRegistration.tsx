@@ -37,6 +37,7 @@ import Divider from "@material-ui/core/Divider";
 import { Grid } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import {
   ContainedSelect,
@@ -121,7 +122,7 @@ interface IComponentState {
   };
   schoolInfo: {
     schoolBoard: string;
-    type: string;
+    type: string | null;
   };
 }
 
@@ -260,11 +261,12 @@ class EducatorRegistration extends React.Component<
         this.state.schoolInfo
       )) {
         const filterFunction = this.getFilterFunction(fieldName);
-
-        if (pass && !filterFunction(school, filterMap)) {
-          pass = false;
+        if (filterMap !== null) {
+          if (pass && !filterFunction(school, filterMap)) {
+            pass = false;
+          }
+          if (!pass) return false;
         }
-        if (!pass) return false;
       }
       return true;
     });
@@ -507,6 +509,7 @@ class EducatorRegistration extends React.Component<
                     required
                     className={this.props.classes.dropDowns}
                   >
+                    {console.log(this.state.schoolInfo.type)}
                     <Select
                       value={this.state.preferredPronouns}
                       onChange={this.handleChange}
@@ -550,31 +553,29 @@ class EducatorRegistration extends React.Component<
                     </Select>
                   </FormControl>
                   <BlackHeaderTypography>School Type*</BlackHeaderTypography>
-                  <FormControl
-                    required
-                    className={this.props.classes.dropDowns}
-                  >
-                    <Select
-                      value={this.state.schoolInfo.type}
-                      onChange={this.handleschoolInfoChange}
-                      name="type"
-                      displayEmpty
-                      disableUnderline={true}
-                      className={this.props.classes.selectField}
-                    >
-                      <MenuItem value="" disabled>
-                        Select your school type
-                      </MenuItem>
-                      {Array.from(
-                        this.props.picklists.type.list.entries(),
-                        (entry) => entry
-                      ).map((entry, index) => (
-                        <MenuItem key={index} value={entry[1]}>
-                          {entry[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <Autocomplete
+                    id="tags-outlined"
+                    defaultValue={this.state.schoolInfo.type}
+                    options={this.props.picklists.type.list}
+                    getOptionLabel={(option) => option}
+                    filterSelectedOptions
+                    onChange={(_event, newValue) => {
+                      this.setState({
+                        schoolInfo: {
+                          ...this.state.schoolInfo,
+                          type: newValue,
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        style={{ width: "454px" }}
+                        variant="outlined"
+                        placeholder="Preferred Sectors"
+                      />
+                    )}
+                  />
                   <BlackHeaderTypography>School Name*</BlackHeaderTypography>
                   <FormControl
                     required
