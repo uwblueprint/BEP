@@ -16,11 +16,14 @@ export const applicationFields: string = 'Id, event__c, status__c, volunteer__c'
 
 // Map fields of application model to Salesforce fields.
 const applicationModelToSalesforceApplication = (application: Application): any => {
+    const eventId = typeof application.event === 'string' ? application.event : application.event.id;
+    const volunteerId = typeof application.volunteer === 'string' ? application.volunteer : application.volunteer.id;
     const salesforceApplication: any = {
-        event__c: typeof application.event === 'string' ? application.event : application.event.id,
+        combinedId__c: eventId + '_' + volunteerId,
+        event__c: eventId,
         Id: application.id,
         status__c: application.status,
-        volunteer__c: typeof application.volunteer === 'string' ? application.volunteer : application.volunteer.id
+        volunteer__c: volunteerId
     };
 
     return salesforceApplication;
@@ -145,13 +148,11 @@ export const update = async (application: Application): Promise<Application> => 
     }
 
     delete salesforceApplication.event__c;
-    let res = conn
-        .sobject(applicationObjectName)
-        .update(salesforceApplication, function(err, ret) {
-            if (err || !ret.success) {
-                return console.error(err, ret);
-            }
-        });
+    let res = conn.sobject(applicationObjectName).update(salesforceApplication, function(err, ret) {
+        if (err || !ret.success) {
+            return console.error(err, ret);
+        }
+    });
 
     return res;
 };

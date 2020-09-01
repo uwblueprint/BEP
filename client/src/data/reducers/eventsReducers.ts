@@ -7,6 +7,7 @@ import {
   UPDATE_EVENT,
   UPDATE_APPLICATION,
   CREATE_APPLICATION,
+  UPDATE_INVITATION,
 } from "../actions/actionTypes";
 import { Event } from "../types/eventTypes";
 import { UserType } from "../types/userTypes";
@@ -28,7 +29,7 @@ export interface EventsState {
   volunteers: Map<string, Volunteer[]>;
 }
 
-const initialState: EventsState = { 
+const initialState: EventsState = {
   activeList: [],
   applications: new Map<string, Application[]>(),
   numPastEventsRecieved: 0,
@@ -105,8 +106,8 @@ export default function eventsFilter(
       );
       return {
         ...state,
-        invitations: newInvitationsMap
-      }
+        invitations: newInvitationsMap,
+      };
     case UPDATE_APPLICATION:
       newApplicationsMap = state.applications;
       const applicationsArr = newApplicationsMap
@@ -143,6 +144,21 @@ export default function eventsFilter(
       return {
         ...state,
         volunteers: newVolunteersMap,
+      };
+    case UPDATE_INVITATION:
+      newInvitationsMap = state.invitations;
+      const invitationsArr = newInvitationsMap
+        .get(action.payload.invitation.event.id)!
+        .map((invitation: Invitation) =>
+          invitation.id === action.payload.invitation.id
+            ? action.payload.invitation
+            : invitation
+        );
+
+      newInvitationsMap.set(action.payload.invitation.event.id, invitationsArr);
+      return {
+        ...state,
+        invitations: newInvitationsMap,
       };
     default:
       return state;
