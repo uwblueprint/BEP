@@ -46,7 +46,6 @@ class App extends React.Component<
   render() {
     let user;
     let isLoggedIn = false;
-    let isEducator = false;
     const userString = localStorage.getItem("user")
     
     if (userString) {

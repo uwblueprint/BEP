@@ -66,8 +66,6 @@ const InviteCard = (props: any) => {
     const handleClickClose = () => {
         setOpen(false)
     }
-    
-    
 
     return (
     <Card className={classes.card} elevation={0}>
