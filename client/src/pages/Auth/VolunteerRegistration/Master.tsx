@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
 import {
@@ -43,7 +43,12 @@ import Involvement from "./Involvement";
 import { PicklistType } from "../../../data/types/picklistTypes";
 import { connect } from "react-redux";
 
-const useStyles = makeStyles({
+
+const styles = () => ({
+  multiSelect: {
+      marginBottom: "26px",
+      columns: "2 auto",
+  },
   root: {
     minWidth: 275,
   },
@@ -69,6 +74,10 @@ interface IComponentProps {
   };
   fetchPicklists: any;
   fetchEmployerPicklists: any
+  classes: {
+    multiSelect: any;
+    root: any;
+  }
 }
 
 interface IComponentState {
@@ -113,9 +122,9 @@ interface IComponentState {
     employmentStatus: string;
     sectors: string; // somehow need to get picklist of
     size: string;
-    expertiseAreas: Map<string, boolean>;
+    expertiseAreas: string[];
     introductionMethod: string;
-    languages: Map<string, boolean>;
+    languages: string[];
     volunteerDesiredExternalActivities: Map<string, boolean>;
     volunteerDesiredInternalActivities: Map<string, boolean>;
     postSecondaryTraining: Map<string, boolean>;
@@ -169,9 +178,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         employmentStatus: "",
         sectors: "",
         size: "",
-        expertiseAreas: new Map(),
+        expertiseAreas: [],
         introductionMethod: "",
-        languages: new Map(),
+        languages: [],
         volunteerDesiredExternalActivities: new Map(),
         volunteerDesiredInternalActivities: new Map(),
         postSecondaryTraining: new Map(),
@@ -183,31 +192,120 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     this.handleNestedChange = this.handleNestedChange.bind(this);
     this.handleNestedChangeExperience = this.handleNestedChangeExperience.bind(this)
     this.handleNestedChangePicklist = this.handleNestedChangePicklist.bind(this)
+    this.createHandleSelectOption = this.createHandleSelectOption.bind(this);
+    this.createUpdateOptions = this.createUpdateOptions.bind(this);
+    this.handleNestedChangeMultiAutocomplete = this.handleNestedChangeMultiAutocomplete.bind(this)
 
     this.handleChange = this.handleChange.bind(this);
     this._next = this._next.bind(this);
     this._prev = this._prev.bind(this);
   }
 
+  createUpdateOptions(picklistName: string) {
+    const picklistInfos = this.state.picklistInfo;
+    const picklistOptions = this.getMultiPicklist(picklistName);
+
+    return (selectedOptions: string) => {
+      picklistOptions.set(
+        selectedOptions,
+        !picklistOptions.get(selectedOptions)
+      );
+
+      this.setState({
+        picklistInfo: {
+          ...picklistInfos,
+          [picklistName]: picklistOptions,
+        },
+      });
+    };
+  }
+
+
+  getMultiPicklist(picklistName: string) {
+      const picklists = this.state.picklistInfo;
+      switch (picklistName) {
+        case "postSecondaryTraining":
+          return picklists.postSecondaryTraining;
+        case "volunteerDesiredExternalActivities":
+          return picklists.volunteerDesiredExternalActivities;
+        case "volunteerDesiredInternalActivities":
+          return picklists.volunteerDesiredInternalActivities
+      }
+      return new Map<string, boolean>();
+  }
+
+  createHandleSelectOption(picklistName: string) {
+    const handleSelectOption = (
+      event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>
+    ) => {
+      const item = event.target.name;
+
+      const selectedOption: string = item as string;
+      this.createUpdateOptions(picklistName)(selectedOption);
+    };
+
+    return handleSelectOption.bind(this);
+  }
+
+
   componentDidMount() {
 
     const { fetchPicklists } = this.props
-    fetchPicklists(PicklistType.allActivities)
-    fetchPicklists(PicklistType.expertiseAreas)
-    fetchPicklists(PicklistType.locations)
-    fetchPicklists(PicklistType.postSecondaryTraining)
-    fetchPicklists(PicklistType.languages)
-    fetchPicklists(PicklistType.grades)
-    fetchPicklists(PicklistType.localPostSecondaryInstitutions)
-    fetchPicklists(PicklistType.professionalAssociations)
-    fetchPicklists(PicklistType.employmentStatus)  
-    fetchPicklists(PicklistType.introductionMethod)
-    fetchPicklists(PicklistType.volunteerDesiredExternalActivities)
-    fetchPicklists(PicklistType.volunteerDesiredInternalActivities)
     const { fetchEmployerPicklists } = this.props
-    fetchEmployerPicklists(PicklistType.sectors)
-    fetchEmployerPicklists(PicklistType.size)
-  }
+
+    const picklistTypes: PicklistType[] = [
+      PicklistType.expertiseAreas,
+      PicklistType.languages,
+      PicklistType.allActivities,
+      PicklistType.expertiseAreas,
+      PicklistType.locations,
+      PicklistType.postSecondaryTraining,
+      PicklistType.languages,
+      PicklistType.grades,
+      PicklistType.localPostSecondaryInstitutions,
+      PicklistType.professionalAssociations,
+      PicklistType.employmentStatus, 
+      PicklistType.introductionMethod,
+      PicklistType.volunteerDesiredExternalActivities,
+      PicklistType.volunteerDesiredInternalActivities,
+    ];
+
+    const createPicklist = (
+      filterNames: string[]
+    ): Array<[string, boolean]> => {
+      return filterNames.map((item: string) => [item, false]);
+    };
+
+    picklistTypes.forEach((type: PicklistType) => {
+      fetchPicklists(type).then(() => {
+        const picklists = this.props.picklists;
+        console.log("picklists right now", picklists)
+        const picklistInfo = this.state.picklistInfo;
+
+        if (type === PicklistType.postSecondaryTraining) {
+          picklistInfo.postSecondaryTraining = new Map(
+            createPicklist(picklists.postSecondaryTraining.list)
+          );
+        } else if (type === PicklistType.volunteerDesiredExternalActivities) {
+            picklistInfo.volunteerDesiredExternalActivities = new Map(
+              createPicklist(picklists.volunteerDesiredExternalActivities.list)
+            );
+        } else if (type === PicklistType.volunteerDesiredInternalActivities) {
+          picklistInfo.volunteerDesiredInternalActivities = new Map(
+            createPicklist(picklists.volunteerDesiredInternalActivities.list)
+          );
+        }
+        // else if (type === PicklistType.languages) {
+        //   picklistInfo.languages = new Map(
+        //     createPicklist(picklists.languages.list)
+        //   );
+        // }
+        console.log("The Info", picklistInfo)
+        this.setState({ picklistInfo });
+    });
+  })
+
+}
 
   _next() {
     let currentStep = this.state.currentStep;
@@ -270,14 +368,47 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
   };
 
-  handleNestedChangePicklist = (inputName: any) => {
+  handleNestedChangeInvolvement = (inputName: any) => {
     console.log(inputName)
-    const experience = this.state.picklistInfo
+    const involvement = this.state.involvement
 
     return (event: any) => {
     event.preventDefault()
     const newValue = event.target.value;
     const name = event.target.name;
+
+    this.setState({
+      involvement: {
+        ...inputName,
+        [name]: newValue,
+      },
+    });
+  };
+};
+
+
+  handleNestedChangeMultiAutocomplete = (field: any, newValue: any) => {
+    console.log("New Value")
+    this.setState(prevState => ({
+      ...prevState,
+      picklistInfo: {
+        ...prevState.picklistInfo,
+        [field]: newValue,
+      }
+    }));
+  }
+
+  handleNestedChangePicklist = (event: any, newValue: any, inputName: any) => {
+    const experience = this.state.picklistInfo
+
+    // console.log("New event value", inputName.target.value)
+    // console.log("New event id", inputName.target.id)
+
+
+    return (event: any) => {
+    event.preventDefault()
+    const newValue = event.target.value;
+    const name = event.target.id;
     
     console.log("Reacted", event.target)
 
@@ -289,6 +420,8 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     });
   };
 };
+
+
 
 
   handleSubmit = (event: any) => {
@@ -368,15 +501,23 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   handleNestedChange={this.handleNestedChange}
                   involvement={this.state.involvement}
                   picklistInfo={this.state.picklistInfo}
+                  picklists={this.props.picklists}
+                  createHandleSelectOption={this.createHandleSelectOption}
+                  classes={this.props.classes}
+                  handleNestedChangeMultiAutocomplete={this.handleNestedChangeMultiAutocomplete}
+                  handleNestedChangePicklist={this.handleNestedChangePicklist}
                 />
                 <Experience
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
                   handleNestedChange={this.handleNestedChangeExperience}
                   handleNestedChangePicklist={this.handleNestedChangePicklist}
+                  handleNestedChangeMultiAutocomplete={this.handleNestedChangeMultiAutocomplete}
                   experience={this.state.experience}
                   picklists={this.props.picklists}
                   picklistInfo={this.state.picklistInfo}
+                  createHandleSelectOption={this.createHandleSelectOption}
+                  classes={this.props.classes}
                 />
                 {this.previousButton}
                 {this.nextButton}
@@ -445,4 +586,4 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(fetchEmployerPicklistService(picklistType)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Master);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Master));

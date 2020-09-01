@@ -72,11 +72,6 @@ class OpportunityList extends React.Component<
 
     const { history, user, events } = props;
 
-    if (user) {
-      // whatever the redirect route is supposed to be
-      history.push("/opportunities");
-    }
-
     this.getFilters = this.getFilters.bind(this);
     this.createUpdateMultipleFilters = this.createUpdateMultipleFilters.bind(
       this
@@ -203,12 +198,15 @@ class OpportunityList extends React.Component<
 
   filterSearchBar = (event: Event, filter: string): boolean => {
     filter = filter.toLowerCase();
+    const searchStrs: Array<string> = [
+      event.contact.firstName,
+      event.contact.lastName,
+      event.contact.school.name,
+      event.eventName,
+    ];
     return (
       filter.length === 0 || // ignore search bar input if input is empty.
-      event.contact.firstName.toLowerCase().includes(filter) ||
-      event.contact.lastName.toLowerCase().includes(filter) ||
-      event.contact.school.name.toLowerCase().includes(filter) ||
-      event.eventName.toLowerCase().includes(filter)
+      searchStrs.join(" ").toLowerCase().includes(filter)
     );
   };
 
@@ -239,7 +237,7 @@ class OpportunityList extends React.Component<
 
   filterAllFields(events: Event[]) {
     const newEvents = events.filter((event: Event) => {
-      var pass = true;
+      let pass = true;
 
       // Apply filters from picklists
       for (let [fieldName, filterMap] of Object.entries(this.state.filters)) {
@@ -275,9 +273,7 @@ class OpportunityList extends React.Component<
 
     this.props.fetchEvents(this.props.userType, this.props.userId).then(() => {
       this.setState({
-        filteredEvents: this.state.filteredEvents.concat(
-          this.filterAllFields(this.props.events)
-        ),
+        filteredEvents: this.filterAllFields(this.props.events),
       });
     });
 

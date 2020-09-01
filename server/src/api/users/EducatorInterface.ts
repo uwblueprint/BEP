@@ -14,9 +14,7 @@ export const isEducator = (obj: any): boolean => {
         UserType[obj.userType] === UserType[UserType.Educator] &&
         Array.isArray(obj.educatorDesiredActivities) &&
         obj.educatorDesiredActivities.every(item => typeof item === 'string') &&
-        Array.isArray(obj.position) &&
-        obj.position.every(item => typeof item === 'string') &&
-        Array.isArray(obj.position) &&
+        typeof obj.position === 'string' &&
         typeof obj.introductionMethod === 'string' &&
         Array.isArray(obj.moreInfo) &&
         obj.moreInfo.every(item => typeof item === 'string') &&

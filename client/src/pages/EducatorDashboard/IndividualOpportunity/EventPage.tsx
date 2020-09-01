@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -11,28 +12,53 @@ import Box from "@material-ui/core/Box";
 import ApplicantCard from "./ApplicantCard";
 import InviteCard from "./InviteCard";
 import Switch from "@material-ui/core/Switch";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import theme from "../../../components/styling/Theme";
 import {
+  BlackTextTypography,
   ContainedButton,
+  OutlinedButton,
   PageHeader,
   PageBody,
+  SecondaryMainContrastInfoIcon,
 } from "../../../components/index";
 import EventSection from "./EventSection";
 import ConfirmedVolunteerCard from "./ConfirmedVolunteerCard";
-import { Link } from "react-router-dom";
 import CreateIcon from "@material-ui/icons/Create";
 import Card from "@material-ui/core/Card";
 import Container from "@material-ui/core/Container";
-import InfoIcon from "@material-ui/icons/Info";
 
+/* Types */
 import { Event } from "../../../data/types/eventTypes";
-import { User, UserType } from "../../../data/types/userTypes";
+import { User, UserType, Volunteer } from "../../../data/types/userTypes";
+import Application, {
+  ApplicationStatus,
+} from "../../../data/types/applicationTypes";
+import Invitation, {
+  InvitationStatus,
+} from "../../../data/types/invitationTypes";
+import { PageViewer } from "../../../data/types/pageTypes";
+
+/* Selectors */
 import {
-  getApplications,
-  getInvitations,
-  getVolunteers,
-} from "../../../utils/eventsApiUtils";
+  getEventApplications,
+  getEventInvitations,
+  getEventVolunteers,
+} from "../../../data/selectors/eventsSelector";
 import { getUser } from "../../../data/selectors/userSelector";
-import { updateEventService } from "../../../data/services/eventsServices";
+
+/* Services */
+import {
+  fetchEventApplicationsService,
+  fetchVolunteersOfEventService,
+  updateEventService,
+  fetchEventInvitationsService,
+} from "../../../data/services/eventsServices";
+import { createApplicationService } from "../../../data/services/applicationsService";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -99,108 +125,146 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const EventPage = (props: any) => {
   const classes = useStyles();
+  const {
+    invitations,
+    applications,
+    user,
+    fetchEventApplications,
+    fetchEventInvitations,
+    volunteers,
+    createApplication,
+    fetchEventVolunteers,
+    updateEvent,
+  } = props;
+
+  const userId = user ? user.id : "";
   const eventData = props.location.state.event;
-  const isEducator = props.userType === UserType.Educator;
-  const isVolunteer = props.userType === UserType.Volunteer;
+  const viewerType = props.location.state.type;
+
+  const isEducator = user.userType === UserType.Educator;
+  const isVolunteer = user.userType === UserType.Volunteer;
+  const validApplications = applications.filter(
+    (application: Application) =>
+      application.status !== ApplicationStatus.WITHDRAWN
+  );
+  const validInvitations = invitations.filter(
+    (invitation: Invitation) => invitation.status === InvitationStatus.PENDING
+  );
   const [value, setValue] = React.useState<number>(0);
-  const [applications, setApplications] = React.useState<any>([]);
-  const [invitations, setInvitations] = React.useState<any>([]);
   const [publicEvent, setPublicEvent] = React.useState({
     checked: eventData.isPublic,
   });
-  const [volunteers, setVolunteers] = React.useState([]);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getVolunteers(eventData.eventName);
-      setVolunteers(result.data.volunteers);
-    };
-    fetchdata();
-  }, [eventData.eventName]);
+  let eventStartDate = new Date(eventData.startDate); //Date for testing
+  let today: Date = new Date();
+  let pastEvent: boolean = today > eventStartDate ? true : false;
 
-  var displayVolunteers = volunteers.map((volunteer) => {
-    var volunteerProps = {
-      volunteer,
-    };
-    return <ConfirmedVolunteerCard info={volunteerProps} />;
+  const applicationsLabel = `Applications  ${validApplications.length}`;
+  const invitationsLabel = `Invitations  ${validInvitations.length}`;
+
+  var displayVolunteers = volunteers.map((volunteer: Volunteer) => {
+    return <ConfirmedVolunteerCard info={{ volunteer }} key={volunteer.id} />;
+  });
+
+  var displayApplications = validApplications.map(
+    (application: Application) => {
+      let enableButtons = application.status === ApplicationStatus.PENDING;
+      if (volunteers.length === eventData.numberOfVolunteers) {
+        enableButtons = false;
+      }
+
+      return <ApplicantCard info={{ application, enabled: enableButtons }} />;
+    }
+  );
+
+  var displayInvitations = validInvitations.map((invitation: Invitation) => {
+    return <InviteCard info={{ invitation }} />;
   });
 
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedEvent: Event = eventData;
     updatedEvent.isPublic = event.target.checked;
 
-    props.updateEvent(updatedEvent);
+    updateEvent(updatedEvent);
     setPublicEvent({
       ...publicEvent,
       [event.target.name]: event.target.checked,
     });
   };
 
-  let eventStartDate = new Date(eventData.startDate); //Date for testing
-  let today: Date = new Date();
-
-  let pastEvent: boolean = today > eventStartDate ? true : false;
-
-  var displayApplications = applications.map((applicant: any) => {
-    var buttonEnabled: boolean;
-    var applicationProps: any;
-
-    if (volunteers.length === eventData.numberOfVolunteers) {
-      buttonEnabled = false;
-
-      applicationProps = {
-        eventName: eventData.eventName,
-        applicant,
-        enabled: buttonEnabled,
-      };
-      return <ApplicantCard info={applicationProps} />;
-    } else {
-      buttonEnabled = !(applicant.accepted || applicant.denied);
-
-      applicationProps = {
-        eventName: eventData.eventName,
-        applicant,
-        enabled: buttonEnabled,
-      };
-      return <ApplicantCard info={applicationProps} />;
-    }
-  });
-
-  var displayInvitations = invitations.map((invite: any) => {
-    var invitationProps = {
-      invite,
-    };
-    return <InviteCard info={invitationProps} />;
-  });
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getApplications(eventData.eventName);
-      setApplications(result.data.applications);
-    };
-    fetchdata();
-  }, [eventData.eventName]);
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getInvitations(eventData.eventName);
-      setInvitations(result.data.invitations);
-    };
-    fetchdata();
-  }, [eventData.eventName]);
-
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 
-  const applicationsLabel = `Applications  ${applications.length}`;
-  const invitationsLabel = `Invitations  ${invitations.length}`;
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
-  console.log(isEducator);
-  console.log(isVolunteer);
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const applyToEvent = () => {
+    const application: Application = {
+      event: eventData,
+      id: "",
+      status: ApplicationStatus.PENDING,
+      volunteer: user,
+    };
+    createApplication(application);
+    setOpenDialog(false);
+  };
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      fetchEventApplications(eventData);
+      fetchEventVolunteers(eventData);
+      fetchEventInvitations(eventData);
+    };
+    fetchdata();
+  }, [
+    eventData,
+    fetchEventApplications,
+    fetchEventVolunteers,
+    fetchEventInvitations,
+  ]);
 
   return (
     <React.Fragment>
+      <Dialog open={openDialog}>
+        <DialogTitle disableTypography>
+          <BlackTextTypography variant="h2">
+            Do you want to apply for this opportunity?
+          </BlackTextTypography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            variant="body1"
+            style={{ color: theme.palette.text.primary }}
+          >
+            You can retract your application later if you change your mind.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <OutlinedButton onClick={handleCloseDialog} color="primary">
+            No
+          </OutlinedButton>
+          <ContainedButton
+            onClick={
+              isVolunteer
+                ? applyToEvent
+                : () => {
+                    console.log("duplicate details");
+                  }
+            }
+            color="primary"
+            autoFocus
+          >
+            Yes
+          </ContainedButton>
+        </DialogActions>
+      </Dialog>
       {pastEvent || !isEducator ? (
         <div style={{ height: "100vh" }}>
           <Grid container style={{ height: "100%" }}>
@@ -223,26 +287,59 @@ const EventPage = (props: any) => {
                       variant="body1"
                       style={{ paddingBottom: "10px" }}
                     >
-                      <Link to="/events" style={{ textDecoration: "none" }}>
+                      <a
+                        href="javascript:history.back()"
+                        style={{ textDecoration: "none" }}
+                      >
                         {`<`} Back{" "}
-                      </Link>
+                      </a>
                     </Typography>
                     <Typography variant="h1">{eventData.eventName}</Typography>
                   </Grid>
-                  {(isVolunteer || isEducator) && (
+                  {(isVolunteer || isEducator) && viewerType !== PageViewer.applicant &&
+                    viewerType !== PageViewer.invitee && viewerType !== PageViewer.volunteer && (
                     <Grid item style={{ paddingTop: "50px" }}>
-                      <ContainedButton
-                        style={{ paddingRight: 15, paddingLeft: 15 }}
-                      >
-                        {isVolunteer ? "Apply for Event" : "Duplicate Details"}
-                      </ContainedButton>
+                      {isVolunteer ? (
+                        <ContainedButton
+                          style={{ paddingRight: 15, paddingLeft: 15 }}
+                          onClick={handleOpenDialog}
+                          disabled={
+                            isVolunteer
+                              ? applications.filter(
+                                  (app: Application) =>
+                                    app.volunteer.id === userId
+                                ).length !== 0 ||
+                                invitations.filter(
+                                  (invite: Invitation) =>
+                                    invite.volunteer.id === userId
+                                ).length !== 0
+                              : false
+                          }
+                        >
+                          Apply for event
+                        </ContainedButton>
+                      ) : (
+                        <Link
+                          to={{
+                            pathname: `/newevent`,
+                            state: { event: eventData },
+                          }}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <ContainedButton
+                            style={{ paddingRight: 15, paddingLeft: 15 }}
+                          >
+                            Duplicate Details
+                          </ContainedButton>
+                        </Link>
+                      )}
                     </Grid>
                   )}
                 </Grid>
               </Grid>
             </PageHeader>
             <PageBody>
-              <EventSection event={eventData} isEducator={isEducator} />
+              <EventSection event={eventData} isEducator={isEducator} viewerType={viewerType} />
               {isEducator && (
                 <React.Fragment>
                   <Typography
@@ -278,11 +375,14 @@ const EventPage = (props: any) => {
                 alignItems="flex-end"
                 style={{ height: "100%", width: "100%" }}
               >
-                <Grid item direction="column">
+                <Grid item>
                   <Typography variant="body1">
-                    <Link to="/events" style={{ textDecoration: "none" }}>
+                    <a
+                      href="javascript:history.back()"
+                      style={{ textDecoration: "none" }}
+                    >
                       {`<`} Back{" "}
-                    </Link>
+                    </a>
                   </Typography>
                   <Typography variant="h1" style={{ marginTop: "5%" }}>
                     {eventData.eventName}
@@ -328,18 +428,30 @@ const EventPage = (props: any) => {
                       />
                     </Grid>
                     <Grid item xs={8}>
-                      <Typography variant="body1" style={{ fontSize: "18px" }}>
-                        Make posting visible to the public:{" "}
-                        <Typography
-                          variant="body1"
-                          style={{ color: "#0A79BF", display: "inline-block" }}
-                        >
-                          {publicEvent.checked ? "ON" : "OFF"}
-                        </Typography>
-                      </Typography>
+                      <Grid container>
+                        <Grid item>
+                          <Typography
+                            variant="body1"
+                            style={{ fontSize: "18px" }}
+                          >
+                            Make posting visible to the public:{" "}
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Typography
+                            variant="body1"
+                            style={{
+                              color: "#0A79BF",
+                              marginLeft: "5px",
+                            }}
+                          >
+                            {publicEvent.checked ? "ON" : "OFF"}
+                          </Typography>
+                        </Grid>
+                      </Grid>
                       <Typography variant="body1" style={{ fontSize: "12px" }}>
                         Enabling this feature will allow volunteers to discover
-                        your posting on the oppurtunities page.
+                        your posting on the opportunities page.
                       </Typography>
                     </Grid>
                     <Grid item xs={3}>
@@ -369,27 +481,33 @@ const EventPage = (props: any) => {
                   </Grid>
                   <EventSection event={eventData} />
                   <React.Fragment>
-                    <Typography
-                      variant="h6"
-                      style={{ fontSize: "24px", padding: "5px" }}
-                    >
-                      Confirmed Volunteers{" "}
-                      <Typography
-                        variant="body1"
-                        style={{
-                          opacity: "0.5",
-                          display: "inline-block",
-                          fontSize: "24px",
-                        }}
-                      >
-                        {volunteers.length}/{eventData.numberOfVolunteers}
-                      </Typography>
-                    </Typography>
+                    <Grid container alignItems="center">
+                      <Grid item>
+                        <Typography
+                          variant="h6"
+                          style={{ fontSize: "24px", padding: "5px" }}
+                        >
+                          Confirmed Volunteers{" "}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          variant="body1"
+                          style={{
+                            opacity: "0.5",
+                            // display: "inline-block",
+                            fontSize: "24px",
+                          }}
+                        >
+                          {volunteers.length}/{eventData.numberOfVolunteers}
+                        </Typography>
+                      </Grid>
+                    </Grid>
                     {volunteers.length === 0 ? (
                       <Card className={classes.card} elevation={0}>
                         <Typography>
                           Volunteers that have been confirmed for this
-                          oppurtunity will show up here.
+                          opportunity will show up here.
                         </Typography>
                       </Card>
                     ) : (
@@ -405,9 +523,9 @@ const EventPage = (props: any) => {
                     style={{ display: "flex", alignItems: "center" }}
                   >
                     {" "}
-                    <InfoIcon />{" "}
+                    <SecondaryMainContrastInfoIcon />{" "}
                     <Typography style={{ paddingLeft: "10px" }}>
-                      The positions for this oppurtunity have been filled
+                      The positions for this opportunity have been filled
                     </Typography>
                   </Typography>
                 ) : null}
@@ -416,7 +534,7 @@ const EventPage = (props: any) => {
                     <Container className={classes.noAppsDisc}>
                       <Typography style={{ paddingBottom: "20px" }}>
                         There are currently no applications for this
-                        oppurtunity. <br></br>
+                        opportunity. <br></br>
                         Get started by browsing volunteer applications to accept
                         an application!
                       </Typography>
@@ -434,7 +552,7 @@ const EventPage = (props: any) => {
                   <React.Fragment>
                     <Container className={classes.noAppsDisc}>
                       <Typography style={{ paddingBottom: "20px" }}>
-                        There are currently no invitations for this oppurtunity.{" "}
+                        There are currently no invitations for this opportunity.{" "}
                         <br></br>
                         Get started by browsing volunteer applications to accept
                         an application!
@@ -456,17 +574,27 @@ const EventPage = (props: any) => {
   );
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: any, ownProps: any) => {
+  const event: Event = ownProps.location.state.event;
   const user: User | null = getUser(state.user);
-  console.log("HERE2");
-  console.log(user);
   return {
-    userType: user ? user.userType : 0,
+    applications: getEventApplications(event.id, state.events),
+    invitations: getEventInvitations(event.id, state.events),
+    user,
+    volunteers: getEventVolunteers(event.id, state.events),
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
+  createApplication: (application: Application) =>
+    dispatch(createApplicationService(application)),
+  fetchEventApplications: (event: Event) =>
+    dispatch(fetchEventApplicationsService(event)),
+  fetchEventInvitations: (event: Event) =>
+    dispatch(fetchEventInvitationsService(event)),
   updateEvent: (event: Event) => dispatch(updateEventService(event)),
+  fetchEventVolunteers: (event: Event) =>
+    dispatch(fetchVolunteersOfEventService(event)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventPage);

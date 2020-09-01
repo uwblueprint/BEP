@@ -1,6 +1,7 @@
 import {
   ContainedButton,
   DarkContainedButton,
+  OutlinedButton,
   TextButton,
   Button,
 } from "./Button";
@@ -11,22 +12,30 @@ import { PageHeader, PageBody } from "./Page";
 import Checkbox, { OutlinedCheckbox } from "./Checkbox";
 import {
   BlackExpandMoreIcon,
+  BlueSearchIcon,
+  SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
   WhiteCloseIcon,
-  BlueSearchIcon,
 } from "./Icons";
 import {
   WhiteTextTypography,
   BlackHeaderTypography,
   BlackTextTypography,
-  SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
   RedTextTypography,
 } from "./Typography";
 import Dialog from "./Dialog";
 import DialogTitle from "./DialogTitle";
 
-export { ContainedButton, DarkContainedButton, TextButton, Button };
+export {
+  ContainedButton,
+  DarkContainedButton,
+  OutlinedButton,
+  TextButton,
+  Button,
+};
 export { Link };
 export { OutlinedTextField, TextField };
 export { ContainedSelect, Select };
@@ -34,17 +43,19 @@ export { PageHeader, PageBody };
 export { Checkbox, OutlinedCheckbox };
 export {
   BlackExpandMoreIcon,
+  BlueSearchIcon,
+  SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
   WhiteCloseIcon,
-  BlueSearchIcon,
 };
 export {
-  WhiteTextTypography,
   BlackTextTypography,
   BlackHeaderTypography,
-  SecondaryMainTextTypography,
-  GreyBackgroundTextTypography,
   RedTextTypography,
+  GreyBackgroundTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
+  WhiteTextTypography,
 };
 
 export { Dialog };

@@ -17,7 +17,7 @@ const userFields: string =
     'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
     'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
     'professionalAssociations__c, reasonsForVolunteering__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
-    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c introductionMethod__c, ';
+    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c ';
 
 // Map fields of user model to Salesforce fields.
 export const userModelToSalesforceUser = (user: User, id?: string): any => {
@@ -156,10 +156,10 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
  */
 
 // Retrieve user by email.
-export const getUser = async (userInfo: { Id?: string; email?: string }): Promise<User> => {
+export const getUser = async (userInfo: { id?: string; email?: string }): Promise<User> => {
     let userIdentifier;
-    if (userInfo.Id) {
-        userIdentifier = { Id: userInfo.Id };
+    if (userInfo.id) {
+        userIdentifier = { Id: userInfo.id };
     } else if (userInfo.email) {
         userIdentifier = { email__c: userInfo.email };
     } else {
@@ -173,6 +173,9 @@ export const getUser = async (userInfo: { Id?: string; email?: string }): Promis
         .execute((err: Error, record: any) => {
             if (err) {
                 return console.error(err);
+            }
+            if (record.length === 0) {
+                throw Error(`No user with ${userInfo.id ? 'ID' + userInfo.id : 'email' + userInfo.email} found.`);
             }
             return salesforceUserToUserModel(record[0]);
         });
@@ -211,15 +214,13 @@ export const update = async (id: string, user: User): Promise<User> => {
         throw Error('Input is not a valid user.');
     }
 
-    const updatedUser: User = conn
-        .sobject(siteUser)
-        .update(userModelToSalesforceUser(user, id), (err: Error, result: any) => {
-            if (err || !result.success) {
-                return console.error(err, result);
-            }
-        });
+    const res = conn.sobject(siteUser).update(userModelToSalesforceUser(user, id), (err: Error, result: any) => {
+        if (err || !result.success) {
+            return console.error(err, result);
+        }
+    });
 
-    return updatedUser;
+    return res;
 };
 
 // Create new user and return ID.
@@ -229,11 +230,11 @@ export const create = async (user: Educator): Promise<string> => {
         .sobject(siteUser)
         .create(userModelToSalesforceUser(user), (err: Error, result: any) => {
             if (err || !result.success) {
-                console.log("1");
+                console.log('1');
                 return console.error(err, result);
             }
         });
-    console.log("2");
+    console.log('2');
     return userInfo.id;
 };
 
