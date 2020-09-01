@@ -2,7 +2,8 @@ import { conn } from '../server';
 
 // Converts between Salesforce picklist (string of object delimited by semicolons) and arrays.
 const arrayToPicklistString = (arr: Array<string>): string => {
-    return arr.reduce((acc, item) => acc + item + ';', '').replace(/;$/, '')}; // Remove trailing semicolon.
+    return arr.reduce((acc, item) => acc + item + ';', '').replace(/;$/, '');
+}; // Remove trailing semicolon.
 const picklistStringToArray = (str: string): Array<string> => (str ? str.split(';') : []);
 
 const getGlobalPicklist = async (picklistName: string): Promise<Array<string> | null> => {
