@@ -32,6 +32,8 @@ import {
   getVolunteerDesiredInternalActivities,
 } from "../../../data/selectors/picklistSelector";
 
+import { getEmployers } from "../../../data/selectors/employerSelector";
+
 import { Grid } from "@material-ui/core";
 
 import {
@@ -39,12 +41,18 @@ import {
   fetchEmployerPicklistService,
 } from "../../../data/services/picklistServices";
 
+import {
+  fetchEmployersService,
+  createEmployerService,
+} from "../../../data/services/employerService";
+
 import Experience from "./Experience";
 import PersonalInfo from "./PersonalInfo";
 import Involvement from "./Involvement";
 
 import { PicklistType } from "../../../data/types/picklistTypes";
 import { connect } from "react-redux";
+import Employer from "../../../data/types/employerTypes";
 
 const styles = () => ({
   multiSelect: {
@@ -72,9 +80,13 @@ export interface ExperienceState {
   shareWithEmployer: boolean;
   shareEmployerInfo: boolean;
   isVolunteerCoordinator: boolean;
+  employerId: string;
+  newEmployer: Employer | null;
+  employmentStatus: string;
 }
 
 interface IComponentProps {
+  employers: Employer[];
   picklists: {
     expertiseAreas: { list: string[] };
     languages: { list: string[] };
@@ -94,6 +106,8 @@ interface IComponentProps {
   };
   fetchPicklists: any;
   fetchEmployerPicklists: any;
+  fetchEmployers: any;
+  createEmmployer: any;
   classes: {
     multiSelect: any;
     root: any;
@@ -115,7 +129,7 @@ interface IComponentState {
     linkedinUrl: string;
     shareWithEmployer: boolean;
   };
-  experience: ExperienceState,
+  experience: ExperienceState;
   involvement: {
     reasonsForVolunteering: string;
     futureAdvice: string;
@@ -174,6 +188,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         shareWithEmployer: false,
         shareEmployerInfo: false,
         isVolunteerCoordinator: false,
+        employerId: "",
+        newEmployer: null,
+        employmentStatus: "",
       },
       involvement: {
         reasonsForVolunteering: "",
@@ -200,11 +217,17 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       },
     };
     this.handleNestedChange = this.handleNestedChange.bind(this);
-    this.handleNestedChangeExperience = this.handleNestedChangeExperience.bind(this);
-    this.handleNestedChangePicklist = this.handleNestedChangePicklist.bind(this);
+    this.handleNestedChangeExperience = this.handleNestedChangeExperience.bind(
+      this
+    );
+    this.handleNestedChangePicklist = this.handleNestedChangePicklist.bind(
+      this
+    );
     this.createHandleSelectOption = this.createHandleSelectOption.bind(this);
     this.createUpdateOptions = this.createUpdateOptions.bind(this);
-    this.handleNestedChangeMultiAutocomplete = this.handleNestedChangeMultiAutocomplete.bind(this);
+    this.handleNestedChangeMultiAutocomplete = this.handleNestedChangeMultiAutocomplete.bind(
+      this
+    );
 
     this.handleChange = this.handleChange.bind(this);
     this._next = this._next.bind(this);
@@ -275,6 +298,8 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       PicklistType.introductionMethod,
       PicklistType.volunteerDesiredExternalActivities,
       PicklistType.volunteerDesiredInternalActivities,
+      PicklistType.size,
+      PicklistType.sectors,
     ];
 
     const createPicklist = (
@@ -364,7 +389,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       let newValue = event.target.value;
       const name = event.target.name;
 
-      if(event.target.type === "checkbox"){
+      if (event.target.type === "checkbox") {
         newValue = event.target.checked;
       }
 
@@ -412,12 +437,15 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // console.log("New event value", inputName.target.value)
     // console.log("New event id", inputName.target.id)
 
-    return (event: any) => {
+    return (name: any, event: any) => {
+      console.log("HERE2")
+      console.log(name)
+      console.log(event.target.value)
+      
+      
       event.preventDefault();
       const newValue = event.target.value;
-      const name = event.target.id;
-
-      console.log("Reacted", event.target);
+      // const name = event.target.id;
 
       this.setState({
         picklistInfo: {
@@ -522,6 +550,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                     this.handleNestedChangeMultiAutocomplete
                   }
                   experience={this.state.experience}
+                  employers={this.props.employers}
                   picklists={this.props.picklists}
                   picklistInfo={this.state.picklistInfo}
                   createHandleSelectOption={this.createHandleSelectOption}
@@ -540,6 +569,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 
 const mapStateToProps = (state: any) => {
   return {
+    employers: getEmployers(state.employers),
     picklists: {
       activities: {
         list: getAllActivitiesPicklist(state.picklists),
@@ -592,6 +622,9 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(fetchUserPicklistService(picklistType)),
   fetchEmployerPicklists: (picklistType: PicklistType) =>
     dispatch(fetchEmployerPicklistService(picklistType)),
+  fetchEmployers: dispatch(fetchEmployersService()),
+  createEmmployer: (employer: Employer) =>
+    dispatch(createEmployerService(employer)),
 });
 
 export default connect(

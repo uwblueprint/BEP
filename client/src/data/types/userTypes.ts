@@ -1,4 +1,5 @@
 import { School } from "./schoolListTypes";
+import Employer from "./employerTypes";
 
 export enum UserType {
   Admin = 0,
@@ -60,17 +61,4 @@ export interface Volunteer extends User {
   //     name: string;
   //     shareActivity: boolean;
   // }[];
-}
-
-export default interface Employer {
-  address: string;
-  city: string;
-  id: string;
-  name: string;
-  phoneNumber: string;
-  postalCode: string;
-  sectors: string[];
-  size: string;
-  socialMedia: string[];
-  website: string;
 }

@@ -19,6 +19,13 @@ const containedSelectStyle = (theme: Theme) =>
     },
   });
 
+const outlinedSelectStyle = (theme: Theme) =>
+  createStyles({
+    select: {
+      borderColor: theme.palette.primary.main,
+    },
+  });
+
 const ContainedSelect = withStyles(containedSelectStyle)((props: any) => (
   <Select
     MenuProps={{
@@ -36,4 +43,22 @@ const ContainedSelect = withStyles(containedSelectStyle)((props: any) => (
   </Select>
 ));
 
-export { ContainedSelect, Select };
+const OutlinedSelect = withStyles(outlinedSelectStyle)((props: any) => (
+  <Select
+    MenuProps={{
+      getContentAnchorEl: null,
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "left",
+      },
+      style: { width: "50%", height: "50%" },
+    }}
+    className={props.classes.select}
+    {...props}
+    variant="outlined"
+  >
+    {props.children}
+  </Select>
+));
+
+export { ContainedSelect, OutlinedSelect, Select };

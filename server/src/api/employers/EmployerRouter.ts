@@ -32,6 +32,15 @@ employerRouter.get('/:id', async (req: Express.Request, res: Express.Response) =
     }
 });
 
+employerRouter.get('/', async (req: Express.Request, res: Express.Response) => {
+    try {
+        const employers = await EmployerService.getAll();
+        res.status(200).send(employers);
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
+    }
+});
+
 // POST employers/
 
 employerRouter.post('/', async (req: Express.Request, res: Express.Response) => {

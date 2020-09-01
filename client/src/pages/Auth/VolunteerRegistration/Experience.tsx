@@ -7,6 +7,7 @@ import {
   BlackTextTypography,
   OutlinedTextField,
   OutlinedCheckbox,
+  OutlinedSelect,
 } from "../../../components/index";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -15,9 +16,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { ExperienceState } from "./Master";
 
+import Employer from "../../../data/types/employerTypes";
+
 interface IComponentProps {
   currentStep: number;
   experience: ExperienceState;
+  employers: Employer[];
   classes: {
     multiSelect: any;
   };
@@ -123,18 +127,23 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 </Grid>
 
                 <Grid item direction="column">
-                  <FormControl variant="outlined">
+                  <FormControl style={{ width: "454px" }}>
                     <BlackHeaderTypography>
                       Employment Status
                     </BlackHeaderTypography>
-                    <Select
+                    <OutlinedSelect
                       value={this.props.picklistInfo.employmentStatus}
-                      name="employmentStatus"
                       displayEmpty
                       disableUnderline={true}
-                      onChange={this.props.handleNestedChangePicklist(
-                        this.props.picklistInfo
-                      )}
+                      onChange={(event: any) =>
+                        this.props
+                          .handleNestedChangePicklist(this.props.picklistInfo)
+                          .bind(
+                            event,
+                            "employmentStatus"
+                          )(event)
+                      }
+                      style={{ height: "40px" }}
                     >
                       <MenuItem value="" disabled>
                         Select your employment status
@@ -147,7 +156,14 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                           {entry[1]}
                         </MenuItem>
                       ))}
-                    </Select>
+                      {/* {this.props.picklists.employmentStatus.list.map(
+                        (entry, index) => (
+                          <MenuItem key={index} value={entry}>
+                            {entry}
+                          </MenuItem>
+                        )
+                      )} */}
+                    </OutlinedSelect>
                   </FormControl>
                 </Grid>
 
@@ -169,26 +185,36 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 </Grid>
 
                 <Grid item direction="column">
-                  <FormControl>
+                  <FormControl style={{ width: "454px" }}>
                     <BlackHeaderTypography>Employer</BlackHeaderTypography>
-                    <OutlinedTextField
-                      placeholder="Enter your employer's name"
-                      name="orgName"
-                      style={{ width: "454px" }}
-                      value={this.props.experience.orgName}
+                    <OutlinedSelect
+                      name="employerId"
+                      value={this.props.experience.employerId}
                       onChange={this.props.handleNestedChange(
                         this.props.experience
                       )}
-                    />
+                      style={{ height: "40px" }}
+                      displayEmpty
+                      disableUnderline={true}
+                    >
+                      <MenuItem value="" disabled>
+                        Select your employer
+                      </MenuItem>
+                      {this.props.employers.map((employer: Employer) => (
+                        <MenuItem key={employer.id} value={employer.id}>
+                          {employer.name}
+                        </MenuItem>
+                      ))}
+                    </OutlinedSelect>
                   </FormControl>
                 </Grid>
 
                 <Grid item direction="column">
-                  <FormControl>
+                  <FormControl style={{ width: "454px" }}>
                     <BlackHeaderTypography>
                       Organization Sector
                     </BlackHeaderTypography>
-                    <Select
+                    <OutlinedSelect
                       value={this.props.picklistInfo.sectors}
                       name="sectors"
                       displayEmpty
@@ -196,6 +222,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       onChange={this.props.handleNestedChangePicklist(
                         this.props.picklistInfo
                       )}
+                      style={{ height: "40px" }}
                     >
                       <MenuItem value="" disabled>
                         Select your Organization's Sector
@@ -208,7 +235,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                           {entry[1]}
                         </MenuItem>
                       ))}
-                    </Select>
+                    </OutlinedSelect>
                   </FormControl>
                 </Grid>
 
@@ -272,7 +299,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       <OutlinedTextField
                         placeholder="Enter Organization's City"
                         name="orgCity"
-                        style={{ width: "454px" }}
+                        style={{ width: "220px" }}
                         value={this.props.experience.orgCity}
                         onChange={this.props.handleNestedChange(
                           this.props.experience
@@ -288,7 +315,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       <OutlinedTextField
                         placeholder="A1A 1A1"
                         name="orgPostalCode"
-                        style={{ width: "454px" }}
+                        style={{ width: "220px" }}
                         value={this.props.experience.orgPostalCode}
                         onChange={this.props.handleNestedChange(
                           this.props.experience
@@ -334,18 +361,19 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 </Grid>
 
                 <Grid item direction="column">
-                  <FormControl>
+                  <FormControl style={{ width: "454px" }}>
                     <BlackHeaderTypography>
                       Number of Staff in Organization
                     </BlackHeaderTypography>
-                    <Select
-                      value={this.props.picklists.size.list.entries()}
+                    <OutlinedSelect
+                      value=""
                       name="size"
                       displayEmpty
                       disableUnderline={true}
                       onChange={this.props.handleNestedChangePicklist(
                         this.props.picklistInfo
                       )}
+                      style={{ height: "40px" }}
                     >
                       <MenuItem value="" disabled>
                         Select the number of staff in your organization
@@ -358,7 +386,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                           {entry[1]}
                         </MenuItem>
                       ))}
-                    </Select>
+                    </OutlinedSelect>
                   </FormControl>
                 </Grid>
 
@@ -451,32 +479,33 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                     Post Secondary Training I've participated in
                   </BlackHeaderTypography>
                   <Grid className={this.props.classes.multiSelect}>
-                    {Array.from(
-                      this.props.picklistInfo.postSecondaryTraining.entries(),
-                      (entry) => entry
-                    ).map(([option, isSelected]) => (
-                      <Grid
-                        container
-                        key={option}
-                        spacing={0}
-                        justify="flex-end"
-                        alignItems="center"
-                      >
-                        <Grid item xs={1}>
-                          <OutlinedCheckbox
-                            key={option}
-                            value={option}
-                            name={option}
-                            onChange={this.props.createHandleSelectOption(
-                              "postSecondaryTraining"
-                            )}
-                          />
+                    {this.props.picklistInfo.postSecondaryTraining &&
+                      Array.from(
+                        this.props.picklistInfo.postSecondaryTraining.entries(),
+                        (entry) => entry
+                      ).map(([option, isSelected]) => (
+                        <Grid
+                          container
+                          key={option}
+                          spacing={0}
+                          justify="flex-end"
+                          alignItems="center"
+                        >
+                          <Grid item xs={1}>
+                            <OutlinedCheckbox
+                              key={option}
+                              value={option}
+                              name={option}
+                              onChange={this.props.createHandleSelectOption(
+                                "postSecondaryTraining"
+                              )}
+                            />
+                          </Grid>
+                          <Grid item xs={11}>
+                            <BlackTextTypography> {option}</BlackTextTypography>
+                          </Grid>
                         </Grid>
-                        <Grid item xs={11}>
-                          <BlackTextTypography> {option}</BlackTextTypography>
-                        </Grid>
-                      </Grid>
-                    ))}
+                      ))}
                   </Grid>
                 </Grid>
 

@@ -7,7 +7,7 @@ import {
 } from "./Button";
 import Link from "./Link";
 import { OutlinedTextField, TextField } from "./TextField";
-import { ContainedSelect, Select } from "./Select";
+import { ContainedSelect, OutlinedSelect, Select } from "./Select";
 import { PageHeader, PageBody } from "./Page";
 import Checkbox, { OutlinedCheckbox } from "./Checkbox";
 import {
@@ -38,7 +38,7 @@ export {
 };
 export { Link };
 export { OutlinedTextField, TextField };
-export { ContainedSelect, Select };
+export { ContainedSelect, OutlinedSelect, Select };
 export { PageHeader, PageBody };
 export { Checkbox, OutlinedCheckbox };
 export {
