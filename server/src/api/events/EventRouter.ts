@@ -73,6 +73,7 @@ eventRouter.patch('/applications/updatestate', async (req: Express.Request, res:
     }
 });
 
+// deprecated
 eventRouter.get('/invitations', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.query.name as string;
 
@@ -90,35 +91,22 @@ eventRouter.get('/invitations', async (req: Express.Request, res: Express.Respon
     }
 });
 
-eventRouter.patch('/invitations/update', async(req: Express.Request, res: Express.Response) => {
-    console.log("Request Received", req.body)
-    const invitation: EventInvitationInterface = req.body.invitation as EventInvitationInterface
-    try {
-        const result = await EventService.updateInvitations(invitation)
-        res.status(200).json({
-            result
-        })
-    } catch (e) {
-        res.status(500).send({msg: e.message});
-    } 
-});
+// eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Response) => {
+//     const name: string = req.query.name as string;
 
-eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Response) => {
-    const name: string = req.query.name as string;
-
-    try {
-        if (name) {
-            const volunteers = await EventService.getVolunteers(name);
-            res.status(200).json({
-                volunteers
-            });
-        } else {
-            throw Error(`Invalid query parameters. Please set "name" parameter`);
-        }
-    } catch (e) {
-        res.status(500).send({ msg: e.message });
-    }
-});
+//     try {
+//         if (name) {
+//             const volunteers = await EventService.getVolunteers(name);
+//             res.status(200).json({
+//                 volunteers
+//             });
+//         } else {
+//             throw Error(`Invalid query parameters. Please set "name" parameter`);
+//         }
+//     } catch (e) {
+//         res.status(500).send({ msg: e.message });
+//     }
+// });
 
 eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.params.name as string;

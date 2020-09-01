@@ -1,6 +1,10 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
-import { WhiteTextTypography, SecondaryMainTextTypography } from "./index";
+import {
+  WhiteTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
+} from "./index";
 import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 
 const containedButtonStyle = (theme: Theme) =>
@@ -50,7 +54,15 @@ const TextButton = withStyles(textButtonStyle)((props: any) => (
 
 const OutlinedButton = withStyles(outlinedButtonStyle)((props: any) => (
   <Button {...props} variant="outlined">
-    <SecondaryMainTextTypography>{props.children}</SecondaryMainTextTypography>
+    {props.disabled ? (
+      <SecondaryContrastTextTypography>
+        {props.children}
+      </SecondaryContrastTextTypography>
+    ) : (
+      <SecondaryMainTextTypography>
+        {props.children}
+      </SecondaryMainTextTypography>
+    )}
   </Button>
 ));
 

@@ -23,14 +23,13 @@ import {
   OutlinedButton,
   PageHeader,
   PageBody,
+  SecondaryMainContrastInfoIcon,
 } from "../../../components/index";
 import EventSection from "./EventSection";
 import ConfirmedVolunteerCard from "./ConfirmedVolunteerCard";
-import { Link } from "react-router-dom";
 import CreateIcon from "@material-ui/icons/Create";
 import Card from "@material-ui/core/Card";
 import Container from "@material-ui/core/Container";
-import InfoIcon from "@material-ui/icons/Info";
 
 import { Event } from "../../../data/types/eventTypes";
 import { User, UserType, Volunteer } from "../../../data/types/userTypes";
@@ -38,12 +37,14 @@ import Application, {
   ApplicationStatus,
 } from "../../../data/types/applicationTypes";
 
-import { getInvitations, getVolunteers } from "../../../utils/eventsApiUtils";
+import { getEventApplications, getEventInvitations, getEventVolunteers } from "../../../data/selectors/eventsSelector";
 import { getUser } from "../../../data/selectors/userSelector";
-import { getEventApplications } from "../../../data/selectors/eventsSelector";
+
 import {
   fetchEventApplicationsService,
+  fetchVolunteersOfEventService,
   updateEventService,
+  fetchEventInvitationsService,
 } from "../../../data/services/eventsServices";
 import { createApplicationService } from "../../../data/services/applicationsService";
 
@@ -122,40 +123,53 @@ const useStyles = makeStyles((theme: Theme) => ({
 const EventPage = (props: any) => {
   const classes = useStyles();
   const {
+    invitations,
     applications,
-    location,
     user,
-    updateEvent,
     fetchEventApplications,
+    fetchEventInvitations,
+    volunteers,
     createApplication,
+    fetchEventVolunteers,
+    updateEvent,
   } = props;
   const userId = user ? user.id : "";
-  const eventData = location.state.event;
+  const eventData = props.location.state.event;
   const isEducator = user.userType === UserType.Educator;
   const isVolunteer = user.userType === UserType.Volunteer;
   // todo: see if volunteering for this event for bottom functionality + contact details
   // const isVolunteering = false;
   const [value, setValue] = React.useState<number>(0);
-  const [invitations, setInvitations] = React.useState<any>([]);
   const [publicEvent, setPublicEvent] = React.useState({
     checked: eventData.isPublic,
   });
-  const [volunteers, setVolunteers] = React.useState([]);
   const [openDialog, setOpenDialog] = React.useState(false);
 
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getVolunteers(eventData.eventName);
-      setVolunteers(result.data.volunteers);
-    };
-    fetchdata();
-  }, [eventData.eventName]);
+  let eventStartDate = new Date(eventData.startDate); //Date for testing
+  let today: Date = new Date();
+  let pastEvent: boolean = today > eventStartDate ? true : false;
+
+  const applicationsLabel = `Applications  ${applications.length}`;
+  const invitationsLabel = `Invitations  ${invitations.length}`;
 
   var displayVolunteers = volunteers.map((volunteer: Volunteer) => {
-    var volunteerProps = {
-      volunteer,
+    return <ConfirmedVolunteerCard info={{ volunteer }} key={volunteer.id} />;
+  });
+
+  var displayApplications = applications.map((application: Application) => {
+    let enableButtons = application.status === ApplicationStatus.PENDING;
+    if (volunteers.length === eventData.numberOfVolunteers) {
+      enableButtons = false;
+    }
+
+    return <ApplicantCard info={{ application, enabled: enableButtons }} />;
+  });
+
+  var displayInvitations = invitations.map((invite: any) => {
+    var invitationProps = {
+      invite: invite.volunteer,
     };
-    return <ConfirmedVolunteerCard info={volunteerProps} key={volunteer.id} />;
+    return <InviteCard info={invitationProps} />;
   });
 
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,58 +182,6 @@ const EventPage = (props: any) => {
       [event.target.name]: event.target.checked,
     });
   };
-
-  let eventStartDate = new Date(eventData.startDate); //Date for testing
-  let today: Date = new Date();
-
-  let pastEvent: boolean = today > eventStartDate ? true : false;
-
-  var displayApplications = applications.map((applicant: any) => {
-    var buttonEnabled: boolean;
-    var applicationProps: any;
-
-    if (volunteers.length === eventData.numberOfVolunteers) {
-      buttonEnabled = false;
-
-      applicationProps = {
-        eventName: eventData.eventName,
-        applicant,
-        enabled: buttonEnabled,
-      };
-      return <ApplicantCard info={applicationProps} />;
-    } else {
-      buttonEnabled = !(applicant.accepted || applicant.denied);
-
-      applicationProps = {
-        eventName: eventData.eventName,
-        applicant,
-        enabled: buttonEnabled,
-      };
-      return <ApplicantCard info={applicationProps} />;
-    }
-  });
-
-  var displayInvitations = invitations.map((invite: any) => {
-    var invitationProps = {
-      invite,
-    };
-    return <InviteCard info={invitationProps} />;
-  });
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      fetchEventApplications(eventData);
-    };
-    fetchdata();
-  }, [eventData, fetchEventApplications]);
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await getInvitations(eventData.eventName);
-      setInvitations(result.data.invitations);
-    };
-    fetchdata();
-  }, [eventData.eventName]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -244,8 +206,14 @@ const EventPage = (props: any) => {
     setOpenDialog(false);
   };
 
-  const applicationsLabel = `Applications  ${applications.length}`;
-  const invitationsLabel = `Invitations  ${invitations.length}`;
+  useEffect(() => {
+    const fetchdata = async () => {
+      fetchEventApplications(eventData);
+      fetchEventVolunteers(eventData);
+      fetchEventInvitations(eventData);
+    };
+    fetchdata();
+  }, [eventData, fetchEventApplications, fetchEventVolunteers, fetchEventInvitations]);
 
   return (
     <React.Fragment>
@@ -534,7 +502,7 @@ const EventPage = (props: any) => {
                     style={{ display: "flex", alignItems: "center" }}
                   >
                     {" "}
-                    <InfoIcon />{" "}
+                    <SecondaryMainContrastInfoIcon />{" "}
                     <Typography style={{ paddingLeft: "10px" }}>
                       The positions for this oppurtunity have been filled
                     </Typography>
@@ -586,15 +554,14 @@ const EventPage = (props: any) => {
 };
 
 const mapStateToProps = (state: any, ownProps: any) => {
+  const event: Event = ownProps.location.state.event;
   const user: User | null = getUser(state.user);
-  const applications: Application[] = getEventApplications(
-    ownProps.location.state.event.id,
-    state.events
-  );
 
   return {
-    applications,
+    applications: getEventApplications(event.id, state.events),
+    invitations: getEventInvitations(event.id, state.events),
     user,
+    volunteers: getEventVolunteers(event.id, state.events),
   };
 };
 
@@ -603,7 +570,11 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(createApplicationService(application)),
   fetchEventApplications: (event: Event) =>
     dispatch(fetchEventApplicationsService(event)),
+  fetchEventInvitations: (event: Event) =>
+    dispatch(fetchEventInvitationsService(event)),
   updateEvent: (event: Event) => dispatch(updateEventService(event)),
+  fetchEventVolunteers: (event: Event) =>
+    dispatch(fetchVolunteersOfEventService(event)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventPage);

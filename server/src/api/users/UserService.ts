@@ -209,15 +209,13 @@ export const update = async (id: string, user: User): Promise<User> => {
         throw Error('Input is not a valid user.');
     }
 
-    const updatedUser: User = conn
-        .sobject(siteUser)
-        .update(userModelToSalesforceUser(user, id), (err: Error, result: any) => {
-            if (err || !result.success) {
-                return console.error(err, result);
-            }
-        });
+    const res = conn.sobject(siteUser).update(userModelToSalesforceUser(user, id), (err: Error, result: any) => {
+        if (err || !result.success) {
+            return console.error(err, result);
+        }
+    });
 
-    return updatedUser;
+    return res;
 };
 
 // Create new user and return ID.

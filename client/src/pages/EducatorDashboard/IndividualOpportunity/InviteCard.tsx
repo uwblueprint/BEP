@@ -89,8 +89,6 @@ const InviteCard = (props: any) => {
 
     setSnackbarState(false)
 };
-    
-    
 
     return (
     <Card className={classes.card} elevation={0}>
