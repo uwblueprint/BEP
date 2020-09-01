@@ -145,12 +145,12 @@ const EventPage = (props: any) => {
   const eventData = props.location.state.event;
   const isEducator = user.userType === UserType.Educator;
   const isVolunteer = user.userType === UserType.Volunteer;
-  const nonWithdrawnApps = applications.filter(
+  const validApplications = applications.filter(
     (application: Application) =>
       application.status !== ApplicationStatus.WITHDRAWN
   );
-  const nonWithdrawnInvites = invitations.filter(
-    (invitation: Invitation) => invitation.status !== InvitationStatus.WITHDRAWN
+  const validInvitations = invitations.filter(
+    (invitation: Invitation) => invitation.status === InvitationStatus.PENDING
   );
   // todo: see if volunteering for this event for bottom functionality + contact details
   // const isVolunteering = false;
@@ -164,23 +164,25 @@ const EventPage = (props: any) => {
   let today: Date = new Date();
   let pastEvent: boolean = today > eventStartDate ? true : false;
 
-  const applicationsLabel = `Applications  ${nonWithdrawnApps.length}`;
-  const invitationsLabel = `Invitations  ${nonWithdrawnInvites.length}`;
+  const applicationsLabel = `Applications  ${validApplications.length}`;
+  const invitationsLabel = `Invitations  ${validInvitations.length}`;
 
   var displayVolunteers = volunteers.map((volunteer: Volunteer) => {
     return <ConfirmedVolunteerCard info={{ volunteer }} key={volunteer.id} />;
   });
 
-  var displayApplications = nonWithdrawnApps.map((application: Application) => {
-    let enableButtons = application.status === ApplicationStatus.PENDING;
-    if (volunteers.length === eventData.numberOfVolunteers) {
-      enableButtons = false;
+  var displayApplications = validApplications.map(
+    (application: Application) => {
+      let enableButtons = application.status === ApplicationStatus.PENDING;
+      if (volunteers.length === eventData.numberOfVolunteers) {
+        enableButtons = false;
+      }
+
+      return <ApplicantCard info={{ application, enabled: enableButtons }} />;
     }
+  );
 
-    return <ApplicantCard info={{ application, enabled: enableButtons }} />;
-  });
-
-  var displayInvitations = nonWithdrawnInvites.map((invitation: Invitation) => {
+  var displayInvitations = validInvitations.map((invitation: Invitation) => {
     return <InviteCard info={{ invitation }} />;
   });
 
@@ -300,39 +302,40 @@ const EventPage = (props: any) => {
                   </Grid>
                   {(isVolunteer || isEducator) && (
                     <Grid item style={{ paddingTop: "50px" }}>
-                      {isVolunteer ? 
-                      <ContainedButton
-                        style={{ paddingRight: 15, paddingLeft: 15 }}
-                        onClick={handleOpenDialog}
-                        disabled={
-                          isVolunteer
-                            ? applications.filter(
-                                (app: Application) =>
-                                  app.volunteer.id === userId
-                              ).length !== 0 ||
-                              invitations.filter(
-                                (invite: Invitation) =>
-                                  invite.volunteer.id === userId
-                              ).length !== 0
-                            : false
-                        }
-                      >
-                        Apply for event
-                      </ContainedButton> :
-                      <Link
-                      to={{
-                        pathname: `/newevent`,
-                        state: { event: eventData },
-                      }}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <ContainedButton
-                        style={{ paddingRight: 15, paddingLeft: 15 }}
-                      >
-                      Duplicate Details
-                    </ContainedButton>
-                    </Link>
-                      }
+                      {isVolunteer ? (
+                        <ContainedButton
+                          style={{ paddingRight: 15, paddingLeft: 15 }}
+                          onClick={handleOpenDialog}
+                          disabled={
+                            isVolunteer
+                              ? applications.filter(
+                                  (app: Application) =>
+                                    app.volunteer.id === userId
+                                ).length !== 0 ||
+                                invitations.filter(
+                                  (invite: Invitation) =>
+                                    invite.volunteer.id === userId
+                                ).length !== 0
+                              : false
+                          }
+                        >
+                          Apply for event
+                        </ContainedButton>
+                      ) : (
+                        <Link
+                          to={{
+                            pathname: `/newevent`,
+                            state: { event: eventData },
+                          }}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <ContainedButton
+                            style={{ paddingRight: 15, paddingLeft: 15 }}
+                          >
+                            Duplicate Details
+                          </ContainedButton>
+                        </Link>
+                      )}
                     </Grid>
                   )}
                 </Grid>

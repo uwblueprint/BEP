@@ -68,9 +68,15 @@ const useStyles = makeStyles((theme) => ({
 
 const ApplicantCard = (props: any) => {
   const classes = useStyles();
+
+  const { info, updateApplication } = props;
+  const [buttonEnabled, setButtonEnabled] = React.useState(info.enabled);
+  const application: Application = info.application;
+  const volunteer: Volunteer = application.volunteer;
+  const volunteerName: string = volunteer.firstName + " " + volunteer.lastName;
+
   const [acceptOpen, setAcceptOpen] = React.useState(false);
   const [denyOpen, setDenyOpen] = React.useState(false);
-
   const [applicantAcceptedSnackbar, setAcceptSnackbarOpen] = React.useState(
     false
   );
@@ -88,12 +94,6 @@ const ApplicantCard = (props: any) => {
     setDenySnackbarOpen(false);
   };
 
-  const { info, updateApplication } = props;
-  const [buttonEnabled, setButtonEnabled] = React.useState(info.enabled);
-  const application: Application = info.application;
-  const volunteer: Volunteer = application.volunteer;
-  const volunteerName: string = volunteer.firstName + " " + volunteer.lastName;
-
   //Press "Yes" when opening dialog box for confirming applicant acceptance
   const handleAcceptConfirm = () => {
     setAcceptOpen(false);
@@ -102,6 +102,7 @@ const ApplicantCard = (props: any) => {
     //Accept the Applicant
     updateApplication(newApplication);
     setButtonEnabled(false);
+    setAcceptSnackbarOpen(true);
   };
 
   //Press "Yes" when opening dialog box for confirming applicant rejection
@@ -112,6 +113,7 @@ const ApplicantCard = (props: any) => {
     //Reject the Applicant
     updateApplication(newApplication);
     setButtonEnabled(false);
+    setDenySnackbarOpen(true);
   };
 
   //Press "No" on either dialog box

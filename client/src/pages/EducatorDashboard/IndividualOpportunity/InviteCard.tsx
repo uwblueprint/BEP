@@ -11,7 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from "@material-ui/core/Snackbar";
 
 import {
   Button,
@@ -87,13 +87,15 @@ const InviteCard = (props: any) => {
     setOpen(true);
   };
 
+  const handleClickClose = () => {
+    setOpen(false);
+  };
+
   const handleClickAcceptClose = () => {
     invitation.status = InvitationStatus.WITHDRAWN;
     updateInvitation(invitation);
     setOpen(false);
-  };
-  const handleClickClose = () => {
-    setOpen(false);
+    setSnackbarState(true);
   };
 
   const handleSnackbarClose = (
