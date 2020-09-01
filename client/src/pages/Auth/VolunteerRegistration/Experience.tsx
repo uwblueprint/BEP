@@ -50,6 +50,20 @@ interface IComponentProps {
   handleNestedChangePicklist: any;
 }
 
+// const styles = () => ({
+//     formSection: {
+//       padding: "2.5em 3em 0.5em 3em",
+//     },
+//     textField: {
+//       marginBottom: "26px",
+//       marginTop: "4px",
+//     },
+//     dropDowns: {
+//       marginTop: "4px",
+//       width: "45%",
+//     },
+//   });
+
 interface IComponentState {
     experience: {
         jobTitle: string;
@@ -102,23 +116,25 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                             <BlackHeaderTypography>
                                 Employment Status
                             </BlackHeaderTypography>
-                            <Select
-                                value={this.props.picklistInfo.employmentStatus}
-                                name="employmentStatus"
-                                displayEmpty
-                                disableUnderline={true}
-                                onChange={this.props.handleNestedChangePicklist}>
-                                    <MenuItem value="" disabled>
-                                        Select your employment status
-                                    </MenuItem>
-                                    {Array.from(
-                                        this.props.picklists.employmentStatus.list.entries(),
-                                        (entry) => entry
-                                    ).map((entry, index) => (
-                                        <MenuItem key={index} value={entry[1]}>
-                                        {entry[1]}
+                                <Select
+                                    value={this.props.picklistInfo.employmentStatus}
+                                    name="employmentStatus"
+                                    displayEmpty
+                                    disableUnderline={true}
+                                    onChange={this.props.handleNestedChangePicklist(
+                                        this.props.picklistInfo
+                                    )}>
+                                        <MenuItem value="" disabled>
+                                            Select your employment status
                                         </MenuItem>
-                                    ))}
+                                        {Array.from(
+                                            this.props.picklists.employmentStatus.list.entries(),
+                                            (entry) => entry
+                                        ).map((entry, index) => (
+                                            <MenuItem key={index} value={entry[1]}>
+                                            {entry[1]}
+                                            </MenuItem>
+                                        ))}
                                 </Select>
                         </FormControl>
                         </Grid>
@@ -130,8 +146,10 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                             </BlackHeaderTypography>
                         <OutlinedTextField
                             placeholder="e.g Product Manager"
-                            id="title"
+                            name="jobTitle"
                             style={{ width: "454px"}}
+                            value={this.props.experience.jobTitle}
+                            onChange={this.props.handleNestedChange(this.props.experience)}
                             />
                         </FormControl>
                         </Grid>
@@ -141,19 +159,12 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                             <BlackHeaderTypography>
                                 Employer
                             </BlackHeaderTypography>
-                            <Select></Select>
-                        </FormControl>
-                        </Grid>
-                        
-                        <Grid item direction="column">
-                        <FormControl>
-                            <BlackHeaderTypography>
-                                Organization Name*
-                            </BlackHeaderTypography>
-                        <OutlinedTextField
-                            placeholder="Enter your organization's name"
-                            id="title"
-                            style={{ width: "454px"}}
+                            <OutlinedTextField
+                                placeholder="Enter your employer's name"
+                                name="orgName"
+                                style={{ width: "454px"}}
+                                value={this.props.experience.orgName}
+                                onChange={this.props.handleNestedChange(this.props.experience)}
                             />
                         </FormControl>
                         </Grid>
@@ -164,7 +175,26 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                             <BlackHeaderTypography>
                                 Organization Sector
                             </BlackHeaderTypography>
-                            <Select></Select>
+                            <Select
+                                    value={this.props.picklistInfo.sectors}
+                                    name="sectors"
+                                    displayEmpty
+                                    disableUnderline={true}
+                                    onChange={this.props.handleNestedChangePicklist(
+                                        this.props.picklistInfo
+                                    )}>
+                                        <MenuItem value="" disabled>
+                                            Select your employment status
+                                        </MenuItem>
+                                        {Array.from(
+                                            this.props.picklists.sectors.list.entries(),
+                                            (entry) => entry
+                                        ).map((entry, index) => (
+                                            <MenuItem key={index} value={entry[1]}>
+                                            {entry[1]}
+                                            </MenuItem>
+                                        ))}
+                                </Select>
                         </FormControl>
                         </Grid>
 
@@ -175,8 +205,10 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                             </BlackHeaderTypography>
                         <OutlinedTextField
                             placeholder="Enter your organization's website"
-                            id="title"
+                            name="orgWebsite"
                             style={{ width: "454px"}}
+                            value={this.props.experience.orgWebsite}
+                            onChange={this.props.handleNestedChange(this.props.experience)}
                             />
                         </FormControl>
                         </Grid>
@@ -189,8 +221,10 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                             </BlackHeaderTypography>
                         <OutlinedTextField
                             placeholder="Enter your organization's social media link"
-                            id="title"
+                            name="orgSocialMedia"
                             style={{ width: "454px"}}
+                            value={this.props.experience.orgSocialMedia}
+                            onChange={this.props.handleNestedChange(this.props.experience)}
                             />
                         </FormControl>
                         </Grid>
@@ -201,9 +235,11 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                 Organization Street Address
                             </BlackHeaderTypography>
                         <OutlinedTextField
-                            placeholder="Street Number, Street Name"
-                            id="title"
+                            placeholder="e.g Street Number, street name"
+                            name="orgStreetAddr"
                             style={{ width: "454px"}}
+                            value={this.props.experience.orgStreetAddr}
+                            onChange={this.props.handleNestedChange(this.props.experience)}
                             />
                         </FormControl>
                         </Grid>
@@ -216,9 +252,11 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                 </BlackHeaderTypography>
                             <OutlinedTextField
                                 placeholder="Enter Organization's City"
-                                id="title"
+                                name="orgCity"
                                 style={{ width: "454px"}}
-                                />
+                                value={this.props.experience.orgCity}
+                                onChange={this.props.handleNestedChange(this.props.experience)}
+                            />
                             </FormControl>
                             </Grid>
                             <Grid item direction="column">
@@ -228,9 +266,11 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                 </BlackHeaderTypography>
                             <OutlinedTextField
                                 placeholder="A1A 1A1"
-                                id="title"
+                                name="orgPostalCode"
                                 style={{ width: "454px"}}
-                                />
+                                value={this.props.experience.orgPostalCode}
+                                onChange={this.props.handleNestedChange(this.props.experience)}
+                            />
                             </FormControl>
                             </Grid>
                         </Grid>
@@ -242,9 +282,12 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                 </BlackHeaderTypography>
                             <OutlinedTextField
                                 placeholder="e.g 000 000 0000"
-                                id="title"
+                                type="number"
+                                name="orgPhone"
                                 style={{ width: "454px"}}
-                                />
+                                value={this.props.experience.orgPhone}
+                                onChange={this.props.handleNestedChange(this.props.experience)}
+                            />
                             </FormControl>
                             </Grid>
 
@@ -255,9 +298,11 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                 </BlackHeaderTypography>
                             <OutlinedTextField
                                 placeholder="Eg. Human Resources"
-                                id="title"
+                                name="departmentDivision"
                                 style={{ width: "454px"}}
-                                />
+                                value={this.props.experience.departmentDivision}
+                                onChange={this.props.handleNestedChange(this.props.experience)}
+                            />
                             </FormControl>
                             </Grid>
 
@@ -266,7 +311,26 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                 <BlackHeaderTypography>
                                     Number of Staff in Organization
                                 </BlackHeaderTypography>
-                                <Select></Select>
+                                <Select
+                                    value={this.props.picklistInfo.size}
+                                    name="size"
+                                    displayEmpty
+                                    disableUnderline={true}
+                                    onChange={this.props.handleNestedChangePicklist(
+                                        this.props.picklistInfo
+                                    )}>
+                                        <MenuItem value="" disabled>
+                                            Select the number of staff in your organization
+                                        </MenuItem>
+                                        {Array.from(
+                                            this.props.picklists.size.list.entries(),
+                                            (entry) => entry
+                                        ).map((entry, index) => (
+                                            <MenuItem key={index} value={entry[1]}>
+                                            {entry[1]}
+                                            </MenuItem>
+                                        ))}
+                                </Select>
                             </FormControl>
                             </Grid>
 

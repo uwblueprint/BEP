@@ -333,7 +333,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   render() {
-    console.log("The props", this.props)
+    console.log("The state", this.state)
     return (
       <React.Fragment>
         <PageBody>
