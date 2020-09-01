@@ -2,13 +2,12 @@
  * Data Model Interfaces
  */
 
-import EventVolunteer from './EventVolunteerInterface';
-import Volunteer from '../users/VolunteerInterface';
-import Event from '../events/EventInterface';
-import * as UserService from '../users/UserService';
-import * as EventService from '../events/EventService';
 import { conn } from '../../server';
-// import * as express from 'express';
+import Event from '../events/EventInterface';
+import * as EventService from '../events/EventService';
+import * as UserService from '../users/UserService';
+import Volunteer from '../users/VolunteerInterface';
+import EventVolunteer from './EventVolunteerInterface';
 
 export const eventVolunteerObjectName: string = 'EventVolunteers__c';
 export const eventVolunteerFields: string = 'Id, event__c, combinedId__c, volunteer__c';
@@ -49,11 +48,11 @@ const salesforceEventVolunteerToEventVolunteerModel = async (
  */
 
 export const get = async (id: string): Promise<EventVolunteer> => {
-    let eventVolunteer: EventVolunteer = conn
+    const eventVolunteer: EventVolunteer = conn
         .sobject(eventVolunteerObjectName)
         .find({ Id: id }, eventVolunteerFields)
         .limit(1)
-        .execute(function(err: Error, record: any) {
+        .execute((err: Error, record: any) => {
             if (err) {
                 return console.error(err);
             }
@@ -66,8 +65,8 @@ export const get = async (id: string): Promise<EventVolunteer> => {
     return eventVolunteer;
 };
 
-export const getEventVolunteersForEvent = async (eventId: string): Promise<Array<EventVolunteer>> => {
-    let eventVolunteers: Array<EventVolunteer> = [];
+export const getEventVolunteersForEvent = async (eventId: string): Promise<EventVolunteer[]> => {
+    let eventVolunteers: EventVolunteer[] = [];
     let eventVolunteerPromises: Array<Promise<EventVolunteer>> = [];
 
     await conn.query(
@@ -89,8 +88,8 @@ export const getEventVolunteersForEvent = async (eventId: string): Promise<Array
     return eventVolunteers;
 };
 
-export const getEventVolunteersForVolunteer = async (volunteerId: string): Promise<Array<EventVolunteer>> => {
-    let eventVolunteers: Array<EventVolunteer> = [];
+export const getEventVolunteersForVolunteer = async (volunteerId: string): Promise<EventVolunteer[]> => {
+    let eventVolunteers: EventVolunteer[] = [];
     let eventVolunteerPromises: Array<Promise<EventVolunteer>> = [];
 
     await conn.query(
@@ -115,7 +114,7 @@ export const getEventVolunteersForVolunteer = async (volunteerId: string): Promi
 export const create = async (eventVolunteer: EventVolunteer): Promise<string> => {
     const eventVolunteerInfo: { id: string; success: boolean; errors: Error[] } = await conn
         .sobject(eventVolunteerObjectName)
-        .create(eventVolunteerModelToSalesforceEventVolunteer(eventVolunteer), function(err: Error, result) {
+        .create(eventVolunteerModelToSalesforceEventVolunteer(eventVolunteer), (err: Error, result) => {
             if (err || !result.success) {
                 return console.error(err, result);
             }

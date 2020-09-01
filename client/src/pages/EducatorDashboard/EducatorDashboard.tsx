@@ -1,16 +1,8 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Event } from "../../data/types/eventTypes";
 import { connect } from "react-redux";
-import {
-  fetchActiveEventsService,
-  fetchPastEventsService,
-} from "../../data/services/eventsServices";
-import {
-  getActiveEvents,
-  getPastEvents,
-  getNumPastEventsRecieved,
-} from "../../data/selectors/eventsSelector";
+import { Link } from "react-router-dom";
+
 import EventCard from "./EventCard";
 import {
   MuiPickersUtilsProvider,
@@ -25,7 +17,25 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import { PageHeader, PageBody } from "../../components/index";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
+import {
+  ContainedButton,
+} from "../../components/index";
+
+/* Services */
+import {
+  fetchActiveEventsService,
+  fetchPastEventsService,
+} from "../../data/services/eventsServices";
+
+/* Selectors */
+import {
+  getActiveEvents,
+  getPastEvents,
+  getNumPastEventsRecieved,
+} from "../../data/selectors/eventsSelector";
+
+/* Types */
+import { Event } from "../../data/types/eventTypes";
 
 type EventProps = {
   eventsFilter: any;
@@ -251,11 +261,31 @@ const EducatorDashboard: React.SFC<Props> = ({
             alignItems="flex-end"
             style={{ height: "100%", width: "100%" }}
           >
-            <Typography variant="h1" style={{ marginTop: "5%" }}>
-              Your Opportunities
-            </Typography>
+            <Grid item xs={9}>
+              <Typography variant="h1" style={{ marginTop: "5%" }}>
+                Your Opportunities
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Grid container alignItems="flex-end" justify="flex-end">
+                <ContainedButton>
+                  <Typography
+                    variant="body1"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 500,
+                      fontSize: "16px",
+                      lineHeight: "30px",
+                    }}
+                  >
+                    Create Opportunity
+                  </Typography>
+                </ContainedButton>
+              </Grid>
+            </Grid>
 
-            <AppBar elevation={0} position="static" color="transparent">
+            <AppBar elevation={0} position="static" color="transparent" style={{ zIndex:1 }}>
               <Tabs
                 className={classes.tabs}
                 value={tabValue}
