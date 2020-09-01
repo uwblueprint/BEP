@@ -43,6 +43,7 @@ export interface Volunteer extends User {
   employmentStatus: string;
   expertiseAreas: string[];
   extraDescription: string;
+  fieldInvolvementDescription: string;
   grades: string[]; // Grades the volunteer wants to work with.
   introductionMethod: string; // How the volunteer was introduced to BEP.
   isVolunteerCoordinator: boolean;

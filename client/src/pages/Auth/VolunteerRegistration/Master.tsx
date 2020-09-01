@@ -83,6 +83,7 @@ export interface ExperienceState {
   employerId: string;
   newEmployer: Employer | null;
   employmentStatus: string;
+  fieldInvolvementDescription: string;
 }
 
 interface IComponentProps {
@@ -191,6 +192,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         employerId: "",
         newEmployer: null,
         employmentStatus: "",
+        fieldInvolvementDescription: "",
       },
       involvement: {
         reasonsForVolunteering: "",
@@ -298,6 +300,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       PicklistType.introductionMethod,
       PicklistType.volunteerDesiredExternalActivities,
       PicklistType.volunteerDesiredInternalActivities,
+    ];
+
+    const employerPicklistTypes: PicklistType[] = [
       PicklistType.size,
       PicklistType.sectors,
     ];
@@ -311,7 +316,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     picklistTypes.forEach((type: PicklistType) => {
       fetchPicklists(type).then(() => {
         const picklists = this.props.picklists;
-        console.log("picklists right now", picklists);
+        // console.log("picklists right now", picklists);
         const picklistInfo = this.state.picklistInfo;
 
         if (type === PicklistType.postSecondaryTraining) {
@@ -331,10 +336,14 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         //   picklistInfo.languages = new Map(
         //     createPicklist(picklists.languages.list)
         //   );
-        // }
-        console.log("The Info", picklistInfo);
+        // // }
+        // console.log("The Info", picklistInfo);
         this.setState({ picklistInfo });
       });
+    });
+
+    employerPicklistTypes.forEach((type: PicklistType) => {
+      fetchEmployerPicklists(type);
     });
   }
 
@@ -438,18 +447,18 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // console.log("New event id", inputName.target.id)
 
     return (name: any, event: any) => {
-      console.log("HERE2")
-      console.log(name)
-      console.log(event.target.value)
-      
-      
+      console.log("HERE2");
+      console.log(name);
+      console.log(event.target.value);
+
       event.preventDefault();
       const newValue = event.target.value;
       // const name = event.target.id;
 
       this.setState({
+        ...this.state,
         picklistInfo: {
-          ...inputName,
+          ...this.state.picklistInfo,
           [name]: newValue,
         },
       });

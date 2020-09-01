@@ -15,6 +15,7 @@ export default interface VolunteerInterface extends UserInterface {
     employmentStatus: string;
     expertiseAreas: string[];
     extraDescription: string;
+    fieldInvolvementDescription: string;
     grades: string[]; // Grades the volunteer wants to work with.
     introductionMethod: string; // How the volunteer was introduced to BEP.
     isVolunteerCoordinator: boolean;
@@ -78,6 +79,7 @@ export const isVolunteer = (obj: any): boolean => {
         Array.isArray(obj.volunteerDesiredInternalActivities) &&
         obj.volunteerDesiredInternalActivities.every(item => typeof item === 'string') &&
         typeof obj.shareEmployerInfo === 'boolean' &&
-        typeof obj.shareWithEmployer === 'boolean'
+        typeof obj.shareWithEmployer === 'boolean' &&
+        typeof obj.fieldInvolvementDescription === 'string'
     );
 };

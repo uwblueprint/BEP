@@ -17,7 +17,7 @@ const userFields: string =
     'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
     'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
     'professionalAssociations__c, reasonsForVolunteering__c, shareEmployerInfo__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
-    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c ';
+    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c, fieldInvolvementDescription__c ';
 
 // Map fields of user model to Salesforce fields.
 export const userModelToSalesforceUser = (user: User, id?: string): any => {
@@ -64,6 +64,7 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
             employmentStatus__c: (user as Volunteer).employmentStatus,
             expertiseAreas__c: arrayToPicklistString((user as Volunteer).expertiseAreas),
             extraDescription__c: (user as Volunteer).extraDescription,
+            fieldInvolvementDescription__c: (user as Volunteer).fieldInvolvementDescription,
             grades__c: arrayToPicklistString((user as Volunteer).grades),
             introductionMethod__c: (user as Volunteer).introductionMethod,
             isVolunteerCoordinator__c: (user as Volunteer).isVolunteerCoordinator,
@@ -126,6 +127,7 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Volunteer).employmentStatus = record.employmentStatus__c;
         (user as Volunteer).expertiseAreas = picklistStringToArray(record.expertiseAreas__c);
         (user as Volunteer).extraDescription = record.extraDescription__c;
+        (user as Volunteer).fieldInvolvementDescription = record.fieldInvolvementDescription__c,
         (user as Volunteer).grades = picklistStringToArray(record.grades__c);
         (user as Volunteer).introductionMethod = record.introductionMethod__c;
         (user as Volunteer).isVolunteerCoordinator = record.isVolunteerCoordinator__c;
