@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -6,19 +7,18 @@ import {
   Switch,
   RouteProps,
 } from "react-router-dom";
-
-import Login from "../pages/Auth/SignIn";
-import VolunteerList from "../pages/VolunteerList/VolunteerList";
-import VolunteerRegistration from "../pages/Auth/VolunteerRegistration";
-import EducatorRegistration from "../pages/Auth/EducatorRegistration";
-import { connect } from "react-redux";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../components/styling/Theme";
 import "./App.css";
 import Navbar from "./Navbar";
 import EducatorDashboard from "../pages/EducatorDashboard/EducatorDashboard";
 import EventPage from "../pages/EducatorDashboard/IndividualOpportunity/EventPage";
+import Login from "../pages/Auth/SignIn";
+import VolunteerList from "../pages/VolunteerList/VolunteerList";
 import OpportunityList from "../pages/OpportunityList/OpportunityList";
+import VolunteerDashboard from "../pages/VolunteerDashboard/VolunteerDashboard";
+import VolunteerRegistration from "../pages/Auth/VolunteerRegistration";
+import EducatorRegistration from "../pages/Auth/EducatorRegistration";
 
 /* Types */
 import { User } from "../data/types/userTypes";
@@ -28,7 +28,7 @@ interface IProps extends RouteProps {
   isLoggedIn: boolean;
 }
 
-const PrivateRoute = (rProps: IProps) => {
+export const PrivateRoute = (rProps: IProps) => {
   const { component: Component, isLoggedIn, ...rest } = rProps;
 
   return (
@@ -55,10 +55,6 @@ class App extends React.Component<
   { user: User; history: any; location: any },
   {}
 > {
-  constructor(props: any) {
-    super(props);
-  }
-
   render() {
     let user;
     let isLoggedIn = false;
@@ -77,7 +73,6 @@ class App extends React.Component<
           <React.Fragment>
             <Switch>
               <Route exact path="/" component={Login} />
-
               <PrivateRoute
                 exact
                 path="/events"
@@ -89,7 +84,7 @@ class App extends React.Component<
                 component={EventPage}
                 isLoggedIn={isLoggedIn}
               />
-              <Route
+              <PrivateRoute
                 component={VolunteerList}
                 exact
                 path="/volunteers"
@@ -99,6 +94,12 @@ class App extends React.Component<
                 component={OpportunityList}
                 exact
                 path="/opportunities"
+                isLoggedIn={isLoggedIn}
+              />
+              <PrivateRoute
+                component={VolunteerDashboard}
+                exact
+                path="/dashboard"
                 isLoggedIn={isLoggedIn}
               />
               <Route

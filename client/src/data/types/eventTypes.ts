@@ -18,9 +18,4 @@ export interface Event {
   preferredSector: string;
   schoolTransportation: string;
   startDate: Date;
-
-  //   contactName: string;
-  //   contactEmail: string;
-  //   contactPhone: number;
-  //   contactPosition: string;
 }

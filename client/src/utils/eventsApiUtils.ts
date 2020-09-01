@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
-import { Event } from "../data/types/EventTypes";
+import { Event } from "../data/types/eventTypes";
 
 const getEvents = (limit: number, offset: number) => {
   const config: AxiosRequestConfig = {
@@ -48,14 +48,15 @@ const getApplications = async (eventName: string) => {
   return await axios.request(config);
 };
 
-const getInvitations = async (eventName: string) => {
-  const config: AxiosRequestConfig = {
-    url: `${baseURL}api/events/invitations/?name=${eventName}`,
-    method: "get",
-  };
+// deprecated
+// const getInvitations = async (eventName: string) => {
+//   const config: AxiosRequestConfig = {
+//     url: `${baseURL}api/events/invitations/?name=${eventName}`,
+//     method: "get",
+//   };
 
-  return await axios.request(config);
-};
+//   return await axios.request(config);
+// };
 
 const getVolunteers = async (eventName: string) => {
   const config: AxiosRequestConfig = {
@@ -97,7 +98,6 @@ export {
   getPastEvents,
   updateEvent,
   getApplications,
-  getInvitations,
   getSchoolInfo,
   getVolunteers,
   updateApplicantStatus,

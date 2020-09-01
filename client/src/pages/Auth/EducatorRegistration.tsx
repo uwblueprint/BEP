@@ -452,6 +452,7 @@ class EducatorRegistration extends React.Component<
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
                     InputProps={{
+                      startAdornment: <InputAdornment position="start" />,
                       required: true,
                     }}
                   />
@@ -750,6 +751,7 @@ class EducatorRegistration extends React.Component<
                   <Grid container spacing={0} alignItems="center">
                     <OutlinedCheckbox
                       name="agreeConditions"
+                      required
                       onChange={() =>
                         this.setState({
                           agreeConditions: !this.state.agreeConditions,

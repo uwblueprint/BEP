@@ -52,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const InviteCard = (props: any) => {
-    console.log(props)
     const classes = useStyles()
     const [open, setOpen] = React.useState(false);
 
@@ -67,8 +66,6 @@ const InviteCard = (props: any) => {
     const handleClickClose = () => {
         setOpen(false)
     }
-    
-    
 
     return (
     <Card className={classes.card} elevation={0}>

@@ -155,10 +155,10 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
  */
 
 // Retrieve user by email.
-export const getUser = async (userInfo: { Id?: string; email?: string }): Promise<User> => {
+export const getUser = async (userInfo: { id?: string; email?: string }): Promise<User> => {
     let userIdentifier;
-    if (userInfo.Id) {
-        userIdentifier = { Id: userInfo.Id };
+    if (userInfo.id) {
+        userIdentifier = { Id: userInfo.id };
     } else if (userInfo.email) {
         userIdentifier = { email__c: userInfo.email };
     } else {
@@ -172,6 +172,9 @@ export const getUser = async (userInfo: { Id?: string; email?: string }): Promis
         .execute((err: Error, record: any) => {
             if (err) {
                 return console.error(err);
+            }
+            if (record.length === 0) {
+                throw Error(`No user with ${userInfo.id ? 'ID' + userInfo.id : 'email' + userInfo.email} found.`);
             }
             return salesforceUserToUserModel(record[0]);
         });
@@ -210,15 +213,13 @@ export const update = async (id: string, user: User): Promise<User> => {
         throw Error('Input is not a valid user.');
     }
 
-    const updatedUser: User = conn
-        .sobject(siteUser)
-        .update(userModelToSalesforceUser(user, id), (err: Error, result: any) => {
-            if (err || !result.success) {
-                return console.error(err, result);
-            }
-        });
+    const res = conn.sobject(siteUser).update(userModelToSalesforceUser(user, id), (err: Error, result: any) => {
+        if (err || !result.success) {
+            return console.error(err, result);
+        }
+    });
 
-    return updatedUser;
+    return res;
 };
 
 // Create new user and return ID.
