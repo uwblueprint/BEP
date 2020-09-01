@@ -37,8 +37,15 @@ import { User, UserType, Volunteer } from "../../../data/types/userTypes";
 import Application, {
   ApplicationStatus,
 } from "../../../data/types/applicationTypes";
+import Invitation, {
+  InvitationStatus,
+} from "../../../data/types/invitationTypes";
 
-import { getEventApplications, getEventInvitations, getEventVolunteers } from "../../../data/selectors/eventsSelector";
+import {
+  getEventApplications,
+  getEventInvitations,
+  getEventVolunteers,
+} from "../../../data/selectors/eventsSelector";
 import { getUser } from "../../../data/selectors/userSelector";
 
 import {
@@ -138,6 +145,13 @@ const EventPage = (props: any) => {
   const eventData = props.location.state.event;
   const isEducator = user.userType === UserType.Educator;
   const isVolunteer = user.userType === UserType.Volunteer;
+  const nonWithdrawnApps = applications.filter(
+    (application: Application) =>
+      application.status !== ApplicationStatus.WITHDRAWN
+  );
+  const nonWithdrawnInvites = invitations.filter(
+    (invitation: Invitation) => invitation.status !== InvitationStatus.WITHDRAWN
+  );
   // todo: see if volunteering for this event for bottom functionality + contact details
   // const isVolunteering = false;
   const [value, setValue] = React.useState<number>(0);
@@ -150,14 +164,14 @@ const EventPage = (props: any) => {
   let today: Date = new Date();
   let pastEvent: boolean = today > eventStartDate ? true : false;
 
-  const applicationsLabel = `Applications  ${applications.length}`;
-  const invitationsLabel = `Invitations  ${invitations.length}`;
+  const applicationsLabel = `Applications  ${nonWithdrawnApps.length}`;
+  const invitationsLabel = `Invitations  ${nonWithdrawnInvites.length}`;
 
   var displayVolunteers = volunteers.map((volunteer: Volunteer) => {
     return <ConfirmedVolunteerCard info={{ volunteer }} key={volunteer.id} />;
   });
 
-  var displayApplications = applications.map((application: Application) => {
+  var displayApplications = nonWithdrawnApps.map((application: Application) => {
     let enableButtons = application.status === ApplicationStatus.PENDING;
     if (volunteers.length === eventData.numberOfVolunteers) {
       enableButtons = false;
@@ -166,11 +180,8 @@ const EventPage = (props: any) => {
     return <ApplicantCard info={{ application, enabled: enableButtons }} />;
   });
 
-  var displayInvitations = invitations.map((invite: any) => {
-    var invitationProps = {
-      invite: invite.volunteer,
-    };
-    return <InviteCard info={invitationProps} />;
+  var displayInvitations = nonWithdrawnInvites.map((invitation: Invitation) => {
+    return <InviteCard info={{ invitation }} />;
   });
 
   const handleSwitchPublic = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -214,7 +225,12 @@ const EventPage = (props: any) => {
       fetchEventInvitations(eventData);
     };
     fetchdata();
-  }, [eventData, fetchEventApplications, fetchEventVolunteers, fetchEventInvitations]);
+  }, [
+    eventData,
+    fetchEventApplications,
+    fetchEventVolunteers,
+    fetchEventInvitations,
+  ]);
 
   return (
     <React.Fragment>
@@ -293,6 +309,10 @@ const EventPage = (props: any) => {
                             ? applications.filter(
                                 (app: Application) =>
                                   app.volunteer.id === userId
+                              ).length !== 0 ||
+                              invitations.filter(
+                                (invite: Invitation) =>
+                                  invite.volunteer.id === userId
                               ).length !== 0
                             : false
                         }
