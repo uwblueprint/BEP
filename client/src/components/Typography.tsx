@@ -1,5 +1,5 @@
 import React from "react";
-import Typography, { TypographyProps } from "@material-ui/core/Typography";
+import Typography from "@material-ui/core/Typography";
 import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 
 const whiteTextStyle = (theme: Theme) =>
@@ -44,6 +44,12 @@ const blackHeaderTextStyle = (theme: Theme) =>
       fontWeight: 700,
     },
   });
+const secondaryContrastTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      color: theme.palette.secondary.contrastText,
+    },
+  });
 
 const WhiteTextTypography = withStyles(whiteTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
@@ -69,11 +75,16 @@ const RedTextTypography = withStyles(redTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
 
+const SecondaryContrastTextTypography = withStyles(
+  secondaryContrastTextStyle
+)((props: any) => <Typography {...props}>{props.children}</Typography>);
+
 export {
-  BlackHeaderTypography,
-  WhiteTextTypography,
   BlackTextTypography,
-  SecondaryMainTextTypography,
+  BlackHeaderTypography,
   GreyBackgroundTextTypography,
   RedTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
+  WhiteTextTypography,
 };

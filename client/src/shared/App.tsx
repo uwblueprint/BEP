@@ -18,17 +18,23 @@ import "./App.css";
 import Navbar from "./Navbar";
 import EducatorDashboard from "../pages/EducatorDashboard/EducatorDashboard";
 import EventPage from "../pages/EducatorDashboard/IndividualOpportunity/EventPage";
+import Login from "../pages/Auth/SignIn";
+import VolunteerList from "../pages/VolunteerList/VolunteerList";
+import VolunteerProfile from '../pages/VolunteerProfile/VolunteerProfile';
 import OpportunityList from "../pages/OpportunityList/OpportunityList";
+import VolunteerDashboard from "../pages/VolunteerDashboard/VolunteerDashboard";
+import VolunteerRegistration from "../pages/Auth/VolunteerRegistration";
+import EducatorRegistration from "../pages/Auth/EducatorRegistration";
 
-/* Types */
 import { User } from "../data/types/userTypes";
+import OpportunityForm from "../pages/EducatorDashboard/OpportunityForm";
 
 interface IProps extends RouteProps {
   component: any;
   isLoggedIn: boolean;
 }
 
-const PrivateRoute = (rProps: IProps) => {
+export const PrivateRoute = (rProps: IProps) => {
   const { component: Component, isLoggedIn, ...rest } = rProps;
 
   return (
@@ -55,10 +61,6 @@ class App extends React.Component<
   { user: User; history: any; location: any },
   {}
 > {
-  constructor(props: any) {
-    super(props);
-  }
-
   render() {
     let user;
     let isLoggedIn = false;
@@ -77,7 +79,6 @@ class App extends React.Component<
           <React.Fragment>
             <Switch>
               <Route exact path="/" component={Login} />
-
               <PrivateRoute
                 exact
                 path="/events"
@@ -89,16 +90,27 @@ class App extends React.Component<
                 component={EventPage}
                 isLoggedIn={isLoggedIn}
               />
-              <Route
+              <PrivateRoute
                 component={VolunteerList}
                 exact
                 path="/volunteers"
+                isLoggedIn={isLoggedIn}
+              />
+              <PrivateRoute 
+                path="/volunteers/:name"
+                component={VolunteerProfile}
                 isLoggedIn={isLoggedIn}
               />
               <PrivateRoute
                 component={OpportunityList}
                 exact
                 path="/opportunities"
+                isLoggedIn={isLoggedIn}
+              />
+              <PrivateRoute
+                component={VolunteerDashboard}
+                exact
+                path="/dashboard"
                 isLoggedIn={isLoggedIn}
               />
               <Route
@@ -108,6 +120,12 @@ class App extends React.Component<
               <Route
                 path="/volunteer-registration"
                 component={VolunteerRegistration}
+              />
+              <PrivateRoute
+                exact
+                path="/newevent"
+                component={OpportunityForm}
+                isLoggedIn={isLoggedIn}
               />
             </Switch>
           </React.Fragment>

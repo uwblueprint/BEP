@@ -82,7 +82,7 @@ export const update = async (employer: Employer): Promise<Employer> => {
         throw Error('Input is not a valid employer.');
     }
 
-    const updatedEmployer: Employer = conn
+    const res = conn
         .sobject(employerObjectName)
         .update(employerModelToSalesforceEmployer(employer), (err: Error, result: any) => {
             if (err || !result.success) {
@@ -90,7 +90,7 @@ export const update = async (employer: Employer): Promise<Employer> => {
             }
         });
 
-    return updatedEmployer;
+    return res;
 };
 
 // Create new employer and return ID.

@@ -1,6 +1,9 @@
 import React from "react";
+import { connect } from "react-redux";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import Snackbar from "@material-ui/core/Snackbar";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,15 +11,25 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
+import Link from "@material-ui/core/Link";
 import {
-  Button,
   ContainedButton,
   OutlinedButton,
-} from "../../../components/Button";
-import { updateApplicantStatus } from "../../../utils/eventsApiUtils";
+  SecondaryMainTextTypography,
+} from "../../../components/index";
+
+import Application, {
+  ApplicationStatus,
+} from "../../../data/types/applicationTypes";
+import { Volunteer } from "../../../data/types/userTypes";
+import { updateApplicationService } from "../../../data/services/applicationsService";
 
 export interface DialogProps {
   open: boolean;
+}
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -54,39 +67,53 @@ const useStyles = makeStyles((theme) => ({
 //create your forceUpdate hoop
 
 const ApplicantCard = (props: any) => {
-  console.log("These are the applicant Card Props", props);
   const classes = useStyles();
+
+  const { info, updateApplication } = props;
+  const [buttonEnabled, setButtonEnabled] = React.useState(info.enabled);
+  const application: Application = info.application;
+  const volunteer: Volunteer = application.volunteer;
+  const volunteerName: string = volunteer.firstName + " " + volunteer.lastName;
+
   const [acceptOpen, setAcceptOpen] = React.useState(false);
   const [denyOpen, setDenyOpen] = React.useState(false);
+  const [applicantAcceptedSnackbar, setAcceptSnackbarOpen] = React.useState(
+    false
+  );
+  const [applicantDenySnackbar, setDenySnackbarOpen] = React.useState(false);
 
-  const [buttonEnabled, setButtonEnabled] = React.useState(props.info.enabled);
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
-  console.log("This is the buttonEnable", props.info.enabled);
-  console.log("This is the Accepted", props.info.applicant.accepted);
-  console.log("This is the denied", props.info.applicant.denied);
+    setAcceptSnackbarOpen(false);
+    setDenySnackbarOpen(false);
+  };
 
   //Press "Yes" when opening dialog box for confirming applicant acceptance
   const handleAcceptConfirm = () => {
     setAcceptOpen(false);
+    const newApplication: Application = application;
+    newApplication.status = ApplicationStatus.ACCEPTED;
     //Accept the Applicant
-    updateApplicantStatus(
-      props.info.eventName,
-      props.info.applicant.applicantName,
-      "accept"
-    );
+    updateApplication(newApplication);
     setButtonEnabled(false);
+    setAcceptSnackbarOpen(true);
   };
 
   //Press "Yes" when opening dialog box for confirming applicant rejection
   const handleDeclineConfirm = () => {
     setDenyOpen(false);
+    const newApplication: Application = application;
+    newApplication.status = ApplicationStatus.DECLINED;
     //Reject the Applicant
-    updateApplicantStatus(
-      props.info.eventName,
-      props.info.applicant.applicantName,
-      "deny"
-    );
+    updateApplication(newApplication);
     setButtonEnabled(false);
+    setDenySnackbarOpen(true);
   };
 
   //Press "No" on either dialog box
@@ -107,18 +134,37 @@ const ApplicantCard = (props: any) => {
 
   return (
     <Card className={classes.card} elevation={0}>
+      <Snackbar
+        open={applicantAcceptedSnackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity="info">
+          You have accepted {volunteerName} for this event.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={applicantDenySnackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity="info">
+          You have declined {volunteerName} for this event.
+        </Alert>
+      </Snackbar>
       <Grid container spacing={2}>
         <Grid item xs={9}>
           <Typography variant="h5" component="h2" className={classes.title}>
-            {props.info.applicant.applicantName}
+            {volunteerName}
           </Typography>
           <Typography
             variant="body1"
             component="h1"
             className={classes.subtitle}
           >
-            {props.info.applicant.job} {`\u2013`}{" "}
-            {props.info.applicant.personalPronouns}
+            {volunteer.jobTitle +
+              (volunteer.employer ? ` at ${volunteer.employer.name}` : "")}{" "}
+            {`\u2013`} {volunteer.preferredPronouns}
           </Typography>
         </Grid>
         <Grid item xs={3}>
@@ -151,7 +197,7 @@ const ApplicantCard = (props: any) => {
                     >
                       decline
                     </Typography>{" "}
-                    {props.info.applicant.applicantName} for this event?
+                    {volunteerName} for this event?
                   </Typography>
                 </DialogTitle>
                 <DialogContent
@@ -203,7 +249,7 @@ const ApplicantCard = (props: any) => {
                     >
                       accept
                     </Typography>{" "}
-                    {props.info.applicant.applicantName} for this event?
+                    {volunteerName} for this event?
                   </Typography>
                 </DialogTitle>
                 <DialogContent
@@ -248,7 +294,7 @@ const ApplicantCard = (props: any) => {
             component="h2"
             className={classes.fieldText}
           >
-            {props.info.applicant.sectors}
+            {volunteer.employer ? volunteer.employer.sectors.join(", ") : ""}
           </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -264,7 +310,7 @@ const ApplicantCard = (props: any) => {
             component="h2"
             className={classes.fieldText}
           >
-            {props.info.applicant.areasOfExpertise}
+            {volunteer.expertiseAreas}
           </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -280,7 +326,17 @@ const ApplicantCard = (props: any) => {
             component="h2"
             className={classes.fieldText}
           >
-            {props.info.applicant.linkedinUrl}
+            {volunteer.linkedIn && (
+              <Link target="_blank" href={volunteer.linkedIn}>
+                <SecondaryMainTextTypography variant="body1">
+                  {
+                    volunteer.linkedIn
+                      .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
+                      .split("/")[0] // Remove protocol and 'www'
+                  }
+                </SecondaryMainTextTypography>
+              </Link>
+            )}
           </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -296,7 +352,7 @@ const ApplicantCard = (props: any) => {
             component="h2"
             className={classes.fieldText}
           >
-            {props.info.applicant.employmentStatus}
+            {volunteer.employmentStatus}
           </Typography>
         </Grid>
       </Grid>
@@ -304,4 +360,11 @@ const ApplicantCard = (props: any) => {
   );
 };
 
-export default ApplicantCard;
+const mapStateToProps = (state: any, ownProps: any) => ({});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  updateApplication: (application: Application) =>
+    dispatch(updateApplicationService(application)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ApplicantCard);

@@ -109,7 +109,7 @@ interface IComponentState {
   confirmPassword: string;
   firstName: string;
   lastName: string;
-  preferredPronouns: string;
+  preferredPronouns: string | null;
   isSubscribed: boolean;
   phoneNumber: string;
   schoolName: any;
@@ -324,8 +324,6 @@ class EducatorRegistration extends React.Component<
   }
 
   handleChange = (event: any) => {
-    console.log("State Change");
-
     const { name, value } = event.target;
     this.setState({ ...this.state, [name]: value });
   };
@@ -341,7 +339,6 @@ class EducatorRegistration extends React.Component<
   handlepicklistInfoChange = (event: any) => {
     const { name, value } = event.target;
     const picklistInfo = this.state.picklistInfo;
-    console.log("Picklist Info Change");
 
     this.setState({
       picklistInfo: {
@@ -353,14 +350,10 @@ class EducatorRegistration extends React.Component<
 
   handleSubmit = (event: any) => {
     event.preventDefault();
-    console.log(this.state);
 
     let test = this.props.schoolList.filter(
       (school: School) => school.name === this.state.schoolName
     );
-
-    console.log(test);
-    console.log(test[0]);
 
     const formattedData = {
       userType: 1,
@@ -472,6 +465,37 @@ class EducatorRegistration extends React.Component<
                     value={this.state.lastName}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
+                  />
+                  <BlackHeaderTypography>
+                    Preferred Pronouns*
+                  </BlackHeaderTypography>
+
+                  <Autocomplete
+                    className={this.props.classes.dropDowns}
+                    size="small"
+                    value={this.state.preferredPronouns}
+                    options={
+                      this.state.preferredPronouns === null
+                        ? ["She/Her", "He/Him", "They/Them", "Other"]
+                        : [
+                            this.state.preferredPronouns,
+                            ...["She/Her", "He/Him", "They/Them", "Other"],
+                          ]
+                    }
+                    filterSelectedOptions
+                    onChange={(_event, newValue) => {
+                      this.setState({
+                        ...this.state,
+                        preferredPronouns: newValue,
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Select your position"
+                      />
+                    )}
                   />
 
                   <BlackHeaderTypography>School Board*</BlackHeaderTypography>

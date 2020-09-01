@@ -1,12 +1,19 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
-import { WhiteTextTypography, SecondaryMainTextTypography } from "./index";
+import {
+  WhiteTextTypography,
+  SecondaryContrastTextTypography,
+  SecondaryMainTextTypography,
+} from "./index";
 import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 
 const containedButtonStyle = (theme: Theme) =>
   createStyles({
     root: {
       background: theme.palette.secondary.main,
+      "&:disabled": {
+        background: theme.palette.secondary.contrastText,
+      },
     },
   });
 
@@ -14,6 +21,13 @@ const darkContainedButtonStyle = (theme: Theme) =>
   createStyles({
     root: {
       background: theme.palette.secondary.dark,
+    },
+  });
+
+const outlinedButtonStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      borderColor: theme.palette.secondary.main,
     },
   });
 
@@ -38,12 +52,24 @@ const TextButton = withStyles(textButtonStyle)((props: any) => (
   </Button>
 ));
 
-const OutlinedButton = ((props: any) => (
+const OutlinedButton = withStyles(outlinedButtonStyle)((props: any) => (
   <Button {...props} variant="outlined">
-    <SecondaryMainTextTypography>
-    {props.children}
-    </SecondaryMainTextTypography>
+    {props.disabled ? (
+      <SecondaryContrastTextTypography>
+        {props.children}
+      </SecondaryContrastTextTypography>
+    ) : (
+      <SecondaryMainTextTypography>
+        {props.children}
+      </SecondaryMainTextTypography>
+    )}
   </Button>
 ));
 
-export { ContainedButton, DarkContainedButton, TextButton, Button, OutlinedButton };
+export {
+  ContainedButton,
+  DarkContainedButton,
+  TextButton,
+  Button,
+  OutlinedButton,
+};

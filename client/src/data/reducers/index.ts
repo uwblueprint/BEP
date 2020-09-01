@@ -4,6 +4,7 @@ import volunteers from "./volunteersReducers";
 import picklists from "./picklistReducers";
 import user from "./authReducers";
 import schoolList from "./schoolListReducers";
+import eventPicklists from "./eventPicklistReducers";
 
 export default combineReducers({
   volunteers,
@@ -11,4 +12,5 @@ export default combineReducers({
   events,
   user,
   schoolList,
+  eventPicklists,
 });

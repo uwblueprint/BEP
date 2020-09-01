@@ -26,3 +26,16 @@ userPicklistRouter.get('/:name', async (req: Express.Request, res: Express.Respo
         res.status(500).send({ msg: e.message });
     }
 });
+
+// // GET users/:name
+
+userPicklistRouter.get('/opportunity/:name', async (req: Express.Request, res: Express.Response) => {
+    console.log('Hit the opt picklist endpoint!');
+    const picklistName: string = req.params.name;
+    try {
+        const picklist: string[] = await UserPicklistService.getOpportunityPicklist(picklistName + '__c');
+        res.status(200).send(picklist);
+    } catch (e) {
+        res.status(500).send({ msg: e.message });
+    }
+});

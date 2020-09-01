@@ -1,14 +1,10 @@
 import { LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT } from "../actions/actionTypes";
 import { User } from "../types/userTypes";
 
-interface userState {
+export interface userState {
   loggedIn: boolean,
   token: string;
   user: User | null;
-}
-
-export interface userObject {
-  user: userState,
 }
 
 const initialState: userState = {
