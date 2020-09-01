@@ -2,18 +2,25 @@ import React from "react";
 import { connect } from "react-redux";
 import { getUser } from "../../data/selectors/userSelector";
 import { getActiveEvents } from "../../data/selectors/eventsSelector";
+import { getVolunteerApplications, getVolunteerInvitations } from "../../data/selectors/volunteersSelector";
 import { fetchActiveEventsService } from "../../data/services/eventsServices";
+import { fetchApplicationsByVolunteer } from "../../data/services/applicationsService";
+import { 
+  createInvitationService, fetchInvitationsByVolunteer
+} from "../../data/services/invitationsService";
 
 import { Link, RouteComponentProps } from "react-router-dom";
-import {Card, Grid, IconButton, Modal, Snackbar, SnackbarContent, Typography} from "@material-ui/core";
+import {Card, CardActionArea, Grid, IconButton, Modal, Snackbar, SnackbarContent, Typography} from "@material-ui/core";
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import CloseIcon from "@material-ui/icons/Close";
 import { ContainedButton, PageBody, TextButton } from "../../components/index";
 import AboutCard from "./AboutCard";
 import ExpertiseCard from "./ExpertiseCard";
 import ActivitiesCard from "./ActivitiesCard";
-import { User, Volunteer } from "../../data/types/userTypes";
 import { Event } from "../../data/types/eventTypes";
+import { User, Volunteer } from "../../data/types/userTypes";
+import Invitation from "../../data/types/invitationTypes";
+import Application from "../../data/types/applicationTypes";
 
 class VolunteerProfile extends React.Component <
   RouteComponentProps<{}, {}, {volunteer: Volunteer, back: string}>
@@ -22,19 +29,27 @@ class VolunteerProfile extends React.Component <
         userId: string;
         activeOpportunities: Event[];
         fetchActiveEvents: any;
+        createInvitation: any;
+        fetchInvitations: any;
+        fetchApplications: any;
+        applications: Application[];
+        invitations: Invitation[];
       },
   {
     openModal: boolean;
-    openSnackbar: boolean
+    openSnackbar: boolean;
+    noRequestEvents: string[]
   }> {
 
   _isMounted = false;
+  _invites = [];
 
   constructor(props : any) {
     super(props);
     this.state = {
       openModal: false,
-      openSnackbar: true
+      openSnackbar: false,
+      noRequestEvents: []
     };
   }
 
@@ -43,6 +58,20 @@ class VolunteerProfile extends React.Component <
       this.props.userType,
       this.props.userId
     );
+/*
+    this.props.fetchApplications(this.props.userId).then((apps : Application[]) => {
+      console.log(apps);
+      let appIds = apps.map((app : Application) => app.event.id);
+      this.props.fetchInvitations(this.props.userId).then((invites : Invitation[]) => {
+        console.log(invites);
+        let inviteIds = invites.map((invite : Invitation) => invite.event.id);
+        this.setState({noRequestEvents: inviteIds.concat(appIds)});
+      });
+    });
+*/
+  this.props.fetchApplications(this.props.userId)
+  
+  this.props.fetchInvitations(this.props.userId)
 
     this._isMounted = true;
   }
@@ -52,13 +81,17 @@ class VolunteerProfile extends React.Component <
   }
 
   render() {
-    console.log(this.props.activeOpportunities)
+    let appIds = this.props.applications.map((app : Application) => app.event.id);
+    let inviteIds = this.props.invitations.map((invite : Invitation) => invite.event.id);
+    console.log(appIds);
+    console.log(inviteIds);
     return (
       <div>
         <Grid container spacing={3} direction="column">
           <Grid item xs={12}  style={{ marginTop: "70px", padding: "0px 12%"}}>
             <Typography variant="body1" style={{paddingBottom: '10px'}}>
-              <Link to={this.props.location.state.back} style={{textDecoration: "none"}}>{`<`} Back </Link>
+              {/*<Link to={this.props.location.state.back} style={{textDecoration: "none"}}>{`<`} Back </Link>*/}
+              <a href="javascript:history.back()">{`<`} Back</a>
             </Typography>
           </Grid>
           <Grid container direction="row" item xs={12}
@@ -135,9 +168,15 @@ class VolunteerProfile extends React.Component <
               </Grid>
               {
                 this.props.activeOpportunities.map((event) => 
-                  <Grid item xs={12}>
+                  <Grid item xs={12} key={event.id}>
                     <Card square style={{ padding: "10px" }}>
-                      <Typography variant="body1">{event.eventName}</Typography>
+                      <CardActionArea
+                        onClick={()=>{
+                          this.setState({openModal: false, openSnackbar: true});
+                        }}
+                      >
+                        <Typography variant="body1">{event.eventName}</Typography>
+                      </CardActionArea>
                     </Card>
                   </Grid>
                 )
@@ -151,17 +190,32 @@ class VolunteerProfile extends React.Component <
 }
 
 const mapStateToProps = (state: any) => {
-  const user: User | null = getUser(state.user);
+  console.log(state);
+  const userObj = localStorage.getItem("user");
+  const user = userObj ? JSON.parse(userObj) : userObj;
   return {
     userType: user ? user.userType : 0,
     userId: user ? user.id : "",
     activeOpportunities: getActiveEvents(state.events),
+    applications: getVolunteerApplications(state.volunteers),
+    invites: getVolunteerInvitations(state.volunteers),
   };
 };
 
 const mapDispatchToProps = (dispatch : any) => ({
   fetchActiveEvents: (userType: number, userId: string) =>
-  dispatch(fetchActiveEventsService(userType, userId)),
+    dispatch(fetchActiveEventsService(userType, userId)),
+  fetchApplications: (id: string) =>
+    dispatch(fetchApplicationsByVolunteer(id)),
+  fetchInvitations: (id: string) =>
+    dispatch(fetchInvitationsByVolunteer(id)),
+  createInvitation: (invitationEvent: Event, invitedVolunteer: Volunteer) =>
+    dispatch(createInvitationService({
+      event: invitationEvent,
+      id: "",
+      status: "pending",
+      volunteer: invitedVolunteer
+    })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps) (VolunteerProfile);
