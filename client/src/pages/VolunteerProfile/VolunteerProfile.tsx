@@ -18,7 +18,7 @@ import { Event } from "../../data/types/eventTypes";
 import Invitation, { InvitationStatus } from "../../data/types/invitationTypes"
 
 class VolunteerProfile extends React.Component <
-  RouteComponentProps<{}, {}, {volunteer: Volunteer, back: string}>
+  RouteComponentProps<{}, {}, {volunteer: Volunteer}>
     & {
         userType: number;
         userId: string;

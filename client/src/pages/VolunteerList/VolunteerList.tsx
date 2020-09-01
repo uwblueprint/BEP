@@ -441,7 +441,7 @@ class VolunteerList extends React.Component<
         <Link
           to={{
             pathname: `/volunteers/${volunteer.firstName}${volunteer.lastName}`,
-            state: { volunteer: volunteer, back: "/volunteers" }
+            state: { volunteer: volunteer }
           }}
           style={{ textDecoration: "none" }}
         >
