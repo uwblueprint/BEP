@@ -14,6 +14,7 @@ import {
   BlackHeaderTypography,
   BlackTextTypography,
 } from "../../../components/index";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import Divider from "@material-ui/core/Divider";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -161,6 +162,37 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
                         this.props.personalInfo
                       )}
                     />
+
+                    {/* <Autocomplete
+                      className={this.props.classes.dropDowns}
+                      id="tags-outlined"
+                      size="small"
+                      value={this.state.schoolInfo.type}
+                      options={
+                        this.state.schoolInfo.type === null
+                          ? this.props.picklists.type.list
+                          : [
+                              this.state.schoolInfo.type,
+                              ...this.props.picklists.type.list,
+                            ]
+                      }
+                      filterSelectedOptions
+                      onChange={(_event, newValue) => {
+                        this.setState({
+                          schoolInfo: {
+                            ...this.state.schoolInfo,
+                            type: newValue,
+                          },
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <OutlinedTextField
+                          {...params}
+                          variant="outlined"
+                          placeholder="Preferred Sectors"
+                        />
+                      )}
+                    /> */}
 
                     <BlackHeaderTypography>
                       Preferred Pronouns*

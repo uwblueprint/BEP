@@ -15,7 +15,7 @@ import {
 import { getUser } from "../../data/selectors/userSelector";
 
 /* Types */
-import { Event } from "../../data/types/EventTypes";
+import { Event } from "../../data/types/eventTypes";
 import { PicklistType } from "../../data/types/picklistTypes";
 import { User } from "../../data/types/userTypes";
 

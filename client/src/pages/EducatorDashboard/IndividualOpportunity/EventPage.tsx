@@ -24,13 +24,13 @@ import Card from "@material-ui/core/Card";
 import Container from "@material-ui/core/Container";
 import InfoIcon from "@material-ui/icons/Info";
 
-import { Event } from "../../../data/types/EventTypes";
+import { Event } from "../../../data/types/eventTypes";
 import { User, UserType } from "../../../data/types/userTypes";
 import {
   getApplications,
   getInvitations,
   getVolunteers,
-} from "../../../utils/EventsApiUtils";
+} from "../../../utils/eventsApiUtils";
 import { getUser } from "../../../data/selectors/userSelector";
 import { updateEventService } from "../../../data/services/eventsServices";
 
@@ -458,8 +458,8 @@ const EventPage = (props: any) => {
 
 const mapStateToProps = (state: any) => {
   const user: User | null = getUser(state.user);
-  console.log("HERE2")
-  console.log(user)
+  console.log("HERE2");
+  console.log(user);
   return {
     userType: user ? user.userType : 0,
   };

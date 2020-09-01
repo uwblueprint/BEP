@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Event } from "../../data/types/EventTypes";
+import { Event } from "../../data/types/eventTypes";
 import { User } from "../../data/types/userTypes";
 import { connect } from "react-redux";
 import {

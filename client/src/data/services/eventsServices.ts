@@ -3,14 +3,14 @@ import {
   getPastEvents,
   getEvents,
   updateEvent,
-} from "../../utils/EventsApiUtils";
+} from "../../utils/eventsApiUtils";
 import {
   fetchEvents,
   fetchActiveEvents,
   fetchPastEvents,
   updateEvent as updateEventAction,
 } from "../actions/eventsActions";
-import { Event } from "../types/EventTypes";
+import { Event } from "../types/eventTypes";
 
 export function fetchEventsService(
   limit: number,

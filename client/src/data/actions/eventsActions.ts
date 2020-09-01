@@ -5,7 +5,7 @@ import {
   UPDATE_EVENT,
   CHANGE_EVENTS_FILTER,
 } from "./actionTypes";
-import { Event } from "../types/EventTypes";
+import { Event } from "../types/eventTypes";
 
 // export const fetchEvents = (events: any[]) => ({
 //     type: FETCH_EVENTS,
