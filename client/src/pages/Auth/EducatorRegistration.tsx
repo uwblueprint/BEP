@@ -575,7 +575,6 @@ class EducatorRegistration extends React.Component<
                       ))}
                     </Select>
                   </FormControl>
-                  {console.log("hello")}
                   <BlackHeaderTypography>School Name*</BlackHeaderTypography>
                   <FormControl
                     required
