@@ -110,24 +110,22 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const EventPage: React.SFC<Props> = 
-  ({ applications, invitations, userType, userId, fetchApplications, fetchInvitations, fetchEvents } : Props) => {
+  ({ activeEvents, applications, invitations, userType, userId, fetchApplications, fetchInvitations, fetchEvents } : Props) => {
   const classes = useStyles();
 
   const [value, setValue] = React.useState<number>(0);
   const [fetchedApplications, setFetchedApplications] = React.useState(false);
   const [fetchedInvitations, setFetchedInvitations] = React.useState(false);
   const [fetchedEvents, setFetchedEvents] = React.useState(false);
-  const [activeEvents, setActiveEvents] = React.useState<any>([]);
 
   useEffect(() => {
     (async function wrapper() {
       if (!fetchedEvents && activeEvents.length === 0) {
-        const data = await fetchEvents(userId);
+        await fetchEvents(userId);
         setFetchedEvents(true);
-        setActiveEvents(data);
       }
     })();
-  }, [fetchedEvents, activeEvents]);
+  }, [fetchedEvents]);
 
   useEffect(() => {
     (async function wrapper() {
@@ -205,9 +203,10 @@ const EventPage: React.SFC<Props> =
                      <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Invitations' to see if you have been invited to an event!</div>
                      <div>You can also click 'Browse Opportunities' to get started.</div>
                   </Typography> :
-                activeEvents.map((event: any) =>
+                activeEvents.map((event: any) => {
+                  console.log(event)
                   createOpportunityCard(event.event)
-                )}
+                })}
               </Grid>
           </TabPanel>
           <TabPanel value={value} index={1}>

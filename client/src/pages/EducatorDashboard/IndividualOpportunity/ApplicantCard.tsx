@@ -32,7 +32,6 @@ function Alert(props: AlertProps) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
   
-
 const useStyles = makeStyles((theme) => ({
   card: {
     margin: `${theme.spacing(4)}px auto`,
