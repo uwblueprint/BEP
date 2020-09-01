@@ -60,8 +60,8 @@ interface IComponentProps {
     localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
     professionalAssociations: { list: string[] };
     employmentStatus: { list: string[] };
-    orgSector: { list: string[] }; // somehow need to get picklist of
-    orgNumberStaff: { list: string[] };
+    sectors: { list: string[] }; // somehow need to get picklist of
+    size: { list: string[] };
     introductionMethod: { list: string[] };
     volunteerDesiredExternalActivities: { list: string[] };
     volunteerDesiredInternalActivities: { list: string[] };
@@ -111,8 +111,8 @@ interface IComponentState {
     localPostSecondaryInstitutions: Map<string, boolean>; //local post secondary alumni
     professionalAssociations: Map<string, boolean>;
     employmentStatus: string;
-    orgSector: string; // somehow need to get picklist of
-    orgNumberStaff: string;
+    sectors: string; // somehow need to get picklist of
+    size: string;
     expertiseAreas: Map<string, boolean>;
     introductionMethod: string;
     languages: Map<string, boolean>;
@@ -167,8 +167,8 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         localPostSecondaryInstitutions: new Map(),
         professionalAssociations: new Map(),
         employmentStatus: "",
-        orgSector: "",
-        orgNumberStaff: "",
+        sectors: "",
+        size: "",
         expertiseAreas: new Map(),
         introductionMethod: "",
         languages: new Map(),
@@ -366,6 +366,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 }
 
 const mapStateToProps = (state: any) => {
+    console.log("This is the state of the picklists", state)
   return {
     picklists: {
         activities: {
@@ -395,10 +396,10 @@ const mapStateToProps = (state: any) => {
         employmentStatus: { 
             list: getEmploymentStatus(state.picklists)
         },
-        orgSector: { 
+        sectors: { 
             list: getEmployerSectorsPicklist(state.picklists)
         }, // somehow need to get picklist of
-        orgNumberStaff: { 
+        size: { 
             list: getEmployerSizePicklist(state.picklists)
         },
         introductionMethod: { 

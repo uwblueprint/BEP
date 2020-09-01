@@ -27,7 +27,7 @@ export function fetchSchoolPicklistService(picklistType: PicklistType) {
 export function fetchEmployerPicklistService(picklistType: PicklistType) {
   return (dispatch: any) => {
     return getEmployerPicklist(picklistType).then((res: any) => {
-      dispatch(fetchPicklist(picklistType, res.date));
+      dispatch(fetchPicklist(picklistType, res.data));
       return res;
     });
   }
