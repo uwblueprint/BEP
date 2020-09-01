@@ -3,7 +3,7 @@ import { baseURL } from "./ApiUtils";
 
 const getVolunteersOfEvent = (eventId: string) => {
   const config: AxiosRequestConfig = {
-    url: `${baseURL}api/applications?relatedTo=event&id=${eventId}`,
+    url: `${baseURL}api/event-volunteers?relatedTo=event&id=${eventId}`,
     method: "get",
   };
 

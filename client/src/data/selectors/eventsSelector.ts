@@ -51,7 +51,7 @@ export const getEventApplications = (eventId: string, state: EventsState) =>
     return applications ? applications : [];
   })(state);
 
-  export const getEventInvitations = (eventId: string, state: EventsState) =>
+export const getEventInvitations = (eventId: string, state: EventsState) =>
   createSelector([getAllInvitationsData], (invitationsMap) => {
     const invitations = invitationsMap.get(eventId);
     return invitations ? invitations : [];
