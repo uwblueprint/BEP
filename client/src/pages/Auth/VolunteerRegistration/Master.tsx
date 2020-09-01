@@ -30,6 +30,9 @@ import {
   getEmploymentStatus,
   getVolunteerDesiredExternalActivities,
   getVolunteerDesiredInternalActivities,
+  getCoopPlacementMode,
+  getCoopPlacementTime,
+  getSchoolBoardPicklist,
 } from "../../../data/selectors/picklistSelector";
 
 import { getEmployers } from "../../../data/selectors/employerSelector";
@@ -39,6 +42,7 @@ import { Grid } from "@material-ui/core";
 import {
   fetchUserPicklistService,
   fetchEmployerPicklistService,
+  fetchSchoolPicklistService,
 } from "../../../data/services/picklistServices";
 
 import {
@@ -86,27 +90,61 @@ export interface ExperienceState {
   fieldInvolvementDescription: string;
 }
 
+export interface InvolvementState {
+  reasonsForVolunteering: string;
+  futureAdvice: string;
+  introductionMethod: string;
+  isSubscribed: boolean;
+  agreeConditions: boolean;
+}
+
+export interface PicklistInfo {
+  localPostSecondaryInstitutions: Map<string, boolean>; //local post secondary alumni
+  professionalAssociations: Map<string, boolean>;
+  employmentStatus: string;
+  sectors: string; // somehow need to get picklist of
+  size: string;
+  expertiseAreas: string[];
+  introductionMethod: string;
+  languages: string[];
+  volunteerDesiredExternalActivities: Map<string, boolean>;
+  volunteerDesiredInternalActivities: Map<string, boolean>;
+  postSecondaryTraining: Map<string, boolean>;
+  moreInfo: Map<string, boolean>;
+  grades: Map<string, boolean>; // grade levels willing to volunteer with
+  locations: Map<string, boolean>;
+  coopPlacementMode: Map<string, boolean>;
+  coopPlacementTime: Map<string, boolean>;
+  coopPlacementSchoolAffiliation: string;
+}
+
+export interface RawPicklists {
+  expertiseAreas: { list: string[] };
+  languages: { list: string[] };
+  grades: { list: string[] }; // grade levels willing to volunteer with
+  locations: { list: string[] };
+
+  // uncomment these out once you set up all these routes Faizaan
+  localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
+  professionalAssociations: { list: string[] };
+  employmentStatus: { list: string[] };
+  sectors: { list: string[] }; // somehow need to get picklist of
+  size: { list: string[] };
+  introductionMethod: { list: string[] };
+  volunteerDesiredExternalActivities: { list: string[] };
+  volunteerDesiredInternalActivities: { list: string[] };
+  postSecondaryTraining: { list: string[] };
+  coopPlacementMode: { list: string[] };
+  coopPlacementTime: { list: string[] };
+  coopPlacementSchoolAffiliation: { list: string[] };
+}
+
 interface IComponentProps {
   employers: Employer[];
-  picklists: {
-    expertiseAreas: { list: string[] };
-    languages: { list: string[] };
-    grades: { list: string[] }; // grade levels willing to volunteer with
-    locations: { list: string[] };
-
-    // uncomment these out once you set up all these routes Faizaan
-    localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
-    professionalAssociations: { list: string[] };
-    employmentStatus: { list: string[] };
-    sectors: { list: string[] }; // somehow need to get picklist of
-    size: { list: string[] };
-    introductionMethod: { list: string[] };
-    volunteerDesiredExternalActivities: { list: string[] };
-    volunteerDesiredInternalActivities: { list: string[] };
-    postSecondaryTraining: { list: string[] };
-  };
+  picklists: RawPicklists;
   fetchPicklists: any;
   fetchEmployerPicklists: any;
+  fetchSchoolPicklists: any;
   fetchEmployers: any;
   createEmmployer: any;
   classes: {
@@ -131,29 +169,8 @@ interface IComponentState {
     shareWithEmployer: boolean;
   };
   experience: ExperienceState;
-  involvement: {
-    reasonsForVolunteering: string;
-    futureAdvice: string;
-    introductionMethod: string;
-    isSubscribed: boolean;
-    agreeConditions: boolean;
-  };
-  picklistInfo: {
-    localPostSecondaryInstitutions: Map<string, boolean>; //local post secondary alumni
-    professionalAssociations: Map<string, boolean>;
-    employmentStatus: string;
-    sectors: string; // somehow need to get picklist of
-    size: string;
-    expertiseAreas: string[];
-    introductionMethod: string;
-    languages: string[];
-    volunteerDesiredExternalActivities: Map<string, boolean>;
-    volunteerDesiredInternalActivities: Map<string, boolean>;
-    postSecondaryTraining: Map<string, boolean>;
-    moreInfo: Map<string, boolean>;
-    grades: Map<string, boolean>; // grade levels willing to volunteer with
-    locations: Map<string, boolean>;
-  };
+  involvement: InvolvementState;
+  picklistInfo: PicklistInfo;
 }
 
 class Master extends React.Component<IComponentProps, IComponentState> {
@@ -216,6 +233,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         moreInfo: new Map(),
         grades: new Map(),
         locations: new Map(),
+        coopPlacementMode: new Map(),
+        coopPlacementTime: new Map(),
+        coopPlacementSchoolAffiliation: "",
       },
     };
     this.handleNestedChange = this.handleNestedChange.bind(this);
@@ -237,7 +257,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   createUpdateOptions(picklistName: string) {
-    const picklistInfos = this.state.picklistInfo;
     const picklistOptions = this.getMultiPicklist(picklistName);
 
     return (selectedOptions: string) => {
@@ -247,8 +266,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       );
 
       this.setState({
+        ...this.state,
         picklistInfo: {
-          ...picklistInfos,
+          ...this.state.picklistInfo,
           [picklistName]: picklistOptions,
         },
       });
@@ -264,6 +284,10 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         return picklists.volunteerDesiredExternalActivities;
       case "volunteerDesiredInternalActivities":
         return picklists.volunteerDesiredInternalActivities;
+      case "coopPlacementMode":
+        return picklists.coopPlacementMode;
+      case "coopPlacementTime":
+        return picklists.coopPlacementTime;
     }
     return new Map<string, boolean>();
   }
@@ -282,8 +306,11 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   componentDidMount() {
-    const { fetchPicklists } = this.props;
-    const { fetchEmployerPicklists } = this.props;
+    const {
+      fetchPicklists,
+      fetchEmployerPicklists,
+      fetchSchoolPicklists,
+    } = this.props;
 
     const picklistTypes: PicklistType[] = [
       PicklistType.expertiseAreas,
@@ -300,12 +327,16 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       PicklistType.introductionMethod,
       PicklistType.volunteerDesiredExternalActivities,
       PicklistType.volunteerDesiredInternalActivities,
+      PicklistType.coopPlacementMode,
+      PicklistType.coopPlacementTime,
     ];
 
     const employerPicklistTypes: PicklistType[] = [
       PicklistType.size,
       PicklistType.sectors,
     ];
+
+    const schoolPicklistTypes: PicklistType[] = [PicklistType.schoolBoard];
 
     const createPicklist = (
       filterNames: string[]
@@ -331,7 +362,24 @@ class Master extends React.Component<IComponentProps, IComponentState> {
           picklistInfo.volunteerDesiredInternalActivities = new Map(
             createPicklist(picklists.volunteerDesiredInternalActivities.list)
           );
+        } else if (type === PicklistType.coopPlacementMode) {
+          picklistInfo.coopPlacementMode = new Map(
+            createPicklist(picklists.coopPlacementMode.list)
+          );
+        } else if (type === PicklistType.coopPlacementTime) {
+          picklistInfo.coopPlacementTime = new Map(
+            createPicklist(picklists.coopPlacementTime.list)
+          );
+        } else if (type === PicklistType.locations) {
+          picklistInfo.locations = new Map(
+            createPicklist(picklists.locations.list)
+          );
+        } else if (type === PicklistType.grades) {
+          picklistInfo.grades = new Map(
+            createPicklist(picklists.grades.list)
+          );
         }
+
         // else if (type === PicklistType.languages) {
         //   picklistInfo.languages = new Map(
         //     createPicklist(picklists.languages.list)
@@ -344,6 +392,10 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 
     employerPicklistTypes.forEach((type: PicklistType) => {
       fetchEmployerPicklists(type);
+    });
+
+    schoolPicklistTypes.forEach((type: PicklistType) => {
+      fetchSchoolPicklists(type);
     });
   }
 
@@ -440,26 +492,16 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     }));
   };
 
-  handleNestedChangePicklist = (event: any, newValue: any, inputName: any) => {
-    const experience = this.state.picklistInfo;
-
-    // console.log("New event value", inputName.target.value)
-    // console.log("New event id", inputName.target.id)
-
-    return (name: any, event: any) => {
-      console.log("HERE2");
-      console.log(name);
-      console.log(event.target.value);
-
+  handleNestedChangePicklist = (picklistName: string) => {
+    return (event: any) => {
       event.preventDefault();
       const newValue = event.target.value;
-      // const name = event.target.id;
 
       this.setState({
         ...this.state,
         picklistInfo: {
           ...this.state.picklistInfo,
-          [name]: newValue,
+          [picklistName]: newValue,
         },
       });
     };
@@ -577,6 +619,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 }
 
 const mapStateToProps = (state: any) => {
+  console.log(state.picklists);
   return {
     employers: getEmployers(state.employers),
     picklists: {
@@ -622,6 +665,15 @@ const mapStateToProps = (state: any) => {
       volunteerDesiredInternalActivities: {
         list: getVolunteerDesiredInternalActivities(state.picklists),
       },
+      coopPlacementMode: {
+        list: getCoopPlacementMode(state.picklists),
+      },
+      coopPlacementTime: {
+        list: getCoopPlacementTime(state.picklists),
+      },
+      coopPlacementSchoolAffiliation: {
+        list: getSchoolBoardPicklist(state.picklists),
+      },
     },
   };
 };
@@ -631,6 +683,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(fetchUserPicklistService(picklistType)),
   fetchEmployerPicklists: (picklistType: PicklistType) =>
     dispatch(fetchEmployerPicklistService(picklistType)),
+  fetchSchoolPicklists: (picklistType: PicklistType) =>
+    dispatch(fetchSchoolPicklistService(picklistType)),
   fetchEmployers: dispatch(fetchEmployersService()),
   createEmmployer: (employer: Employer) =>
     dispatch(createEmployerService(employer)),

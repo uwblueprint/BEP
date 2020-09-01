@@ -1,6 +1,5 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import Select from "@material-ui/core/Select";
 
 import {
   BlackHeaderTypography,
@@ -14,7 +13,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { ExperienceState } from "./Master";
+import { ExperienceState, PicklistInfo, RawPicklists } from "./Master";
 
 import Employer from "../../../data/types/employerTypes";
 
@@ -25,39 +24,8 @@ interface IComponentProps {
   classes: {
     multiSelect: any;
   };
-  picklistInfo: {
-    localPostSecondaryInstitutions: Map<string, boolean>; //local post secondary alumni
-    professionalAssociations: Map<string, boolean>;
-    employmentStatus: string;
-    sectors: string; // somehow need to get picklist of
-    size: string;
-    expertiseAreas: string[];
-    introductionMethod: string;
-    languages: string[];
-    volunteerDesiredExternalActivities: Map<string, boolean>;
-    volunteerDesiredInternalActivities: Map<string, boolean>;
-    postSecondaryTraining: Map<string, boolean>;
-    moreInfo: Map<string, boolean>;
-    grades: Map<string, boolean>; // grade levels willing to volunteer with
-    locations: Map<string, boolean>;
-  };
-  picklists: {
-    expertiseAreas: { list: string[] };
-    languages: { list: string[] };
-    grades: { list: string[] }; // grade levels willing to volunteer with
-    locations: { list: string[] };
-
-    // uncomment these out once you set up all these routes Faizaan
-    localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
-    professionalAssociations: { list: string[] };
-    employmentStatus: { list: string[] };
-    sectors: { list: string[] }; // somehow need to get picklist of
-    size: { list: string[] };
-    introductionMethod: { list: string[] };
-    volunteerDesiredExternalActivities: { list: string[] };
-    volunteerDesiredInternalActivities: { list: string[] };
-    postSecondaryTraining: { list: string[] };
-  };
+  picklistInfo: PicklistInfo;
+  picklists: RawPicklists;
   handleChange: any; // () => void????
   handleNestedChange: any;
   handleNestedChangePicklist: any;
@@ -139,14 +107,9 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       value={this.props.picklistInfo.employmentStatus}
                       displayEmpty
                       disableUnderline={true}
-                      onChange={(event: any) =>
-                        this.props
-                          .handleNestedChangePicklist(this.props.picklistInfo)
-                          .bind(
-                            event,
-                            "employmentStatus"
-                          )(event)
-                      }
+                      onChange={this.props.handleNestedChangePicklist(
+                        "employmentStatus"
+                      )}
                       style={{ height: "40px" }}
                     >
                       <MenuItem value="" disabled>
@@ -160,13 +123,6 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                           {entry[1]}
                         </MenuItem>
                       ))}
-                      {/* {this.props.picklists.employmentStatus.list.map(
-                        (entry, index) => (
-                          <MenuItem key={index} value={entry}>
-                            {entry}
-                          </MenuItem>
-                        )
-                      )} */}
                     </OutlinedSelect>
                   </FormControl>
                 </Grid>
@@ -232,16 +188,9 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                           value={this.props.picklistInfo.sectors}
                           displayEmpty
                           disableUnderline={true}
-                          onChange={(event: any) =>
-                            this.props
-                              .handleNestedChangePicklist(
-                                this.props.picklistInfo
-                              )
-                              .bind(
-                                event,
-                                "sectors"
-                              )(event)
-                          }
+                          onChange={this.props.handleNestedChangePicklist(
+                            "sectors"
+                          )}
                           style={{ height: "40px" }}
                         >
                           <MenuItem value="" disabled>
@@ -386,14 +335,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       value={this.props.picklistInfo.size}
                       displayEmpty
                       disableUnderline={true}
-                      onChange={(event: any) =>
-                        this.props
-                          .handleNestedChangePicklist(this.props.picklistInfo)
-                          .bind(
-                            event,
-                            "size"
-                          )(event)
-                      }
+                      onChange={this.props.handleNestedChangePicklist("size")}
                       style={{ height: "40px" }}
                     >
                       <MenuItem value="" disabled>

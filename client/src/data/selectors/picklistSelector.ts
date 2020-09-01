@@ -83,5 +83,7 @@ export const getEmployerSectorsPicklist = createPicklistSelector(PicklistType.se
 
 export const getEmployerSizePicklist = createPicklistSelector(PicklistType.size); //orgSize
 
+export const getCoopPlacementMode = createPicklistSelector(PicklistType.coopPlacementMode);
 
+export const getCoopPlacementTime = createPicklistSelector(PicklistType.coopPlacementTime);
 
