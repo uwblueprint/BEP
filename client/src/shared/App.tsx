@@ -15,6 +15,7 @@ import EducatorDashboard from "../pages/EducatorDashboard/EducatorDashboard";
 import EventPage from "../pages/EducatorDashboard/IndividualOpportunity/EventPage";
 import Login from "../pages/Auth/SignIn";
 import VolunteerList from "../pages/VolunteerList/VolunteerList";
+import VolunteerProfile from '../pages/VolunteerProfile/VolunteerProfile';
 import OpportunityList from "../pages/OpportunityList/OpportunityList";
 import VolunteerDashboard from "../pages/VolunteerDashboard/VolunteerDashboard";
 import VolunteerRegistration from "../pages/Auth/VolunteerRegistration";
@@ -88,6 +89,11 @@ class App extends React.Component<
                 component={VolunteerList}
                 exact
                 path="/volunteers"
+                isLoggedIn={isLoggedIn}
+              />
+              <PrivateRoute 
+                path="/volunteers/:name"
+                component={VolunteerProfile}
                 isLoggedIn={isLoggedIn}
               />
               <PrivateRoute
