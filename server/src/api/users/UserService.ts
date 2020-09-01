@@ -17,7 +17,7 @@ const userFields: string =
     'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
     'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
     'professionalAssociations__c, reasonsForVolunteering__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
-    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c introductionMethod__c, ';
+    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c ';
 
 // Map fields of user model to Salesforce fields.
 export const userModelToSalesforceUser = (user: User, id?: string): any => {
@@ -229,11 +229,11 @@ export const create = async (user: Educator): Promise<string> => {
         .sobject(siteUser)
         .create(userModelToSalesforceUser(user), (err: Error, result: any) => {
             if (err || !result.success) {
-                console.log("1");
+                console.log('1');
                 return console.error(err, result);
             }
         });
-    console.log("2");
+    console.log('2');
     return userInfo.id;
 };
 
