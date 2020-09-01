@@ -13,14 +13,17 @@ export const invitationFields: string = 'Id, event__c, status__c, volunteer__c';
 
 // Map fields of employer model to Salesforce fields.
 const invitationModelToSalesforceInvitation = (invitation: Invitation): any => {
-    const salesforceApplication: any = {
-        event__c: typeof invitation.event === 'string' ? invitation.event : invitation.event.id,
+    const eventId = typeof invitation.event === 'string' ? invitation.event : invitation.event.id;
+    const volunteerId = typeof invitation.volunteer === 'string' ? invitation.volunteer : invitation.volunteer.id;
+    const salesforceInvitation: any = {
+        combinedId__c: eventId + '_' + volunteerId,
+        event__c: eventId,
         Id: invitation.id,
         status__c: invitation.status,
-        volunteer__c: typeof invitation.volunteer === 'string' ? invitation.volunteer : invitation.volunteer.id
+        volunteer__c: volunteerId
     };
 
-    return salesforceApplication;
+    return salesforceInvitation;
 };
 
 // Map Saleforce record fields to user model fields.

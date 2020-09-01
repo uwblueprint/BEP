@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { getUser } from "../../data/selectors/userSelector";
 import { getActiveEvents } from "../../data/selectors/eventsSelector";
 import { fetchActiveEventsService } from "../../data/services/eventsServices";
+import { createInvitationService } from "../../data/services/invitationsService";
 
 import { Link, RouteComponentProps } from "react-router-dom";
 import {Card, CardActionArea, Grid, IconButton, Modal, Snackbar, SnackbarContent, Typography} from "@material-ui/core";
@@ -14,6 +15,7 @@ import ExpertiseCard from "./ExpertiseCard";
 import ActivitiesCard from "./ActivitiesCard";
 import { User, Volunteer } from "../../data/types/userTypes";
 import { Event } from "../../data/types/eventTypes";
+import Invitation, { InvitationStatus } from "../../data/types/invitationTypes"
 
 class VolunteerProfile extends React.Component <
   RouteComponentProps<{}, {}, {volunteer: Volunteer, back: string}>
@@ -22,6 +24,7 @@ class VolunteerProfile extends React.Component <
         userId: string;
         activeOpportunities: Event[];
         fetchActiveEvents: any;
+        createInvitation: any;
       },
   {
     openModal: boolean;
@@ -51,8 +54,17 @@ class VolunteerProfile extends React.Component <
     this._isMounted = false;
   }
 
+  sendInvitation(event: Event){
+    const invitation: Invitation = {
+      event,
+      id: "",
+      status: InvitationStatus.PENDING,
+      volunteer: this.props.location.state.volunteer
+    }
+    this.props.createInvitation(invitation)
+  }
+
   render() {
-    console.log(this.props.activeOpportunities)
     return (
       <div>
         <Grid container spacing={3} direction="column">
@@ -134,10 +146,11 @@ class VolunteerProfile extends React.Component <
                 </IconButton>
               </Grid>
               {
-                this.props.activeOpportunities.map((event) => 
+                this.props.activeOpportunities.map((event: Event) => 
                   <Grid item xs={12}>
                     <Card square style={{ padding: "10px" }}>
                       <CardActionArea onClick={() => {
+                        this.sendInvitation(event);
                         this.setState({openModal: false, openSnackbar: true});
                       }}>
                         <Typography variant="body1">{event.eventName}</Typography>
@@ -165,7 +178,9 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch : any) => ({
   fetchActiveEvents: (userType: number, userId: string) =>
-  dispatch(fetchActiveEventsService(userType, userId)),
+    dispatch(fetchActiveEventsService(userType, userId)),
+  createInvitation: (invitation: Invitation) => 
+    dispatch(createInvitationService(invitation))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps) (VolunteerProfile);
