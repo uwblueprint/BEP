@@ -84,11 +84,11 @@ export function fetchVolunteersOfEventService(event: Event) {
   };
 }
 
-export function fetchEventInvitationsService(event:Event){
-    return (dispatch: any) => {
-        return getEventInvitations(event.id).then((res: any) => {
-            dispatch(fetchEventInvitations(event, res.data));
-            return res;
-        });
-    };
+export function fetchEventInvitationsService(event: Event) {
+  return (dispatch: any) => {
+    return getEventInvitations(event.id).then((res: any) => {
+      dispatch(fetchEventInvitations(event, res.data));
+      return res;
+    });
+  };
 }

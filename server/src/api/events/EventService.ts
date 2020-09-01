@@ -16,12 +16,12 @@ const eventVolunteerApi: string = 'EventVolunteers__r';
 const eventFields: string =
     'Id, Name, isActive__c, isPublic__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
     'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, ' +
-    'schoolTransportation__c, contact__c, ApplicantNumber__c, invitationNumber__c';
+    'schoolTransportation__c, contact__c, ApplicantNumber__c, invitationNumber__c, School__c';
 
 const eventApplicantFields: string =
     'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, applicantCompany__c, accepted__c, denied__c';
 const eventInvitationFields: string =
-    'Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c';
+    'Id, Name, job__c, personalPronouns__c, sectors__c, linkedInUrl__c, areasOfExpertise__c, employmentStatus__c, status__c, EventInvitations__c';
 const eventVolunteerFields: string = 'Name, volunteerJob__c, volunteerPersonalPronouns__c, volunteerCompany__c';
 
 /**
@@ -39,7 +39,7 @@ const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
         contact__c: event.contact.id,
         endDate__c: event.endDate,
         Name: event.eventName,
-        gradeOfStudents__c: event.gradeOfStudents,
+        gradeOfStudents__c: arrayToPicklistString(event.gradeOfStudents),
         hoursCommitment__c: event.hoursCommitment,
         ...(id && { Id: id }),
         isActive__c: event.isActive,
@@ -62,7 +62,7 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
         contact: (await UserService.getUser({ id: record.contact__c })) as Educator,
         endDate: record.endDate__c,
         eventName: record.Name,
-        gradeOfStudents: record.gradeOfStudents__c,
+        gradeOfStudents: picklistStringToArray(record.gradeOfStudents__c),
         hoursCommitment: record.hoursCommitment__c,
         id: record.Id,
         invitationNumber: record.invitationNumber__c,
@@ -79,36 +79,38 @@ const salesforceEventToEventModel = async (record: any): Promise<Event> => {
     return event;
 };
 
-// const salesforceApplicantToEventAppliantModel = (record: any): EventApplicantInterface => {
-//     const applicant: EventApplicantInterface = {
-//         applicantName: record.Name,
-//         personalPronouns: record.personalPronouns__c,
-//         job: record.job__c,
-//         sectors: record.sectors__c,
-//         linkedinUrl: record.linkedInUrl__c,
-//         areasOfExpertise: record.areasOfExpertise__c,
-//         employmentStatus: record.employmentStatus__c,
-//         accepted: record.accepted__c,
-//         denied: record.denied__c,
-//         company: record.applicantCompany__c
-//     };
-
-//     return applicant;
-// };
-
 const salesforceInvitationToEventInvitationModel = (record: any): EventInvitationInterface => {
     const invitation: EventInvitationInterface = {
+        id: record.Id,
         invitationName: record.Name,
         personalPronouns: record.personalPronouns__c,
         job: record.job__c,
         sectors: record.sectors__c,
         linkedinUrl: record.linkedInUrl__c,
         areasOfExpertise: record.areasOfExpertise__c,
-        employmentStatus: record.employmentStatus__c
+        employmentStatus: record.employmentStatus__c,
+        status: record.status__c,
+        event: record.EventInvitations__c
     };
 
     return invitation;
 };
+
+const invitationModelToSalesforceInvitation = (invitation: EventInvitationInterface): any => {
+    const salesforceInvitation: any = {
+        Id: invitation.id,
+        Name: invitation.invitationName,
+        personalPronouns__c: invitation.personalPronouns,
+        job__c: invitation.job,
+        sectors__c: invitation.sectors,
+        linkedinUrl__c: invitation.linkedinUrl,
+        areasOfExpertise__c: invitation.areasOfExpertise,
+        employmentStatus__c: invitation.employmentStatus,
+        status__c: invitation.status,
+        EventInvitations__c: invitation.event,
+    };
+    return salesforceInvitation;
+}
 
 const salesforceEventVolunteerToEventVolunteerModel = (record: any): EventVolunteerInterface => {
     const volunteer: EventVolunteerInterface = {
@@ -172,6 +174,8 @@ export const getEvents = async (limit: number, offset: number, filter: 'active' 
     await Promise.all(eventPromises).then(resolvedEvents => {
         events = resolvedEvents;
     });
+
+    console.log("These are the events", events)
 
     return events;
 };
@@ -291,6 +295,22 @@ export const getInvitations = async (eventName: string): Promise<EventInvitation
     return invitations;
 };
 
+export const updateInvitations = async (invitation: EventInvitationInterface): Promise<EventInvitationInterface> => {
+    delete invitation.event
+    let newInvitation = invitationModelToSalesforceInvitation(invitation)
+    let updatedInvitation: EventInvitationInterface = conn
+            .sobject("EventInvitation__c")
+            .update(newInvitation, function (err, ret) {
+                if (err || !ret.success) {
+                    return console.error(err, ret)
+                }
+            });
+
+    return updatedInvitation
+}
+
+
+
 export const getVolunteers = async (eventName: string): Promise<EventVolunteerInterface> => {
     let volunteers: EventVolunteerInterface;
     console.log('This is the event Name:', eventName);
@@ -328,14 +348,30 @@ export const update = async (id: string, event: Event): Promise<Event> => {
 // create new user object in salesforce with fields
 // Currently fields do not populate unless hard coded strings are passed into the .create() method, not sure if postman issue or something else
 export const create = async (event: Event): Promise<string> => {
+    const userObject = await UserService.getUser({email: event.contact.email})
+
+    let newContactObject = userObject as Educator
+    
+    const newEvent: Event = event
+    newEvent.contact = newContactObject
+
+    console.log("This is the new event", newEvent)
+
+    console.log(newEvent)
+    console.log("Salesforce Event", eventModelToSalesforceEvent(newEvent))
+
     const eventInfo: { id: string; success: boolean; errors: Error[] } = await conn
-        .sobject(event)
-        .create(eventModelToSalesforceEvent(event), (err: Error, result: any) => {
+        .sobject(eventApi)
+        .create(eventModelToSalesforceEvent(newEvent), (err: Error, result: any) => {
             if (err || !result.success) {
                 return console.error(err, result);
             }
-        });
-    return eventInfo.id;
+    });
+
+    console.log(eventInfo)
+
+    return eventInfo.id
+
 };
 
 // Delete a user by name (should be changed to ID in the future once ID field in salesforce is figured out)

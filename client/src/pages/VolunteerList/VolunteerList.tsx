@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 import { connect } from "react-redux";
 
@@ -87,7 +88,7 @@ class VolunteerList extends React.Component<
 
     if (user) {
       // whatever the redirect route is supposed to be
-      history.push("/volunteers");
+      history.push("/volunteer-list");
     }
 
     this.getFilters = this.getFilters.bind(this);
@@ -101,7 +102,7 @@ class VolunteerList extends React.Component<
     );
     this.createHandleSelectFilter = this.createHandleSelectFilter.bind(this);
     this.handleSearchFormSubmit = this.handleSearchFormSubmit.bind(this);
-    this.filterSingleField = this.filterSingleField.bind(this);
+    // this.filterSingleField = this.filterSingleField.bind(this);
     this.filterAllFields = this.filterAllFields.bind(this);
     this.fetchVolunteers = this.fetchVolunteers.bind(this);
     this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
@@ -309,17 +310,18 @@ class VolunteerList extends React.Component<
     return (volunteer: Volunteer, filter: string) => true;
   };
 
-  filterSingleField(
-    volunteers: Volunteer[],
-    fieldName: string,
-    filter: string
-  ) {
-    let filterFunction = this.getFilterFunction(fieldName);
+  //commented this out because this function never gets used
+  // filterSingleField(
+  //   volunteers: Volunteer[],
+  //   fieldName: string,
+  //   filter: string
+  // ) {
+  //   let filterFunction = this.getFilterFunction(fieldName);
 
-    return volunteers.filter((volunteer: Volunteer) =>
-      filterFunction(volunteer, filter)
-    );
-  }
+  //   return volunteers.filter((volunteer: Volunteer) =>
+  //     filterFunction(volunteer, filter)
+  //   );
+  // }
 
   filterAllFields(volunteers: Volunteer[]) {
     const newVolunteers = volunteers.filter((volunteer: Volunteer) => {
@@ -385,6 +387,7 @@ class VolunteerList extends React.Component<
 
     picklistTypes.forEach((type: PicklistType) => {
       this.props.fetchPicklists(type).then(() => {
+        console.log("HELLO THERE" + this.props.picklists);
         const picklists = this.props.picklists;
         const filters = this.state.filters;
 
