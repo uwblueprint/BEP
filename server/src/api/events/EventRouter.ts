@@ -4,7 +4,6 @@
 
 import * as Express from 'express';
 import * as EventService from './EventService';
-import { EventInvitationInterface } from './EventInterface';
 // import Event from './EventInterface';
 
 /**
