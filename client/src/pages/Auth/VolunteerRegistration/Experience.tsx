@@ -9,6 +9,7 @@ import {
     OutlinedTextField
   } from "../../../components/index";
 import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
 
 interface IComponentProps {
   currentStep: number;
@@ -27,8 +28,26 @@ interface IComponentProps {
     extraDescription: string; // other info i'd like schools to read
   };
   picklistInfo: any;
+  picklists: {
+    expertiseAreas: { list: string[] };
+    languages: { list: string[] };
+    grades: { list: string[] }; // grade levels willing to volunteer with
+    locations: { list: string[] };
+
+    // uncomment these out once you set up all these routes Faizaan
+    localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
+    professionalAssociations: { list: string[] };
+    employmentStatus: { list: string[] };
+    sectors: { list: string[] }; // somehow need to get picklist of
+    size: { list: string[] };
+    introductionMethod: { list: string[] };
+    volunteerDesiredExternalActivities: { list: string[] };
+    volunteerDesiredInternalActivities: { list: string[] };
+    postSecondaryTraining: { list: string[] };
+  };
   handleChange: any; // () => void????
   handleNestedChange: any;
+  handleNestedChangePicklist: any;
 }
 
 interface IComponentState {
@@ -84,9 +103,23 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                 Employment Status
                             </BlackHeaderTypography>
                             <Select
-                                native
-                                value=""
-                                onChange={(event) => this.props.handleNestedChange(event)}></Select>
+                                value={this.props.picklistInfo.employmentStatus}
+                                name="employmentStatus"
+                                displayEmpty
+                                disableUnderline={true}
+                                onChange={this.props.handleNestedChangePicklist}>
+                                    <MenuItem value="" disabled>
+                                        Select your employment status
+                                    </MenuItem>
+                                    {Array.from(
+                                        this.props.picklists.employmentStatus.list.entries(),
+                                        (entry) => entry
+                                    ).map((entry, index) => (
+                                        <MenuItem key={index} value={entry[1]}>
+                                        {entry[1]}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
                         </FormControl>
                         </Grid>
 

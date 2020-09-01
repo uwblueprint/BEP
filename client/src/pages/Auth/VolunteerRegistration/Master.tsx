@@ -182,6 +182,8 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
     this.handleNestedChange = this.handleNestedChange.bind(this);
     this.handleNestedChangeExperience = this.handleNestedChangeExperience.bind(this)
+    this.handleNestedChangePicklist = this.handleNestedChangePicklist.bind(this)
+
     this.handleChange = this.handleChange.bind(this);
     this._next = this._next.bind(this);
     this._prev = this._prev.bind(this);
@@ -250,7 +252,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
   };
 
-  handleNestedChangeExperienceText = (inputName: any) => {
+  handleNestedChangeExperience = (inputName: any) => {
       console.log(inputName)
       const experience = this.state.experience
 
@@ -270,15 +272,17 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 
   handleNestedChangePicklist = (inputName: any) => {
     console.log(inputName)
-    const experience = this.state.experience
+    const experience = this.state.picklistInfo
 
     return (event: any) => {
     event.preventDefault()
     const newValue = event.target.value;
     const name = event.target.name;
+    
+    console.log("Reacted", event.target)
 
     this.setState({
-      experience: {
+      picklistInfo: {
         ...inputName,
         [name]: newValue,
       },
@@ -369,7 +373,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
                   handleNestedChange={this.handleNestedChangeExperience}
+                  handleNestedChangePicklist={this.handleNestedChangePicklist}
                   experience={this.state.experience}
+                  picklists={this.props.picklists}
                   picklistInfo={this.state.picklistInfo}
                 />
                 {this.previousButton}
