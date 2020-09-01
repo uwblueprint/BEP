@@ -229,11 +229,9 @@ export const create = async (user: Educator): Promise<string> => {
         .sobject(siteUser)
         .create(userModelToSalesforceUser(user), (err: Error, result: any) => {
             if (err || !result.success) {
-                console.log('1');
                 return console.error(err, result);
             }
         });
-    console.log('2');
     return userInfo.id;
 };
 

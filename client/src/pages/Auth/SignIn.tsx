@@ -38,6 +38,7 @@ class SignIn extends React.Component<
     selectUser: string;
     failed: boolean;
     redirect: boolean;
+    isRegistered: boolean;
     // remove this after beta
     gatedUser: boolean;
   }
@@ -53,6 +54,7 @@ class SignIn extends React.Component<
       selectUser: "",
       // remove this after beta
       gatedUser: false,
+      isRegistered: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -64,6 +66,13 @@ class SignIn extends React.Component<
     if (user) {
       this.setState({ ...this.state, redirect: true });
     }
+
+    let search = this.props.location.search;
+    if (search) {
+      search = search.replace("?", "");
+    }
+    const isRegistered = (search === "registered");
+    this.setState({ ...this.state, isRegistered })
   }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +100,7 @@ class SignIn extends React.Component<
         localStorage.setItem("userType", data.user.userType);
         window.location.reload();
       } else {
-        this.setState({ ...this.state, failed: true });
+        this.setState({ ...this.state, failed: true, isRegistered: false });
       }
     }
   };
@@ -101,7 +110,8 @@ class SignIn extends React.Component<
   };
 
   render() {
-    const { failed, redirect, gatedUser } = this.state;
+
+    const { failed, redirect, gatedUser, isRegistered } = this.state;
     if (redirect) {
       const userType = localStorage.getItem("userType");
       if (userType && parseInt(userType) === UserType.Admin) {
@@ -203,6 +213,11 @@ class SignIn extends React.Component<
                     <RedTextTypography style={{ fontSize: "0.85em" }}>
                       Our site is currently in beta. Please check back September 8th.
                     </RedTextTypography>
+                  ) : null}
+                  {isRegistered && !(gatedUser || failed) ? (
+                    <SecondaryMainTextTypography style={{ fontSize: "0.85em" }}>
+                      Registration complete. Please login.
+                    </SecondaryMainTextTypography>
                   ) : null}
                 </Grid>
                 <Typography variant="body1" style={{ margin: "4% 0" }}>
