@@ -3,8 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card';
-import {Event} from '../../../data/types/eventTypes'
-
+import { PageViewer } from "../../../data/types/pageTypes";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -204,7 +203,7 @@ const EventSection = (props: any) => {
           </Grid>
         </Grid>
       </Card>
-      {props.isEducator && (
+      {props.isEducator || props.viewerType === PageViewer.volunteer && (
         <Card className={classes.bottomCard} elevation={0}>
           <Typography
             variant="h6"
@@ -213,7 +212,7 @@ const EventSection = (props: any) => {
             }}
           >
             {" "}
-            Details{" "}
+            Contact Details{" "}
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={6}>
@@ -265,14 +264,30 @@ const EventSection = (props: any) => {
           </Grid>
         </Card>
       )}
-      <Grid container direction="row" justify="flex-end" alignItems="flex-end">
-        <Typography
-          variant="body1"
-          style={{ fontSize: "12px", opacity: "0.7" }}
-        >
-          Posting expires on {eventExpiryDate}
-        </Typography>
-      </Grid>
+      { props.viewerType !== PageViewer.volunteer ? 
+        <Grid container direction="row" justify="flex-end" alignItems="flex-end">
+          <Typography
+            variant="body1"
+            style={{ fontSize: "12px", opacity: "0.7" }}
+          >
+            Posting expires on {eventExpiryDate}
+          </Typography>
+        </Grid> : null
+      } 
+      { props.viewerType === PageViewer.volunteer ? 
+        <Grid container direction="column" justify="center" alignItems="center" style={{ marginTop:"8%" }}>
+          <Typography variant="body1">Can't make the event anymore?</Typography>
+          <Typography variant="body2">Cancel Attendance</Typography>
+        </Grid>
+        : null 
+      }
+      { props.viewerType === PageViewer.applicant ? 
+        <Grid container direction="column" justify="center" alignItems="center" style={{ marginTop:"8%" }}>
+          <Typography variant="body1">No longer interested in the event?</Typography>
+          <Typography variant="body2">Withdraw Application</Typography>
+        </Grid>
+        : null 
+      }
     </div>
   );
 };

@@ -69,7 +69,6 @@ export default function EventCard(props: any) {
   const classes = useStyles();
 
   const type = props.type ? props.type : PageViewer.unknown;
-  console.log(props);
 
   return (
     <div className={classes.root}>
@@ -110,7 +109,7 @@ export default function EventCard(props: any) {
                 Grades of participating students
               </Typography>
               <Typography variant="body1">
-                {props.event.gradeOfStudents}
+                {props.event.gradeOfStudents.join(", ")}
               </Typography>
             </Grid>
             <Grid item xs={6}>

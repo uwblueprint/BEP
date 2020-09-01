@@ -32,6 +32,7 @@ import CreateIcon from "@material-ui/icons/Create";
 import Card from "@material-ui/core/Card";
 import Container from "@material-ui/core/Container";
 
+/* Types */
 import { Event } from "../../../data/types/eventTypes";
 import { User, UserType, Volunteer } from "../../../data/types/userTypes";
 import Application, {
@@ -40,7 +41,9 @@ import Application, {
 import Invitation, {
   InvitationStatus,
 } from "../../../data/types/invitationTypes";
+import { PageViewer } from "../../../data/types/pageTypes";
 
+/* Selectors */
 import {
   getEventApplications,
   getEventInvitations,
@@ -48,6 +51,7 @@ import {
 } from "../../../data/selectors/eventsSelector";
 import { getUser } from "../../../data/selectors/userSelector";
 
+/* Services */
 import {
   fetchEventApplicationsService,
   fetchVolunteersOfEventService,
@@ -132,8 +136,11 @@ const EventPage = (props: any) => {
     fetchEventVolunteers,
     updateEvent,
   } = props;
+
   const userId = user ? user.id : "";
   const eventData = props.location.state.event;
+  const viewerType = props.location.state.type;
+
   const isEducator = user.userType === UserType.Educator;
   const isVolunteer = user.userType === UserType.Volunteer;
   const validApplications = applications.filter(
@@ -143,8 +150,6 @@ const EventPage = (props: any) => {
   const validInvitations = invitations.filter(
     (invitation: Invitation) => invitation.status === InvitationStatus.PENDING
   );
-  // todo: see if volunteering for this event for bottom functionality + contact details
-  // const isVolunteering = false;
   const [value, setValue] = React.useState<number>(0);
   const [publicEvent, setPublicEvent] = React.useState({
     checked: eventData.isPublic,
@@ -291,7 +296,8 @@ const EventPage = (props: any) => {
                     </Typography>
                     <Typography variant="h1">{eventData.eventName}</Typography>
                   </Grid>
-                  {(isVolunteer || isEducator) && (
+                  {(isVolunteer || isEducator) && viewerType !== PageViewer.applicant &&
+                    viewerType !== PageViewer.invitee && viewerType !== PageViewer.volunteer && (
                     <Grid item style={{ paddingTop: "50px" }}>
                       {isVolunteer ? (
                         <ContainedButton
@@ -333,7 +339,7 @@ const EventPage = (props: any) => {
               </Grid>
             </PageHeader>
             <PageBody>
-              <EventSection event={eventData} isEducator={isEducator} />
+              <EventSection event={eventData} isEducator={isEducator} viewerType={viewerType} />
               {isEducator && (
                 <React.Fragment>
                   <Typography

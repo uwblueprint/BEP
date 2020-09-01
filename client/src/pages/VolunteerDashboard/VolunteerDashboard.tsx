@@ -158,7 +158,7 @@ const EventPage: React.SFC<Props> =
         <Link
           to={{
             pathname: `/events/${event.eventName}`,
-            state: { event },
+            state: { event, type },
           }}
           style={{ textDecoration: "none" }}
         >
