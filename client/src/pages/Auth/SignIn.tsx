@@ -228,7 +228,7 @@ class SignIn extends React.Component<
                     style={{ width: "90%" }}
                   />
                 </Grid>
-                <Link target="_blank" href="/">
+                <Link href="/">
                   <SecondaryMainTextTypography
                     style={{ fontSize: "0.9em", marginTop: "2%" }}
                   >

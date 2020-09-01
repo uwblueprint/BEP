@@ -3,6 +3,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card';
+import { TextButton } from "../../../components/index";
+
 import { PageViewer } from "../../../data/types/pageTypes";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -277,14 +279,18 @@ const EventSection = (props: any) => {
       { props.viewerType === PageViewer.volunteer ? 
         <Grid container direction="column" justify="center" alignItems="center" style={{ marginTop:"8%" }}>
           <Typography variant="body1">Can't make the event anymore?</Typography>
-          <Typography variant="body2">Cancel Attendance</Typography>
+          <TextButton>
+            <Typography variant="body2">Cancel Attendance</Typography>
+          </TextButton>
         </Grid>
         : null 
       }
       { props.viewerType === PageViewer.applicant ? 
         <Grid container direction="column" justify="center" alignItems="center" style={{ marginTop:"8%" }}>
           <Typography variant="body1">No longer interested in the event?</Typography>
-          <Typography variant="body2">Withdraw Application</Typography>
+          <TextButton>
+            <Typography variant="body2">Withdraw Application</Typography>
+          </TextButton>
         </Grid>
         : null 
       }
