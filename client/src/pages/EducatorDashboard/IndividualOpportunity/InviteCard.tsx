@@ -1,6 +1,8 @@
 import React from 'react'
 import { makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,9 +10,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog'
+import {retractInvitation} from '../../../utils/eventsApiUtils'
 
 import { ContainedButton, Button, OutlinedButton } from '../../../components/Button'
 
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+  
 export interface DialogProps {
     open: boolean;
 }
@@ -52,14 +59,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const InviteCard = (props: any) => {
+    console.log("The Invite Card Props", props)
     const classes = useStyles()
     const [open, setOpen] = React.useState(false);
+    const [snackbarState, setSnackbarState] = React.useState(false)
+
+    const buttonEnabled = props.info.invite.status !== "Retracted" ? true : false;
 
     const handleClickOpen = () => {
         setOpen(true)
     }
 
     const handleClickAcceptClose = () => {
+        //Retract the Invitation
+        const id = props.info.invite.id as string
+        console.log("The ID", id)
+        retractInvitation(id)
         setOpen(false)
     }
 
@@ -67,8 +82,21 @@ const InviteCard = (props: any) => {
         setOpen(false)
     }
 
+    const handleSnackbarClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+          return;
+    }
+
+    setSnackbarState(false)
+};
+
     return (
     <Card className={classes.card} elevation={0}>
+         <Snackbar open={snackbarState} autoHideDuration={6000} onClose={handleSnackbarClose}>
+            <Alert onClose={handleSnackbarClose} severity="info">
+                You have accepted {props.info.invite.invitationName} for this event.
+            </Alert>
+      </Snackbar>
     <Grid container spacing={2}>
         <Grid item xs={9}>
             <Typography variant="h5" component="h2">
@@ -79,7 +107,7 @@ const InviteCard = (props: any) => {
             </Typography>
         </Grid>
         <Grid container xs={3} alignItems="flex-end" justify="flex-end" style={{paddingBottom: '50px'}}>
-            <Button onClick={handleClickOpen}>
+            <Button onClick={handleClickOpen} disabled={!buttonEnabled}>
             <Typography variant="body2" component="h5" className={classes.retract}>
                     Retract Invitations
             </Typography>

@@ -1,4 +1,4 @@
-import School from "./schoolTypes";
+import { School } from "./schoolListTypes";
 
 export enum UserType {
   Admin = 0,
@@ -22,6 +22,8 @@ export interface User {
 
 export interface Educator extends User {
   educatorDesiredActivities: string[];
+  moreInfo: string[];
+  introductionMethod: string;
   position: string;
   school: School;
 }

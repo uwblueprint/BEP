@@ -115,6 +115,12 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiOutlinedInput: {
+      input: {
+        height: "40px",
+        padding: "0px 15px",
+      },
+    },
     MuiTabs: {
       flexContainer: {
         margin: "1em 0em",

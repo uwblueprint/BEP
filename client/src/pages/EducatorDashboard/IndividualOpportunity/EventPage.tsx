@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -283,6 +284,7 @@ const EventPage = (props: any) => {
                   </Grid>
                   {(isVolunteer || isEducator) && (
                     <Grid item style={{ paddingTop: "50px" }}>
+                      {isVolunteer ? 
                       <ContainedButton
                         style={{ paddingRight: 15, paddingLeft: 15 }}
                         onClick={handleOpenDialog}
@@ -295,8 +297,22 @@ const EventPage = (props: any) => {
                             : false
                         }
                       >
-                        {isVolunteer ? "Apply For Event" : "Duplicate Details"}
-                      </ContainedButton>
+                        Apply for event
+                      </ContainedButton> :
+                      <Link
+                      to={{
+                        pathname: `/newevent`,
+                        state: { event: eventData },
+                      }}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <ContainedButton
+                        style={{ paddingRight: 15, paddingLeft: 15 }}
+                      >
+                      Duplicate Details
+                    </ContainedButton>
+                    </Link>
+                      }
                     </Grid>
                   )}
                 </Grid>
