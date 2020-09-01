@@ -1,5 +1,7 @@
 import React from "react";
 
+import { withStyles } from "@material-ui/core/styles";
+
 import {
   ContainedSelect,
   ContainedButton,
@@ -13,17 +15,44 @@ import {
   BlackTextTypography,
 } from "../../../components/index";
 
+import Divider from "@material-ui/core/Divider";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+
+import Grid from "@material-ui/core/Grid";
+import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+
 interface IComponentProps {
   currentStep: number;
   personalInfo: any;
   picklistInfo: any;
   handleNestedChange: any;
   handleChange: any; // () => void????
+  classes: {
+    formSection: any;
+    textField: any;
+    dropDowns: any;
+  };
 }
 
 interface IComponentState {
   test: string;
 }
+
+const styles = () => ({
+  formSection: {
+    padding: "2.5em 3em 0.5em 3em",
+  },
+  textField: {
+    marginBottom: "26px",
+    marginTop: "4px",
+  },
+  dropDowns: {
+    marginTop: "4px",
+    width: "45%",
+  },
+});
 
 class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
   render() {
@@ -34,53 +63,139 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
 
     // The markup for the Step 1 UI
     return (
-      <div>
-        <BlackHeaderTypography style={{ marginBottom: "2em" }}>
-          Account Information
-        </BlackHeaderTypography>
+      <React.Fragment>
+        <div className="form-group">
+          <div style={{ height: "100vh" }}>
+            <Grid container style={{ height: "100%" }}>
+              <Grid
+                container
+                spacing={4}
+                direction="column"
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: "2px",
+                  margin: "2em 0em",
+                }}
+              >
+                <div className={this.props.classes.formSection}>
+                  <Grid item>
+                    <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                      Account Information
+                    </BlackHeaderTypography>
+                  </Grid>
 
-        <BlackHeaderTypography>Email*</BlackHeaderTypography>
-        <OutlinedTextField
-          placeholder="e.g. name@email.com"
-          name="email"
-          value={this.props.personalInfo.email}
-          onChange={this.props.handleNestedChange(this.props.personalInfo)}
-          required={true}
-          isRequired="true"
-        />
-        <BlackHeaderTypography>Account Password*</BlackHeaderTypography>
-        <OutlinedTextField
-          placeholder="At least 8 characters"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          value={this.props.personalInfo.password}
-          onChange={this.props.handleNestedChange(this.props.personalInfo)}
-        />
-        <BlackHeaderTypography>Confirm Password*</BlackHeaderTypography>
-        <OutlinedTextField
-          placeholder="At least 8 characters"
-          name="confirmPassword"
-          value={this.props.personalInfo.confirmPassword}
-          type="password"
-          autoComplete="current-password"
-          onChange={this.props.handleNestedChange(this.props.personalInfo)}
-        />
-      </div>
-      //   <div className="form-group">
-      //     <label htmlFor="email">Email address</label>
-      //     <input
-      //       className="form-control"
-      //       id="email"
-      //       name="email"
-      //       type="text"
-      //       placeholder="Enter email"
-      //       value={this.props.personalInfo.email} // Prop: The email input data
-      //       onChange={this.props.handleNestedChange(this.props.personalInfo)} // Prop: Puts data into state
-      //     />
-      //   </div>
+                  <Grid item direction="column">
+                    <BlackHeaderTypography>Email*</BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="e.g. name@email.com"
+                      name="email"
+                      value={this.props.personalInfo.email}
+                      className={this.props.classes.textField}
+                      onChange={this.props.handleNestedChange(
+                        this.props.personalInfo
+                      )}
+                      required={true}
+                      isRequired="true"
+                    />
+                  </Grid>
+
+                  <Grid item direction="column">
+                    <BlackHeaderTypography>
+                      Account Password*
+                    </BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="At least 8 characters"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      value={this.props.personalInfo.password}
+                      className={this.props.classes.textField}
+                      onChange={this.props.handleNestedChange(
+                        this.props.personalInfo
+                      )}
+                    />
+                  </Grid>
+                  <Grid item direction="column">
+                    <BlackHeaderTypography>
+                      Confirm Password*
+                    </BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="At least 8 characters"
+                      name="confirmPassword"
+                      value={this.props.personalInfo.confirmPassword}
+                      className={this.props.classes.textField}
+                      type="password"
+                      autoComplete="current-password"
+                      onChange={this.props.handleNestedChange(
+                        this.props.personalInfo
+                      )}
+                    />
+                  </Grid>
+                </div>
+                <Divider />
+
+                <div className={this.props.classes.formSection}>
+                  <Grid item direction="column">
+                    <BlackHeaderTypography>First Name*</BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="e.g. John"
+                      name="firstName"
+                      value={this.props.personalInfo.firstName}
+                      className={this.props.classes.textField}
+                      type="firstName"
+                      onChange={this.props.handleNestedChange(
+                        this.props.personalInfo
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid item direction="column">
+                    <BlackHeaderTypography>Last Name*</BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="e.g. Doe"
+                      name="lastName"
+                      value={this.props.personalInfo.lastName}
+                      className={this.props.classes.textField}
+                      type="lastName"
+                      onChange={this.props.handleNestedChange(
+                        this.props.personalInfo
+                      )}
+                    />
+
+                    <BlackHeaderTypography>
+                      Preferred Pronouns*
+                    </BlackHeaderTypography>
+                    <FormControl
+                      required
+                      className={this.props.classes.dropDowns}
+                    >
+                      <Select
+                        value={this.props.personalInfo.preferredPronouns}
+                        onChange={this.props.handleNestedChange(
+                          this.props.personalInfo
+                        )}
+                        name="preferredPronouns"
+                        displayEmpty
+                        disableUnderline={true}
+                        // className={this.props.classes.selectField}
+                      >
+                        <MenuItem value="" disabled>
+                          Select your preferred pronoun
+                        </MenuItem>
+                        <MenuItem value="she/her">She/Her</MenuItem>
+                        <MenuItem value="he/him">He/Him</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </div>
+              </Grid>
+            </Grid>
+          </div>
+        </div>
+      </React.Fragment>
     );
   }
 }
 
-export default PersonalInfo;
+export default withStyles(styles)(PersonalInfo);
