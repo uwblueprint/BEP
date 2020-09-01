@@ -211,25 +211,29 @@ const EventPage: React.SFC<Props> =
               </Grid>
           </TabPanel>
           <TabPanel value={value} index={1}>
-            {applications.length === 0 ? 
-              <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
-                  <div>You do not currently have any pending applications.</div>
-                  <div style={{margin:"1% 0"}}>Click 'Browse Opportunities' to get started.</div>
-              </Typography> :
-            applications.map((application: any) =>
-              createOpportunityCard(application.event)
-            )}
+            <Grid item container spacing={4} direction="column" alignItems="center" justify="center">
+              {applications.length === 0 ? 
+                <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
+                    <div>You do not currently have any pending applications.</div>
+                    <div style={{margin:"1% 0"}}>Click 'Browse Opportunities' to get started.</div>
+                </Typography> :
+              applications.map((application: any) =>
+                createOpportunityCard(application.event)
+              )}
+            </Grid>
           </TabPanel>
           <TabPanel value={value} index={2}>
-            {invitations.length === 0 ? 
-              <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
-                  <div>You do not currently have any pending invitations.</div>
-                  <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Upcoming Opportunities' to see events you've volunteered for!</div>
-                  <div>You can also click 'Browse Opportunities' to get started.</div>
-              </Typography> :
-            invitations.map((invitation: any) =>
-              createOpportunityCard(invitation.event)
-            )}
+            <Grid item container spacing={4} direction="column" alignItems="center" justify="center">
+              {invitations.length === 0 ? 
+                <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
+                    <div>You do not currently have any pending invitations.</div>
+                    <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Upcoming Opportunities' to see events you've volunteered for!</div>
+                    <div>You can also click 'Browse Opportunities' to get started.</div>
+                </Typography> :
+              invitations.map((invitation: any) =>
+                createOpportunityCard(invitation.event)
+              )}
+            </Grid>
           </TabPanel>
         </PageBody>
       </Grid>

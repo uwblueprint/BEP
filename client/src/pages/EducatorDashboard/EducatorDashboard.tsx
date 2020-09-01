@@ -253,7 +253,7 @@ const EducatorDashboard: React.SFC<Props> = ({
               Your Opportunities
             </Typography>
 
-            <AppBar elevation={0} position="static" color="transparent">
+            <AppBar elevation={0} position="static" color="transparent" style={{ zIndex:1 }}>
               <Tabs
                 className={classes.tabs}
                 value={tabValue}

@@ -31,7 +31,6 @@ export const getVolunteerInvitations = createSelector(
 )
 
 const getVolunteerEventsData = (state: any) => {
-  console.log(state);
   return state.volunteers && state.volunteers.events ? state.volunteers.events : [];
 }
 
