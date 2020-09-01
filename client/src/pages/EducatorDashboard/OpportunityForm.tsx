@@ -276,7 +276,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             required
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
-                            InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                     </Grid>
                     <Grid item direction="column">
@@ -290,7 +289,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             required
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
-                            InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                     </Grid>
                     <Grid item direction="column">
@@ -305,6 +303,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             options={this.props.picklists.activityType.list}
                             getOptionLabel={(option) => option}
                             filterSelectedOptions
+                            size='small'
                             onChange={(_event, newValue) => {this.setState({activityType: newValue})}}
                             renderInput={(params) => (
                             <OutlinedTextField
@@ -329,6 +328,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             options={this.props.picklists.preferredSector.list}
                             getOptionLabel={(option) => option}
                             filterSelectedOptions
+                            size='small'
                             onChange={(_event, newValue) => {this.setState({preferredSector: newValue})}}
                             renderInput={(params) => (
                             <OutlinedTextField
@@ -371,7 +371,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                                     "aria-label": "change date",
                                 }}
                                 style={{ width: "454px"}}
-                                InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                         </Grid>
                         <Grid 
@@ -390,7 +389,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                                 inputVariant="outlined"
                                 id="time-picker-inline"
                                 style={{ width: "202px"}}
-                                InputProps={{ classes: { input: this.props.classes.input } }}
                                 keyboardIcon={<QueryBuilderIcon />}
                             />
                         </Grid>
@@ -408,7 +406,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                                 style={{ width: "202px"}}
                                 keyboardIcon={<QueryBuilderIcon />}
 
-                                InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                         </Grid>
                     </Grid>
@@ -436,7 +433,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                                     "aria-label": "change date",
                                 }}
                                 style={{ width: "202px"}}
-                                InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                         </Grid>
                         <Grid item direction="column">
@@ -455,7 +451,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                                     "aria-label": "change date",
                                 }}
                                 style={{ width: "202px"}}
-                                InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                         </Grid>
                     </Grid>
@@ -469,7 +464,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             value={this.state.numberOfHours}
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
-                            InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                     </Grid>
                     </React.Fragment>
@@ -487,7 +481,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                                 inputVariant="outlined"
                                 style={{ width: "454px"}}
 
-                                InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                         </Grid>                     
                     <Grid item direction="column">
@@ -502,7 +495,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             required
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
-                            InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                     </Grid>
                     <Grid item direction="column">
@@ -516,7 +508,6 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             value={this.state.numberOfStudents}
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
-                            InputProps={{ classes: { input: this.props.classes.input } }}
                             />
                     </Grid>
                     <Grid item direction="column" style={{paddingBottom: "32px"}}>
@@ -530,6 +521,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                         defaultValue={this.state.gradeOfStudents}
                         getOptionLabel={(option) => option}
                         filterSelectedOptions
+                        size='small'
                         onChange={(_event, newValue) => {this.setState({gradeOfStudents: newValue})}}
                         renderInput={(params) => (
                         <OutlinedTextField
