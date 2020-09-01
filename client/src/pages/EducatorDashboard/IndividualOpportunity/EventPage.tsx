@@ -456,26 +456,34 @@ const EventPage = (props: any) => {
                     </Grid>
                     <Grid item xs={3}>
                       <Grid container alignItems="flex-end" justify="flex-end">
-                        <ContainedButton>
-                          <Typography
-                            variant="body1"
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              fontWeight: 800,
-                              fontSize: "16px",
-                              lineHeight: "22px",
-                            }}
-                          >
-                            <CreateIcon
+                        <Link
+                          to={{
+                            pathname: `/newevent`,
+                            state: { event: eventData },
+                          }}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <ContainedButton>
+                            <Typography
+                              variant="body1"
                               style={{
-                                paddingRight: "10px",
-                                paddingBottom: "5px",
+                                display: "flex",
+                                alignItems: "center",
+                                fontWeight: 800,
+                                fontSize: "16px",
+                                lineHeight: "22px",
                               }}
-                            />
-                            Edit Opportunity
-                          </Typography>
-                        </ContainedButton>
+                            >
+                              <CreateIcon
+                                style={{
+                                  paddingRight: "10px",
+                                  paddingBottom: "5px",
+                                }}
+                              />
+                              Edit Opportunity
+                            </Typography>
+                          </ContainedButton>
+                        </Link>
                       </Grid>
                     </Grid>
                   </Grid>
