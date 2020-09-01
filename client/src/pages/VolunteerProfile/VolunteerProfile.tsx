@@ -5,7 +5,7 @@ import { getActiveEvents } from "../../data/selectors/eventsSelector";
 import { fetchActiveEventsService } from "../../data/services/eventsServices";
 
 import { Link, RouteComponentProps } from "react-router-dom";
-import {Card, Grid, IconButton, Modal, Snackbar, SnackbarContent, Typography} from "@material-ui/core";
+import {Card, CardActionArea, Grid, IconButton, Modal, Snackbar, SnackbarContent, Typography} from "@material-ui/core";
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import CloseIcon from "@material-ui/icons/Close";
 import { ContainedButton, PageBody, TextButton } from "../../components/index";
@@ -34,7 +34,7 @@ class VolunteerProfile extends React.Component <
     super(props);
     this.state = {
       openModal: false,
-      openSnackbar: true
+      openSnackbar: false
     };
   }
 
@@ -137,7 +137,11 @@ class VolunteerProfile extends React.Component <
                 this.props.activeOpportunities.map((event) => 
                   <Grid item xs={12}>
                     <Card square style={{ padding: "10px" }}>
-                      <Typography variant="body1">{event.eventName}</Typography>
+                      <CardActionArea onClick={() => {
+                        this.setState({openModal: false, openSnackbar: true});
+                      }}>
+                        <Typography variant="body1">{event.eventName}</Typography>
+                      </CardActionArea>
                     </Card>
                   </Grid>
                 )
