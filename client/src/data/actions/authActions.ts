@@ -5,7 +5,7 @@ export interface loginRequestAction {
   payload: any;
 }
 
-export const loginRequest = ( data: any ) => {
+export const loginRequest = (data: any) => {
   return {
     type: LOGIN_SUCCESS,
     payload: { data },
@@ -14,6 +14,6 @@ export const loginRequest = ( data: any ) => {
 
 export const loginFailed = () => {
   return {
-    type: LOGIN_FAILURE
-  }
-}
+    type: LOGIN_FAILURE,
+  };
+};

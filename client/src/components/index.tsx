@@ -18,13 +18,16 @@ import {
   WhiteCloseIcon,
 } from "./Icons";
 import {
+  WhiteTextTypography,
+  BlackHeaderTypography,
   BlackTextTypography,
   GreyBackgroundTextTypography,
-  RedTextTypography,
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
-  WhiteTextTypography,
+  RedTextTypography,
 } from "./Typography";
+import Dialog from "./Dialog";
+import DialogTitle from "./DialogTitle";
 
 export {
   ContainedButton,
@@ -47,9 +50,13 @@ export {
 };
 export {
   BlackTextTypography,
-  GreyBackgroundTextTypography,
+  BlackHeaderTypography,
   RedTextTypography,
+  GreyBackgroundTextTypography,
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
   WhiteTextTypography,
 };
+
+export { Dialog };
+export { DialogTitle };
