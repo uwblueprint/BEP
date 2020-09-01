@@ -10,10 +10,7 @@ const outlinedTextFieldStyle = (theme: Theme) =>
   });
 
 const OutlinedTextField = withStyles(outlinedTextFieldStyle)((props: any) => (
-  <TextField
-    variant="outlined"
-    {...props}
-  >
+  <TextField variant="outlined" {...props}>
     {props.children}
   </TextField>
 ));

@@ -1,6 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Redirect } from 'react-router';
+import { Redirect } from "react-router";
+
+import SelectUserBox from "./SelectUserBox";
+import VolunteerRegistration from "./VolunteerRegistration";
+import EducatorRegistration from "./EducatorRegistration";
 
 import {
   ContainedButton,
@@ -9,7 +13,7 @@ import {
   SecondaryMainTextTypography,
   GreyBackgroundTextTypography,
   RedTextTypography,
-  Link
+  Link,
 } from "../../components/index";
 
 import Typography from "@material-ui/core/Typography";
@@ -29,20 +33,28 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 class SignIn extends React.Component<
-    { login: any; history: any; location: any }, 
-    { password: string; email: string; failed: boolean; redirect: boolean; }
-  > {
-  constructor(props:any) {
+  { login: any; history: any; location: any },
+  {
+    password: string;
+    email: string;
+    selectUser: string;
+    failed: boolean;
+    redirect: boolean;
+  }
+> {
+  constructor(props: any) {
     super(props);
 
     this.state = {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       failed: false,
       redirect: false,
+      selectUser: "",
     };
-
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.setUserType = this.setUserType.bind(this);
   }
 
   componentDidMount() {
@@ -51,7 +63,7 @@ class SignIn extends React.Component<
       this.setState({ ...this.state, redirect: true });
     }
   }
-  
+
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     this.setState({ ...this.state, [id]: value });
@@ -59,7 +71,7 @@ class SignIn extends React.Component<
 
   handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const { email, password } = this.state;
     const { login } = this.props;
 
@@ -71,9 +83,13 @@ class SignIn extends React.Component<
         localStorage.setItem("userType", data.user.userType);
         window.location.reload();
       } else {
-        this.setState({ ...this.state, failed: true })
+        this.setState({ ...this.state, failed: true });
       }
     }
+  };
+
+  setUserType = (newValue: string) => {
+    this.setState({ selectUser: newValue });
   };
 
   render() {
@@ -81,11 +97,11 @@ class SignIn extends React.Component<
     if (redirect) {
       const userType = localStorage.getItem("userType");
       if (userType && parseInt(userType) === UserType.Admin) {
-        return <Redirect to="/opportunities" />
+        return <Redirect to="/opportunities" />;
       } else if (userType && parseInt(userType) === UserType.Educator) {
-        return <Redirect to="/events" />
+        return <Redirect to="/events" />;
       } else if (userType && parseInt(userType) === UserType.Volunteer) {
-        return <Redirect to="/dashboard" />
+        return <Redirect to="/dashboard" />;
       }
     }
 
@@ -152,19 +168,30 @@ class SignIn extends React.Component<
                 connect with a rewarding career
               </GreyBackgroundTextTypography>
             </Grid>
-            
-            <Grid item xs={5} style={{background:"white", height:"70vh", marginTop:"10vh", padding:"5%", borderRadius:"1%"}}>
-              <form
-                style={{ width: "100%" }}
-                onSubmit={this.handleSubmit}
-              >
-                <Typography variant="h6" style={{marginBottom: "4%"}}>
+
+            <Grid
+              item
+              xs={5}
+              style={{
+                background: "white",
+                height: "70vh",
+                marginTop: "10vh",
+                padding: "5%",
+                borderRadius: "1%",
+              }}
+            >
+              <form style={{ width: "100%" }} onSubmit={this.handleSubmit}>
+                <Typography variant="h6" style={{ marginBottom: "4%" }}>
                   Login to get started
                 </Typography>
-                <Grid style={{height:"30px", width: "100%"}}>
-                { failed ? <RedTextTypography style={{fontSize: "0.85em"}}>Incorrect email or password. Please try again.</RedTextTypography> : null }
+                <Grid style={{ height: "30px", width: "100%" }}>
+                  {failed ? (
+                    <RedTextTypography style={{ fontSize: "0.85em" }}>
+                      Incorrect email or password. Please try again.
+                    </RedTextTypography>
+                  ) : null}
                 </Grid>
-                <Typography variant="body1" style={{margin: "1% 0"}}>
+                <Typography variant="body1" style={{ margin: "1% 0" }}>
                   Email
                 </Typography>
                 <Grid item container direction="row">
@@ -221,11 +248,8 @@ class SignIn extends React.Component<
                   >
                     Login
                   </ContainedButton>
-                  <Link target="_blank" href="/">
-                    <SecondaryMainTextTypography style={{ fontSize: "0.9em" }}>
-                      Don't Have An Account? Sign Up
-                    </SecondaryMainTextTypography>
-                  </Link>
+
+                  <SelectUserBox setUserType={this.setUserType} />
                 </Grid>
               </form>
             </Grid>
