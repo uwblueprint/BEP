@@ -67,7 +67,8 @@ interface IComponentProps {
     volunteerDesiredInternalActivities: { list: string[] };
     postSecondaryTraining: { list: string[] };
   };
-  fetchPicklists: any
+  fetchPicklists: any;
+  fetchEmployerPicklists: any
 }
 
 interface IComponentState {
@@ -197,12 +198,13 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     fetchPicklists(PicklistType.grades)
     fetchPicklists(PicklistType.localPostSecondaryInstitutions)
     fetchPicklists(PicklistType.professionalAssociations)
-    fetchPicklists(PicklistType.employmentStatus)
-    fetchPicklists(PicklistType.sectors)
-    fetchPicklists(PicklistType.size)
+    fetchPicklists(PicklistType.employmentStatus)  
     fetchPicklists(PicklistType.introductionMethod)
     fetchPicklists(PicklistType.volunteerDesiredExternalActivities)
     fetchPicklists(PicklistType.volunteerDesiredInternalActivities)
+    const { fetchEmployerPicklists } = this.props
+    fetchEmployerPicklists(PicklistType.sectors)
+    fetchEmployerPicklists(PicklistType.size)
   }
 
   _next() {
@@ -415,7 +417,7 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: any) => ({
   fetchPicklists: (picklistType: PicklistType) =>
     dispatch(fetchUserPicklistService(picklistType)),
-  fetchEmployerPicklistService: (picklistType: PicklistType) =>
+  fetchEmployerPicklists: (picklistType: PicklistType) =>
     dispatch(fetchEmployerPicklistService(picklistType)),
 });
 
