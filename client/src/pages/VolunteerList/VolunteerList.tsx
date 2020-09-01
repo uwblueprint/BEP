@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 /* Services */
 import { fetchVolunteersService } from "../../data/services/volunteersServices";
@@ -437,7 +438,15 @@ class VolunteerList extends React.Component<
 
     const createVolunteerCard = (volunteer: Volunteer) => (
       <Grid item xs={12} key={volunteer.email}>
-        <VolunteerCard {...volunteer} />
+        <Link
+          to={{
+            pathname: `/volunteers/${volunteer.firstName}${volunteer.lastName}`,
+            state: { volunteer: volunteer, back: "/volunteers" }
+          }}
+          style={{ textDecoration: "none" }}
+        >
+          <VolunteerCard {...volunteer} />
+        </Link>
       </Grid>
     );
 

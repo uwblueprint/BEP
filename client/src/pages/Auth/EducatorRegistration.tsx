@@ -26,7 +26,6 @@ import {
 
 import { getSchools } from "../../data/selectors/schoolListSelector";
 
-import { baseURL } from "../../utils/ApiUtils";
 import { registerUser } from "../../utils/authApiUtils";
 
 import MenuItem from "@material-ui/core/MenuItem";
@@ -37,8 +36,8 @@ import Divider from "@material-ui/core/Divider";
 
 import { Grid } from "@material-ui/core";
 
-import axios from "axios";
 import { Link } from "react-router-dom";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import {
   ContainedSelect,
@@ -72,6 +71,7 @@ const styles = () => ({
   dropDowns: {
     marginTop: "4px",
     width: "45%",
+    marginBottom: "26px",
   },
   selectField: {
     border: "1px solid #bcbcbc",
@@ -109,21 +109,21 @@ interface IComponentState {
   confirmPassword: string;
   firstName: string;
   lastName: string;
-  preferredPronouns: string;
+  preferredPronouns: string | null;
   isSubscribed: boolean;
   phoneNumber: string;
-  schoolName: string;
+  schoolName: any;
   agreeConditions: boolean;
   filteredSchoolList: School[];
   picklistInfo: {
     educatorDesiredActivities: Map<string, boolean>;
     moreInfo: Map<string, boolean>;
-    position: string;
-    introductionMethod: string;
+    position: string | null;
+    introductionMethod: string | null;
   };
   schoolInfo: {
-    schoolBoard: string;
-    type: string;
+    schoolBoard: string | null;
+    type: string | null;
   };
 }
 
@@ -262,11 +262,12 @@ class EducatorRegistration extends React.Component<
         this.state.schoolInfo
       )) {
         const filterFunction = this.getFilterFunction(fieldName);
-
-        if (pass && !filterFunction(school, filterMap)) {
-          pass = false;
+        if (filterMap !== null) {
+          if (pass && !filterFunction(school, filterMap)) {
+            pass = false;
+          }
+          if (!pass) return false;
         }
-        if (!pass) return false;
       }
       return true;
     });
@@ -323,33 +324,21 @@ class EducatorRegistration extends React.Component<
   }
 
   handleChange = (event: any) => {
-    console.log("State Change");
-
     const { name, value } = event.target;
     this.setState({ ...this.state, [name]: value });
   };
 
-  handleschoolInfoChange = (event: any) => {
-    const { name, value } = event.target;
-
-    const schoolInfo = this.state.schoolInfo;
-    console.log("School Info Change");
-
-    this.setState(
-      {
-        schoolInfo: {
-          ...schoolInfo,
-          [name]: value,
-        },
-      },
-      this.schoolListCallback
-    );
+  handleschoolInfoChange = (event: any, value: any) => {
+    if (value !== null) {
+      this.setState({
+        schoolName: value.name,
+      });
+    }
   };
 
   handlepicklistInfoChange = (event: any) => {
     const { name, value } = event.target;
     const picklistInfo = this.state.picklistInfo;
-    console.log("Picklist Info Change");
 
     this.setState({
       picklistInfo: {
@@ -361,14 +350,10 @@ class EducatorRegistration extends React.Component<
 
   handleSubmit = (event: any) => {
     event.preventDefault();
-    console.log(this.state);
 
     let test = this.props.schoolList.filter(
       (school: School) => school.name === this.state.schoolName
     );
-
-    console.log(test);
-    console.log(test[0]);
 
     const formattedData = {
       userType: 1,
@@ -407,7 +392,7 @@ class EducatorRegistration extends React.Component<
             <BlackTextTypography>
               <Link to="/">Back</Link>{" "}
             </BlackTextTypography>
-            <Typography variant="h1">
+            <Typography variant="h1" style={{ marginTop: "10px" }}>
               Register for an educator account
             </Typography>
             <Grid
@@ -433,12 +418,7 @@ class EducatorRegistration extends React.Component<
                     value={this.state.email}
                     onChange={this.handleChange}
                     required={true}
-                    isRequired="true"
                     className={this.props.classes.textField}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start" />,
-                      required: true,
-                    }}
                   />
                   <BlackHeaderTypography>
                     Account Password*
@@ -451,10 +431,6 @@ class EducatorRegistration extends React.Component<
                     value={this.state.password}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start" />,
-                      required: true,
-                    }}
                   />
                   <BlackHeaderTypography>
                     Confirm Password*
@@ -467,10 +443,6 @@ class EducatorRegistration extends React.Component<
                     autoComplete="current-password"
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start" />,
-                      required: true,
-                    }}
                   />
                 </div>
                 <Divider />
@@ -485,10 +457,6 @@ class EducatorRegistration extends React.Component<
                     value={this.state.firstName}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start" />,
-                      required: true,
-                    }}
                   />
                   <BlackHeaderTypography>Last Name*</BlackHeaderTypography>
                   <OutlinedTextField
@@ -497,137 +465,163 @@ class EducatorRegistration extends React.Component<
                     value={this.state.lastName}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start" />,
-                      required: true,
-                    }}
                   />
-
                   <BlackHeaderTypography>
                     Preferred Pronouns*
                   </BlackHeaderTypography>
-                  <FormControl
-                    required
+
+                  <Autocomplete
                     className={this.props.classes.dropDowns}
-                  >
-                    <Select
-                      value={this.state.preferredPronouns}
-                      onChange={this.handleChange}
-                      name="preferredPronouns"
-                      displayEmpty
-                      disableUnderline={true}
-                      className={this.props.classes.selectField}
-                    >
-                      <MenuItem value="" disabled>
-                        Select your preferred pronoun
-                      </MenuItem>
-                      <MenuItem value="she/her">She/Her</MenuItem>
-                      <MenuItem value="he/him">He/Him</MenuItem>
-                      <MenuItem value="other">Other</MenuItem>
-                    </Select>
-                  </FormControl>
+                    size="small"
+                    value={this.state.preferredPronouns}
+                    options={
+                      this.state.preferredPronouns === null
+                        ? ["She/Her", "He/Him", "They/Them", "Other"]
+                        : [
+                            this.state.preferredPronouns,
+                            ...["She/Her", "He/Him", "They/Them", "Other"],
+                          ]
+                    }
+                    filterSelectedOptions
+                    onChange={(_event, newValue) => {
+                      this.setState({
+                        ...this.state,
+                        preferredPronouns: newValue,
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Select your position"
+                      />
+                    )}
+                  />
+
                   <BlackHeaderTypography>School Board*</BlackHeaderTypography>
-                  <FormControl
-                    required
+                  <Autocomplete
                     className={this.props.classes.dropDowns}
-                  >
-                    <Select
-                      value={this.state.schoolInfo.schoolBoard}
-                      onChange={this.handleschoolInfoChange}
-                      name="schoolBoard"
-                      displayEmpty
-                      disableUnderline={true}
-                      className={this.props.classes.selectField}
-                    >
-                      <MenuItem value="" disabled>
-                        Select your school board
-                      </MenuItem>
-                      {Array.from(
-                        this.props.picklists.schoolBoard.list.entries(),
-                        (entry) => entry
-                      ).map((entry, index) => (
-                        <MenuItem key={index} value={entry[1]}>
-                          {entry[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                    size="small"
+                    value={this.state.schoolInfo.schoolBoard}
+                    options={
+                      this.state.schoolInfo.schoolBoard === null
+                        ? this.props.picklists.schoolBoard.list
+                        : [
+                            this.state.schoolInfo.schoolBoard,
+                            ...this.props.picklists.schoolBoard.list,
+                          ]
+                    }
+                    filterSelectedOptions
+                    onChange={(_event, newValue) => {
+                      this.setState(
+                        {
+                          schoolInfo: {
+                            ...this.state.schoolInfo,
+                            schoolBoard: newValue,
+                          },
+                        },
+                        this.schoolListCallback
+                      );
+                    }}
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Select your school board"
+                      />
+                    )}
+                  />
                   <BlackHeaderTypography>School Type*</BlackHeaderTypography>
-                  <FormControl
-                    required
+                  <Autocomplete
                     className={this.props.classes.dropDowns}
-                  >
-                    <Select
-                      value={this.state.schoolInfo.type}
-                      onChange={this.handleschoolInfoChange}
-                      name="type"
-                      displayEmpty
-                      disableUnderline={true}
-                      className={this.props.classes.selectField}
-                    >
-                      <MenuItem value="" disabled>
-                        Select your school type
-                      </MenuItem>
-                      {Array.from(
-                        this.props.picklists.type.list.entries(),
-                        (entry) => entry
-                      ).map((entry, index) => (
-                        <MenuItem key={index} value={entry[1]}>
-                          {entry[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                    size="small"
+                    value={this.state.schoolInfo.type}
+                    options={
+                      this.state.schoolInfo.type === null
+                        ? this.props.picklists.type.list
+                        : [
+                            this.state.schoolInfo.type,
+                            ...this.props.picklists.type.list,
+                          ]
+                    }
+                    filterSelectedOptions
+                    onChange={(_event, newValue) => {
+                      this.setState(
+                        {
+                          schoolInfo: {
+                            ...this.state.schoolInfo,
+                            type: newValue,
+                          },
+                        },
+                        this.schoolListCallback
+                      );
+                    }}
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Select your school type"
+                      />
+                    )}
+                  />
                   <BlackHeaderTypography>School Name*</BlackHeaderTypography>
-                  <FormControl
-                    required
+
+                  <Autocomplete
                     className={this.props.classes.dropDowns}
-                  >
-                    <Select
-                      value={this.state.schoolName}
-                      onChange={this.handleChange}
-                      name="schoolName"
-                      displayEmpty
-                      disableUnderline={true}
-                      className={this.props.classes.selectField}
-                    >
-                      {" "}
-                      <MenuItem value="" disabled>
-                        Select your school name
-                      </MenuItem>
-                      {this.state.filteredSchoolList.map((school, index) => (
-                        <MenuItem key={index} value={school.name}>
-                          {school.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                    value={this.state.schoolName}
+                    options={
+                      this.state.schoolName === null
+                        ? this.state.filteredSchoolList
+                        : [
+                            this.state.schoolName,
+                            ...this.state.filteredSchoolList,
+                          ]
+                    }
+                    size="small"
+                    getOptionLabel={(option) =>
+                      option.name ? option.name : option
+                    }
+                    filterSelectedOptions
+                    onChange={this.handleschoolInfoChange}
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Select your school name"
+                      />
+                    )}
+                  />
                   <BlackHeaderTypography>Position*</BlackHeaderTypography>
-                  <FormControl
-                    required
+                  <Autocomplete
                     className={this.props.classes.dropDowns}
-                  >
-                    <Select
-                      value={this.state.picklistInfo.position}
-                      onChange={this.handlepicklistInfoChange}
-                      name="position"
-                      displayEmpty
-                      disableUnderline={true}
-                      className={this.props.classes.selectField}
-                    >
-                      <MenuItem value="" disabled>
-                        Select your position
-                      </MenuItem>
-                      {Array.from(
-                        this.props.picklists.position.list.entries(),
-                        (entry) => entry
-                      ).map((entry, index) => (
-                        <MenuItem key={index} value={entry[1]}>
-                          {entry[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                    id="tags-outlined"
+                    size="small"
+                    value={this.state.picklistInfo.position}
+                    options={
+                      this.state.picklistInfo.position === null
+                        ? this.props.picklists.position.list
+                        : [
+                            this.state.picklistInfo.position,
+                            ...this.props.picklists.position.list,
+                          ]
+                    }
+                    filterSelectedOptions
+                    onChange={(_event, newValue) => {
+                      this.setState({
+                        picklistInfo: {
+                          ...this.state.picklistInfo,
+                          position: newValue,
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Select your position"
+                      />
+                    )}
+                  />
                   <BlackHeaderTypography>Phone Number*</BlackHeaderTypography>
                   <OutlinedTextField
                     placeholder="At least 8 characters"
@@ -635,10 +629,6 @@ class EducatorRegistration extends React.Component<
                     value={this.state.phoneNumber}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start" />,
-                      required: true,
-                    }}
                   />
                 </div>
                 <Divider />
@@ -680,28 +670,35 @@ class EducatorRegistration extends React.Component<
                   <BlackHeaderTypography>
                     How did you hear about us?*
                   </BlackHeaderTypography>
-                  <FormControl className={this.props.classes.dropDowns}>
-                    <Select
-                      value={this.state.picklistInfo.introductionMethod}
-                      onChange={this.handlepicklistInfoChange}
-                      name="introductionMethod"
-                      displayEmpty
-                      disableUnderline={true}
-                      className={this.props.classes.selectField}
-                    >
-                      <MenuItem value="" disabled>
-                        e.g. Event, internet search, etc.
-                      </MenuItem>
-                      {Array.from(
-                        this.props.picklists.introductionMethod.list.entries(),
-                        (entry) => entry
-                      ).map((entry, index) => (
-                        <MenuItem key={index} value={entry[1]}>
-                          {entry[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <Autocomplete
+                    className={this.props.classes.dropDowns}
+                    size="small"
+                    value={this.state.picklistInfo.introductionMethod}
+                    options={
+                      this.state.picklistInfo.introductionMethod === null
+                        ? this.props.picklists.introductionMethod.list
+                        : [
+                            this.state.picklistInfo.introductionMethod,
+                            ...this.props.picklists.introductionMethod.list,
+                          ]
+                    }
+                    filterSelectedOptions
+                    onChange={(_event, newValue) => {
+                      this.setState({
+                        picklistInfo: {
+                          ...this.state.picklistInfo,
+                          introductionMethod: newValue,
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="e.g. Event, internet search, etc."
+                      />
+                    )}
+                  />
                   <BlackHeaderTypography style={{ padding: "1em 0em" }}>
                     Which BEP programs would you like more information about?*
                   </BlackHeaderTypography>
@@ -751,7 +748,6 @@ class EducatorRegistration extends React.Component<
                   <Grid container spacing={0} alignItems="center">
                     <OutlinedCheckbox
                       name="agreeConditions"
-                      required
                       onChange={() =>
                         this.setState({
                           agreeConditions: !this.state.agreeConditions,
