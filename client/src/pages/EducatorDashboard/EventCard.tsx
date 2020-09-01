@@ -5,6 +5,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
+import { PageViewer } from "../../data/types/pageTypes";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -65,6 +67,9 @@ function getDate(props: any) {
 
 export default function EventCard(props: any) {
   const classes = useStyles();
+
+  const type = props.type ? props.type : PageViewer.unknown;
+
   return (
     <div className={classes.root}>
       <Card className={classes.card} elevation={0}>
@@ -104,7 +109,7 @@ export default function EventCard(props: any) {
                 Grades of participating students
               </Typography>
               <Typography variant="body1">
-                {props.event.gradeOfStudents}
+                {props.event.gradeOfStudents.join(", ")}
               </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -126,8 +131,21 @@ export default function EventCard(props: any) {
           </Grid>
         </CardContent>
 
-        { /* todo: don't show this for current volunteers, applications, or invitations */
-        !props.isPastEvent ? (
+
+        { !props.isPastEvent && type === PageViewer.applicant ? (
+          <CardContent>
+            <Grid container spacing={0}>
+              <Grid item xs={3}>
+                <Typography variant="subtitle2" className={classes.tag}>
+                  Application Status: Pending
+                </Typography>
+              </Grid>
+            </Grid>
+          </CardContent>
+        ) : null}
+
+        { !props.isPastEvent && type !== PageViewer.volunteer && 
+            type !== PageViewer.applicant && type !== PageViewer.invitee ? (
           <CardContent>
             <Grid container spacing={0}>
               <Grid item xs={3}>

@@ -32,6 +32,7 @@ import CreateIcon from "@material-ui/icons/Create";
 import Card from "@material-ui/core/Card";
 import Container from "@material-ui/core/Container";
 
+/* Types */
 import { Event } from "../../../data/types/eventTypes";
 import { User, UserType, Volunteer } from "../../../data/types/userTypes";
 import Application, {
@@ -40,7 +41,9 @@ import Application, {
 import Invitation, {
   InvitationStatus,
 } from "../../../data/types/invitationTypes";
+import { PageViewer } from "../../../data/types/pageTypes";
 
+/* Selectors */
 import {
   getEventApplications,
   getEventInvitations,
@@ -48,6 +51,7 @@ import {
 } from "../../../data/selectors/eventsSelector";
 import { getUser } from "../../../data/selectors/userSelector";
 
+/* Services */
 import {
   fetchEventApplicationsService,
   fetchVolunteersOfEventService,
@@ -60,15 +64,6 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
   value: any;
-}
-
-// will need a hook + state to store this info
-enum PageViewer {
-  unknown = 0, // default volunteer or admin
-  applicant = 1, // application
-  invitee = 2, // invitation
-  volunteer = 3, // current volunteer
-  host = 4, // educator who created this event
 }
 
 const TabPanel = (props: TabPanelProps) => {
@@ -141,8 +136,11 @@ const EventPage = (props: any) => {
     fetchEventVolunteers,
     updateEvent,
   } = props;
+
   const userId = user ? user.id : "";
   const eventData = props.location.state.event;
+  const viewerType = props.location.state.type;
+
   const isEducator = user.userType === UserType.Educator;
   const isVolunteer = user.userType === UserType.Volunteer;
   const validApplications = applications.filter(
@@ -152,8 +150,6 @@ const EventPage = (props: any) => {
   const validInvitations = invitations.filter(
     (invitation: Invitation) => invitation.status === InvitationStatus.PENDING
   );
-  // todo: see if volunteering for this event for bottom functionality + contact details
-  // const isVolunteering = false;
   const [value, setValue] = React.useState<number>(0);
   const [publicEvent, setPublicEvent] = React.useState({
     checked: eventData.isPublic,
@@ -300,7 +296,8 @@ const EventPage = (props: any) => {
                     </Typography>
                     <Typography variant="h1">{eventData.eventName}</Typography>
                   </Grid>
-                  {(isVolunteer || isEducator) && (
+                  {(isVolunteer || isEducator) && viewerType !== PageViewer.applicant &&
+                    viewerType !== PageViewer.invitee && viewerType !== PageViewer.volunteer && (
                     <Grid item style={{ paddingTop: "50px" }}>
                       {isVolunteer ? (
                         <ContainedButton
@@ -342,7 +339,7 @@ const EventPage = (props: any) => {
               </Grid>
             </PageHeader>
             <PageBody>
-              <EventSection event={eventData} isEducator={isEducator} />
+              <EventSection event={eventData} isEducator={isEducator} viewerType={viewerType} />
               {isEducator && (
                 <React.Fragment>
                   <Typography
@@ -454,7 +451,7 @@ const EventPage = (props: any) => {
                       </Grid>
                       <Typography variant="body1" style={{ fontSize: "12px" }}>
                         Enabling this feature will allow volunteers to discover
-                        your posting on the oppurtunities page.
+                        your posting on the opportunities page.
                       </Typography>
                     </Grid>
                     <Grid item xs={3}>
@@ -510,7 +507,7 @@ const EventPage = (props: any) => {
                       <Card className={classes.card} elevation={0}>
                         <Typography>
                           Volunteers that have been confirmed for this
-                          oppurtunity will show up here.
+                          opportunity will show up here.
                         </Typography>
                       </Card>
                     ) : (
@@ -528,7 +525,7 @@ const EventPage = (props: any) => {
                     {" "}
                     <SecondaryMainContrastInfoIcon />{" "}
                     <Typography style={{ paddingLeft: "10px" }}>
-                      The positions for this oppurtunity have been filled
+                      The positions for this opportunity have been filled
                     </Typography>
                   </Typography>
                 ) : null}
@@ -537,7 +534,7 @@ const EventPage = (props: any) => {
                     <Container className={classes.noAppsDisc}>
                       <Typography style={{ paddingBottom: "20px" }}>
                         There are currently no applications for this
-                        oppurtunity. <br></br>
+                        opportunity. <br></br>
                         Get started by browsing volunteer applications to accept
                         an application!
                       </Typography>
@@ -555,7 +552,7 @@ const EventPage = (props: any) => {
                   <React.Fragment>
                     <Container className={classes.noAppsDisc}>
                       <Typography style={{ paddingBottom: "20px" }}>
-                        There are currently no invitations for this oppurtunity.{" "}
+                        There are currently no invitations for this opportunity.{" "}
                         <br></br>
                         Get started by browsing volunteer applications to accept
                         an application!

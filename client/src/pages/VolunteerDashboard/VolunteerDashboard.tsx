@@ -13,18 +13,22 @@ import EventCard from '../EducatorDashboard/EventCard';
 import { Link } from 'react-router-dom'
 
 /* Selectors */
-import { getActiveEvents } from "../../data/selectors/eventsSelector";
-import { getVolunteerApplications, getVolunteerInvitations } from "../../data/selectors/volunteersSelector";
+import { 
+  getVolunteerApplications, 
+  getVolunteerInvitations, 
+  getVolunteerEvents 
+} from "../../data/selectors/volunteersSelector";
 
 /* Types */
 import { Event } from "../../data/types/eventTypes";
-import Application from "../../data/types/applicationTypes";
-import Invitation from "../../data/types/invitationTypes";
+import Application, { ApplicationStatus } from "../../data/types/applicationTypes";
+import Invitation, { InvitationStatus } from "../../data/types/invitationTypes";
+import { PageViewer } from "../../data/types/pageTypes";
 
 /* Services */
-import { fetchActiveEventsService } from '../../data/services/eventsServices';
 import { fetchApplicationsByVolunteer } from '../../data/services/applicationsService';
 import { fetchInvitationsByVolunteer } from '../../data/services/invitationsService';
+import { fetchEventsByVolunteer } from '../../data/services/volunteersServices';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -44,6 +48,7 @@ interface DispatchProps {
   fetchActiveEvents: any;
   fetchApplications: any;
   fetchInvitations: any;
+  fetchEvents: any;
 }
 
 type Props = DispatchProps & StateProps;
@@ -106,23 +111,22 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const EventPage: React.SFC<Props> = 
-  ({ applications, invitations, activeEvents, userType, userId, fetchActiveEvents, fetchApplications, fetchInvitations } : Props) => {
+  ({ activeEvents, applications, invitations, userType, userId, fetchApplications, fetchInvitations, fetchEvents } : Props) => {
   const classes = useStyles();
 
   const [value, setValue] = React.useState<number>(0);
   const [fetchedApplications, setFetchedApplications] = React.useState(false);
   const [fetchedInvitations, setFetchedInvitations] = React.useState(false);
-  const [fetchedActiveEvents, setFetchedActiveEvents] = React.useState(false);
+  const [fetchedEvents, setFetchedEvents] = React.useState(false);
 
-  // todo: filter by my events
   useEffect(() => {
     (async function wrapper() {
-      if (!fetchedActiveEvents && activeEvents.length === 0) {
-        await fetchActiveEvents(userType, userId);
-        setFetchedActiveEvents(true);
+      if (!fetchedEvents && activeEvents.length === 0) {
+        await fetchEvents(userId);
+        setFetchedEvents(true);
       }
     })();
-  }, [fetchActiveEvents]);
+  }, [fetchedEvents]);
 
   useEffect(() => {
     (async function wrapper() {
@@ -149,16 +153,16 @@ const EventPage: React.SFC<Props> =
   const applicationsLabel = `Applications  ${applications.length}`
   const invitationsLabel = `Invitations  ${invitations.length}`
 
-  const createOpportunityCard = (event: Event) => (
+  const createOpportunityCard = (event: Event, type: number = PageViewer.unknown) => (
     <Grid item key={event.id}>
         <Link
           to={{
             pathname: `/events/${event.eventName}`,
-            state: { event },
+            state: { event, type },
           }}
           style={{ textDecoration: "none" }}
         >
-          <EventCard event={event} isPastEvent={false} showOwner={false} />
+          <EventCard event={event} isPastEvent={false} showOwner={false} type={type} />
         </Link>
       </Grid>
   );
@@ -200,31 +204,35 @@ const EventPage: React.SFC<Props> =
                      <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Invitations' to see if you have been invited to an event!</div>
                      <div>You can also click 'Browse Opportunities' to get started.</div>
                   </Typography> :
-                activeEvents.map((event: any) =>
-                  createOpportunityCard(event)
+                activeEvents.map((event: any) => 
+                  createOpportunityCard(event.event, PageViewer.volunteer)
                 )}
               </Grid>
           </TabPanel>
           <TabPanel value={value} index={1}>
-            {applications.length === 0 ? 
-              <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
-                  <div>You do not currently have any pending applications.</div>
-                  <div style={{margin:"1% 0"}}>Click 'Browse Opportunities' to get started.</div>
-              </Typography> :
-            applications.map((application: any) =>
-              createOpportunityCard(application.event)
-            )}
+            <Grid item container spacing={4} direction="column" alignItems="center" justify="center">
+              {applications.length === 0 ? 
+                <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
+                    <div>You do not currently have any pending applications.</div>
+                    <div style={{margin:"1% 0"}}>Click 'Browse Opportunities' to get started.</div>
+                </Typography> :
+              applications.map((application: any) =>
+                createOpportunityCard(application.event, PageViewer.applicant)
+              )}
+            </Grid>
           </TabPanel>
           <TabPanel value={value} index={2}>
-            {invitations.length === 0 ? 
-              <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
-                  <div>You do not currently have any pending invitations.</div>
-                  <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Upcoming Opportunities' to see events you've volunteered for!</div>
-                  <div>You can also click 'Browse Opportunities' to get started.</div>
-              </Typography> :
-            invitations.map((invitation: any) =>
-              createOpportunityCard(invitation.event)
-            )}
+            <Grid item container spacing={4} direction="column" alignItems="center" justify="center">
+              {invitations.length === 0 ? 
+                <Typography style={{ padding: "8% 0", fontWeight:200, fontSize: "0.9em", textAlign: "center" }}>
+                    <div>You do not currently have any pending invitations.</div>
+                    <div style={{margin:"2% 0"}}>Click 'Applications' to view the status of opportunities you expressed interested <br></br> in, and check 'Upcoming Opportunities' to see events you've volunteered for!</div>
+                    <div>You can also click 'Browse Opportunities' to get started.</div>
+                </Typography> :
+              invitations.map((invitation: any) =>
+                createOpportunityCard(invitation.event, PageViewer.invitee)
+              )}
+            </Grid>
           </TabPanel>
         </PageBody>
       </Grid>
@@ -236,18 +244,34 @@ const EventPage: React.SFC<Props> =
 const mapStateToProps = (state: any): StateProps => {
   const userObj = localStorage.getItem("user");
   const user = userObj ? JSON.parse(userObj) : null;
+
+  const activeEventsUnfiltered = getVolunteerEvents(state);
+  const activeEvents = activeEventsUnfiltered.filter((event: any) => 
+    event.status === ApplicationStatus.ACCEPTED
+  );
+
+  const applicationUnfiltered = getVolunteerApplications(state);
+  const applications = applicationUnfiltered.filter((application: any) =>
+    application.status === ApplicationStatus.PENDING
+  );
+
+  const invitationsUnfiltered = getVolunteerInvitations(state);
+  const invitations = invitationsUnfiltered.filter((invitation: any) =>
+    invitation.status === InvitationStatus.PENDING
+  );
+  
   return {
-    activeEvents: getActiveEvents(state.events),
-    applications: getVolunteerApplications(state),
-    invitations: getVolunteerInvitations(state),
+    activeEvents,
+    applications,
+    invitations,
     userType: user ? user.userType : 0,
     userId: user ? user.id : "",
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  fetchActiveEvents: (userType: number, userId: string) =>
-    dispatch(fetchActiveEventsService(userType, userId)),
+  fetchEvents: (userId: string) => 
+    dispatch(fetchEventsByVolunteer(userId)),
   fetchApplications: (userId: string) =>
     dispatch(fetchApplicationsByVolunteer(userId)),
   fetchInvitations: (userId: string) =>
