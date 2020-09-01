@@ -16,6 +16,15 @@ export const eventRouter = Express.Router();
  * Controller Definitions
  */
 
+eventRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
+    try {
+        const id: string = await EventService.create(req.body.event);
+        res.status(201).send({ id });
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
+});
+
 eventRouter.get('/', async (req: Express.Request, res: Express.Response) => {
     const limit: number = req.query.limit as any;
     const offset: number = req.query.offset as any;
@@ -48,55 +57,6 @@ eventRouter.get('/past', async (req: Express.Request, res: Express.Response) => 
     }
 });
 
-eventRouter.patch('/applications/updatestate', async (req: Express.Request, res: Express.Response) => {
-    const type: string = req.body.type as string;
-    const eventName: string = req.body.event_name as string;
-    const applicantName: string = req.body.applicant_name as string;
-
-    if (type === 'accept') {
-        EventService.acceptApplicant(eventName, applicantName, true);
-    } else if (type === 'deny') {
-        EventService.acceptApplicant(eventName, applicantName, false);
-    } else {
-        res.status(400).send({ msg: 'Bad Request' });
-    }
-});
-
-// deprecated
-eventRouter.get('/invitations', async (req: Express.Request, res: Express.Response) => {
-    const name: string = req.query.name as string;
-
-    try {
-        if (name) {
-            const invitations = await EventService.getInvitations(name);
-            res.status(200).json({
-                invitations
-            });
-        } else {
-            throw Error(`Invalid query parameters. Please set "name" parameter`);
-        }
-    } catch (e) {
-        res.status(500).send({ msg: e.message });
-    }
-});
-
-// eventRouter.get('/volunteers', async (req: Express.Request, res: Express.Response) => {
-//     const name: string = req.query.name as string;
-
-//     try {
-//         if (name) {
-//             const volunteers = await EventService.getVolunteers(name);
-//             res.status(200).json({
-//                 volunteers
-//             });
-//         } else {
-//             throw Error(`Invalid query parameters. Please set "name" parameter`);
-//         }
-//     } catch (e) {
-//         res.status(500).send({ msg: e.message });
-//     }
-// });
-
 eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
     const name: string = req.params.name as string;
 
@@ -113,15 +73,6 @@ eventRouter.get('/:name', async (req: Express.Request, res: Express.Response) =>
 });
 
 // POST requests/
-
-eventRouter.post('/create', async (req: Express.Request, res: Express.Response) => {
-    try {
-        const id: string = await EventService.create(req.body);
-        res.status(201).send({ id });
-    } catch (e) {
-        res.status(404).send(e.message);
-    }
-});
 
 //PUT requests
 

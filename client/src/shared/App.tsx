@@ -20,8 +20,13 @@ import VolunteerDashboard from "../pages/VolunteerDashboard/VolunteerDashboard";
 import VolunteerRegistration from "../pages/Auth/VolunteerRegistration";
 import EducatorRegistration from "../pages/Auth/EducatorRegistration";
 
+<<<<<<< HEAD
 /* Types */
 import { User } from "../data/types/userTypes";
+=======
+import { User } from '../data/types/userTypes';
+import OpportunityForm from '../pages/EducatorDashboard/OpportunityForm'
+>>>>>>> 2cba1de904474c6ae84567188bcc3fe656bb93bd
 
 interface IProps extends RouteProps {
   component: any;
@@ -110,6 +115,14 @@ class App extends React.Component<
                 path="/volunteer-registration"
                 component={VolunteerRegistration}
               />
+<<<<<<< HEAD
+=======
+              <PrivateRoute 
+                exact 
+                path="/newevent"
+                component={OpportunityForm} 
+                isLoggedIn={isLoggedIn} />
+>>>>>>> 2cba1de904474c6ae84567188bcc3fe656bb93bd
             </Switch>
           </React.Fragment>
         </Router>

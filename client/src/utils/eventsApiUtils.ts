@@ -2,6 +2,15 @@ import axios, { AxiosRequestConfig } from "axios";
 import { baseURL } from "./ApiUtils";
 import { Event } from "../data/types/eventTypes";
 
+const createEvent = (body: string) => {
+  const config: AxiosRequestConfig = {
+    url: `${baseURL}api/events/create`,
+    method: 'post',
+    data: body
+  }
+  return axios.request(config)
+} 
+
 const getEvents = (limit: number, offset: number) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/events/?limit=${limit}&offset=${offset}`,
@@ -48,38 +57,20 @@ const getApplications = async (eventName: string) => {
   return await axios.request(config);
 };
 
-// deprecated
-// const getInvitations = async (eventName: string) => {
-//   const config: AxiosRequestConfig = {
-//     url: `${baseURL}api/events/invitations/?name=${eventName}`,
-//     method: "get",
-//   };
-
-//   return await axios.request(config);
-// };
+const retractInvitation = async (id: string) => {
+  const config: AxiosRequestConfig = {
+    url: `${baseURL}api/events/invitations/update`,
+    method: "patch",
+    data: {
+    }
+  };
+  return await axios.request(config)
+}
 
 const getVolunteers = async (eventName: string) => {
   const config: AxiosRequestConfig = {
     url: `${baseURL}api/events/volunteers/?name=${eventName}`,
     method: "get",
-  };
-
-  return await axios.request(config);
-};
-
-const updateApplicantStatus = async (
-  eventName: string,
-  applicantName: string,
-  type: string
-) => {
-  const config: AxiosRequestConfig = {
-    url: `${baseURL}api/events/applications/updatestate`,
-    method: "patch",
-    data: {
-      event_name: eventName,
-      applicant_name: applicantName,
-      type: type,
-    },
   };
 
   return await axios.request(config);
@@ -100,5 +91,6 @@ export {
   getApplications,
   getSchoolInfo,
   getVolunteers,
-  updateApplicantStatus,
+  createEvent,
+  retractInvitation
 };
