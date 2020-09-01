@@ -1,4 +1,7 @@
-import { getUserPicklist, getSchoolPicklist } from "../../utils/picklistApiUtils";
+import {
+  getUserPicklist,
+  getSchoolPicklist,
+} from "../../utils/picklistApiUtils";
 import { fetchPicklist } from "../actions/picklistActions";
 import { PicklistType } from "../types/picklistTypes";
 

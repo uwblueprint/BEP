@@ -37,6 +37,13 @@ const redTextStyle = (theme: Theme) =>
     },
   });
 
+const blackHeaderTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      color: theme.palette.text.primary,
+      fontWeight: 700,
+    },
+  });
 const secondaryContrastTextStyle = (theme: Theme) =>
   createStyles({
     root: {
@@ -49,6 +56,10 @@ const WhiteTextTypography = withStyles(whiteTextStyle)((props: any) => (
 ));
 
 const BlackTextTypography = withStyles(blackTextStyle)((props: any) => (
+  <Typography {...props}>{props.children}</Typography>
+));
+
+const BlackHeaderTypography = withStyles(blackHeaderTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
 
@@ -70,6 +81,7 @@ const SecondaryContrastTextTypography = withStyles(
 
 export {
   BlackTextTypography,
+  BlackHeaderTypography,
   GreyBackgroundTextTypography,
   RedTextTypography,
   SecondaryContrastTextTypography,
