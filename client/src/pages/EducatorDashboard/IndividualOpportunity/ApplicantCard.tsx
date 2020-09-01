@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Snackbar from '@material-ui/core/Snackbar';
