@@ -451,7 +451,7 @@ const EventPage = (props: any) => {
                       </Grid>
                       <Typography variant="body1" style={{ fontSize: "12px" }}>
                         Enabling this feature will allow volunteers to discover
-                        your posting on the oppurtunities page.
+                        your posting on the opportunities page.
                       </Typography>
                     </Grid>
                     <Grid item xs={3}>
@@ -507,7 +507,7 @@ const EventPage = (props: any) => {
                       <Card className={classes.card} elevation={0}>
                         <Typography>
                           Volunteers that have been confirmed for this
-                          oppurtunity will show up here.
+                          opportunity will show up here.
                         </Typography>
                       </Card>
                     ) : (
@@ -525,7 +525,7 @@ const EventPage = (props: any) => {
                     {" "}
                     <SecondaryMainContrastInfoIcon />{" "}
                     <Typography style={{ paddingLeft: "10px" }}>
-                      The positions for this oppurtunity have been filled
+                      The positions for this opportunity have been filled
                     </Typography>
                   </Typography>
                 ) : null}
@@ -534,7 +534,7 @@ const EventPage = (props: any) => {
                     <Container className={classes.noAppsDisc}>
                       <Typography style={{ paddingBottom: "20px" }}>
                         There are currently no applications for this
-                        oppurtunity. <br></br>
+                        opportunity. <br></br>
                         Get started by browsing volunteer applications to accept
                         an application!
                       </Typography>
@@ -552,7 +552,7 @@ const EventPage = (props: any) => {
                   <React.Fragment>
                     <Container className={classes.noAppsDisc}>
                       <Typography style={{ paddingBottom: "20px" }}>
-                        There are currently no invitations for this oppurtunity.{" "}
+                        There are currently no invitations for this opportunity.{" "}
                         <br></br>
                         Get started by browsing volunteer applications to accept
                         an application!
