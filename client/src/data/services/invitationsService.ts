@@ -9,7 +9,7 @@ import { fetchUserInvitations  } from '../actions/userActions';
 export function updateInvitationService(invitation: Invitation) {
   return (dispatch: any) => {
     return update(invitation).then((res: any) => {
-      dispatch(updateInvitation(res.data));
+      dispatch(updateInvitation(invitation));
       return res;
     });
   };
