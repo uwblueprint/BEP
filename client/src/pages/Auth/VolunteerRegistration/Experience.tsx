@@ -6,10 +6,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 import {
     BlackHeaderTypography,
     BlackTextTypography,
-    OutlinedTextField
+    OutlinedTextField,
+    OutlinedCheckbox
   } from "../../../components/index";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
+
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 interface IComponentProps {
   currentStep: number;
@@ -27,7 +30,25 @@ interface IComponentProps {
     involveMethod: string; // currently not in userTypes
     extraDescription: string; // other info i'd like schools to read
   };
-  picklistInfo: any;
+  classes: {
+    multiSelect: any;
+  };
+  picklistInfo: {
+    localPostSecondaryInstitutions: Map<string, boolean>; //local post secondary alumni
+    professionalAssociations: Map<string, boolean>;
+    employmentStatus: string;
+    sectors: string; // somehow need to get picklist of
+    size: string;
+    expertiseAreas: string[];
+    introductionMethod: string;
+    languages: string[];
+    volunteerDesiredExternalActivities: Map<string, boolean>;
+    volunteerDesiredInternalActivities: Map<string, boolean>;
+    postSecondaryTraining: Map<string, boolean>;
+    moreInfo: Map<string, boolean>;
+    grades: Map<string, boolean>; // grade levels willing to volunteer with
+    locations: Map<string, boolean>;
+  };
   picklists: {
     expertiseAreas: { list: string[] };
     languages: { list: string[] };
@@ -48,6 +69,8 @@ interface IComponentProps {
   handleChange: any; // () => void????
   handleNestedChange: any;
   handleNestedChangePicklist: any;
+  createHandleSelectOption: any;
+  handleNestedChangeMultiAutocomplete: any;
 }
 
 // const styles = () => ({
@@ -136,6 +159,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                             </MenuItem>
                                         ))}
                                 </Select>
+
                         </FormControl>
                         </Grid>
 
@@ -184,7 +208,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                         this.props.picklistInfo
                                     )}>
                                         <MenuItem value="" disabled>
-                                            Select your employment status
+                                            Select your Organization's Sector
                                         </MenuItem>
                                         {Array.from(
                                             this.props.picklists.sectors.list.entries(),
@@ -312,7 +336,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                     Number of Staff in Organization
                                 </BlackHeaderTypography>
                                 <Select
-                                    value={this.props.picklistInfo.size}
+                                    value={this.props.picklists.size.list.entries()}
                                     name="size"
                                     displayEmpty
                                     disableUnderline={true}
@@ -336,9 +360,10 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
 
                             <Grid container direction="column">
                                 <Grid container direction="row" spacing={2}>
-                                    <Checkbox />
+                                    {/* These Checkboxes haven't been implemented yet */}
+                                    <Checkbox/>
                                     <BlackHeaderTypography>
-                                        Share volunteer acitivity with Employee
+                                        Share volunteer activity with Employee
                                     </BlackHeaderTypography>
                                 </Grid>
                                 <Grid container direction="row" spacing={2}>
@@ -360,33 +385,60 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                             </Grid>
 
                             <Grid item direction="column">
-                                <FormControl>
                                     <BlackHeaderTypography>
-                                        Post Secondary Training I've participated in
+                                        Areas of Expertise
                                     </BlackHeaderTypography>
-                                    <Select></Select>
-                                </FormControl>
+                                    <Autocomplete
+                                        multiple
+                                        id="expertiseAreas"
+                                        options={this.props.picklists.expertiseAreas.list}
+                                        getOptionLabel={(option) => option}
+                                        filterSelectedOptions
+                                        onChange={(_event, newValue) => this.props.handleNestedChangeMultiAutocomplete("expertiseAreas", newValue)}
+                                        renderInput={(params) => (
+                                            <OutlinedTextField
+                                            {...params}
+                                            style={{ width: "454px"}}
+                                            variant="outlined"
+                                            placeholder="Select Activity Areas of Expertise"
+                                        />
+                                        )}
+                                    />
+                                    
                             </Grid>
 
                             <Grid container direction="column">
-                                <Grid container direction="row" spacing={2}>
-                                    <Checkbox />
-                                    <BlackHeaderTypography>
-                                        Apprenticeship
+                                <BlackHeaderTypography>
+                                        Post Secondary Training I've participated in
                                     </BlackHeaderTypography>
-                                </Grid>
-                                <Grid container direction="row" spacing={2}>
-                                    <Checkbox />
-                                    <BlackHeaderTypography>
-                                        College
-                                    </BlackHeaderTypography>
-                                </Grid>
-                                <Grid container direction="row" spacing={2}>
-                                    <Checkbox />
-                                    <BlackHeaderTypography>
-                                        University
-                                    </BlackHeaderTypography>
-                                </Grid>
+                                    <Grid className={this.props.classes.multiSelect}>
+                                        {Array.from(
+                                        this.props.picklistInfo.postSecondaryTraining.entries(),
+                                        (entry) => entry
+                                        ).map(([option, isSelected]) => (
+                                        <Grid
+                                            container
+                                            key={option}
+                                            spacing={0}
+                                            justify="flex-end"
+                                            alignItems="center"
+                                        >
+                                            <Grid item xs={1}>
+                                            <OutlinedCheckbox
+                                                key={option}
+                                                value={option}
+                                                name={option}
+                                                onChange={this.props.createHandleSelectOption(
+                                                    "postSecondaryTraining"
+                                                )}
+                                            />
+                                            </Grid>
+                                            <Grid item xs={11}>
+                                            <BlackTextTypography> {option}</BlackTextTypography>
+                                            </Grid>
+                                        </Grid>
+                                        ))}
+                                    </Grid>
                             </Grid>
 
                             <Grid item direction="column">
@@ -394,7 +446,23 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                     <BlackHeaderTypography>
                                         Languages
                                     </BlackHeaderTypography>
-                                    <Select></Select>
+                                    <Autocomplete
+                                        multiple
+                                        id="languages"
+                                        options={this.props.picklists.languages.list}
+                                        getOptionLabel={(option) => option}
+                                        filterSelectedOptions
+                                        onChange={(_event, newValue) => this.props.handleNestedChangeMultiAutocomplete("languages", newValue)}
+                                        renderInput={(params) => (
+                                            <OutlinedTextField
+                                            {...params}
+                                            style={{ width: "454px"}}
+                                            variant="outlined"
+                                            placeholder="Select Additional Languages you speak"
+                                        />
+                                        )}
+                                    />
+
                                 </FormControl>
                             </Grid>
 
@@ -407,6 +475,8 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                         placeholder="1 Sentence"
                                         id="title"
                                         style={{ width: "454px"}}
+                                        value={this.props.experience.careerDescription}
+                                        onChange={this.props.handleNestedChange(this.props.experience)}
                                         />
                                 </FormControl>
                             </Grid>
@@ -420,6 +490,8 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                         placeholder="I sentence"
                                         id="title"
                                         style={{ width: "454px"}}
+                                        value={this.props.experience.departmentDivision}
+                                        onChange={this.props.handleNestedChange(this.props.experience)}
                                         />
                                 </FormControl>
                             </Grid>
@@ -434,6 +506,8 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                                         placeholder="e.g other topics you can talk about, etc"
                                         id="title"
                                         style={{ width: "454px"}}
+                                        value={this.props.experience.extraDescription}
+                                        onChange={this.props.handleNestedChange(this.props.experience)}
                                         />
                                 </FormControl>
                             </Grid>
