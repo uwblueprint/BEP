@@ -130,6 +130,7 @@ export const update = async (invitation: Invitation): Promise<Invitation> => {
         if (oldInvitation.status !== InvitationStatus.ACCEPTED && invitation.status === InvitationStatus.ACCEPTED) {
             await EventVolunteerService.create({
                 event: salesforceInvitation.event__c,
+                status: salesforceInvitation.status__c,
                 volunteer: salesforceInvitation.volunteer__c
             });
         } else if (
