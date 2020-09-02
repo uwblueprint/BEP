@@ -90,7 +90,6 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                   <Autocomplete
                     className={this.props.classes.dropDowns}
                     size="small"
-                    required={true}
                     value={this.props.picklistInfo.employmentStatus}
                     getOptionLabel={(option) => option}
                     options={
@@ -113,6 +112,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         {...params}
                         variant="outlined"
                         placeholder="Select your employment status"
+                        required={true}
                       />
                     )}
                   />
