@@ -52,7 +52,10 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
             }}
           >
             <div className={this.props.classes.formSection}>
-              <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+              <BlackHeaderTypography
+                style={{ marginBottom: "2em" }}
+                variant="h3"
+              >
                 Account Information
               </BlackHeaderTypography>
 
@@ -99,7 +102,10 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
 
             <div className={this.props.classes.formSection}>
               <Grid item>
-                <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                <BlackHeaderTypography
+                  style={{ marginBottom: "2em" }}
+                  variant="h3"
+                >
                   About You
                 </BlackHeaderTypography>
               </Grid>

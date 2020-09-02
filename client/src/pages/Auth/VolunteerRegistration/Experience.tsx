@@ -78,7 +78,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
           >
             <div className={this.props.classes.formSection}>
               <Grid item>
-                <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                <BlackHeaderTypography style={{ marginBottom: "2em" }} variant="h3">
                   About your work
                 </BlackHeaderTypography>
               </Grid>
@@ -416,7 +416,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
             <Divider />
             <div className={this.props.classes.formSection}>
               <Grid item>
-                <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                <BlackHeaderTypography style={{ marginBottom: "2em" }} variant="h3">
                   Your knowledge and expertise
                 </BlackHeaderTypography>
               </Grid>

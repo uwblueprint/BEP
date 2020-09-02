@@ -13,11 +13,7 @@ import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-import {
-  PicklistInfo,
-  InvolvementState,
-  RawPicklists,
-} from "./Master";
+import { PicklistInfo, InvolvementState, RawPicklists } from "./Master";
 
 interface IComponentProps {
   currentStep: number;
@@ -99,7 +95,10 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
             >
               <div className={this.props.classes.formSection}>
                 <Grid item>
-                  <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                  <BlackHeaderTypography
+                    style={{ marginBottom: "2em" }}
+                    variant="h3"
+                  >
                     Your Activities
                   </BlackHeaderTypography>
                 </Grid>
@@ -305,7 +304,10 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
               <Divider />
               <div className={this.props.classes.formSection}>
                 <Grid item>
-                  <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                  <BlackHeaderTypography
+                    style={{ marginBottom: "2em" }}
+                    variant="h3"
+                  >
                     Connections & Conditions
                   </BlackHeaderTypography>
                 </Grid>

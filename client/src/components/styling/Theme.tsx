@@ -44,10 +44,10 @@ const theme = createMuiTheme({
       lineHeight: "33px",
     },
     h3: {
-      fontSize: "48px",
-      letterSpacing: 0,
-      lineHeight: "72px",
-      fontWeight: "normal",
+      fontStyle: "normal",
+      fontWeight:800,
+      fontSize: "18px",
+      lineHeight: "25px",
     },
     h4: {
       fontSize: "34px",
