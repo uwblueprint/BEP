@@ -11,6 +11,7 @@ import {
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MenuItem from "@material-ui/core/MenuItem";
+import Divider from "@material-ui/core/Divider";
 
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { ExperienceState, PicklistInfo, RawPicklists } from "./Master";
@@ -101,7 +102,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 <Grid item direction="column">
                   <FormControl style={{ width: "454px" }}>
                     <BlackHeaderTypography>
-                      Employment Status
+                      Employment Status*
                     </BlackHeaderTypography>
                     <OutlinedSelect
                       value={this.props.picklistInfo.employmentStatus}
@@ -163,7 +164,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       displayEmpty
                       disableUnderline={true}
                     >
-                      <MenuItem value="" disabled>
+                      <MenuItem value="">
                         Select your employer
                       </MenuItem>
                       <MenuItem value="__other">Other</MenuItem>
@@ -404,6 +405,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                     }
                   />
                 </Grid>
+                <Divider />
                 <Grid item>
                   <BlackHeaderTypography>
                     Your knowledge and expertise
@@ -412,7 +414,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
 
                 <Grid item direction="column">
                   <BlackHeaderTypography>
-                    Areas of Expertise
+                    Areas of Expertise*
                   </BlackHeaderTypography>
                   <Autocomplete
                     multiple
@@ -510,7 +512,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 <Grid item direction="column">
                   <FormControl>
                     <BlackHeaderTypography>
-                      Description of my Career
+                      Description of my career*
                     </BlackHeaderTypography>
                     <OutlinedTextField
                       placeholder="1 Sentence"
@@ -527,7 +529,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 <Grid item direction="column">
                   <FormControl>
                     <BlackHeaderTypography>
-                      How I got involved in my Field
+                      How I got involved in my field*
                     </BlackHeaderTypography>
                     <OutlinedTextField
                       placeholder="1 sentence"

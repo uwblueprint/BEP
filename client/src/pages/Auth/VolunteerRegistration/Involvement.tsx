@@ -97,7 +97,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                 </Grid>
                 <Grid item>
                   <BlackHeaderTypography>
-                    Ways I/my company would like to volunteer with schools
+                    Ways I/my company would like to volunteer with schools*
                   </BlackHeaderTypography>
                 </Grid>
 
@@ -170,7 +170,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                       <OutlinedSelect
                         value={
                           this.props.picklistInfo.coopPlacementSchoolAffiliation
-                          }
+                        }
                         displayEmpty
                         disableUnderline={true}
                         onChange={this.props.handleNestedChangePicklist(
@@ -197,7 +197,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                 <Grid item container direction="column">
                   <Grid item>
                     <BlackHeaderTypography>
-                      Areas willing to volunteer
+                      Areas willing to volunteer*
                     </BlackHeaderTypography>
                   </Grid>
                   <Grid item className={this.props.classes.multiSelect}>
@@ -208,7 +208,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   </Grid>
                   <Grid item>
                     <BlackHeaderTypography>
-                      Grade levels willing to volunteer with
+                      Grade levels willing to volunteer with*
                     </BlackHeaderTypography>
                   </Grid>
                   <Grid item className={this.props.classes.multiSelect}>
@@ -219,7 +219,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   </Grid>
                   <Grid item>
                     <BlackHeaderTypography>
-                      Why do you want to get involved with the BEP?
+                      Why do you want to get involved with the BEP?*
                     </BlackHeaderTypography>
                   </Grid>
                   <Grid item className={this.props.classes.multiSelect}>
@@ -263,7 +263,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   </Grid>
                   <Grid item>
                     <BlackHeaderTypography>
-                      How did you hear about us?
+                      How did you hear about us?*
                     </BlackHeaderTypography>
                   </Grid>
                   <Grid item>
@@ -276,7 +276,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                       )}
                       style={{ height: "40px" }}
                     >
-                      <MenuItem value="">
+                      <MenuItem value="" disabled>
                         e.g. Event, internet search, etc.
                       </MenuItem>
                       {Array.from(
