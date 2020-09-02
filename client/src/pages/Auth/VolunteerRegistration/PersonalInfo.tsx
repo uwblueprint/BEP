@@ -3,16 +3,8 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 
 import {
-  ContainedSelect,
-  ContainedButton,
-  DarkContainedButton,
-  TextButton,
-  Dialog,
-  DialogTitle,
-  PageBody,
   OutlinedTextField,
   BlackHeaderTypography,
-  BlackTextTypography,
 } from "../../../components/index";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
@@ -24,12 +16,26 @@ import Grid from "@material-ui/core/Grid";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 
+import { RawPicklists, PicklistInfo } from "./Master"
+
 interface IComponentProps {
   currentStep: number;
-  personalInfo: any;
-  picklistInfo: any;
+  picklists: RawPicklists;
+  personalInfo: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    linkedinUrl: string;
+    shareWithEmployer: boolean;
+  };
+  picklistInfo: PicklistInfo;
   handleNestedChange: any;
   handleChange: any; // () => void????
+  handleNestedChangeMultiAutocomplete: any;
+
   classes: {
     formSection: any;
     textField: any;
@@ -48,10 +54,12 @@ const styles = () => ({
   textField: {
     marginBottom: "26px",
     marginTop: "4px",
+    width: "45%",
   },
   dropDowns: {
     marginTop: "4px",
     width: "45%",
+    marginBottom: "26px",
   },
 });
 
@@ -65,165 +73,194 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
     // The markup for the Step 1 UI
     return (
       <React.Fragment>
-        <div className="form-group">
-          <div style={{ height: "100vh" }}>
-            <Grid container style={{ height: "100%" }}>
-              <Grid
-                container
-                spacing={4}
-                direction="column"
-                style={{
-                  backgroundColor: "#fff",
-                  borderRadius: "2px",
-                  margin: "2em 0em",
-                }}
-              >
-                <div className={this.props.classes.formSection}>
-                  <Grid item>
-                    <BlackHeaderTypography style={{ marginBottom: "2em" }}>
-                      Account Information
-                    </BlackHeaderTypography>
-                  </Grid>
+        <div style={{ height: "100%" }}>
+          <Grid
+            container
+            direction="column"
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "2px",
+            }}
+          >
+            <div className={this.props.classes.formSection}>
+              <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                Account Information
+              </BlackHeaderTypography>
 
-                  <Grid item direction="column">
-                    <BlackHeaderTypography>Email*</BlackHeaderTypography>
-                    <OutlinedTextField
-                      placeholder="e.g. name@email.com"
-                      name="email"
-                      value={this.props.personalInfo.email}
-                      className={this.props.classes.textField}
-                      onChange={this.props.handleNestedChange(
-                        this.props.personalInfo
-                      )}
-                      required={true}
-                      isRequired="true"
-                    />
-                  </Grid>
+              <BlackHeaderTypography>Email*</BlackHeaderTypography>
+              <OutlinedTextField
+                placeholder="e.g. name@email.com"
+                name="email"
+                value={this.props.personalInfo.email}
+                className={this.props.classes.textField}
+                onChange={this.props.handleNestedChange(
+                  this.props.personalInfo
+                )}
+                required={true}
+              />
 
-                  <Grid item direction="column">
-                    <BlackHeaderTypography>
-                      Account Password*
-                    </BlackHeaderTypography>
-                    <OutlinedTextField
-                      placeholder="At least 8 characters"
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      value={this.props.personalInfo.password}
-                      className={this.props.classes.textField}
-                      onChange={this.props.handleNestedChange(
-                        this.props.personalInfo
-                      )}
-                    />
-                  </Grid>
-                  <Grid item direction="column">
-                    <BlackHeaderTypography>
-                      Confirm Password*
-                    </BlackHeaderTypography>
-                    <OutlinedTextField
-                      placeholder="At least 8 characters"
-                      name="confirmPassword"
-                      value={this.props.personalInfo.confirmPassword}
-                      className={this.props.classes.textField}
-                      type="password"
-                      autoComplete="current-password"
-                      onChange={this.props.handleNestedChange(
-                        this.props.personalInfo
-                      )}
-                    />
-                  </Grid>
-                </div>
-                <Divider />
+              <BlackHeaderTypography>Account Password*</BlackHeaderTypography>
+              <OutlinedTextField
+                placeholder="At least 8 characters"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                value={this.props.personalInfo.password}
+                className={this.props.classes.textField}
+                onChange={this.props.handleNestedChange(
+                  this.props.personalInfo
+                )}
+              />
+              <BlackHeaderTypography>Confirm Password*</BlackHeaderTypography>
+              <OutlinedTextField
+                placeholder="At least 8 characters"
+                name="confirmPassword"
+                value={this.props.personalInfo.confirmPassword}
+                className={this.props.classes.textField}
+                type="password"
+                autoComplete="current-password"
+                onChange={this.props.handleNestedChange(
+                  this.props.personalInfo
+                )}
+              />
+            </div>
+            <Divider />
 
-                <div className={this.props.classes.formSection}>
-                  <Grid item direction="column">
-                    <BlackHeaderTypography>First Name*</BlackHeaderTypography>
-                    <OutlinedTextField
-                      placeholder="e.g. John"
-                      name="firstName"
-                      value={this.props.personalInfo.firstName}
-                      className={this.props.classes.textField}
-                      type="firstName"
-                      onChange={this.props.handleNestedChange(
-                        this.props.personalInfo
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid item direction="column">
-                    <BlackHeaderTypography>Last Name*</BlackHeaderTypography>
-                    <OutlinedTextField
-                      placeholder="e.g. Doe"
-                      name="lastName"
-                      value={this.props.personalInfo.lastName}
-                      className={this.props.classes.textField}
-                      type="lastName"
-                      onChange={this.props.handleNestedChange(
-                        this.props.personalInfo
-                      )}
-                    />
-
-                    {/* <Autocomplete
-                      className={this.props.classes.dropDowns}
-                      id="tags-outlined"
-                      size="small"
-                      value={this.state.schoolInfo.type}
-                      options={
-                        this.state.schoolInfo.type === null
-                          ? this.props.picklists.type.list
-                          : [
-                              this.state.schoolInfo.type,
-                              ...this.props.picklists.type.list,
-                            ]
-                      }
-                      filterSelectedOptions
-                      onChange={(_event, newValue) => {
-                        this.setState({
-                          schoolInfo: {
-                            ...this.state.schoolInfo,
-                            type: newValue,
-                          },
-                        });
-                      }}
-                      renderInput={(params) => (
-                        <OutlinedTextField
-                          {...params}
-                          variant="outlined"
-                          placeholder="Preferred Sectors"
-                        />
-                      )}
-                    /> */}
-
-                    <BlackHeaderTypography>
-                      Preferred Pronouns*
-                    </BlackHeaderTypography>
-                    <FormControl
-                      required
-                      className={this.props.classes.dropDowns}
-                    >
-                      <Select
-                        value={this.props.personalInfo.preferredPronouns}
-                        onChange={this.props.handleNestedChange(
-                          this.props.personalInfo
-                        )}
-                        name="preferredPronouns"
-                        displayEmpty
-                        disableUnderline={true}
-                        // className={this.props.classes.selectField}
-                      >
-                        <MenuItem value="" disabled>
-                          Select your preferred pronoun
-                        </MenuItem>
-                        <MenuItem value="she/her">She/Her</MenuItem>
-                        <MenuItem value="he/him">He/Him</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </div>
+            <div className={this.props.classes.formSection}>
+              <Grid item>
+                <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                  About You
+                </BlackHeaderTypography>
               </Grid>
-            </Grid>
-          </div>
+              <BlackHeaderTypography>First Name*</BlackHeaderTypography>
+              <OutlinedTextField
+                placeholder="e.g. John"
+                name="firstName"
+                value={this.props.personalInfo.firstName}
+                className={this.props.classes.textField}
+                type="firstName"
+                onChange={this.props.handleNestedChange(
+                  this.props.personalInfo
+                )}
+              />
+              <BlackHeaderTypography>Last Name*</BlackHeaderTypography>
+              <OutlinedTextField
+                placeholder="e.g. Doe"
+                name="lastName"
+                value={this.props.personalInfo.lastName}
+                className={this.props.classes.textField}
+                type="lastName"
+                onChange={this.props.handleNestedChange(
+                  this.props.personalInfo
+                )}
+              />
+              <BlackHeaderTypography>Preferred Pronouns*</BlackHeaderTypography>
+
+              <Autocomplete
+                className={this.props.classes.dropDowns}
+                size="small"
+                value={this.props.picklistInfo.preferredPronouns}
+                getOptionLabel={(option) => option}
+                options={
+                  this.props.picklistInfo.preferredPronouns === null
+                    ? this.props.picklists.preferredPronouns.list
+                    : [
+                        this.props.picklistInfo.preferredPronouns,
+                        ...this.props.picklists.preferredPronouns.list,
+                      ]
+                }
+                onChange={(_event, newValue) =>
+                  this.props.handleNestedChangeMultiAutocomplete(
+                    "preferredPronouns",
+                    newValue
+                  )
+                }
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <OutlinedTextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Select your preferred pronoun"
+                  />
+                )}
+              />
+              <BlackHeaderTypography>Phone Number*</BlackHeaderTypography>
+              <OutlinedTextField
+                className={this.props.classes.textField}
+                placeholder="At least 8 characters"
+                name="phoneNumber"
+                value={this.props.personalInfo.phoneNumber}
+                onChange={this.props.handleNestedChange(
+                  this.props.personalInfo
+                )}
+              />
+
+              <BlackHeaderTypography>Linkedin URL*</BlackHeaderTypography>
+              <OutlinedTextField
+                className={this.props.classes.textField}
+                placeholder="At least 8 characters"
+                name="linkedinUrl"
+                value={this.props.personalInfo.linkedinUrl}
+                onChange={this.props.handleNestedChange(
+                  this.props.personalInfo
+                )}
+              />
+
+              <BlackHeaderTypography>
+                Local Post-Secondary Alumni
+              </BlackHeaderTypography>
+
+              <Autocomplete
+                multiple
+                id="localPostSecondaryInstitutions"
+                options={
+                  this.props.picklists.localPostSecondaryInstitutions.list
+                }
+                size="small"
+                className={this.props.classes.dropDowns}
+                getOptionLabel={(option) => option}
+                filterSelectedOptions
+                onChange={(_event, newValue) =>
+                  this.props.handleNestedChangeMultiAutocomplete(
+                    "localPostSecondaryInstitutions",
+                    newValue
+                  )
+                }
+                renderInput={(params) => (
+                  <OutlinedTextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Select alma mater if applicable"
+                  />
+                )}
+              />
+              <BlackHeaderTypography>
+                Memberships in Other Professional Associations/Unions
+              </BlackHeaderTypography>
+              <Autocomplete
+                multiple
+                id="professionalAssociations"
+                options={this.props.picklists.professionalAssociations.list}
+                size="small"
+                className={this.props.classes.dropDowns}
+                getOptionLabel={(option) => option}
+                filterSelectedOptions
+                onChange={(_event, newValue) =>
+                  this.props.handleNestedChangeMultiAutocomplete(
+                    "professionalAssociations",
+                    newValue
+                  )
+                }
+                renderInput={(params) => (
+                  <OutlinedTextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Select associations"
+                  />
+                )}
+              />
+            </div>
+          </Grid>
         </div>
       </React.Fragment>
     );

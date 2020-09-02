@@ -89,3 +89,5 @@ export const getCoopPlacementTime = createPicklistSelector(PicklistType.coopPlac
 
 export const getFollowedProgramsPicklist = createPicklistSelector(PicklistType.followedPrograms);
 
+export const getPreferredPronouns = createPicklistSelector(PicklistType.preferredPronouns);
+

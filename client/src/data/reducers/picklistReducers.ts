@@ -32,6 +32,7 @@ const initialState: PicklistState = {
   [PicklistType.position]: [],
   [PicklistType.moreInfo]: [],
   [PicklistType.school]: [],
+  [PicklistType.preferredPronouns]: [],
 
   [PicklistType.schoolBoard]: [],
   [PicklistType.province]: [],

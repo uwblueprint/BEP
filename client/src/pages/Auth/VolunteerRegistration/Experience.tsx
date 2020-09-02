@@ -12,6 +12,7 @@ import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Divider from "@material-ui/core/Divider";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { ExperienceState, PicklistInfo, RawPicklists } from "./Master";
@@ -457,7 +458,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                   <BlackHeaderTypography>
                     Post Secondary Training I've participated in
                   </BlackHeaderTypography>
-                  <Grid className={this.props.classes.multiSelect}>
+                  <Grid item>
                     {this.props.picklistInfo.postSecondaryTraining &&
                       Array.from(
                         this.props.picklistInfo.postSecondaryTraining.entries(),

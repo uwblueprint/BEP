@@ -18,6 +18,7 @@ export enum PicklistType {
   position = "position",
   introductionMethod = "introductionMethod",
   moreInfo = "moreInfo",
+  preferredPronouns = "preferredPronouns",
 
   // School picklists
   schoolBoard = "schoolBoard",

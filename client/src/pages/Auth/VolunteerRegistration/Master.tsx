@@ -28,6 +28,7 @@ import {
   getLocalPostSecondaryInstitutions,
   getIntroductionMethod,
   getEmploymentStatus,
+  getPreferredPronouns,
   getVolunteerDesiredExternalActivities,
   getVolunteerDesiredInternalActivities,
   getCoopPlacementMode,
@@ -61,7 +62,7 @@ import Employer from "../../../data/types/employerTypes";
 
 const styles = () => ({
   multiSelect: {
-    marginBottom: "26px",
+    // marginBottom: "26px",
     columns: "2 auto",
   },
   root: {
@@ -101,6 +102,7 @@ export interface InvolvementState {
 }
 
 export interface PicklistInfo {
+  preferredPronouns: string;
   localPostSecondaryInstitutions: Map<string, boolean>; //local post secondary alumni
   professionalAssociations: Map<string, boolean>;
   employmentStatus: string;
@@ -141,6 +143,7 @@ export interface RawPicklists {
   coopPlacementTime: { list: string[] };
   coopPlacementSchoolAffiliation: { list: string[] };
   followedPrograms: { list: string[] };
+  preferredPronouns: { list: string[] };
 }
 
 interface IComponentProps {
@@ -224,6 +227,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         agreeConditions: false,
       },
       picklistInfo: {
+        preferredPronouns: "",
         localPostSecondaryInstitutions: new Map(),
         professionalAssociations: new Map(),
         employmentStatus: "",
@@ -335,6 +339,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       PicklistType.grades,
       PicklistType.localPostSecondaryInstitutions,
       PicklistType.professionalAssociations,
+      PicklistType.preferredPronouns,
       PicklistType.employmentStatus,
       PicklistType.introductionMethod,
       PicklistType.volunteerDesiredExternalActivities,
@@ -598,6 +603,10 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   handleNestedChange={this.handleNestedChange}
                   personalInfo={this.state.personalInfo}
                   picklistInfo={this.state.picklistInfo}
+                  picklists={this.props.picklists}
+                  handleNestedChangeMultiAutocomplete={
+                    this.handleNestedChangeMultiAutocomplete
+                  }
                 />
                 <Experience
                   currentStep={this.state.currentStep}
@@ -670,6 +679,9 @@ const mapStateToProps = (state: any) => {
       },
       employmentStatus: {
         list: getEmploymentStatus(state.picklists),
+      },
+      preferredPronouns: {
+        list: getPreferredPronouns(state.picklists),
       },
       sectors: {
         list: getEmployerSectorsPicklist(state.picklists),
