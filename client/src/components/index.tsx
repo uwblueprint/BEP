@@ -13,6 +13,7 @@ import { PageHeader, PageBody } from "./Page";
 import Checkbox, { OutlinedCheckbox } from "./Checkbox";
 import {
   BlackExpandMoreIcon,
+  BlueArrowDropDownIcon,
   BlueSearchIcon,
   SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
@@ -23,6 +24,7 @@ import {
   BlackHeaderTypography,
   BlackTextTypography,
   GreyBackgroundTextTypography,
+  GreyTextTypography,
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
   RedTextTypography,
@@ -45,6 +47,7 @@ export { PageHeader, PageBody };
 export { Checkbox, OutlinedCheckbox };
 export {
   BlackExpandMoreIcon,
+  BlueArrowDropDownIcon,
   BlueSearchIcon,
   SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
@@ -55,6 +58,7 @@ export {
   BlackHeaderTypography,
   RedTextTypography,
   GreyBackgroundTextTypography,
+  GreyTextTypography,
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
   WhiteTextTypography,

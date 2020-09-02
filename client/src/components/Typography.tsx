@@ -51,6 +51,13 @@ const secondaryContrastTextStyle = (theme: Theme) =>
     },
   });
 
+const greyTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      color: "#9c9c9c",
+    },
+  });
+
 const WhiteTextTypography = withStyles(whiteTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
@@ -79,10 +86,15 @@ const SecondaryContrastTextTypography = withStyles(
   secondaryContrastTextStyle
 )((props: any) => <Typography {...props}>{props.children}</Typography>);
 
+const GreyTextTypography = withStyles(
+  greyTextStyle
+)((props: any) => <Typography {...props}>{props.children}</Typography>);
+
 export {
   BlackTextTypography,
   BlackHeaderTypography,
   GreyBackgroundTextTypography,
+  GreyTextTypography,
   RedTextTypography,
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,

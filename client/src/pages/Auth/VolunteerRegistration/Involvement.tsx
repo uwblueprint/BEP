@@ -8,7 +8,6 @@ import {
   BlackTextTypography,
   OutlinedTextField,
   OutlinedCheckbox,
-  OutlinedSelect,
 } from "../../../components/index";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";

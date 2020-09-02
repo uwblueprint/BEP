@@ -658,6 +658,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
             padding: "1em 2em",
             border: "2px solid #0A798F",
             borderRadius: "2px",
+            marginLeft: "34px",
           }}
           onClick={this._prev}
         >
@@ -674,7 +675,10 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // If the current step is not 3, then render the "next" button
     if (currentStep < 3) {
       return (
-        <ContrastButton style={{ float: "right" }} onClick={this._next}>
+        <ContrastButton
+          style={{ float: "right", marginRight: "34px" }}
+          onClick={this._next}
+        >
           Next
         </ContrastButton>
       );
@@ -689,22 +693,25 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         <PageBody>
           <div style={{ marginTop: "5em" }}>
             <BlackTextTypography>
-              <Link to="/">Back</Link>{" "}
+              <Link to="/" style={{ textDecoration: "none" }}>
+                {`<`} Back{" "}
+              </Link>{" "}
             </BlackTextTypography>
             <Typography variant="h1" style={{ marginTop: "10px" }}>
               Register for a volunteer account
             </Typography>
-            <Grid
-              container
-              spacing={4}
-              direction="column"
-              style={{
-                backgroundColor: "#fff",
-                borderRadius: "2px",
-                margin: "2em 0em",
-              }}
-            >
-              <form onSubmit={this.handleSubmit}>
+
+            <form onSubmit={this.handleSubmit}>
+              <Grid
+                container
+                spacing={4}
+                direction="row"
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: "2px",
+                  margin: "2em 0em",
+                }}
+              >
                 <PersonalInfo
                   classes={this.props.classes}
                   currentStep={this.state.currentStep}
@@ -746,10 +753,14 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   }
                   handleNestedChangePicklist={this.handleNestedChangePicklist}
                 />
-                {this.previousButton}
-                {this.nextButton}
-              </form>
-            </Grid>
+                <Grid item xs={6}>
+                  {this.previousButton}
+                </Grid>
+                <Grid item xs={6}>
+                  {this.nextButton}
+                </Grid>
+              </Grid>
+            </form>
           </div>
         </PageBody>
       </React.Fragment>

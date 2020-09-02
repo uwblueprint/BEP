@@ -1,6 +1,6 @@
 import React from "react";
 import Select from "@material-ui/core/Select";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
 import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 
 const containedSelectStyle = (theme: Theme) =>
@@ -57,7 +57,7 @@ const OutlinedSelect = withStyles(outlinedSelectStyle)((props: any) => (
     className={props.classes.select}
     {...props}
     variant="outlined"
-    IconComponent={ExpandMoreIcon}
+    // IconComponent={ExpandMoreIcon}
   >
     {props.children}
   </Select>
