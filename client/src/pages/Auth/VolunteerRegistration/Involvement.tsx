@@ -24,6 +24,7 @@ interface IComponentProps {
   handleNestedChange: any;
   handleNestedChangePicklist: any;
   createHandleSelectOption: any;
+  handleNestedChangeAutocomplete: any;
   handleNestedChangeMultiAutocomplete: any;
   classes: any;
 }
@@ -264,7 +265,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                               ]
                         }
                         onChange={(_event, newValue) =>
-                          this.props.handleNestedChangeMultiAutocomplete(
+                          this.props.handleNestedChangeAutocomplete(
                             "coopPlacementSchoolAffiliation",
                             newValue
                           )
@@ -379,7 +380,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                           ]
                     }
                     onChange={(_event, newValue) =>
-                      this.props.handleNestedChangeMultiAutocomplete(
+                      this.props.handleNestedChangeAutocomplete(
                         "introductionMethod",
                         newValue
                       )

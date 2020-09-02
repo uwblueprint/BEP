@@ -30,6 +30,7 @@ interface IComponentProps {
   handleNestedChange: any;
   handleNestedChangePicklist: any;
   createHandleSelectOption: any;
+  handleNestedChangeAutocomplete: any;
   handleNestedChangeMultiAutocomplete: any;
   classes: any;
 }
@@ -104,7 +105,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         ]
                   }
                   onChange={(_event, newValue) =>
-                    this.props.handleNestedChangeMultiAutocomplete(
+                    this.props.handleNestedChangeAutocomplete(
                       "employmentStatus",
                       newValue
                     )
@@ -203,7 +204,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                             ]
                       }
                       onChange={(_event, newValue) =>
-                        this.props.handleNestedChangeMultiAutocomplete(
+                        this.props.handleNestedChangeAutocomplete(
                           "sectors",
                           newValue
                         )
@@ -347,7 +348,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         ]
                   }
                   onChange={(_event, newValue) =>
-                    this.props.handleNestedChangeMultiAutocomplete(
+                    this.props.handleNestedChangeAutocomplete(
                       "size",
                       newValue
                     )
@@ -440,7 +441,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                   getOptionLabel={(option) => option}
                   filterSelectedOptions
                   onChange={(_event, newValue) =>
-                    this.props.handleNestedChangeMultiAutocomplete(
+                    this.props.handleNestedChangeAutocomplete(
                       "expertiseAreas",
                       newValue
                     )
@@ -517,7 +518,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                   getOptionLabel={(option) => option}
                   filterSelectedOptions
                   onChange={(_event, newValue) =>
-                    this.props.handleNestedChangeMultiAutocomplete(
+                    this.props.handleNestedChangeAutocomplete(
                       "languages",
                       newValue
                     )

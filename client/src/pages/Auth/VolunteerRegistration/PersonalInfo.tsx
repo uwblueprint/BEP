@@ -14,7 +14,12 @@ import Grid from "@material-ui/core/Grid";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 
-import { RawPicklists, PicklistInfo, PersonalInfoState } from "./Master";
+import {
+  RawPicklists,
+  PicklistInfo,
+  PersonalInfoState,
+  getChosenOptions,
+} from "./Master";
 
 interface IComponentProps {
   currentStep: number;
@@ -23,6 +28,7 @@ interface IComponentProps {
   picklistInfo: PicklistInfo;
   handleNestedChange: any;
   handleChange: any; // () => void????
+  handleNestedChangeAutocomplete: any;
   handleNestedChangeMultiAutocomplete: any;
 
   classes: any;
@@ -133,7 +139,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
                   this.props.personalInfo
                 )}
               />
-              <BlackHeaderTypography>Preferred Pronouns</BlackHeaderTypography>
+              <BlackHeaderTypography>Preferred Pronouns*</BlackHeaderTypography>
 
               <Autocomplete
                 className={this.props.classes.dropDowns}
@@ -149,7 +155,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
                       ]
                 }
                 onChange={(_event, newValue) =>
-                  this.props.handleNestedChangeMultiAutocomplete(
+                  this.props.handleNestedChangeAutocomplete(
                     "preferredPronouns",
                     newValue
                   )
@@ -201,12 +207,16 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
                 className={this.props.classes.dropDowns}
                 getOptionLabel={(option) => option}
                 filterSelectedOptions
-                onChange={(_event, newValue) =>
+                onChange={(_event: any, newValues: any) => {
                   this.props.handleNestedChangeMultiAutocomplete(
                     "localPostSecondaryInstitutions",
-                    newValue
-                  )
-                }
+                    this.props.picklistInfo.localPostSecondaryInstitutions,
+                    newValues
+                  );
+                }}
+                value={getChosenOptions(
+                  this.props.picklistInfo.localPostSecondaryInstitutions
+                )}
                 renderInput={(params) => (
                   <OutlinedTextField
                     {...params}
@@ -226,12 +236,16 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
                 className={this.props.classes.dropDowns}
                 getOptionLabel={(option) => option}
                 filterSelectedOptions
-                onChange={(_event, newValue) =>
+                onChange={(_event: any, newValues: any) => {
                   this.props.handleNestedChangeMultiAutocomplete(
                     "professionalAssociations",
-                    newValue
-                  )
-                }
+                    this.props.picklistInfo.professionalAssociations,
+                    newValues
+                  );
+                }}
+                value={getChosenOptions(
+                  this.props.picklistInfo.professionalAssociations
+                )}
                 renderInput={(params) => (
                   <OutlinedTextField
                     {...params}

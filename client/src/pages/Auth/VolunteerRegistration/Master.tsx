@@ -213,6 +213,11 @@ interface IComponentState {
   picklistInfo: PicklistInfo;
 }
 
+export const getChosenOptions = (map: Map<string, boolean>): string[] =>
+  Array.from(map.entries(), (entry) => entry)
+    .filter(([option, isSelected]) => isSelected)
+    .map(([option, isSelected]) => option);
+
 class Master extends React.Component<IComponentProps, IComponentState> {
   constructor(props: any) {
     super(props);
@@ -287,9 +292,12 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     this.handleNestedChangePicklist = this.handleNestedChangePicklist.bind(
       this
     );
+    this.handleNestedChangeMultiAutocomplete = this.handleNestedChangeMultiAutocomplete.bind(
+      this
+    );
     this.createHandleSelectOption = this.createHandleSelectOption.bind(this);
     this.createUpdateOptions = this.createUpdateOptions.bind(this);
-    this.handleNestedChangeMultiAutocomplete = this.handleNestedChangeMultiAutocomplete.bind(
+    this.handleNestedChangeAutocomplete = this.handleNestedChangeAutocomplete.bind(
       this
     );
 
@@ -437,18 +445,39 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     });
   }
 
+  validatePage1(): boolean {
+    const personalInfo = this.state.personalInfo;
+    if (personalInfo.password !== personalInfo.confirmPassword) {
+      alert("Passwords must match.");
+      return false;
+    }
+
+    if (personalInfo.password.length < 8) {
+      alert("Password must be at least 8 characters.");
+      return false;
+    }
+
+    return true;
+  }
+
   _next(event: any) {
     event.preventDefault();
     let currentStep = this.state.currentStep;
+    const isValid = currentStep === 1 ? this.validatePage1() : true;
     // If the current step is 1 or 2, then add one on "next" button click
-    console.log("HERE2");
-    console.log(currentStep);
-    currentStep = currentStep >= 2 ? 3 : currentStep + 1;
-    console.log(currentStep);
-    this.setState({
-      ...this.state,
-      currentStep: currentStep,
-    });
+    if (isValid) {
+      currentStep = currentStep >= 2 ? 3 : currentStep + 1;
+      const newState = {
+        ...this.state,
+        currentStep: currentStep,
+      };
+      console.log(newState);
+      this.setState(newState);
+      // this.setState({
+      //   ...this.state,
+      //   currentStep: currentStep,
+      // });
+    }
   }
   _prev(event: any) {
     event.preventDefault();
@@ -528,7 +557,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
   };
 
-  handleNestedChangeMultiAutocomplete = (field: any, newValue: any) => {
+  handleNestedChangeAutocomplete = (field: any, newValue: any) => {
     this.setState((prevState) => ({
       ...prevState,
       picklistInfo: {
@@ -536,6 +565,19 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         [field]: newValue,
       },
     }));
+  };
+
+  handleNestedChangeMultiAutocomplete = (
+    field: any,
+    map: Map<string, boolean>,
+    newValues: any
+  ) => {
+    Array.from(map.keys(), (key) => key).forEach((key) => {
+      map.set(key, false);
+    });
+    newValues.forEach((value: string) => map.set(value, true));
+
+    this.handleNestedChangeAutocomplete(field, map);
   };
 
   handleNestedChangePicklist = (picklistName: string) => {
@@ -553,20 +595,8 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
   };
 
-  validateForm = () => {
-    const personalInfo: PersonalInfoState = this.state.personalInfo;
-    const experience: ExperienceState = this.state.experience;
-    const involvement: InvolvementState = this.state.involvement;
-    const picklistInfo: PicklistInfo = this.state.picklistInfo;
-    if (personalInfo.password !== personalInfo.confirmPassword) {
-      console.log("HERE");
-      alert("Password must match.");
-    }
-  };
-
   handleSubmit = (event: any) => {
     event.preventDefault();
-    this.validateForm();
 
     // const getChosenOptions = (map: Map<string, boolean>): string[] =>
     //   Array.from(map.entries(), (entry) => entry)
@@ -757,6 +787,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
               currentStep={this.state.currentStep}
               handleChange={this.handleChange}
               handleNestedChange={this.handleNestedChange}
+              handleNestedChangeAutocomplete={
+                this.handleNestedChangeAutocomplete
+              }
               handleNestedChangeMultiAutocomplete={
                 this.handleNestedChangeMultiAutocomplete
               }
@@ -773,6 +806,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
               handleChange={this.handleChange}
               handleNestedChange={this.handleNestedChangeExperience}
               handleNestedChangePicklist={this.handleNestedChangePicklist}
+              handleNestedChangeAutocomplete={
+                this.handleNestedChangeAutocomplete
+              }
               handleNestedChangeMultiAutocomplete={
                 this.handleNestedChangeMultiAutocomplete
               }
@@ -794,8 +830,11 @@ class Master extends React.Component<IComponentProps, IComponentState> {
               picklistInfo={this.state.picklistInfo}
               picklists={this.props.picklists}
               createHandleSelectOption={this.createHandleSelectOption}
+              handleNestedChangeAutocomplete={
+                this.handleNestedChangeAutocomplete
+              }
               handleNestedChangeMultiAutocomplete={
-                this.handleNestedChangeMultiAutocomplete
+                handleNestedChangeMultiAutocomplete
               }
               handleNestedChangePicklist={this.handleNestedChangePicklist}
             />
