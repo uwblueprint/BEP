@@ -78,7 +78,10 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
           >
             <div className={this.props.classes.formSection}>
               <Grid item>
-                <BlackHeaderTypography style={{ marginBottom: "2em" }} variant="h3">
+                <BlackHeaderTypography
+                  style={{ marginBottom: "2em" }}
+                  variant="h3"
+                >
                   About your work
                 </BlackHeaderTypography>
               </Grid>
@@ -134,7 +137,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 />
               </Grid>
 
-              <Grid item >
+              <Grid item>
                 <BlackHeaderTypography>Employer</BlackHeaderTypography>
                 <OutlinedSelect
                   name="employerId"
@@ -168,7 +171,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
               {this.state.createEmployer && (
                 <React.Fragment>
                   {" "}
-                  <Grid item >
+                  <Grid item>
                     <BlackHeaderTypography>
                       Organization Name*
                     </BlackHeaderTypography>
@@ -229,7 +232,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       )}
                     />
                   </Grid>
-                  <Grid item >
+                  <Grid item>
                     <BlackHeaderTypography>
                       Organization Social Media
                     </BlackHeaderTypography>
@@ -415,7 +418,10 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
             <Divider />
             <div className={this.props.classes.formSection}>
               <Grid item>
-                <BlackHeaderTypography style={{ marginBottom: "2em" }} variant="h3">
+                <BlackHeaderTypography
+                  style={{ marginBottom: "2em" }}
+                  variant="h3"
+                >
                   Your knowledge and expertise
                 </BlackHeaderTypography>
               </Grid>
@@ -424,6 +430,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 <BlackHeaderTypography>
                   Areas of Expertise*
                 </BlackHeaderTypography>
+
                 <Autocomplete
                   multiple
                   id="expertiseAreas"
@@ -443,7 +450,6 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       {...params}
                       variant="outlined"
                       placeholder="Select Activity Areas of Expertise"
-                      required={true}
                     />
                   )}
                 />

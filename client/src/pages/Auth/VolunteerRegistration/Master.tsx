@@ -437,16 +437,21 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     });
   }
 
-  _next() {
+  _next(event: any) {
+    event.preventDefault();
     let currentStep = this.state.currentStep;
     // If the current step is 1 or 2, then add one on "next" button click
+    console.log("HERE2");
+    console.log(currentStep);
     currentStep = currentStep >= 2 ? 3 : currentStep + 1;
+    console.log(currentStep);
     this.setState({
       ...this.state,
       currentStep: currentStep,
     });
   }
-  _prev() {
+  _prev(event: any) {
+    event.preventDefault();
     let currentStep = this.state.currentStep;
     // If the current step is 2 or 3, then subtract one on "previous" button click
     currentStep = currentStep <= 1 ? 1 : currentStep - 1;
@@ -548,101 +553,113 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
   };
 
-  handleSubmit = (event: any) => {
-    event.preventDefault();
-
-    const getChosenOptions = (map: Map<string, boolean>): string[] =>
-      Array.from(map.entries(), (entry) => entry)
-        .filter(([option, isSelected]) => isSelected)
-        .map(([option, isSelected]) => option);
+  validateForm = () => {
     const personalInfo: PersonalInfoState = this.state.personalInfo;
     const experience: ExperienceState = this.state.experience;
     const involvement: InvolvementState = this.state.involvement;
     const picklistInfo: PicklistInfo = this.state.picklistInfo;
-    const employer: Employer = this.props.employers.filter(
-      (employer: Employer) => employer.id === experience.employerId
-    )[0];
-
-    const volunteer: Volunteer = {
-      userType: UserType.Volunteer,
-      email: personalInfo.email,
-      firstName: personalInfo.firstName,
-      followedPrograms: getChosenOptions(picklistInfo.followedPrograms),
-      id: "",
-      isSubscribed: involvement.isSubscribed,
-      lastName: personalInfo.lastName,
-      password: personalInfo.password,
-      phoneNumber: personalInfo.phoneNumber,
-      preferredPronouns: picklistInfo.preferredPronouns,
-      adviceForStudents: involvement.adviceForStudents,
-      careerDescription: experience.careerDescription,
-      coopPlacementMode: picklistInfo.coopPlacementMode,
-      coopPlacementSchoolAffiliation:
-        picklistInfo.coopPlacementSchoolAffiliation,
-      coopPlacementTime: getChosenOptions(picklistInfo.coopPlacementTime),
-      jobTitle: experience.jobTitle,
-      department: experience.departmentDivision,
-      employer,
-      employmentStatus: picklistInfo.employmentStatus,
-      expertiseAreas: picklistInfo.expertiseAreas,
-      extraDescription: experience.extraDescription,
-      fieldInvolvementDescription: experience.fieldInvolvementDescription,
-      grades: getChosenOptions(picklistInfo.grades),
-      introductionMethod: involvement.introductionMethod,
-      isVolunteerCoordinator: experience.isVolunteerCoordinator,
-      languages: picklistInfo.languages,
-      linkedIn: personalInfo.linkedinUrl,
-      localPostSecondaryInstitutions: getChosenOptions(
-        picklistInfo.localPostSecondaryInstitutions
-      ),
-      locations: getChosenOptions(picklistInfo.locations),
-      postSecondaryTraining: getChosenOptions(
-        picklistInfo.postSecondaryTraining
-      ),
-      professionalAssociations: getChosenOptions(
-        picklistInfo.professionalAssociations
-      ),
-      reasonsForVolunteering: involvement.reasonsForVolunteering,
-      shareEmployerInfo: experience.shareEmployerInfo,
-      shareWithEmployer: experience.shareWithEmployer,
-      volunteerDesiredExternalActivities: getChosenOptions(
-        picklistInfo.volunteerDesiredExternalActivities
-      ),
-      volunteerDesiredInternalActivities: getChosenOptions(
-        picklistInfo.volunteerDesiredInternalActivities
-      ),
-    };
-
-    console.log(volunteer);
-
-    if (!volunteer.employer) {
-      if (experience.orgName && experience.orgName.length > 0) {
-        volunteer.employer = {
-          address: experience.orgStreetAddr,
-          city: experience.orgCity,
-          id: "",
-          name: experience.orgName,
-          phoneNumber: experience.orgPhone,
-          postalCode: experience.orgPostalCode,
-          sectors: [picklistInfo.sectors],
-          size: picklistInfo.size,
-          socialMedia: [experience.orgSocialMedia],
-          website: experience.orgWebsite,
-        };
-      } else {
-        delete volunteer.employer;
-      }
+    if (personalInfo.password !== personalInfo.confirmPassword) {
+      console.log("HERE");
+      alert("Password must match.");
     }
+  };
 
-    const sendUser = async (body: any) => {
-      try {
-        await registerUser(body);
-        console.log("success");
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    sendUser(volunteer);
+  handleSubmit = (event: any) => {
+    event.preventDefault();
+    this.validateForm();
+
+    // const getChosenOptions = (map: Map<string, boolean>): string[] =>
+    //   Array.from(map.entries(), (entry) => entry)
+    //     .filter(([option, isSelected]) => isSelected)
+    //     .map(([option, isSelected]) => option);
+    // const personalInfo: PersonalInfoState = this.state.personalInfo;
+    // const experience: ExperienceState = this.state.experience;
+    // const involvement: InvolvementState = this.state.involvement;
+    // const picklistInfo: PicklistInfo = this.state.picklistInfo;
+    // const employer: Employer = this.props.employers.filter(
+    //   (employer: Employer) => employer.id === experience.employerId
+    // )[0];
+
+    // const volunteer: Volunteer = {
+    //   userType: UserType.Volunteer,
+    //   email: personalInfo.email,
+    //   firstName: personalInfo.firstName,
+    //   followedPrograms: getChosenOptions(picklistInfo.followedPrograms),
+    //   id: "",
+    //   isSubscribed: involvement.isSubscribed,
+    //   lastName: personalInfo.lastName,
+    //   password: personalInfo.password,
+    //   phoneNumber: personalInfo.phoneNumber,
+    //   preferredPronouns: picklistInfo.preferredPronouns,
+    //   adviceForStudents: involvement.adviceForStudents,
+    //   careerDescription: experience.careerDescription,
+    //   coopPlacementMode: picklistInfo.coopPlacementMode,
+    //   coopPlacementSchoolAffiliation:
+    //     picklistInfo.coopPlacementSchoolAffiliation,
+    //   coopPlacementTime: getChosenOptions(picklistInfo.coopPlacementTime),
+    //   jobTitle: experience.jobTitle,
+    //   department: experience.departmentDivision,
+    //   employer,
+    //   employmentStatus: picklistInfo.employmentStatus,
+    //   expertiseAreas: picklistInfo.expertiseAreas,
+    //   extraDescription: experience.extraDescription,
+    //   fieldInvolvementDescription: experience.fieldInvolvementDescription,
+    //   grades: getChosenOptions(picklistInfo.grades),
+    //   introductionMethod: involvement.introductionMethod,
+    //   isVolunteerCoordinator: experience.isVolunteerCoordinator,
+    //   languages: picklistInfo.languages,
+    //   linkedIn: personalInfo.linkedinUrl,
+    //   localPostSecondaryInstitutions: getChosenOptions(
+    //     picklistInfo.localPostSecondaryInstitutions
+    //   ),
+    //   locations: getChosenOptions(picklistInfo.locations),
+    //   postSecondaryTraining: getChosenOptions(
+    //     picklistInfo.postSecondaryTraining
+    //   ),
+    //   professionalAssociations: getChosenOptions(
+    //     picklistInfo.professionalAssociations
+    //   ),
+    //   reasonsForVolunteering: involvement.reasonsForVolunteering,
+    //   shareEmployerInfo: experience.shareEmployerInfo,
+    //   shareWithEmployer: experience.shareWithEmployer,
+    //   volunteerDesiredExternalActivities: getChosenOptions(
+    //     picklistInfo.volunteerDesiredExternalActivities
+    //   ),
+    //   volunteerDesiredInternalActivities: getChosenOptions(
+    //     picklistInfo.volunteerDesiredInternalActivities
+    //   ),
+    // };
+
+    // console.log(volunteer);
+
+    // if (!volunteer.employer) {
+    //   if (experience.orgName && experience.orgName.length > 0) {
+    //     volunteer.employer = {
+    //       address: experience.orgStreetAddr,
+    //       city: experience.orgCity,
+    //       id: "",
+    //       name: experience.orgName,
+    //       phoneNumber: experience.orgPhone,
+    //       postalCode: experience.orgPostalCode,
+    //       sectors: [picklistInfo.sectors],
+    //       size: picklistInfo.size,
+    //       socialMedia: [experience.orgSocialMedia],
+    //       website: experience.orgWebsite,
+    //     };
+    //   } else {
+    //     delete volunteer.employer;
+    //   }
+    // }
+
+    // const sendUser = async (body: any) => {
+    //   try {
+    //     await registerUser(body);
+    //     console.log("success");
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // };
+    // sendUser(volunteer);
   };
 
   get previousButton() {
@@ -669,14 +686,25 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 
   get nextButton() {
     let currentStep = this.state.currentStep;
-    // If the current step is not 3, then render the "next" button
     // Return submit button if on page 3 (last page);
+    if (currentStep === 3) {
+      return (
+        <ContrastButton
+          style={{ float: "right", marginRight: "34px" }}
+          type="submit"
+        >
+          Finish Registration
+        </ContrastButton>
+      );
+    }
+
+    // If the current step is not 3, then render the "next" button
     return (
       <ContrastButton
         style={{ float: "right", marginRight: "34px" }}
-        onClick={this._next}
+        type="submit"
       >
-        {currentStep === 3 ? "Finish Registration" : "Next"}
+        Next
       </ContrastButton>
     );
   }
@@ -719,6 +747,62 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         </Grid>
       );
     };
+
+    const getPage = () => {
+      switch (this.state.currentStep) {
+        case 1:
+          return (
+            <PersonalInfo
+              classes={this.props.classes}
+              currentStep={this.state.currentStep}
+              handleChange={this.handleChange}
+              handleNestedChange={this.handleNestedChange}
+              handleNestedChangeMultiAutocomplete={
+                this.handleNestedChangeMultiAutocomplete
+              }
+              personalInfo={this.state.personalInfo}
+              picklistInfo={this.state.picklistInfo}
+              picklists={this.props.picklists}
+            />
+          );
+        case 2:
+          return (
+            <Experience
+              classes={this.props.classes}
+              currentStep={this.state.currentStep}
+              handleChange={this.handleChange}
+              handleNestedChange={this.handleNestedChangeExperience}
+              handleNestedChangePicklist={this.handleNestedChangePicklist}
+              handleNestedChangeMultiAutocomplete={
+                this.handleNestedChangeMultiAutocomplete
+              }
+              experience={this.state.experience}
+              employers={this.props.employers}
+              picklists={this.props.picklists}
+              picklistInfo={this.state.picklistInfo}
+              createHandleSelectOption={this.createHandleSelectOption}
+            />
+          );
+        default:
+          return (
+            <Involvement
+              classes={this.props.classes}
+              currentStep={this.state.currentStep}
+              handleChange={this.handleChange}
+              handleNestedChange={this.handleNestedChangeInvolvement}
+              involvement={this.state.involvement}
+              picklistInfo={this.state.picklistInfo}
+              picklists={this.props.picklists}
+              createHandleSelectOption={this.createHandleSelectOption}
+              handleNestedChangeMultiAutocomplete={
+                this.handleNestedChangeMultiAutocomplete
+              }
+              handleNestedChangePicklist={this.handleNestedChangePicklist}
+            />
+          );
+      }
+    };
+
     return (
       <React.Fragment>
         <PageBody>
@@ -754,7 +838,11 @@ class Master extends React.Component<IComponentProps, IComponentState> {
               </Grid>
             </Grid>
 
-            <form onSubmit={this.handleSubmit}>
+            <form
+              onSubmit={
+                this.state.currentStep === 3 ? this.handleSubmit : this._next
+              }
+            >
               <Grid
                 container
                 spacing={4}
@@ -767,47 +855,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                 }}
               >
                 <Grid item xs={12}>
-                  <PersonalInfo
-                    classes={this.props.classes}
-                    currentStep={this.state.currentStep}
-                    handleChange={this.handleChange}
-                    handleNestedChange={this.handleNestedChange}
-                    handleNestedChangeMultiAutocomplete={
-                      this.handleNestedChangeMultiAutocomplete
-                    }
-                    personalInfo={this.state.personalInfo}
-                    picklistInfo={this.state.picklistInfo}
-                    picklists={this.props.picklists}
-                  />
-                  <Experience
-                    classes={this.props.classes}
-                    currentStep={this.state.currentStep}
-                    handleChange={this.handleChange}
-                    handleNestedChange={this.handleNestedChangeExperience}
-                    handleNestedChangePicklist={this.handleNestedChangePicklist}
-                    handleNestedChangeMultiAutocomplete={
-                      this.handleNestedChangeMultiAutocomplete
-                    }
-                    experience={this.state.experience}
-                    employers={this.props.employers}
-                    picklists={this.props.picklists}
-                    picklistInfo={this.state.picklistInfo}
-                    createHandleSelectOption={this.createHandleSelectOption}
-                  />
-                  <Involvement
-                    classes={this.props.classes}
-                    currentStep={this.state.currentStep}
-                    handleChange={this.handleChange}
-                    handleNestedChange={this.handleNestedChangeInvolvement}
-                    involvement={this.state.involvement}
-                    picklistInfo={this.state.picklistInfo}
-                    picklists={this.props.picklists}
-                    createHandleSelectOption={this.createHandleSelectOption}
-                    handleNestedChangeMultiAutocomplete={
-                      this.handleNestedChangeMultiAutocomplete
-                    }
-                    handleNestedChangePicklist={this.handleNestedChangePicklist}
-                  />
+                  {getPage()}
                 </Grid>
                 <Grid item xs={6}>
                   {this.previousButton}
