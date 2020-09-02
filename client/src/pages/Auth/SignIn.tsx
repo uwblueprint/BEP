@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 
 import SelectUserBox from "./SelectUserBox";
-import VolunteerRegistration from "./VolunteerRegistration";
-import EducatorRegistration from "./EducatorRegistration";
 
 import {
   ContainedButton,

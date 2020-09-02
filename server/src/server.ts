@@ -15,6 +15,7 @@ import { eventRouter } from './api/events/EventRouter';
 import { schoolRouter } from './api/schools/SchoolRouter';
 import { schoolPicklistRouter } from './api/schools/picklists/SchoolPicklistRouter';
 import { applicationRouter } from './api/applications/ApplicationsRouter';
+import { employerPicklistRouter } from './api/employers/picklists/EmployerPicklistRouter';
 import { invitationRouter } from './api/invitations/InvitationsRouter';
 import { requestsRouter } from './requests/requests.router';
 import { eventVolunteerRouter } from './api/eventVolunteers/EventVolunteerRouter';

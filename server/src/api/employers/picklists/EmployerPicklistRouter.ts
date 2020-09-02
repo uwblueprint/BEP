@@ -14,7 +14,7 @@ export const employerPicklistRouter = Express.Router();
 // GET schools/:name
 
 employerPicklistRouter.get('/:name', async (req: Express.Request, res: Express.Response) => {
-    console.log("Hit router")
+    console.log('Hit router');
     const picklistName: string = req.params.name;
     try {
         const picklist: string[] = await EmployerPicklistService.getEmployerPicklist(picklistName);

@@ -28,8 +28,6 @@ import { getSchools } from "../../data/selectors/schoolListSelector";
 
 import { registerUser } from "../../utils/authApiUtils";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
 import Typography from "@material-ui/core/Typography";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Divider from "@material-ui/core/Divider";
@@ -40,14 +38,11 @@ import { Link } from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import {
-  ContainedSelect,
-  SecondaryMainTextTypography,
   ContainedButton,
   DarkContainedButton,
   OutlinedTextField,
   BlackHeaderTypography,
   BlackTextTypography,
-  PageHeader,
   OutlinedCheckbox,
   PageBody,
   TextField,
@@ -224,14 +219,14 @@ class EducatorRegistration extends React.Component<
       Array.from(
         this.state.picklistInfo.educatorDesiredActivities.entries()
       ).forEach((entry) => {
-        if (entry[1] == true) {
+        if (entry[1] === true) {
           this.educatorDesiredActivitiesList.push(entry[0]);
         }
       });
 
       Array.from(this.state.picklistInfo.moreInfo.entries()).forEach(
         (entry) => {
-          if (entry[1] == true) {
+          if (entry[1] === true) {
             this.moreInfoList.push(entry[0]);
           }
         }

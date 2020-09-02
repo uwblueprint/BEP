@@ -38,6 +38,21 @@ const textButtonStyle = (theme: Theme) =>
     },
   });
 
+const contrastButtonStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      background: theme.palette.secondary.contrastText,
+      padding: "1em 2em",
+      borderRadius: "2px",
+    },
+  });
+
+const ContrastButton = withStyles(contrastButtonStyle)((props: any) => (
+  <Button {...props}>
+    <WhiteTextTypography variant="button">{props.children}</WhiteTextTypography>
+  </Button>
+));
+
 const ContainedButton = withStyles(containedButtonStyle)((props: any) => (
   <Button {...props}>
     <WhiteTextTypography variant="button">{props.children}</WhiteTextTypography>
@@ -72,4 +87,5 @@ export {
   TextButton,
   Button,
   OutlinedButton,
+  ContrastButton,
 };

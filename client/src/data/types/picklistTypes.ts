@@ -18,6 +18,7 @@ export enum PicklistType {
   position = "position",
   introductionMethod = "introductionMethod",
   moreInfo = "moreInfo",
+  preferredPronouns = "preferredPronouns",
 
   // School picklists
   schoolBoard = "schoolBoard",
@@ -28,6 +29,5 @@ export enum PicklistType {
   //Employer Picklist
   sectors = "sectors",
   size = "size",
-  employmentStatus = "employmentStatus"
-
+  employmentStatus = "employmentStatus",
 }
