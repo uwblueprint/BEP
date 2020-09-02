@@ -257,6 +257,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     onChange={this.props.handleNestedChange(
                       this.props.involvement
                     )}
+                    required={true}
                   />
                 </Grid>{" "}
                 <Grid item style={{ columns: "2 auto" }}>
@@ -363,6 +364,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                         onChange={this.props.handleNestedChange(
                           this.props.involvement
                         )}
+                        required={true}
                       />
                     }
                     label={

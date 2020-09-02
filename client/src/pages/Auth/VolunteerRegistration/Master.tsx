@@ -656,6 +656,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                     this.handleNestedChangeMultiAutocomplete
                   }
                   handleNestedChangePicklist={this.handleNestedChangePicklist}
+                  classes={this.props.classes}
                 />
                 {this.previousButton}
                 {this.nextButton}
