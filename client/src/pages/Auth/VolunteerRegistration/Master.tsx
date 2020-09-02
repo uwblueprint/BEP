@@ -1,6 +1,7 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 import {
   PageBody,
@@ -23,7 +24,6 @@ import {
   getLocalPostSecondaryInstitutions,
   getIntroductionMethod,
   getEmploymentStatus,
-  getPreferredPronouns,
   getVolunteerDesiredExternalActivities,
   getVolunteerDesiredInternalActivities,
   getPreferredPronounsPicklist,
@@ -48,13 +48,15 @@ import {
   createEmployerService,
 } from "../../../data/services/employerService";
 
+import { registerUser } from "../../../utils/authApiUtils";
+
 import Experience from "./Experience";
 import PersonalInfo from "./PersonalInfo";
 import Involvement from "./Involvement";
 
 import { PicklistType } from "../../../data/types/picklistTypes";
-import { connect } from "react-redux";
 import Employer from "../../../data/types/employerTypes";
+import { UserType, Volunteer } from "../../../data/types/userTypes";
 
 const styles = () => ({
   multiSelect: {
@@ -65,6 +67,17 @@ const styles = () => ({
     minWidth: 275,
   },
 });
+
+export interface PersonalInfoState {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  linkedinUrl: string;
+  shareWithEmployer: boolean;
+}
 
 export interface ExperienceState {
   jobTitle: string;
@@ -113,7 +126,7 @@ export interface PicklistInfo {
   moreInfo: Map<string, boolean>;
   grades: Map<string, boolean>; // grade levels willing to volunteer with
   locations: Map<string, boolean>;
-  coopPlacementMode: Map<string, boolean>;
+  coopPlacementMode: string;
   coopPlacementTime: Map<string, boolean>;
   coopPlacementSchoolAffiliation: string;
   followedPrograms: Map<string, boolean>;
@@ -160,16 +173,7 @@ interface IComponentState {
   // Not feasible by soft deadline:
   //Co-op placement details --> (on click appear) When are you willing to host a student, how are you willing to host a student
   currentStep: number;
-  personalInfo: {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    linkedinUrl: string;
-    shareWithEmployer: boolean;
-  };
+  personalInfo: PersonalInfoState;
   experience: ExperienceState;
   involvement: InvolvementState;
   picklistInfo: PicklistInfo;
@@ -236,7 +240,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         moreInfo: new Map(),
         grades: new Map(),
         locations: new Map(),
-        coopPlacementMode: new Map(),
+        coopPlacementMode: "",
         coopPlacementTime: new Map(),
         coopPlacementSchoolAffiliation: "",
         followedPrograms: new Map(),
@@ -288,8 +292,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         return picklists.volunteerDesiredExternalActivities;
       case "volunteerDesiredInternalActivities":
         return picklists.volunteerDesiredInternalActivities;
-      case "coopPlacementMode":
-        return picklists.coopPlacementMode;
       case "coopPlacementTime":
         return picklists.coopPlacementTime;
       case "locations":
@@ -373,10 +375,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         } else if (type === PicklistType.volunteerDesiredInternalActivities) {
           picklistInfo.volunteerDesiredInternalActivities = new Map(
             createPicklist(picklists.volunteerDesiredInternalActivities.list)
-          );
-        } else if (type === PicklistType.coopPlacementMode) {
-          picklistInfo.coopPlacementMode = new Map(
-            createPicklist(picklists.coopPlacementMode.list)
           );
         } else if (type === PicklistType.coopPlacementTime) {
           picklistInfo.coopPlacementTime = new Map(
@@ -526,8 +524,100 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   };
 
   handleSubmit = (event: any) => {
-    //todo
     event.preventDefault();
+
+    const getChosenOptions = (map: Map<string, boolean>): string[] =>
+      Array.from(map.entries(), (entry) => entry)
+        .filter(([option, isSelected]) => isSelected)
+        .map(([option, isSelected]) => option);
+    const personalInfo: PersonalInfoState = this.state.personalInfo;
+    const experience: ExperienceState = this.state.experience;
+    const involvement: InvolvementState = this.state.involvement;
+    const picklistInfo: PicklistInfo = this.state.picklistInfo;
+    const employer: Employer = this.props.employers.filter(
+      (employer: Employer) => employer.id === experience.employerId
+    )[0];
+
+    const volunteer: Volunteer = {
+      userType: UserType.Volunteer,
+      email: personalInfo.email,
+      firstName: personalInfo.firstName,
+      followedPrograms: getChosenOptions(picklistInfo.followedPrograms),
+      id: "",
+      isSubscribed: involvement.isSubscribed,
+      lastName: personalInfo.lastName,
+      password: personalInfo.password,
+      phoneNumber: personalInfo.phoneNumber,
+      preferredPronouns: picklistInfo.preferredPronouns,
+      adviceForStudents: involvement.adviceForStudents,
+      careerDescription: experience.careerDescription,
+      coopPlacementMode: picklistInfo.coopPlacementMode,
+      coopPlacementSchoolAffiliation:
+        picklistInfo.coopPlacementSchoolAffiliation,
+      coopPlacementTime: getChosenOptions(picklistInfo.coopPlacementTime),
+      jobTitle: experience.jobTitle,
+      department: experience.departmentDivision,
+      employer,
+      employmentStatus: picklistInfo.employmentStatus,
+      expertiseAreas: picklistInfo.expertiseAreas,
+      extraDescription: experience.extraDescription,
+      fieldInvolvementDescription: experience.fieldInvolvementDescription,
+      grades: getChosenOptions(picklistInfo.grades),
+      introductionMethod: involvement.introductionMethod,
+      isVolunteerCoordinator: experience.isVolunteerCoordinator,
+      languages: picklistInfo.languages,
+      linkedIn: personalInfo.linkedinUrl,
+      localPostSecondaryInstitutions: getChosenOptions(
+        picklistInfo.localPostSecondaryInstitutions
+      ),
+      locations: getChosenOptions(picklistInfo.locations),
+      postSecondaryTraining: getChosenOptions(
+        picklistInfo.postSecondaryTraining
+      ),
+      professionalAssociations: getChosenOptions(
+        picklistInfo.professionalAssociations
+      ),
+      reasonsForVolunteering: involvement.reasonsForVolunteering,
+      shareEmployerInfo: experience.shareEmployerInfo,
+      shareWithEmployer: experience.shareWithEmployer,
+      volunteerDesiredExternalActivities: getChosenOptions(
+        picklistInfo.volunteerDesiredExternalActivities
+      ),
+      volunteerDesiredInternalActivities: getChosenOptions(
+        picklistInfo.volunteerDesiredInternalActivities
+      ),
+    };
+
+    console.log(volunteer);
+
+    if (!volunteer.employer) {
+      if (experience.orgName && experience.orgName.length > 0) {
+        volunteer.employer = {
+          address: experience.orgStreetAddr,
+          city: experience.orgCity,
+          id: "",
+          name: experience.orgName,
+          phoneNumber: experience.orgPhone,
+          postalCode: experience.orgPostalCode,
+          sectors: [picklistInfo.sectors],
+          size: picklistInfo.size,
+          socialMedia: [experience.orgSocialMedia],
+          website: experience.orgWebsite,
+        };
+      } else {
+        delete volunteer.employer;
+      }
+    }
+
+    const sendUser = async (body: any) => {
+      try {
+        await registerUser(body);
+        console.log("success");
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    sendUser(volunteer);
   };
 
   get previousButton() {
@@ -566,7 +656,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   render() {
-    console.log("The state", this.state);
     return (
       <React.Fragment>
         <PageBody>
@@ -671,7 +760,7 @@ const mapStateToProps = (state: any) => {
         list: getEmploymentStatus(state.picklists),
       },
       preferredPronouns: {
-        list: getPreferredPronouns(state.picklists),
+        list: getPreferredPronounsPicklist(state.picklists),
       },
       sectors: {
         list: getEmployerSectorsPicklist(state.picklists),

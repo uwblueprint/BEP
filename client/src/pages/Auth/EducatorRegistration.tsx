@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 /* Types */
 import { PicklistType } from "../../data/types/picklistTypes";
 import { School } from "../../data/types/schoolListTypes";
+import { UserType } from "../../data/types/userTypes";
 
 // import { SchoolListType } from "../../data/types/schoolListTypes";
 
@@ -346,12 +347,12 @@ class EducatorRegistration extends React.Component<
   handleSubmit = (event: any) => {
     event.preventDefault();
 
-    let test = this.props.schoolList.filter(
+    let school = this.props.schoolList.filter(
       (school: School) => school.name === this.state.schoolName
     );
 
     const formattedData = {
-      userType: 1,
+      userType: UserType.Educator,
       email: this.state.email,
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -360,13 +361,11 @@ class EducatorRegistration extends React.Component<
       preferredPronouns: this.state.preferredPronouns,
       isSubscribed: this.state.isSubscribed,
       position: this.state.picklistInfo.position,
-      school: test[0], //test
+      school: school[0], //test
       introductionMethod: this.state.picklistInfo.introductionMethod,
       moreInfo: this.moreInfoList,
       educatorDesiredActivities: this.educatorDesiredActivitiesList,
     };
-
-    console.log(formattedData);
 
     const sendUser = async (body: any) => {
       try {

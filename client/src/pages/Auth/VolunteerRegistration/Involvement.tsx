@@ -13,7 +13,11 @@ import {
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import { PicklistInfo, InvolvementState, RawPicklists } from "./Master";
+import {
+  PicklistInfo,
+  InvolvementState,
+  RawPicklists,
+} from "./Master";
 
 interface IComponentProps {
   currentStep: number;
@@ -41,7 +45,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
 
     const displayPicklistOptions = (
       picklistMap: Map<string, boolean>,
-      picklistName: string
+      picklistName: string,
+      selectMultiple: boolean
     ) => {
       return Array.from(picklistMap.entries(), (entry) => entry).map(
         ([option, isSelected]) => (
@@ -59,7 +64,12 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   key={option}
                   value={option}
                   name={option}
-                  onChange={this.props.createHandleSelectOption(picklistName)}
+                  checked={isSelected}
+                  onChange={
+                    selectMultiple
+                      ? this.props.createHandleSelectOption(picklistName)
+                      : this.props.handleNestedChangePicklist(picklistName)
+                  }
                 />
               }
               label={
@@ -73,6 +83,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
         )
       );
     };
+
     return (
       <React.Fragment>
         <div className="form-group">
@@ -105,7 +116,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                 <Grid item className={this.props.classes.multiSelect}>
                   {displayPicklistOptions(
                     this.props.picklistInfo.volunteerDesiredInternalActivities,
-                    "volunteerDesiredInternalActivities"
+                    "volunteerDesiredInternalActivities",
+                    true
                   )}
                 </Grid>
                 <Grid item>
@@ -114,7 +126,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                 <Grid item className={this.props.classes.multiSelect}>
                   {displayPicklistOptions(
                     this.props.picklistInfo.volunteerDesiredExternalActivities,
-                    "volunteerDesiredExternalActivities"
+                    "volunteerDesiredExternalActivities",
+                    true
                   )}
                 </Grid>
 
@@ -144,19 +157,28 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     <Grid item>
                       {displayPicklistOptions(
                         this.props.picklistInfo.coopPlacementTime,
-                        "coopPlacementTime"
+                        "coopPlacementTime",
+                        true
                       )}
                     </Grid>
                     <Grid item>
                       <BlackHeaderTypography>
-                        How are you willing to host a student? (check all that
-                        apply)
+                        How are you willing to host a student?
                       </BlackHeaderTypography>
                     </Grid>
                     <Grid item>
                       {displayPicklistOptions(
-                        this.props.picklistInfo.coopPlacementMode,
-                        "coopPlacementMode"
+                        new Map<string, boolean>(
+                          this.props.picklists.coopPlacementMode.list.map(
+                            (entry) => [
+                              entry,
+                              entry ===
+                                this.props.picklistInfo.coopPlacementMode,
+                            ]
+                          )
+                        ),
+                        "coopPlacementMode",
+                        false
                       )}
                     </Grid>
                     <Grid item>
@@ -201,7 +223,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                 <Grid item className={this.props.classes.multiSelect}>
                   {displayPicklistOptions(
                     this.props.picklistInfo.locations,
-                    "locations"
+                    "locations",
+                    true
                   )}
                 </Grid>
                 <Grid item>
@@ -212,7 +235,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                 <Grid item>
                   {displayPicklistOptions(
                     this.props.picklistInfo.grades,
-                    "grades"
+                    "grades",
+                    true
                   )}
                 </Grid>
                 <Grid item>
@@ -297,7 +321,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                 <Grid item className={this.props.classes.multiSelect}>
                   {displayPicklistOptions(
                     this.props.picklistInfo.followedPrograms,
-                    "followedPrograms"
+                    "followedPrograms",
+                    true
                   )}
                 </Grid>
                 <Grid item>

@@ -77,7 +77,7 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
             locations__c: arrayToPicklistString((user as Volunteer).locations),
             postSecondaryTraining__c: arrayToPicklistString((user as Volunteer).postSecondaryTraining),
             professionalAssociations__c: arrayToPicklistString((user as Volunteer).professionalAssociations),
-            reasonsForVolunteering__c: arrayToPicklistString((user as Volunteer).reasonsForVolunteering),
+            reasonsForVolunteering__c: (user as Volunteer).reasonsForVolunteering,
             shareEmployerInfo__c: (user as Volunteer).shareEmployerInfo,
             shareWithEmployer__c: (user as Volunteer).shareWithEmployer,
             volunteerDesiredExternalActivities__c: arrayToPicklistString(
@@ -140,7 +140,7 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Volunteer).locations = picklistStringToArray(record.locations__c);
         (user as Volunteer).postSecondaryTraining = picklistStringToArray(record.postSecondaryTraining__c);
         (user as Volunteer).professionalAssociations = picklistStringToArray(record.professionalAssociations__c);
-        (user as Volunteer).reasonsForVolunteering = picklistStringToArray(record.reasonsForVolunteering__c);
+        (user as Volunteer).reasonsForVolunteering = record.reasonsForVolunteering__c;
         (user as Volunteer).shareEmployerInfo = record.shareEmployerInfo__c;
         (user as Volunteer).shareWithEmployer = record.shareWithEmployer__c;
         (user as Volunteer).volunteerDesiredExternalActivities = picklistStringToArray(
@@ -235,15 +235,14 @@ export const create = async (user: User): Promise<string> => {
     // If user is a volunteer and its employer does not have an id, create the employer.
     if (isUser(user) && isVolunteer(user)) {
         const volunteer = user as Volunteer;
-        let employerId: string;
         if (
             volunteer.employer &&
             typeof volunteer.employer !== 'string' &&
             (volunteer.employer.id === '' || !volunteer.employer.id)
         ) {
-            employerId = await EmployerService.create(volunteer.employer);
+            const employerId = await EmployerService.create(volunteer.employer);
+            (user as Volunteer).employer.id = employerId;
         }
-        (user as Volunteer).employer.id = employerId;
     }
     const userInfo: { id: string; success: boolean; errors: Error[] } = await conn
         .sobject(siteUser)

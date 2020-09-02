@@ -54,7 +54,7 @@ export interface Volunteer extends User {
   locations: string[]; // Locations the volunteer is available in.
   postSecondaryTraining: string[];
   professionalAssociations: string[];
-  reasonsForVolunteering: string[];
+  reasonsForVolunteering: string;
   shareEmployerInfo: boolean;
   shareWithEmployer: boolean;
   volunteerDesiredExternalActivities: string[];

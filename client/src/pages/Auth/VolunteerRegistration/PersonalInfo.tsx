@@ -16,21 +16,12 @@ import Grid from "@material-ui/core/Grid";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 
-import { RawPicklists, PicklistInfo } from "./Master";
+import { RawPicklists, PicklistInfo, PersonalInfoState } from "./Master";
 
 interface IComponentProps {
   currentStep: number;
   picklists: RawPicklists;
-  personalInfo: {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    linkedinUrl: string;
-    shareWithEmployer: boolean;
-  };
+  personalInfo: PersonalInfoState;
   picklistInfo: PicklistInfo;
   handleNestedChange: any;
   handleChange: any; // () => void????
