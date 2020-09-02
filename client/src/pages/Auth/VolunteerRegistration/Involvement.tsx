@@ -232,6 +232,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     onChange={this.props.handleNestedChange(
                       this.props.involvement
                     )}
+                    required={true}
                   />
                 </Grid>
                 <Grid item>
@@ -273,6 +274,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                       "introductionMethod"
                     )}
                     style={{ height: "40px", width: "454px" }}
+                    required={true}
                   >
                     <MenuItem value="" disabled>
                       e.g. Event, internet search, etc.
@@ -328,6 +330,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                         onChange={this.props.handleNestedChange(
                           this.props.involvement
                         )}
+                        required={true}
                       />
                     }
                     label={

@@ -113,6 +113,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         "employmentStatus"
                       )}
                       style={{ height: "40px" }}
+                      required={true}
                     >
                       <MenuItem value="" disabled>
                         Select your employment status
@@ -142,6 +143,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       onChange={this.props.handleNestedChange(
                         this.props.experience
                       )}
+                      required={true}
                     />
                   </FormControl>
                 </Grid>
@@ -182,7 +184,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                     <Grid item direction="column">
                       <FormControl>
                         <BlackHeaderTypography>
-                          Organization Name*
+                          Organization Name
                         </BlackHeaderTypography>
                         <OutlinedTextField
                           placeholder="Enter your organization’s name"
@@ -451,6 +453,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         placeholder="Select Activity Areas of Expertise"
                       />
                     )}
+                    required={true}
                   />
                 </Grid>
 
@@ -537,6 +540,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       onChange={this.props.handleNestedChange(
                         this.props.experience
                       )}
+                      required={true}
                     />
                   </FormControl>
                 </Grid>
@@ -554,6 +558,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       onChange={this.props.handleNestedChange(
                         this.props.experience
                       )}
+                      required={true}
                     />
                   </FormControl>
                 </Grid>
