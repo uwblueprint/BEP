@@ -667,7 +667,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       );
     }
     // ...else return nothing
-    return null;
+    return <div />;
   }
 
   get nextButton() {
@@ -684,7 +684,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       );
     }
     // ...else render nothing
-    return null;
+    return <div />;
   }
 
   render() {
@@ -709,50 +709,53 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                 style={{
                   backgroundColor: "#fff",
                   borderRadius: "2px",
-                  margin: "2em 0em",
+                  margin: "2em 2em",
+                  width: "100%",
                 }}
               >
-                <PersonalInfo
-                  classes={this.props.classes}
-                  currentStep={this.state.currentStep}
-                  handleChange={this.handleChange}
-                  handleNestedChange={this.handleNestedChange}
-                  handleNestedChangeMultiAutocomplete={
-                    this.handleNestedChangeMultiAutocomplete
-                  }
-                  personalInfo={this.state.personalInfo}
-                  picklistInfo={this.state.picklistInfo}
-                  picklists={this.props.picklists}
-                />
-                <Experience
-                  classes={this.props.classes}
-                  currentStep={this.state.currentStep}
-                  handleChange={this.handleChange}
-                  handleNestedChange={this.handleNestedChangeExperience}
-                  handleNestedChangePicklist={this.handleNestedChangePicklist}
-                  handleNestedChangeMultiAutocomplete={
-                    this.handleNestedChangeMultiAutocomplete
-                  }
-                  experience={this.state.experience}
-                  employers={this.props.employers}
-                  picklists={this.props.picklists}
-                  picklistInfo={this.state.picklistInfo}
-                  createHandleSelectOption={this.createHandleSelectOption}
-                />
-                <Involvement
-                  classes={this.props.classes}
-                  currentStep={this.state.currentStep}
-                  handleChange={this.handleChange}
-                  handleNestedChange={this.handleNestedChangeInvolvement}
-                  involvement={this.state.involvement}
-                  picklistInfo={this.state.picklistInfo}
-                  picklists={this.props.picklists}
-                  createHandleSelectOption={this.createHandleSelectOption}
-                  handleNestedChangeMultiAutocomplete={
-                    this.handleNestedChangeMultiAutocomplete
-                  }
-                  handleNestedChangePicklist={this.handleNestedChangePicklist}
-                />
+                <Grid item xs={12}>
+                  <PersonalInfo
+                    classes={this.props.classes}
+                    currentStep={this.state.currentStep}
+                    handleChange={this.handleChange}
+                    handleNestedChange={this.handleNestedChange}
+                    handleNestedChangeMultiAutocomplete={
+                      this.handleNestedChangeMultiAutocomplete
+                    }
+                    personalInfo={this.state.personalInfo}
+                    picklistInfo={this.state.picklistInfo}
+                    picklists={this.props.picklists}
+                  />
+                  <Experience
+                    classes={this.props.classes}
+                    currentStep={this.state.currentStep}
+                    handleChange={this.handleChange}
+                    handleNestedChange={this.handleNestedChangeExperience}
+                    handleNestedChangePicklist={this.handleNestedChangePicklist}
+                    handleNestedChangeMultiAutocomplete={
+                      this.handleNestedChangeMultiAutocomplete
+                    }
+                    experience={this.state.experience}
+                    employers={this.props.employers}
+                    picklists={this.props.picklists}
+                    picklistInfo={this.state.picklistInfo}
+                    createHandleSelectOption={this.createHandleSelectOption}
+                  />
+                  <Involvement
+                    classes={this.props.classes}
+                    currentStep={this.state.currentStep}
+                    handleChange={this.handleChange}
+                    handleNestedChange={this.handleNestedChangeInvolvement}
+                    involvement={this.state.involvement}
+                    picklistInfo={this.state.picklistInfo}
+                    picklists={this.props.picklists}
+                    createHandleSelectOption={this.createHandleSelectOption}
+                    handleNestedChangeMultiAutocomplete={
+                      this.handleNestedChangeMultiAutocomplete
+                    }
+                    handleNestedChangePicklist={this.handleNestedChangePicklist}
+                  />
+                </Grid>
                 <Grid item xs={6}>
                   {this.previousButton}
                 </Grid>
