@@ -90,6 +90,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                   <Autocomplete
                     className={this.props.classes.dropDowns}
                     size="small"
+                    required={true}
                     value={this.props.picklistInfo.employmentStatus}
                     getOptionLabel={(option) => option}
                     options={
@@ -124,6 +125,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                   <OutlinedTextField
                     placeholder="e.g Product Manager"
                     name="jobTitle"
+                    required={true}
                     className={this.props.classes.textField}
                     value={this.props.experience.jobTitle}
                     onChange={this.props.handleNestedChange(
@@ -490,6 +492,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         {...params}
                         variant="outlined"
                         placeholder="Select Activity Areas of Expertise"
+                        required={true}
                       />
                     )}
                   />
@@ -574,11 +577,12 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
 
                 <Grid item direction="column">
                   <BlackHeaderTypography>
-                    Description of my career*
+                    Description of my Career*
                   </BlackHeaderTypography>
                   <OutlinedTextField
                     className={this.props.classes.textField}
                     placeholder="1 Sentence"
+                    required={true}
                     name="careerDescription"
                     value={this.props.experience.careerDescription}
                     onChange={this.props.handleNestedChange(
@@ -594,6 +598,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                   <OutlinedTextField
                     className={this.props.classes.textField}
                     placeholder="1 sentence"
+                    required={true}
                     name="fieldInvolvementDescription"
                     value={this.props.experience.fieldInvolvementDescription}
                     onChange={this.props.handleNestedChange(

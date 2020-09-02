@@ -68,13 +68,13 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
               <BlackHeaderTypography>Email*</BlackHeaderTypography>
               <OutlinedTextField
                 placeholder="e.g. name@email.com"
+                required={true}
                 name="email"
                 value={this.props.personalInfo.email}
                 className={this.props.classes.textField}
                 onChange={this.props.handleNestedChange(
                   this.props.personalInfo
                 )}
-                required={true}
               />
 
               <BlackHeaderTypography>Account Password*</BlackHeaderTypography>
@@ -115,6 +115,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
               <BlackHeaderTypography>First Name*</BlackHeaderTypography>
               <OutlinedTextField
                 placeholder="e.g. John"
+                required={true}
                 name="firstName"
                 value={this.props.personalInfo.firstName}
                 className={this.props.classes.textField}
@@ -161,6 +162,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
                   <OutlinedTextField
                     {...params}
                     variant="outlined"
+                    required={true}
                     placeholder="Select your preferred pronoun"
                   />
                 )}
