@@ -394,6 +394,7 @@ class EducatorRegistration extends React.Component<
             spacing={0}
             justify="flex-start"
             alignItems="center"
+            style={{ display: "block" }}
           >
             <FormControlLabel
               control={
@@ -458,6 +459,7 @@ class EducatorRegistration extends React.Component<
                     name="password"
                     type="password"
                     autoComplete="current-password"
+                    required={true}
                     value={this.state.password}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
@@ -469,6 +471,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="At least 8 characters"
                     name="confirmPassword"
                     value={this.state.confirmPassword}
+                    required={true}
                     type="password"
                     autoComplete="current-password"
                     onChange={this.handleChange}
@@ -485,6 +488,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="Enter first name"
                     name="firstName"
                     value={this.state.firstName}
+                    required={true}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
                   />
@@ -493,6 +497,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="Enter last name"
                     name="lastName"
                     value={this.state.lastName}
+                    required={true}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
                   />
@@ -523,6 +528,7 @@ class EducatorRegistration extends React.Component<
                       <OutlinedTextField
                         {...params}
                         variant="outlined"
+                        required={true}
                         placeholder="Select your position"
                       />
                     )}
@@ -557,6 +563,7 @@ class EducatorRegistration extends React.Component<
                       <OutlinedTextField
                         {...params}
                         variant="outlined"
+                        required={true}
                         placeholder="Select your school board"
                       />
                     )}
@@ -591,6 +598,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your school type"
+                        required={true}
                       />
                     )}
                   />
@@ -618,6 +626,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your school name"
+                        required={true}
                       />
                     )}
                   />
@@ -649,6 +658,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your position"
+                        required={true}
                       />
                     )}
                   />
@@ -658,6 +668,7 @@ class EducatorRegistration extends React.Component<
                     name="phoneNumber"
                     value={this.state.phoneNumber}
                     onChange={this.handleChange}
+                    required={true}
                     className={this.props.classes.textField}
                   />
                 </div>
@@ -709,6 +720,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="e.g. Event, internet search, etc."
+                        required={true}
                       />
                     )}
                   />
