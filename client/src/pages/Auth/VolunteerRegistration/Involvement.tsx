@@ -12,6 +12,7 @@ import {
 } from "../../../components/index";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import {
   PicklistInfo,
@@ -86,33 +87,38 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
 
     return (
       <React.Fragment>
-        <div className="form-group">
-          <div style={{ height: "100vh" }}>
-            <Grid container style={{ height: "100%" }}>
-              <Grid
-                container
-                spacing={2}
-                direction="column"
-                style={{
-                  padding: "3em",
-                  backgroundColor: "#fff",
-                  borderRadius: "2px",
-                  margin: "2em 0em",
-                }}
-              >
+        <div style={{ height: "100%" }}>
+          <Grid container style={{ height: "100%" }}>
+            <Grid
+              container
+              spacing={2}
+              direction="column"
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: "2px",
+              }}
+            >
+              <div className={this.props.classes.formSection}>
                 <Grid item>
-                  <BlackHeaderTypography>Your Activities</BlackHeaderTypography>
+                  <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                    Your Activities
+                  </BlackHeaderTypography>
                 </Grid>
                 <Grid item>
-                  <BlackHeaderTypography>
+                  <BlackHeaderTypography
+                    className={this.props.classes.checkboxHeader}
+                    style={{ paddingBottom: "12px" }}
+                  >
                     Ways I/my company would like to volunteer with schools*
                   </BlackHeaderTypography>
                 </Grid>
-
                 <Grid item>
-                  <BlackHeaderTypography>Inside Schools</BlackHeaderTypography>
+                  <BlackTextTypography
+                    className={this.props.classes.checkboxSubHeader}
+                  >
+                    Inside Schools
+                  </BlackTextTypography>
                 </Grid>
-
                 <Grid item className={this.props.classes.multiSelect}>
                   {displayPicklistOptions(
                     this.props.picklistInfo.volunteerDesiredInternalActivities,
@@ -121,7 +127,11 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   )}
                 </Grid>
                 <Grid item>
-                  <BlackHeaderTypography>Outside Schools</BlackHeaderTypography>
+                  <BlackTextTypography
+                    className={this.props.classes.checkboxSubHeader}
+                  >
+                    Outside Schools
+                  </BlackTextTypography>
                 </Grid>
                 <Grid item className={this.props.classes.multiSelect}>
                   {displayPicklistOptions(
@@ -130,7 +140,6 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     true
                   )}
                 </Grid>
-
                 {this.props.picklistInfo.volunteerDesiredExternalActivities.get(
                   "Provide Co-op Placement"
                 ) && (
@@ -140,11 +149,13 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     spacing={2}
                     direction="column"
                     style={{
-                      paddingLeft: "3em",
+                      paddingLeft: "2em",
                     }}
                   >
                     <Grid item>
-                      <BlackHeaderTypography>
+                      <BlackHeaderTypography
+                        className={this.props.classes.checkboxSubHeader}
+                      >
                         Co-op placement details
                       </BlackHeaderTypography>
                     </Grid>
@@ -181,42 +192,54 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                         false
                       )}
                     </Grid>
-                    <Grid item>
+                    <Grid item style={{ columns: "2 auto" }}>
                       <BlackHeaderTypography>
                         Are you already affiliated with a particular school
                         board or school for the purposes of co-op placements?
                       </BlackHeaderTypography>
                     </Grid>
                     <Grid item>
-                      <OutlinedSelect
+                      <Autocomplete
+                        className={this.props.classes.dropDowns}
+                        size="small"
                         value={
                           this.props.picklistInfo.coopPlacementSchoolAffiliation
                         }
-                        displayEmpty
-                        disableUnderline={true}
-                        onChange={this.props.handleNestedChangePicklist(
-                          "coopPlacementSchoolAffiliation"
+                        getOptionLabel={(option) => option}
+                        options={
+                          this.props.picklistInfo
+                            .coopPlacementSchoolAffiliation === null
+                            ? this.props.picklists
+                                .coopPlacementSchoolAffiliation.list
+                            : [
+                                this.props.picklistInfo
+                                  .coopPlacementSchoolAffiliation,
+                                ...this.props.picklists
+                                  .coopPlacementSchoolAffiliation.list,
+                              ]
+                        }
+                        onChange={(_event, newValue) =>
+                          this.props.handleNestedChangeMultiAutocomplete(
+                            "coopPlacementSchoolAffiliation",
+                            newValue
+                          )
+                        }
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                          <OutlinedTextField
+                            {...params}
+                            variant="outlined"
+                            placeholder="Select school board if application pronoun"
+                          />
                         )}
-                        style={{ height: "40px", width: "454px" }}
-                      >
-                        <MenuItem value="" disabled>
-                          Select school board if applicable
-                        </MenuItem>
-                        {Array.from(
-                          this.props.picklists.coopPlacementSchoolAffiliation.list.entries(),
-                          (entry) => entry
-                        ).map((entry, index) => (
-                          <MenuItem key={index} value={entry[1]}>
-                            {entry[1]}
-                          </MenuItem>
-                        ))}
-                      </OutlinedSelect>
+                      />
                     </Grid>
                   </Grid>
                 )}
-
                 <Grid item>
-                  <BlackHeaderTypography>
+                  <BlackHeaderTypography
+                    className={this.props.classes.checkboxHeader}
+                  >
                     Areas willing to volunteer*
                   </BlackHeaderTypography>
                 </Grid>
@@ -228,11 +251,13 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   )}
                 </Grid>
                 <Grid item>
-                  <BlackHeaderTypography>
+                  <BlackHeaderTypography
+                    className={this.props.classes.checkboxHeader}
+                  >
                     Grade levels willing to volunteer with*
                   </BlackHeaderTypography>
                 </Grid>
-                <Grid item>
+                <Grid item className={this.props.classes.underCheckbox}>
                   {displayPicklistOptions(
                     this.props.picklistInfo.grades,
                     "grades",
@@ -244,13 +269,13 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     Why do you want to get involved with the BEP?*
                   </BlackHeaderTypography>
                 </Grid>
-                <Grid item className={this.props.classes.multiSelect}>
+                <Grid item>
                   <OutlinedTextField
                     multiline
                     rows={16}
                     maxRows={16}
                     placeholder="Enter answer..."
-                    style={{ width: "454px" }}
+                    className={this.props.classes.textField}
                     name="reasonsForVolunteering"
                     value={this.props.involvement.reasonsForVolunteering}
                     onChange={this.props.handleNestedChange(
@@ -258,29 +283,30 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     )}
                     required={true}
                   />
-                </Grid>
-                <Grid item>
+                </Grid>{" "}
+                <Grid item style={{ columns: "2 auto" }}>
                   <BlackHeaderTypography>
                     What advice would you give to young people who are making
                     decisions about their future careers?
                   </BlackHeaderTypography>
                 </Grid>
-                <Grid item className={this.props.classes.multiSelect}>
+                <Grid item>
                   <OutlinedTextField
                     placeholder="1 Sentence"
                     style={{ width: "454px" }}
                     name="adviceForStudents"
+                    className={this.props.classes.textField}
                     value={this.props.involvement.adviceForStudents}
                     onChange={this.props.handleNestedChange(
                       this.props.involvement
                     )}
                   />
                 </Grid>
+              </div>
+              <Divider />
+              <div className={this.props.classes.formSection}>
                 <Grid item>
-                  <Divider />
-                </Grid>
-                <Grid item>
-                  <BlackHeaderTypography>
+                  <BlackHeaderTypography style={{ marginBottom: "2em" }}>
                     Connections & Conditions
                   </BlackHeaderTypography>
                 </Grid>
@@ -290,31 +316,39 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   </BlackHeaderTypography>
                 </Grid>
                 <Grid item>
-                  <OutlinedSelect
+                  <Autocomplete
+                    className={this.props.classes.dropDowns}
+                    size="small"
                     value={this.props.picklistInfo.introductionMethod}
-                    displayEmpty
-                    disableUnderline={true}
-                    onChange={this.props.handleNestedChangePicklist(
-                      "introductionMethod"
+                    getOptionLabel={(option) => option}
+                    options={
+                      this.props.picklistInfo.introductionMethod === null
+                        ? this.props.picklists.introductionMethod.list
+                        : [
+                            this.props.picklistInfo.introductionMethod,
+                            ...this.props.picklists.introductionMethod.list,
+                          ]
+                    }
+                    onChange={(_event, newValue) =>
+                      this.props.handleNestedChangeMultiAutocomplete(
+                        "introductionMethod",
+                        newValue
+                      )
+                    }
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <OutlinedTextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="e.g. Event, internet search, etc."
+                      />
                     )}
-                    style={{ height: "40px", width: "454px" }}
-                    required={true}
-                  >
-                    <MenuItem value="" disabled>
-                      e.g. Event, internet search, etc.
-                    </MenuItem>
-                    {Array.from(
-                      this.props.picklists.introductionMethod.list.entries(),
-                      (entry) => entry
-                    ).map((entry, index) => (
-                      <MenuItem key={index} value={entry[1]}>
-                        {entry[1]}
-                      </MenuItem>
-                    ))}
-                  </OutlinedSelect>
+                  />
                 </Grid>
                 <Grid item>
-                  <BlackHeaderTypography>
+                  <BlackHeaderTypography
+                    className={this.props.classes.checkboxHeader}
+                  >
                     Which BEP programs would you like more information about?
                   </BlackHeaderTypography>
                 </Grid>
@@ -325,9 +359,9 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     true
                   )}
                 </Grid>
-                <Grid item>
-                  <Divider />
-                </Grid>
+              </div>
+              <Divider />
+              <div className={this.props.classes.formSection}>
                 <Grid item>
                   <FormControlLabel
                     control={
@@ -365,9 +399,9 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     }
                   />
                 </Grid>
-              </Grid>
+              </div>
             </Grid>
-          </div>
+          </Grid>
         </div>
       </React.Fragment>
     );

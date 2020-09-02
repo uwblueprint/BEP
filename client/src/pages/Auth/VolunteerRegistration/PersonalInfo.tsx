@@ -1,7 +1,5 @@
 import React from "react";
 
-import { withStyles } from "@material-ui/core/styles";
-
 import {
   OutlinedTextField,
   BlackHeaderTypography,
@@ -27,32 +25,12 @@ interface IComponentProps {
   handleChange: any; // () => void????
   handleNestedChangeMultiAutocomplete: any;
 
-  classes: {
-    formSection: any;
-    textField: any;
-    dropDowns: any;
-  };
+  classes: any;
 }
 
 interface IComponentState {
   test: string;
 }
-
-const styles = () => ({
-  formSection: {
-    padding: "2.5em 3em 0.5em 3em",
-  },
-  textField: {
-    marginBottom: "26px",
-    marginTop: "4px",
-    width: "45%",
-  },
-  dropDowns: {
-    marginTop: "4px",
-    width: "45%",
-    marginBottom: "26px",
-  },
-});
 
 class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
   render() {
@@ -93,6 +71,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
               <BlackHeaderTypography>Account Password*</BlackHeaderTypography>
               <OutlinedTextField
                 placeholder="At least 8 characters"
+                required={true}
                 name="password"
                 type="password"
                 autoComplete="current-password"
@@ -105,6 +84,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
               <BlackHeaderTypography>Confirm Password*</BlackHeaderTypography>
               <OutlinedTextField
                 placeholder="At least 8 characters"
+                required={true}
                 name="confirmPassword"
                 value={this.props.personalInfo.confirmPassword}
                 className={this.props.classes.textField}
@@ -137,6 +117,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
               <BlackHeaderTypography>Last Name*</BlackHeaderTypography>
               <OutlinedTextField
                 placeholder="e.g. Doe"
+                required={true}
                 name="lastName"
                 value={this.props.personalInfo.lastName}
                 className={this.props.classes.textField}
@@ -145,7 +126,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
                   this.props.personalInfo
                 )}
               />
-              <BlackHeaderTypography>Preferred Pronouns*</BlackHeaderTypography>
+              <BlackHeaderTypography>Preferred Pronouns</BlackHeaderTypography>
 
               <Autocomplete
                 className={this.props.classes.dropDowns}
@@ -178,6 +159,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
               <BlackHeaderTypography>Phone Number*</BlackHeaderTypography>
               <OutlinedTextField
                 className={this.props.classes.textField}
+                required={true}
                 placeholder="At least 8 characters"
                 name="phoneNumber"
                 value={this.props.personalInfo.phoneNumber}
@@ -186,7 +168,7 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
                 )}
               />
 
-              <BlackHeaderTypography>Linkedin URL*</BlackHeaderTypography>
+              <BlackHeaderTypography>Linkedin URL</BlackHeaderTypography>
               <OutlinedTextField
                 className={this.props.classes.textField}
                 placeholder="At least 8 characters"
@@ -258,4 +240,4 @@ class PersonalInfo extends React.Component<IComponentProps, IComponentState> {
   }
 }
 
-export default withStyles(styles)(PersonalInfo);
+export default PersonalInfo;

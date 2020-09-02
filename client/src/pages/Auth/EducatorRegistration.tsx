@@ -37,6 +37,7 @@ import { Grid } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import {
   ContainedButton,
@@ -379,6 +380,40 @@ class EducatorRegistration extends React.Component<
   };
 
   render() {
+    const displayPicklistOptions = (
+      picklistMap: Map<string, boolean>,
+      picklistName: string
+    ) => {
+      return Array.from(picklistMap.entries(), (entry) => entry).map(
+        ([option, isSelected]) => (
+          <Grid
+            container
+            xs={12}
+            key={option}
+            spacing={0}
+            justify="flex-start"
+            alignItems="center"
+          >
+            <FormControlLabel
+              control={
+                <OutlinedCheckbox
+                  key={option}
+                  value={option}
+                  name={option}
+                  onChange={this.createHandleSelectOption(picklistName)}
+                />
+              }
+              label={
+                <BlackTextTypography style={{ width: "100%" }}>
+                  {" "}
+                  {option}
+                </BlackTextTypography>
+              }
+            />
+          </Grid>
+        )
+      );
+    };
     return (
       <React.Fragment>
         <PageBody>
@@ -627,39 +662,22 @@ class EducatorRegistration extends React.Component<
                 </div>
                 <Divider />
                 <div className={this.props.classes.formSection}>
-                  <BlackHeaderTypography style={{ marginBottom: "2em" }}>
-                    BEP Information
-                  </BlackHeaderTypography>
-                  <BlackHeaderTypography style={{ padding: "1em 0em" }}>
-                    Which activities are you interested in?*
-                  </BlackHeaderTypography>
-                  <Grid className={this.props.classes.multiSelect}>
-                    {Array.from(
-                      this.state.picklistInfo.educatorDesiredActivities.entries(),
-                      (entry) => entry
-                    ).map(([option, isSelected]) => (
-                      <Grid
-                        container
-                        key={option}
-                        spacing={0}
-                        justify="flex-end"
-                        alignItems="center"
-                      >
-                        <Grid item xs={1}>
-                          <OutlinedCheckbox
-                            key={option}
-                            value={option}
-                            name={option}
-                            onChange={this.createHandleSelectOption(
-                              "educatorDesiredActivities"
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={11}>
-                          <BlackTextTypography> {option}</BlackTextTypography>
-                        </Grid>
-                      </Grid>
-                    ))}
+                  <Grid item>
+                    <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                      BEP Information
+                    </BlackHeaderTypography>
+                  </Grid>
+
+                  <Grid item>
+                    <BlackHeaderTypography style={{ margin: "1em 0em" }}>
+                      Which activities are you interested in?*
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <Grid item className={this.props.classes.multiSelect}>
+                    {displayPicklistOptions(
+                      this.state.picklistInfo.educatorDesiredActivities,
+                      "educatorDesiredActivities"
+                    )}
                   </Grid>
                   <BlackHeaderTypography>
                     How did you hear about us?*
@@ -697,60 +715,50 @@ class EducatorRegistration extends React.Component<
                     Which BEP programs would you like more information about?*
                   </BlackHeaderTypography>
                   <Grid className={this.props.classes.multiSelect}>
-                    {Array.from(
-                      this.state.picklistInfo.moreInfo.entries(),
-                      (entry) => entry
-                    ).map(([option, isSelected]) => (
-                      <Grid
-                        container
-                        key={option}
-                        spacing={0}
-                        justify="flex-end"
-                        alignItems="center"
-                      >
-                        <Grid item xs={1}>
-                          <OutlinedCheckbox
-                            key={option}
-                            value={option}
-                            name={option}
-                            onChange={this.createHandleSelectOption("moreInfo")}
-                          />
-                        </Grid>
-                        <Grid item xs={11}>
-                          <BlackTextTypography> {option}</BlackTextTypography>
-                        </Grid>
-                      </Grid>
-                    ))}
+                    {displayPicklistOptions(
+                      this.state.picklistInfo.moreInfo,
+                      "moreInfo"
+                    )}
                   </Grid>
                 </div>
 
                 <Divider />
                 <div className={this.props.classes.formSection}>
-                  <Grid container spacing={0} alignItems="center">
-                    <OutlinedCheckbox
-                      name="isSubscribed"
-                      onChange={() =>
-                        this.setState({
-                          isSubscribed: !this.state.isSubscribed,
-                        })
+                  <Grid item container direction="column">
+                    <FormControlLabel
+                      control={
+                        <OutlinedCheckbox
+                          name="isSubscribed"
+                          onChange={() =>
+                            this.setState({
+                              isSubscribed: !this.state.isSubscribed,
+                            })
+                          }
+                        />
+                      }
+                      label={
+                        <BlackHeaderTypography>
+                          I would like to subscribe to the BEP newsletter
+                        </BlackHeaderTypography>
                       }
                     />
-                    <BlackHeaderTypography>
-                      I would like to subscribe to the BEP newsletter
-                    </BlackHeaderTypography>
-                  </Grid>
-                  <Grid container spacing={0} alignItems="center">
-                    <OutlinedCheckbox
-                      name="agreeConditions"
-                      onChange={() =>
-                        this.setState({
-                          agreeConditions: !this.state.agreeConditions,
-                        })
+                    <FormControlLabel
+                      control={
+                        <OutlinedCheckbox
+                          name="agreeConditions"
+                          onChange={() =>
+                            this.setState({
+                              isSubscribed: !this.state.agreeConditions,
+                            })
+                          }
+                        />
+                      }
+                      label={
+                        <BlackHeaderTypography>
+                          I agree to the BEP terms and conditions*
+                        </BlackHeaderTypography>
                       }
                     />
-                    <BlackHeaderTypography>
-                      I agree to the BEP terms and conditions*
-                    </BlackHeaderTypography>
                   </Grid>
                   <ContainedButton type="submit" style={{ marginTop: "3em" }}>
                     Finish Registration
