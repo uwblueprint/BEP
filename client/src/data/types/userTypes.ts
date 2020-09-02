@@ -30,6 +30,7 @@ export interface Educator extends User {
 }
 
 export interface Volunteer extends User {
+  adviceForStudents: string;
   careerDescription: string;
 
   // Applicable only if volunteer is offering co-op placements.

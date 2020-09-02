@@ -2,6 +2,7 @@ import UserInterface, { UserType } from './UserInterface';
 import EmployerInterface from '../employers/EmployerInterface';
 
 export default interface VolunteerInterface extends UserInterface {
+    adviceForStudents: string;
     careerDescription: string;
 
     // Applicable only if volunteer is offering co-op placements.

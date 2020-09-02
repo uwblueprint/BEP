@@ -1,8 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Select from "@material-ui/core/Select";
-import Checkbox from "@material-ui/core/Checkbox";
+import Divider from "@material-ui/core/Divider";
 
 import {
   BlackHeaderTypography,
@@ -49,7 +48,9 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
       return Array.from(picklistMap.entries(), (entry) => entry).map(
         ([option, isSelected]) => (
           <Grid
+            item
             container
+            xs={12}
             key={option}
             spacing={0}
             justify="flex-start"
@@ -65,7 +66,12 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   onChange={this.props.createHandleSelectOption(picklistName)}
                 />
               }
-              label={<BlackTextTypography> {option}</BlackTextTypography>}
+              label={
+                <BlackTextTypography style={{ width: "100%" }}>
+                  {" "}
+                  {option}
+                </BlackTextTypography>
+              }
             />
           </Grid>
         )
@@ -87,7 +93,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                 }}
               >
                 <Grid item>
-                  <BlackHeaderTypography>About Your Work</BlackHeaderTypography>
+                  <BlackHeaderTypography>Your Activities</BlackHeaderTypography>
                 </Grid>
                 <Grid item>
                   <BlackHeaderTypography>
@@ -121,66 +127,72 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     )}
                   </Grid>
                 </Grid>
-                <Grid item container direction="column">
-                  <Grid item>
-                    <BlackHeaderTypography>
-                      Co-op placement details
-                    </BlackHeaderTypography>
-                  </Grid>
-                  <Grid item>
-                    <BlackHeaderTypography>
-                      When are you willing to host a student? (check all that
-                      apply)
-                    </BlackHeaderTypography>
-                  </Grid>
-                  <Grid item className={this.props.classes.multiSelect}>
-                    {displayPicklistOptions(
-                      this.props.picklistInfo.coopPlacementTime,
-                      "coopPlacementTime"
-                    )}
-                  </Grid>
-                  <Grid item>
-                    <BlackHeaderTypography>
-                      How are you willing to host a student? (check all that
-                      apply)
-                    </BlackHeaderTypography>
-                  </Grid>
-                  <Grid item className={this.props.classes.multiSelect}>
-                    {displayPicklistOptions(
-                      this.props.picklistInfo.coopPlacementMode,
-                      "coopPlacementMode"
-                    )}
-                  </Grid>
-                  <Grid item>
-                    <BlackHeaderTypography>
-                      Are you already affiliated with a particular school board
-                      or school for the purposes of co-op placements?
-                    </BlackHeaderTypography>
-                  </Grid>
-                  <Grid item>
-                    <OutlinedSelect
-                      value={this.props.picklistInfo.employmentStatus}
-                      displayEmpty
-                      disableUnderline={true}
-                      onChange={this.props.handleNestedChangePicklist(
-                        "coopPlacementSchoolAffiliation"
+                {this.props.picklistInfo.volunteerDesiredExternalActivities.get(
+                  "Provide Co-op Placement"
+                ) && (
+                  <Grid item container direction="column">
+                    <Grid item>
+                      <BlackHeaderTypography>
+                        Co-op placement details
+                      </BlackHeaderTypography>
+                    </Grid>
+                    <Grid item>
+                      <BlackHeaderTypography>
+                        When are you willing to host a student? (check all that
+                        apply)
+                      </BlackHeaderTypography>
+                    </Grid>
+                    <Grid item className={this.props.classes.multiSelect}>
+                      {displayPicklistOptions(
+                        this.props.picklistInfo.coopPlacementTime,
+                        "coopPlacementTime"
                       )}
-                      style={{ height: "40px" }}
-                    >
-                      <MenuItem value="" disabled>
-                        Select school board if applicable
-                      </MenuItem>
-                      {Array.from(
-                        this.props.picklists.coopPlacementSchoolAffiliation.list.entries(),
-                        (entry) => entry
-                      ).map((entry, index) => (
-                        <MenuItem key={index} value={entry[1]}>
-                          {entry[1]}
+                    </Grid>
+                    <Grid item>
+                      <BlackHeaderTypography>
+                        How are you willing to host a student? (check all that
+                        apply)
+                      </BlackHeaderTypography>
+                    </Grid>
+                    <Grid item className={this.props.classes.multiSelect}>
+                      {displayPicklistOptions(
+                        this.props.picklistInfo.coopPlacementMode,
+                        "coopPlacementMode"
+                      )}
+                    </Grid>
+                    <Grid item>
+                      <BlackHeaderTypography>
+                        Are you already affiliated with a particular school
+                        board or school for the purposes of co-op placements?
+                      </BlackHeaderTypography>
+                    </Grid>
+                    <Grid item>
+                      <OutlinedSelect
+                        value={
+                          this.props.picklistInfo.coopPlacementSchoolAffiliation
+                          }
+                        displayEmpty
+                        disableUnderline={true}
+                        onChange={this.props.handleNestedChangePicklist(
+                          "coopPlacementSchoolAffiliation"
+                        )}
+                        style={{ height: "40px" }}
+                      >
+                        <MenuItem value="" disabled>
+                          Select school board if applicable
                         </MenuItem>
-                      ))}
-                    </OutlinedSelect>
+                        {Array.from(
+                          this.props.picklists.coopPlacementSchoolAffiliation.list.entries(),
+                          (entry) => entry
+                        ).map((entry, index) => (
+                          <MenuItem key={index} value={entry[1]}>
+                            {entry[1]}
+                          </MenuItem>
+                        ))}
+                      </OutlinedSelect>
+                    </Grid>
                   </Grid>
-                </Grid>
+                )}
 
                 <Grid item container direction="column">
                   <Grid item>
@@ -204,6 +216,128 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                       this.props.picklistInfo.grades,
                       "grades"
                     )}
+                  </Grid>
+                  <Grid item>
+                    <BlackHeaderTypography>
+                      Why do you want to get involved with the BEP?
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <Grid item className={this.props.classes.multiSelect}>
+                    <OutlinedTextField
+                      multiline
+                      rows={8}
+                      maxRows={8}
+                      placeholder="Enter answer..."
+                      style={{ width: "454px" }}
+                      name="reasonsForVolunteering"
+                      value={this.props.involvement.reasonsForVolunteering}
+                      onChange={this.props.handleNestedChange(
+                        this.props.involvement
+                      )}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <BlackHeaderTypography>
+                      What advice would you give to young people who are making
+                      decisions about their future careers?
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <Grid item className={this.props.classes.multiSelect}>
+                    <OutlinedTextField
+                      placeholder="1 Sentence"
+                      style={{ width: "454px" }}
+                      name="adviceForStudents"
+                      value={this.props.involvement.adviceForStudents}
+                      onChange={this.props.handleNestedChange(
+                        this.props.involvement
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+                <Divider />
+                <Grid item container direction="column">
+                  <Grid item>
+                    <BlackHeaderTypography>
+                      Connections & Conditions
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <Grid item>
+                    <BlackHeaderTypography>
+                      How did you hear about us?
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <Grid item>
+                    <OutlinedSelect
+                      value={this.props.picklistInfo.introductionMethod}
+                      displayEmpty
+                      disableUnderline={true}
+                      onChange={this.props.handleNestedChangePicklist(
+                        "introductionMethod"
+                      )}
+                      style={{ height: "40px" }}
+                    >
+                      <MenuItem value="">
+                        e.g. Event, internet search, etc.
+                      </MenuItem>
+                      {Array.from(
+                        this.props.picklists.introductionMethod.list.entries(),
+                        (entry) => entry
+                      ).map((entry, index) => (
+                        <MenuItem key={index} value={entry[1]}>
+                          {entry[1]}
+                        </MenuItem>
+                      ))}
+                    </OutlinedSelect>
+                  </Grid>
+                  <Grid item>
+                    <BlackHeaderTypography>
+                      Which BEP programs would you like more information about?
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <Grid item className={this.props.classes.multiSelect}>
+                    {displayPicklistOptions(
+                      this.props.picklistInfo.followedPrograms,
+                      "followedPrograms"
+                    )}
+                  </Grid>
+                </Grid>
+                <Grid item container direction="column">
+                  <Divider />
+                  <Grid item>
+                    <FormControlLabel
+                      control={
+                        <OutlinedCheckbox
+                          name="isSubscribed"
+                          checked={this.props.involvement.isSubscribed}
+                          onChange={this.props.handleNestedChange(
+                            this.props.involvement
+                          )}
+                        />
+                      }
+                      label={
+                        <BlackHeaderTypography>
+                          I would like to subscribe to the BEP newsletter
+                        </BlackHeaderTypography>
+                      }
+                    />
+                  </Grid>
+                  <Grid item>
+                    <FormControlLabel
+                      control={
+                        <OutlinedCheckbox
+                          name="agreeConditions"
+                          checked={this.props.involvement.agreeConditions}
+                          onChange={this.props.handleNestedChange(
+                            this.props.involvement
+                          )}
+                        />
+                      }
+                      label={
+                        <BlackHeaderTypography>
+                          I agree to the BEP terms and conditions*
+                        </BlackHeaderTypography>
+                      }
+                    />
                   </Grid>
                 </Grid>
               </Grid>

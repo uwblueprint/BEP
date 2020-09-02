@@ -33,6 +33,7 @@ import {
   getCoopPlacementMode,
   getCoopPlacementTime,
   getSchoolBoardPicklist,
+  getFollowedProgramsPicklist,
 } from "../../../data/selectors/picklistSelector";
 
 import { getEmployers } from "../../../data/selectors/employerSelector";
@@ -91,6 +92,7 @@ export interface ExperienceState {
 }
 
 export interface InvolvementState {
+  adviceForStudents: string;
   reasonsForVolunteering: string;
   futureAdvice: string;
   introductionMethod: string;
@@ -116,6 +118,7 @@ export interface PicklistInfo {
   coopPlacementMode: Map<string, boolean>;
   coopPlacementTime: Map<string, boolean>;
   coopPlacementSchoolAffiliation: string;
+  followedPrograms: Map<string, boolean>;
 }
 
 export interface RawPicklists {
@@ -137,6 +140,7 @@ export interface RawPicklists {
   coopPlacementMode: { list: string[] };
   coopPlacementTime: { list: string[] };
   coopPlacementSchoolAffiliation: { list: string[] };
+  followedPrograms: { list: string[] };
 }
 
 interface IComponentProps {
@@ -212,6 +216,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         fieldInvolvementDescription: "",
       },
       involvement: {
+        adviceForStudents: "",
         reasonsForVolunteering: "",
         futureAdvice: "",
         introductionMethod: "",
@@ -236,6 +241,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         coopPlacementMode: new Map(),
         coopPlacementTime: new Map(),
         coopPlacementSchoolAffiliation: "",
+        followedPrograms: new Map(),
       },
     };
     this.handleNestedChange = this.handleNestedChange.bind(this);
@@ -288,6 +294,12 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         return picklists.coopPlacementMode;
       case "coopPlacementTime":
         return picklists.coopPlacementTime;
+      case "locations":
+        return picklists.locations;
+      case "grades":
+        return picklists.grades;
+      case "followedPrograms":
+        return picklists.followedPrograms;
     }
     return new Map<string, boolean>();
   }
@@ -329,6 +341,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       PicklistType.volunteerDesiredInternalActivities,
       PicklistType.coopPlacementMode,
       PicklistType.coopPlacementTime,
+      PicklistType.followedPrograms,
     ];
 
     const employerPicklistTypes: PicklistType[] = [
@@ -375,8 +388,10 @@ class Master extends React.Component<IComponentProps, IComponentState> {
             createPicklist(picklists.locations.list)
           );
         } else if (type === PicklistType.grades) {
-          picklistInfo.grades = new Map(
-            createPicklist(picklists.grades.list)
+          picklistInfo.grades = new Map(createPicklist(picklists.grades.list));
+        } else if (type === PicklistType.followedPrograms) {
+          picklistInfo.followedPrograms = new Map(
+            createPicklist(picklists.followedPrograms.list)
           );
         }
 
@@ -386,7 +401,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         //   );
         // // }
         // console.log("The Info", picklistInfo);
-        this.setState({ picklistInfo });
+        this.setState({ ...this.state, picklistInfo });
       });
     });
 
@@ -404,6 +419,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // If the current step is 1 or 2, then add one on "next" button click
     currentStep = currentStep >= 2 ? 3 : currentStep + 1;
     this.setState({
+      ...this.state,
       currentStep: currentStep,
     });
   }
@@ -412,6 +428,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // If the current step is 2 or 3, then subtract one on "previous" button click
     currentStep = currentStep <= 1 ? 1 : currentStep - 1;
     this.setState({
+      ...this.state,
       currentStep: currentStep,
     });
   }
@@ -434,6 +451,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       const name = event.target.name;
 
       this.setState({
+        ...this.state,
         personalInfo: {
           ...inputName,
           [name]: newValue,
@@ -455,6 +473,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       }
 
       this.setState({
+        ...this.state,
         experience: {
           ...inputName,
           [name]: newValue,
@@ -464,15 +483,17 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   };
 
   handleNestedChangeInvolvement = (inputName: any) => {
-    console.log(inputName);
-    const involvement = this.state.involvement;
-
     return (event: any) => {
       event.preventDefault();
-      const newValue = event.target.value;
+      let newValue = event.target.value;
       const name = event.target.name;
 
+      if (event.target.type === "checkbox") {
+        newValue = event.target.checked;
+      }
+
       this.setState({
+        ...this.state,
         involvement: {
           ...inputName,
           [name]: newValue,
@@ -578,20 +599,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   personalInfo={this.state.personalInfo}
                   picklistInfo={this.state.picklistInfo}
                 />
-                <Involvement
-                  currentStep={this.state.currentStep}
-                  handleChange={this.handleChange}
-                  handleNestedChange={this.handleNestedChange}
-                  involvement={this.state.involvement}
-                  picklistInfo={this.state.picklistInfo}
-                  picklists={this.props.picklists}
-                  createHandleSelectOption={this.createHandleSelectOption}
-                  classes={this.props.classes}
-                  handleNestedChangeMultiAutocomplete={
-                    this.handleNestedChangeMultiAutocomplete
-                  }
-                  handleNestedChangePicklist={this.handleNestedChangePicklist}
-                />
                 <Experience
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
@@ -606,6 +613,20 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   picklistInfo={this.state.picklistInfo}
                   createHandleSelectOption={this.createHandleSelectOption}
                   classes={this.props.classes}
+                />
+                <Involvement
+                  currentStep={this.state.currentStep}
+                  handleChange={this.handleChange}
+                  handleNestedChange={this.handleNestedChangeInvolvement}
+                  involvement={this.state.involvement}
+                  picklistInfo={this.state.picklistInfo}
+                  picklists={this.props.picklists}
+                  createHandleSelectOption={this.createHandleSelectOption}
+                  classes={this.props.classes}
+                  handleNestedChangeMultiAutocomplete={
+                    this.handleNestedChangeMultiAutocomplete
+                  }
+                  handleNestedChangePicklist={this.handleNestedChangePicklist}
                 />
                 {this.previousButton}
                 {this.nextButton}
@@ -673,6 +694,9 @@ const mapStateToProps = (state: any) => {
       },
       coopPlacementSchoolAffiliation: {
         list: getSchoolBoardPicklist(state.picklists),
+      },
+      followedPrograms: {
+        list: getFollowedProgramsPicklist(state.picklists),
       },
     },
   };

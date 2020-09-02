@@ -95,7 +95,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 }}
               >
                 <Grid item>
-                  <BlackHeaderTypography>About Your Work</BlackHeaderTypography>
+                  <BlackHeaderTypography>Your Activities</BlackHeaderTypography>
                 </Grid>
 
                 <Grid item direction="column">

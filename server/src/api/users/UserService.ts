@@ -17,7 +17,7 @@ const userFields: string =
     'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
     'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
     'professionalAssociations__c, reasonsForVolunteering__c, shareEmployerInfo__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
-    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c, fieldInvolvementDescription__c ';
+    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c, fieldInvolvementDescription__c, adviceForStudents__c ';
 
 // Map fields of user model to Salesforce fields.
 export const userModelToSalesforceUser = (user: User, id?: string): any => {
@@ -49,6 +49,7 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
     } else if (isVolunteer(user)) {
         salesforceUser = {
             ...salesforceUser,
+            adviceForStudents__c: (user as Volunteer).adviceForStudents,
             careerDescription__c: (user as Volunteer).careerDescription,
             ...((user as Volunteer).coopPlacementMode && {
                 coopPlacementMode__c: (user as Volunteer).coopPlacementMode
@@ -117,6 +118,7 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Educator).school = await SchoolService.get(record.school__c);
     } else if (UserType[record.userType__c] === UserType[UserType.Volunteer]) {
         // User is a volunteer.
+        (user as Volunteer).adviceForStudents = record.adviceForStudents__c;
         (user as Volunteer).careerDescription = record.careerDescription__c;
         (user as Volunteer).coopPlacementMode = record.coopPlacementMode__c;
         (user as Volunteer).coopPlacementSchoolAffiliation = record.coopPlacementSchoolAffiliation__c;

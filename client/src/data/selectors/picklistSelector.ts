@@ -87,3 +87,5 @@ export const getCoopPlacementMode = createPicklistSelector(PicklistType.coopPlac
 
 export const getCoopPlacementTime = createPicklistSelector(PicklistType.coopPlacementTime);
 
+export const getFollowedProgramsPicklist = createPicklistSelector(PicklistType.followedPrograms);
+
