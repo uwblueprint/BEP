@@ -834,7 +834,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                 this.handleNestedChangeAutocomplete
               }
               handleNestedChangeMultiAutocomplete={
-                handleNestedChangeMultiAutocomplete
+                this.handleNestedChangeMultiAutocomplete
               }
               handleNestedChangePicklist={this.handleNestedChangePicklist}
             />
