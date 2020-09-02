@@ -8,6 +8,9 @@ import {
   BlackTextTypography,
   ContrastButton,
   OutlinedButton,
+  BlueAvatar,
+  GreyAvatar,
+  SecondaryMainTextTypography,
 } from "../../../components/index";
 import Typography from "@material-ui/core/Typography";
 
@@ -35,7 +38,7 @@ import {
 
 import { getEmployers } from "../../../data/selectors/employerSelector";
 
-import { Grid } from "@material-ui/core";
+import { Grid, Divider } from "@material-ui/core";
 
 import {
   fetchUserPicklistService,
@@ -688,6 +691,33 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   render() {
+    const getProgressComponent = (step: number) => {
+      console.log("HERE");
+      let label = "";
+      switch (step) {
+        case 1:
+          label = "Personal Information";
+          break;
+        case 2:
+          label = "Your Experience";
+          break;
+        case 3:
+          label = "Your Involvement";
+          break;
+      }
+      return (
+        <Grid item container xs={2}>
+          <Grid item xs={6}>
+            <BlueAvatar>{step}</BlueAvatar>
+          </Grid>
+          <Grid item xs={6}>
+            <SecondaryMainTextTypography variant="h5">
+              {label}
+            </SecondaryMainTextTypography>
+          </Grid>
+        </Grid>
+      );
+    };
     return (
       <React.Fragment>
         <PageBody>
@@ -700,6 +730,17 @@ class Master extends React.Component<IComponentProps, IComponentState> {
             <Typography variant="h1" style={{ marginTop: "10px" }}>
               Register for a volunteer account
             </Typography>
+            <Grid container>
+              {getProgressComponent(1)}
+              <Grid item xs={2}>
+                <Divider />
+              </Grid>
+              {getProgressComponent(2)}
+              <Grid item xs={2}>
+                <Divider />
+              </Grid>
+              {getProgressComponent(3)}
+            </Grid>
 
             <form onSubmit={this.handleSubmit}>
               <Grid

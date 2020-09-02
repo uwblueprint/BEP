@@ -31,6 +31,7 @@ import {
 } from "./Typography";
 import Dialog from "./Dialog";
 import DialogTitle from "./DialogTitle";
+import { BlueAvatar, GreyAvatar } from "./Avatar";
 
 export {
   ContainedButton,
@@ -66,3 +67,4 @@ export {
 
 export { Dialog };
 export { DialogTitle };
+export { BlueAvatar, GreyAvatar };
