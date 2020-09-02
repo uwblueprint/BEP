@@ -11,6 +11,7 @@ import {
   BlueAvatar,
   GreyAvatar,
   SecondaryMainTextTypography,
+  ProgressBarGreyTextTypography,
 } from "../../../components/index";
 import Typography from "@material-ui/core/Typography";
 
@@ -692,6 +693,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 
   render() {
     const getProgressComponent = (step: number) => {
+      let currentStep = this.state.currentStep;
       console.log("HERE");
       let label = "";
       switch (step) {
@@ -706,14 +708,24 @@ class Master extends React.Component<IComponentProps, IComponentState> {
           break;
       }
       return (
-        <Grid item container xs={2}>
-          <Grid item xs={6}>
-            <BlueAvatar>{step}</BlueAvatar>
+        <Grid container alignItems="center" justify="flex-start">
+          <Grid item xs={3}>
+            {step === currentStep ? (
+              <BlueAvatar>{step}</BlueAvatar>
+            ) : (
+              <GreyAvatar>{step}</GreyAvatar>
+            )}
           </Grid>
-          <Grid item xs={6}>
-            <SecondaryMainTextTypography variant="h5">
-              {label}
-            </SecondaryMainTextTypography>
+          <Grid item xs={9}>
+            {step === currentStep ? (
+              <SecondaryMainTextTypography variant="button">
+                {label}
+              </SecondaryMainTextTypography>
+            ) : (
+              <ProgressBarGreyTextTypography variant="button">
+                {label}
+              </ProgressBarGreyTextTypography>
+            )}
           </Grid>
         </Grid>
       );
@@ -730,16 +742,27 @@ class Master extends React.Component<IComponentProps, IComponentState> {
             <Typography variant="h1" style={{ marginTop: "10px" }}>
               Register for a volunteer account
             </Typography>
-            <Grid container>
-              {getProgressComponent(1)}
+            <Grid
+              container
+              style={{ marginLeft: "30px", marginTop: "30px" }}
+              justify="space-evenly"
+              alignItems="center"
+            >
+              <Grid item xs={3}>
+                {getProgressComponent(1)}
+              </Grid>
               <Grid item xs={2}>
                 <Divider />
               </Grid>
-              {getProgressComponent(2)}
+              <Grid item xs={2}>
+                {getProgressComponent(2)}
+              </Grid>
               <Grid item xs={2}>
                 <Divider />
               </Grid>
-              {getProgressComponent(3)}
+              <Grid item xs={2}>
+                {getProgressComponent(3)}
+              </Grid>
             </Grid>
 
             <form onSubmit={this.handleSubmit}>

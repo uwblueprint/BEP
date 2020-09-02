@@ -58,6 +58,13 @@ const greyTextStyle = (theme: Theme) =>
     },
   });
 
+const progressBarGreyTextStyle = (theme: Theme) =>
+  createStyles({
+    root: {
+      color: "#C0CAD1",
+    },
+  });
+
 const WhiteTextTypography = withStyles(whiteTextStyle)((props: any) => (
   <Typography {...props}>{props.children}</Typography>
 ));
@@ -86,8 +93,12 @@ const SecondaryContrastTextTypography = withStyles(
   secondaryContrastTextStyle
 )((props: any) => <Typography {...props}>{props.children}</Typography>);
 
-const GreyTextTypography = withStyles(
-  greyTextStyle
+const GreyTextTypography = withStyles(greyTextStyle)((props: any) => (
+  <Typography {...props}>{props.children}</Typography>
+));
+
+const ProgressBarGreyTextTypography = withStyles(
+  progressBarGreyTextStyle
 )((props: any) => <Typography {...props}>{props.children}</Typography>);
 
 export {
@@ -99,4 +110,5 @@ export {
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
   WhiteTextTypography,
+  ProgressBarGreyTextTypography
 };

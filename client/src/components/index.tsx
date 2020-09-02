@@ -28,6 +28,7 @@ import {
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
   RedTextTypography,
+  ProgressBarGreyTextTypography
 } from "./Typography";
 import Dialog from "./Dialog";
 import DialogTitle from "./DialogTitle";
@@ -63,6 +64,7 @@ export {
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
   WhiteTextTypography,
+  ProgressBarGreyTextTypography
 };
 
 export { Dialog };
