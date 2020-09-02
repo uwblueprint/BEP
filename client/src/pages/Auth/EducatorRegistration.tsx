@@ -36,6 +36,7 @@ import { Grid } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import {
   ContainedButton,
@@ -727,31 +728,41 @@ class EducatorRegistration extends React.Component<
 
                 <Divider />
                 <div className={this.props.classes.formSection}>
-                  <Grid container spacing={0} alignItems="center">
-                    <OutlinedCheckbox
-                      name="isSubscribed"
-                      onChange={() =>
-                        this.setState({
-                          isSubscribed: !this.state.isSubscribed,
-                        })
+                  <Grid item container direction="column">
+                    <FormControlLabel
+                      control={
+                        <OutlinedCheckbox
+                          name="isSubscribed"
+                          onChange={() =>
+                            this.setState({
+                              isSubscribed: !this.state.isSubscribed,
+                            })
+                          }
+                        />
+                      }
+                      label={
+                        <BlackHeaderTypography>
+                          I would like to subscribe to the BEP newsletter
+                        </BlackHeaderTypography>
                       }
                     />
-                    <BlackHeaderTypography>
-                      I would like to subscribe to the BEP newsletter
-                    </BlackHeaderTypography>
-                  </Grid>
-                  <Grid container spacing={0} alignItems="center">
-                    <OutlinedCheckbox
-                      name="agreeConditions"
-                      onChange={() =>
-                        this.setState({
-                          agreeConditions: !this.state.agreeConditions,
-                        })
+                    <FormControlLabel
+                      control={
+                        <OutlinedCheckbox
+                          name="agreeConditions"
+                          onChange={() =>
+                            this.setState({
+                              isSubscribed: !this.state.agreeConditions,
+                            })
+                          }
+                        />
+                      }
+                      label={
+                        <BlackHeaderTypography>
+                          I agree to the BEP terms and conditions*
+                        </BlackHeaderTypography>
                       }
                     />
-                    <BlackHeaderTypography>
-                      I agree to the BEP terms and conditions*
-                    </BlackHeaderTypography>
                   </Grid>
                   <ContainedButton type="submit" style={{ marginTop: "3em" }}>
                     Finish Registration

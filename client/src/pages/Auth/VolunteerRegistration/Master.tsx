@@ -57,12 +57,34 @@ import { connect } from "react-redux";
 import Employer from "../../../data/types/employerTypes";
 
 const styles = () => ({
+  formSection: {
+    padding: "2.5em 3em 0.5em 3em",
+  },
+  textField: {
+    marginBottom: "26px",
+    marginTop: "4px",
+    width: "45%",
+  },
+  dropDowns: {
+    marginTop: "4px",
+    width: "45%",
+    marginBottom: "26px",
+  },
   multiSelect: {
-    // marginBottom: "26px",
     columns: "2 auto",
   },
   root: {
     minWidth: 275,
+  },
+  checkboxHeader: {
+    marginBottom: "9px",
+    marginTop: "26px",
+  },
+  checkboxSubHeader: {
+    margin: "9px 0px",
+  },
+  underCheckbox: {
+    marginBottom: "16px",
   },
 });
 
@@ -153,6 +175,12 @@ interface IComponentProps {
   classes: {
     multiSelect: any;
     root: any;
+    formSection: any;
+    textField: any;
+    dropDowns: any;
+    checkboxHeader: any;
+    checkboxSubHeader: any;
+    underCheckbox: any;
   };
 }
 
@@ -589,6 +617,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
             >
               <form onSubmit={this.handleSubmit}>
                 <PersonalInfo
+                  classes={this.props.classes}
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
                   handleNestedChange={this.handleNestedChange}
@@ -600,6 +629,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   picklists={this.props.picklists}
                 />
                 <Experience
+                  classes={this.props.classes}
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
                   handleNestedChange={this.handleNestedChangeExperience}
@@ -614,6 +644,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   createHandleSelectOption={this.createHandleSelectOption}
                 />
                 <Involvement
+                  classes={this.props.classes}
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
                   handleNestedChange={this.handleNestedChangeInvolvement}
