@@ -4,6 +4,7 @@ import {
   OutlinedButton,
   TextButton,
   Button,
+  ContrastButton,
 } from "./Button";
 import Link from "./Link";
 import { OutlinedTextField, TextField } from "./TextField";
@@ -35,6 +36,7 @@ export {
   OutlinedButton,
   TextButton,
   Button,
+  ContrastButton,
 };
 export { Link };
 export { OutlinedTextField, TextField };

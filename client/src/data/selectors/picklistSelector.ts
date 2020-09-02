@@ -5,8 +5,10 @@ import { PicklistType } from "../types/picklistTypes";
 const getPicklistData = (picklistType: PicklistType) => (
   state: PicklistState
 ) => {
-  return state[PicklistType[picklistType]] ? state[PicklistType[picklistType]] : [];
-}
+  return state[PicklistType[picklistType]]
+    ? state[PicklistType[picklistType]]
+    : [];
+};
 
 const createPicklistSelector = (picklistType: PicklistType) =>
   createSelector([getPicklistData(picklistType)], (picklist) => picklist);
@@ -21,6 +23,10 @@ export const getInternalActivitesPicklist = createPicklistSelector(
 
 export const getAllActivitiesPicklist = createPicklistSelector(
   PicklistType.allActivities
+);
+
+export const getPreferredPronounsPicklist = createPicklistSelector(
+  PicklistType.preferredPronouns
 );
 
 export const getExpertiesAreasPicklist = createPicklistSelector(
@@ -66,28 +72,51 @@ export const getSchoolTypePicklist = createPicklistSelector(PicklistType.type);
 
 //Additional Picklists required for volunteer registration
 
-export const getLocalPostSecondaryInstitutions = createPicklistSelector(PicklistType.localPostSecondaryInstitutions);
+export const getLocalPostSecondaryInstitutions = createPicklistSelector(
+  PicklistType.localPostSecondaryInstitutions
+);
 
-export const getProfessionalAssociations = createPicklistSelector(PicklistType.professionalAssociations);
+export const getProfessionalAssociations = createPicklistSelector(
+  PicklistType.professionalAssociations
+);
 
-export const getEmploymentStatus = createPicklistSelector(PicklistType.employmentStatus);
+export const getEmploymentStatus = createPicklistSelector(
+  PicklistType.employmentStatus
+);
 
-export const getIntroductionMethod = createPicklistSelector(PicklistType.introductionMethod);
+export const getIntroductionMethod = createPicklistSelector(
+  PicklistType.introductionMethod
+);
 
-export const getVolunteerDesiredExternalActivities = createPicklistSelector(PicklistType.volunteerDesiredExternalActivities);
+export const getVolunteerDesiredExternalActivities = createPicklistSelector(
+  PicklistType.volunteerDesiredExternalActivities
+);
 
-export const getVolunteerDesiredInternalActivities = createPicklistSelector(PicklistType.volunteerDesiredInternalActivities);
+export const getVolunteerDesiredInternalActivities = createPicklistSelector(
+  PicklistType.volunteerDesiredInternalActivities
+);
 
 //For employers
-export const getEmployerSectorsPicklist = createPicklistSelector(PicklistType.sectors); //orgSector
+export const getEmployerSectorsPicklist = createPicklistSelector(
+  PicklistType.sectors
+); //orgSector
 
-export const getEmployerSizePicklist = createPicklistSelector(PicklistType.size); //orgSize
+export const getEmployerSizePicklist = createPicklistSelector(
+  PicklistType.size
+); //orgSize
 
-export const getCoopPlacementMode = createPicklistSelector(PicklistType.coopPlacementMode);
+export const getCoopPlacementMode = createPicklistSelector(
+  PicklistType.coopPlacementMode
+);
 
-export const getCoopPlacementTime = createPicklistSelector(PicklistType.coopPlacementTime);
+export const getCoopPlacementTime = createPicklistSelector(
+  PicklistType.coopPlacementTime
+);
 
-export const getFollowedProgramsPicklist = createPicklistSelector(PicklistType.followedPrograms);
+export const getFollowedProgramsPicklist = createPicklistSelector(
+  PicklistType.followedPrograms
+);
 
-export const getPreferredPronouns = createPicklistSelector(PicklistType.preferredPronouns);
-
+export const getPreferredPronouns = createPicklistSelector(
+  PicklistType.preferredPronouns
+);

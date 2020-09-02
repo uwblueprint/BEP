@@ -38,7 +38,7 @@ const initialState: PicklistState = {
   [PicklistType.province]: [],
   [PicklistType.city]: [],
   [PicklistType.type]: [],
-  
+
   [PicklistType.sectors]: [],
   [PicklistType.size]: [],
   [PicklistType.employmentStatus]: [],

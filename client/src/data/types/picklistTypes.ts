@@ -29,6 +29,5 @@ export enum PicklistType {
   //Employer Picklist
   sectors = "sectors",
   size = "size",
-  employmentStatus = "employmentStatus"
-
+  employmentStatus = "employmentStatus",
 }

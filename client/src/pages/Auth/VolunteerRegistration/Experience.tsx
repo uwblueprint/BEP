@@ -1,5 +1,6 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
+import { withStyles } from "@material-ui/core/styles";
 
 import {
   BlackHeaderTypography,
@@ -23,9 +24,6 @@ interface IComponentProps {
   currentStep: number;
   experience: ExperienceState;
   employers: Employer[];
-  classes: {
-    multiSelect: any;
-  };
   picklistInfo: PicklistInfo;
   picklists: RawPicklists;
   handleChange: any; // () => void????
@@ -33,21 +31,12 @@ interface IComponentProps {
   handleNestedChangePicklist: any;
   createHandleSelectOption: any;
   handleNestedChangeMultiAutocomplete: any;
+  classes: {
+    formSection: any;
+    textField: any;
+    dropDowns: any;
+  };
 }
-
-// const styles = () => ({
-//     formSection: {
-//       padding: "2.5em 3em 0.5em 3em",
-//     },
-//     textField: {
-//       marginBottom: "26px",
-//       marginTop: "4px",
-//     },
-//     dropDowns: {
-//       marginTop: "4px",
-//       width: "45%",
-//     },
-//   });
 
 interface IComponentState {
   // experience: {
@@ -67,6 +56,22 @@ interface IComponentState {
   createEmployer: boolean;
 }
 
+const styles = () => ({
+  formSection: {
+    padding: "2.5em 3em 0.5em 3em",
+  },
+  textField: {
+    marginBottom: "26px",
+    marginTop: "4px",
+    width: "45%",
+  },
+  dropDowns: {
+    marginTop: "4px",
+    width: "45%",
+    marginBottom: "26px",
+  },
+});
+
 class Experience extends React.Component<IComponentProps, IComponentState> {
   constructor(props: any) {
     super(props);
@@ -79,7 +84,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
       // Prop: The current step
       return null;
     }
-    // The markup for the Step 1 UI
+    // The markup for the Step 2 UI
     return (
       <React.Fragment>
         <div className="form-group">
@@ -587,4 +592,4 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
   }
 }
 
-export default Experience;
+export default withStyles(styles)(Experience);

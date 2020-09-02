@@ -3,15 +3,10 @@ import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
 import {
-  ContainedSelect,
-  ContainedButton,
-  DarkContainedButton,
-  TextButton,
-  Dialog,
-  DialogTitle,
   PageBody,
-  BlackHeaderTypography,
   BlackTextTypography,
+  ContrastButton,
+  OutlinedButton,
 } from "../../../components/index";
 import Typography from "@material-ui/core/Typography";
 
@@ -31,6 +26,7 @@ import {
   getPreferredPronouns,
   getVolunteerDesiredExternalActivities,
   getVolunteerDesiredInternalActivities,
+  getPreferredPronounsPicklist,
   getCoopPlacementMode,
   getCoopPlacementTime,
   getSchoolBoardPicklist,
@@ -170,7 +166,6 @@ interface IComponentState {
     confirmPassword: string;
     firstName: string;
     lastName: string;
-    preferredPronouns: string;
     phoneNumber: string;
     linkedinUrl: string;
     shareWithEmployer: boolean;
@@ -192,7 +187,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         confirmPassword: "",
         firstName: "",
         lastName: "",
-        preferredPronouns: "",
         phoneNumber: "",
         linkedinUrl: "",
         shareWithEmployer: false,
@@ -227,12 +221,12 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         agreeConditions: false,
       },
       picklistInfo: {
-        preferredPronouns: "",
         localPostSecondaryInstitutions: new Map(),
         professionalAssociations: new Map(),
         employmentStatus: "",
         sectors: "",
         size: "",
+        preferredPronouns: "",
         expertiseAreas: [],
         introductionMethod: "",
         languages: [],
@@ -446,8 +440,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   // @HERE I'm trying to find a global way to manipulate nested states, but for now I think I'm just going to create
   // three functions to handle the different nested states (when I get back. this functional only handles personalInfo nested state)
   handleNestedChange = (inputName: any) => {
-    console.log("handle nested change");
-    console.log(inputName);
     const personalInfo = this.state.personalInfo;
 
     return (event: any) => {
@@ -543,13 +535,16 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // If the current step is not 1, then render the "previous" button
     if (currentStep !== 1) {
       return (
-        <button
-          className="btn btn-secondary"
-          type="button"
+        <OutlinedButton
+          style={{
+            padding: "1em 2em",
+            border: "2px solid #0A798F",
+            borderRadius: "2px",
+          }}
           onClick={this._prev}
         >
           Previous
-        </button>
+        </OutlinedButton>
       );
     }
     // ...else return nothing
@@ -561,13 +556,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // If the current step is not 3, then render the "next" button
     if (currentStep < 3) {
       return (
-        <button
-          className="btn btn-primary float-right"
-          type="button"
-          onClick={this._next}
-        >
+        <ContrastButton style={{ float: "right" }} onClick={this._next}>
           Next
-        </button>
+        </ContrastButton>
       );
     }
     // ...else render nothing
@@ -583,7 +574,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
             <BlackTextTypography>
               <Link to="/">Back</Link>{" "}
             </BlackTextTypography>
-            <Typography variant="h1">
+            <Typography variant="h1" style={{ marginTop: "10px" }}>
               Register for a volunteer account
             </Typography>
             <Grid
@@ -601,12 +592,12 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
                   handleNestedChange={this.handleNestedChange}
-                  personalInfo={this.state.personalInfo}
-                  picklistInfo={this.state.picklistInfo}
-                  picklists={this.props.picklists}
                   handleNestedChangeMultiAutocomplete={
                     this.handleNestedChangeMultiAutocomplete
                   }
+                  personalInfo={this.state.personalInfo}
+                  picklistInfo={this.state.picklistInfo}
+                  picklists={this.props.picklists}
                 />
                 <Experience
                   currentStep={this.state.currentStep}
@@ -621,7 +612,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   picklists={this.props.picklists}
                   picklistInfo={this.state.picklistInfo}
                   createHandleSelectOption={this.createHandleSelectOption}
-                  classes={this.props.classes}
                 />
                 <Involvement
                   currentStep={this.state.currentStep}
@@ -631,7 +621,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   picklistInfo={this.state.picklistInfo}
                   picklists={this.props.picklists}
                   createHandleSelectOption={this.createHandleSelectOption}
-                  classes={this.props.classes}
                   handleNestedChangeMultiAutocomplete={
                     this.handleNestedChangeMultiAutocomplete
                   }
