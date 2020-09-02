@@ -35,7 +35,6 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
     };
 
     if (isEducator(user)) {
-        console.log('IS EDUCATOR');
         salesforceUser = {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
@@ -129,8 +128,8 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Volunteer).employmentStatus = record.employmentStatus__c;
         (user as Volunteer).expertiseAreas = picklistStringToArray(record.expertiseAreas__c);
         (user as Volunteer).extraDescription = record.extraDescription__c;
-        (user as Volunteer).fieldInvolvementDescription = record.fieldInvolvementDescription__c,
-        (user as Volunteer).grades = picklistStringToArray(record.grades__c);
+        ((user as Volunteer).fieldInvolvementDescription = record.fieldInvolvementDescription__c),
+            ((user as Volunteer).grades = picklistStringToArray(record.grades__c));
         (user as Volunteer).introductionMethod = record.introductionMethod__c;
         (user as Volunteer).isVolunteerCoordinator = record.isVolunteerCoordinator__c;
         (user as Volunteer).languages = picklistStringToArray(record.languages__c);
@@ -232,17 +231,27 @@ export const update = async (id: string, user: User): Promise<User> => {
 };
 
 // Create new user and return ID.
-export const create = async (user: Educator): Promise<string> => {
-    console.log(user);
+export const create = async (user: User): Promise<string> => {
+    // If user is a volunteer and its employer does not have an id, create the employer.
+    if (isUser(user) && isVolunteer(user)) {
+        const volunteer = user as Volunteer;
+        let employerId: string;
+        if (
+            volunteer.employer &&
+            typeof volunteer.employer !== 'string' &&
+            (volunteer.employer.id === '' || !volunteer.employer.id)
+        ) {
+            employerId = await EmployerService.create(volunteer.employer);
+        }
+        (user as Volunteer).employer.id = employerId;
+    }
     const userInfo: { id: string; success: boolean; errors: Error[] } = await conn
         .sobject(siteUser)
         .create(userModelToSalesforceUser(user), (err: Error, result: any) => {
             if (err || !result.success) {
-                console.log('1');
                 return console.error(err, result);
             }
         });
-    console.log('2');
     return userInfo.id;
 };
 
