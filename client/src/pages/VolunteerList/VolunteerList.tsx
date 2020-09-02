@@ -388,7 +388,6 @@ class VolunteerList extends React.Component<
 
     picklistTypes.forEach((type: PicklistType) => {
       this.props.fetchPicklists(type).then(() => {
-        console.log("HELLO THERE" + this.props.picklists);
         const picklists = this.props.picklists;
         const filters = this.state.filters;
 

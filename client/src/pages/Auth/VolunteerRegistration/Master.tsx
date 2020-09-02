@@ -65,6 +65,7 @@ import { UserType, Volunteer } from "../../../data/types/userTypes";
 const styles = () => ({
   formSection: {
     padding: "2.5em 3em 0.5em 3em",
+    marginBottom: "2em",
   },
   textField: {
     marginBottom: "26px",
@@ -78,6 +79,7 @@ const styles = () => ({
   },
   multiSelect: {
     columns: "2 auto",
+    // breakInside: "avoid-column",
   },
   root: {
     minWidth: 275,
@@ -393,7 +395,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     picklistTypes.forEach((type: PicklistType) => {
       fetchPicklists(type).then(() => {
         const picklists = this.props.picklists;
-        // console.log("picklists right now", picklists);
         const picklistInfo = this.state.picklistInfo;
 
         if (type === PicklistType.postSecondaryTraining) {
@@ -423,13 +424,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
             createPicklist(picklists.followedPrograms.list)
           );
         }
-
-        // else if (type === PicklistType.languages) {
-        //   picklistInfo.languages = new Map(
-        //     createPicklist(picklists.languages.list)
-        //   );
-        // // }
-        // console.log("The Info", picklistInfo);
         this.setState({ ...this.state, picklistInfo });
       });
     });
@@ -530,7 +524,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   };
 
   handleNestedChangeMultiAutocomplete = (field: any, newValue: any) => {
-    console.log("New Value");
     this.setState((prevState) => ({
       ...prevState,
       picklistInfo: {
@@ -677,24 +670,20 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   get nextButton() {
     let currentStep = this.state.currentStep;
     // If the current step is not 3, then render the "next" button
-    if (currentStep < 3) {
-      return (
-        <ContrastButton
-          style={{ float: "right", marginRight: "34px" }}
-          onClick={this._next}
-        >
-          Next
-        </ContrastButton>
-      );
-    }
-    // ...else render nothing
-    return <div />;
+    // Return submit button if on page 3 (last page);
+    return (
+      <ContrastButton
+        style={{ float: "right", marginRight: "34px" }}
+        onClick={this._next}
+      >
+        {currentStep === 3 ? "Finish Registration" : "Next"}
+      </ContrastButton>
+    );
   }
 
   render() {
     const getProgressComponent = (step: number) => {
       let currentStep = this.state.currentStep;
-      console.log("HERE");
       let label = "";
       switch (step) {
         case 1:
@@ -836,7 +825,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log(state.picklists);
   return {
     employers: getEmployers(state.employers),
     picklists: {

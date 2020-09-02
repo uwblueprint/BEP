@@ -25,8 +25,6 @@ export function fetchSchoolPicklistService(picklistType: PicklistType) {
 }
 
 export function fetchEmployerPicklistService(picklistType: PicklistType) {
-  console.log("HERE4")
-  console.log(picklistType)
   return (dispatch: any) => {
     return getEmployerPicklist(picklistType).then((res: any) => {
       dispatch(fetchPicklist(picklistType, res.data));

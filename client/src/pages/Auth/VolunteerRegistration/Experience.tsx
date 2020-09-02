@@ -83,7 +83,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 </BlackHeaderTypography>
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>
                   Employment Status*
                 </BlackHeaderTypography>
@@ -118,7 +118,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 />
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>
                   Current Job Title/Position*
                 </BlackHeaderTypography>
@@ -134,7 +134,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 />
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item >
                 <BlackHeaderTypography>Employer</BlackHeaderTypography>
                 <OutlinedSelect
                   name="employerId"
@@ -149,7 +149,6 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                   }}
                   style={{ height: "40px" }}
                   displayEmpty
-                  disableUnderline={true}
                   IconComponent={BlueArrowDropDownIcon}
                 >
                   <MenuItem value="">
@@ -169,7 +168,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
               {this.state.createEmployer && (
                 <React.Fragment>
                   {" "}
-                  <Grid item direction="column">
+                  <Grid item >
                     <BlackHeaderTypography>
                       Organization Name*
                     </BlackHeaderTypography>
@@ -183,7 +182,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       )}
                     />
                   </Grid>
-                  <Grid item direction="column">
+                  <Grid item>
                     <BlackHeaderTypography>
                       Organization Sector
                     </BlackHeaderTypography>
@@ -216,7 +215,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       )}
                     />
                   </Grid>
-                  <Grid item direction="column">
+                  <Grid item>
                     <BlackHeaderTypography>
                       Organization Website
                     </BlackHeaderTypography>
@@ -230,7 +229,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       )}
                     />
                   </Grid>
-                  <Grid item direction="column">
+                  <Grid item >
                     <BlackHeaderTypography>
                       Organization Social Media
                     </BlackHeaderTypography>
@@ -244,7 +243,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       )}
                     />
                   </Grid>
-                  <Grid item direction="column">
+                  <Grid item>
                     <BlackHeaderTypography>
                       Organization Street Address
                     </BlackHeaderTypography>
@@ -259,7 +258,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                     />
                   </Grid>
                   <Grid item container direction="row" spacing={2}>
-                    <Grid item direction="column">
+                    <Grid item>
                       <FormControl>
                         <BlackHeaderTypography>
                           Organization City
@@ -276,7 +275,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         />
                       </FormControl>
                     </Grid>
-                    <Grid item direction="column">
+                    <Grid item>
                       <FormControl>
                         <BlackHeaderTypography>
                           Organization Postal Code
@@ -294,7 +293,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       </FormControl>
                     </Grid>
                   </Grid>
-                  <Grid item direction="column">
+                  <Grid item>
                     <BlackHeaderTypography>
                       Organization Phone
                     </BlackHeaderTypography>
@@ -312,7 +311,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 </React.Fragment>
               )}
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>
                   Department or Division
                 </BlackHeaderTypography>
@@ -327,7 +326,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 />
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>
                   Number of Staff in Organization
                 </BlackHeaderTypography>
@@ -421,7 +420,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 </BlackHeaderTypography>
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>
                   Areas of Expertise*
                 </BlackHeaderTypography>
@@ -501,7 +500,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 </Grid>
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>Languages</BlackHeaderTypography>
                 <Autocomplete
                   multiple
@@ -527,7 +526,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 />
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>
                   Description of my Career*
                 </BlackHeaderTypography>
@@ -543,7 +542,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 />
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>
                   How I got involved in my field*
                 </BlackHeaderTypography>
@@ -559,7 +558,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 />
               </Grid>
 
-              <Grid item direction="column">
+              <Grid item>
                 <BlackHeaderTypography>
                   Other information I'd like schools to read
                 </BlackHeaderTypography>

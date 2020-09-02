@@ -42,10 +42,55 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
     const displayPicklistOptions = (
       picklistMap: Map<string, boolean>,
       picklistName: string,
-      selectMultiple: boolean
+      selectMultiple: boolean,
+      selectAll: boolean
     ) => {
-      return Array.from(picklistMap.entries(), (entry) => entry).map(
-        ([option, isSelected]) => (
+      const picklistArray = Array.from(picklistMap.entries(), (entry) => entry);
+      let checkboxes = selectAll
+        ? [
+            <Grid
+              container
+              xs={12}
+              key={"_select_all"}
+              spacing={0}
+              justify="flex-start"
+              alignItems="center"
+              style={{ display: "inline-block" }}
+            >
+              <FormControlLabel
+                control={
+                  <OutlinedCheckbox
+                    key="_select_all"
+                    value="_select_all"
+                    name="_select_all"
+                    checked={
+                      picklistArray.reduce(
+                        (allSelected, [option, isSelected]) => [
+                          "",
+                          allSelected[1] && isSelected,
+                        ],
+                        ["", true]
+                      )[1]
+                    }
+                    onChange={(event: any) => {
+                      picklistArray.forEach(([option, isSelected]) => {
+                        if (isSelected !== event.target.checked) {
+                          event.target.name = option;
+                          this.props.createHandleSelectOption(picklistName)(
+                            event
+                          );
+                        }
+                      });
+                    }}
+                  />
+                }
+                label={<BlackTextTypography>Select All</BlackTextTypography>}
+              />
+            </Grid>,
+          ]
+        : [];
+      checkboxes = checkboxes.concat(
+        picklistArray.map(([option, isSelected]) => (
           <Grid
             container
             xs={12}
@@ -53,6 +98,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
             spacing={0}
             justify="flex-start"
             alignItems="center"
+            style={{ display: "inline-block" }}
           >
             <FormControlLabel
               control={
@@ -68,16 +114,13 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   }
                 />
               }
-              label={
-                <BlackTextTypography style={{ width: "100%" }}>
-                  {" "}
-                  {option}
-                </BlackTextTypography>
-              }
+              label={<BlackTextTypography> {option}</BlackTextTypography>}
             />
           </Grid>
-        )
+        ))
       );
+
+      return checkboxes;
     };
 
     return (
@@ -121,7 +164,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   {displayPicklistOptions(
                     this.props.picklistInfo.volunteerDesiredInternalActivities,
                     "volunteerDesiredInternalActivities",
-                    true
+                    true,
+                    false
                   )}
                 </Grid>
                 <Grid item>
@@ -135,7 +179,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   {displayPicklistOptions(
                     this.props.picklistInfo.volunteerDesiredExternalActivities,
                     "volunteerDesiredExternalActivities",
-                    true
+                    true,
+                    false
                   )}
                 </Grid>
                 {this.props.picklistInfo.volunteerDesiredExternalActivities.get(
@@ -167,7 +212,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                       {displayPicklistOptions(
                         this.props.picklistInfo.coopPlacementTime,
                         "coopPlacementTime",
-                        true
+                        true,
+                        false
                       )}
                     </Grid>
                     <Grid item>
@@ -187,6 +233,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                           )
                         ),
                         "coopPlacementMode",
+                        false,
                         false
                       )}
                     </Grid>
@@ -245,6 +292,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   {displayPicklistOptions(
                     this.props.picklistInfo.locations,
                     "locations",
+                    true,
                     true
                   )}
                 </Grid>
@@ -259,6 +307,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   {displayPicklistOptions(
                     this.props.picklistInfo.grades,
                     "grades",
+                    true,
                     true
                   )}
                 </Grid>
@@ -271,7 +320,6 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   <OutlinedTextField
                     multiline
                     rows={16}
-                    maxRows={16}
                     placeholder="Enter answer..."
                     className={this.props.classes.textField}
                     name="reasonsForVolunteering"
@@ -282,7 +330,7 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     required={true}
                   />
                 </Grid>{" "}
-                <Grid item style={{ columns: "2 auto" }}>
+                <Grid item>
                   <BlackHeaderTypography>
                     What advice would you give to young people who are making
                     decisions about their future careers?
@@ -357,7 +405,8 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                   {displayPicklistOptions(
                     this.props.picklistInfo.followedPrograms,
                     "followedPrograms",
-                    true
+                    true,
+                    false
                   )}
                 </Grid>
               </div>
