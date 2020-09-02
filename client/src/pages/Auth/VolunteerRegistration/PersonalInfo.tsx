@@ -16,25 +16,11 @@ import Grid from "@material-ui/core/Grid";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 
+import { RawPicklists, PicklistInfo } from "./Master";
+
 interface IComponentProps {
   currentStep: number;
-  picklists: {
-    expertiseAreas: { list: string[] };
-    languages: { list: string[] };
-    grades: { list: string[] }; // grade levels willing to volunteer with
-    locations: { list: string[] };
-    // uncomment these out once you set up all these routes Faizaan
-    localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
-    professionalAssociations: { list: string[] };
-    employmentStatus: { list: string[] };
-    sectors: { list: string[] }; // somehow need to get picklist of
-    size: { list: string[] };
-    introductionMethod: { list: string[] };
-    volunteerDesiredExternalActivities: { list: string[] };
-    volunteerDesiredInternalActivities: { list: string[] };
-    postSecondaryTraining: { list: string[] };
-    preferredPronouns: { list: string[] };
-  };
+  picklists: RawPicklists;
   personalInfo: {
     email: string;
     password: string;
@@ -45,23 +31,7 @@ interface IComponentProps {
     linkedinUrl: string;
     shareWithEmployer: boolean;
   };
-  picklistInfo: {
-    preferredPronouns: string;
-    localPostSecondaryInstitutions: string[]; //local post secondary alumni
-    professionalAssociations: string[];
-    employmentStatus: string;
-    sectors: string; // somehow need to get picklist of
-    size: string;
-    expertiseAreas: string[];
-    introductionMethod: string;
-    languages: string[];
-    volunteerDesiredExternalActivities: Map<string, boolean>;
-    volunteerDesiredInternalActivities: Map<string, boolean>;
-    postSecondaryTraining: Map<string, boolean>;
-    moreInfo: Map<string, boolean>;
-    grades: Map<string, boolean>; // grade levels willing to volunteer with
-    locations: Map<string, boolean>;
-  };
+  picklistInfo: PicklistInfo;
   handleNestedChange: any;
   handleChange: any; // () => void????
   handleNestedChangeMultiAutocomplete: any;

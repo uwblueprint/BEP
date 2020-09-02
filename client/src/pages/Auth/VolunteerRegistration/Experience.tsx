@@ -1,7 +1,5 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import Select from "@material-ui/core/Select";
-import Checkbox from "@material-ui/core/Checkbox";
 import { withStyles } from "@material-ui/core/styles";
 
 import {
@@ -9,62 +7,25 @@ import {
   BlackTextTypography,
   OutlinedTextField,
   OutlinedCheckbox,
+  OutlinedSelect,
 } from "../../../components/index";
 import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MenuItem from "@material-ui/core/MenuItem";
+import Divider from "@material-ui/core/Divider";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { ExperienceState, PicklistInfo, RawPicklists } from "./Master";
+
+import Employer from "../../../data/types/employerTypes";
 
 interface IComponentProps {
   currentStep: number;
-  experience: {
-    jobTitle: string;
-    orgName: string;
-    orgWebsite: string;
-    orgSocialMedia: string; // this seems hard a low priority (need to add)
-    orgStreetAddr: string;
-    orgCity: string;
-    orgPostalCode: string;
-    orgPhone: string;
-    departmentDivision: string; // currenlty not in userTYpes
-    careerDescription: string;
-    involveMethod: string; // currently not in userTypes
-    extraDescription: string; // other info i'd like schools to read
-  };
-  picklistInfo: {
-    localPostSecondaryInstitutions: string[]; //local post secondary alumni
-    professionalAssociations: string[];
-    employmentStatus: string;
-    sectors: string; // somehow need to get picklist of
-    size: string;
-    expertiseAreas: string[];
-    introductionMethod: string;
-    languages: string[];
-    volunteerDesiredExternalActivities: Map<string, boolean>;
-    volunteerDesiredInternalActivities: Map<string, boolean>;
-    postSecondaryTraining: Map<string, boolean>;
-    moreInfo: Map<string, boolean>;
-    grades: Map<string, boolean>; // grade levels willing to volunteer with
-    locations: Map<string, boolean>;
-    preferredPronouns: string;
-  };
-  picklists: {
-    expertiseAreas: { list: string[] };
-    languages: { list: string[] };
-    grades: { list: string[] }; // grade levels willing to volunteer with
-    locations: { list: string[] };
-
-    // uncomment these out once you set up all these routes Faizaan
-    localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
-    professionalAssociations: { list: string[] };
-    employmentStatus: { list: string[] };
-    sectors: { list: string[] }; // somehow need to get picklist of
-    size: { list: string[] };
-    introductionMethod: { list: string[] };
-    volunteerDesiredExternalActivities: { list: string[] };
-    volunteerDesiredInternalActivities: { list: string[] };
-    postSecondaryTraining: { list: string[] };
-  };
+  experience: ExperienceState;
+  employers: Employer[];
+  picklistInfo: PicklistInfo;
+  picklists: RawPicklists;
   handleChange: any; // () => void????
   handleNestedChange: any;
   handleNestedChangePicklist: any;
@@ -78,20 +39,21 @@ interface IComponentProps {
 }
 
 interface IComponentState {
-  experience: {
-    jobTitle: string;
-    orgName: string;
-    orgWebsite: string;
-    orgSocialMedia: string; // this seems hard a low priority (need to add)
-    orgStreetAddr: string;
-    orgCity: string;
-    orgPostalCode: string;
-    orgPhone: string;
-    departmentDivision: string; // currenlty not in userTYpes
-    careerDescription: string;
-    involveMethod: string; // currently not in userTypes
-    extraDescription: string; // other info i'd like schools to read
-  };
+  // experience: {
+  //   jobTitle: string;
+  //   orgName: string;
+  //   orgWebsite: string;
+  //   orgSocialMedia: string; // this seems hard a low priority (need to add)
+  //   orgStreetAddr: string;
+  //   orgCity: string;
+  //   orgPostalCode: string;
+  //   orgPhone: string;
+  //   departmentDivision: string; // currenlty not in userTYpes
+  //   careerDescription: string;
+  //   involveMethod: string; // currently not in userTypes
+  //   extraDescription: string; // other info i'd like schools to read
+  // };
+  createEmployer: boolean;
 }
 
 const styles = () => ({
@@ -113,6 +75,9 @@ const styles = () => ({
 class Experience extends React.Component<IComponentProps, IComponentState> {
   constructor(props: any) {
     super(props);
+    this.state = {
+      createEmployer: false,
+    };
   }
   render() {
     if (this.props.currentStep !== 2) {
@@ -122,361 +87,364 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
     // The markup for the Step 2 UI
     return (
       <React.Fragment>
-        <div style={{ height: "100%" }}>
-          <Grid
-            container
-            direction="column"
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: "2px",
-            }}
-          >
-            <div className={this.props.classes.formSection}>
-              <BlackHeaderTypography style={{ marginBottom: "2em" }}>
-                About Your Work
-              </BlackHeaderTypography>
-              <Grid item direction="column">
-                <BlackHeaderTypography>
-                  Employment Status*
-                </BlackHeaderTypography>
+        <div className="form-group">
+          <div style={{ height: "100vh" }}>
+            <Grid container style={{ height: "100%" }}>
+              <Grid
+                container
+                spacing={4}
+                direction="column"
+                style={{
+                  padding: "3em",
+                  backgroundColor: "#fff",
+                  borderRadius: "2px",
+                  margin: "2em 0em",
+                }}
+              >
+                <Grid item>
+                  <BlackHeaderTypography>Your Activities</BlackHeaderTypography>
+                </Grid>
 
-                <Autocomplete
-                  className={this.props.classes.dropDowns}
-                  size="small"
-                  value={this.props.picklistInfo.employmentStatus}
-                  getOptionLabel={(option) => option}
-                  options={
-                    this.props.picklistInfo.employmentStatus === null
-                      ? this.props.picklists.employmentStatus.list
-                      : [
-                          this.props.picklistInfo.employmentStatus,
-                          ...this.props.picklists.employmentStatus.list,
-                        ]
-                  }
-                  onChange={(_event, newValue) =>
-                    this.props.handleNestedChangeMultiAutocomplete(
-                      "employmentStatus",
-                      newValue
-                    )
-                  }
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <OutlinedTextField
-                      {...params}
-                      variant="outlined"
-                      placeholder="Select your employment status"
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item direction="column">
-                <BlackHeaderTypography>
-                  Current Job Title/Position*
-                </BlackHeaderTypography>
-                <OutlinedTextField
-                  className={this.props.classes.textField}
-                  placeholder="e.g Product Manager"
-                  name="jobTitle"
-                  value={this.props.experience.jobTitle}
-                  onChange={this.props.handleNestedChange(
-                    this.props.experience
-                  )}
-                />
-              </Grid>
-
-              <Grid item direction="column">
-                <BlackHeaderTypography>Employer</BlackHeaderTypography>
-                <OutlinedTextField
-                  placeholder="Enter your employer's name"
-                  name="orgName"
-                  className={this.props.classes.textField}
-                  value={this.props.experience.orgName}
-                  onChange={this.props.handleNestedChange(
-                    this.props.experience
-                  )}
-                />
-              </Grid>
-
-              <FormControl>
-                <BlackHeaderTypography>
-                  Organization Sector
-                </BlackHeaderTypography>
-                <Select
-                  value={this.props.picklistInfo.sectors}
-                  name="sectors"
-                  displayEmpty
-                  disableUnderline={true}
-                  onChange={this.props.handleNestedChangePicklist(
-                    this.props.picklistInfo
-                  )}
-                >
-                  <MenuItem value="" disabled>
-                    Select your Organization's Sector
-                  </MenuItem>
-                  {Array.from(
-                    this.props.picklists.sectors.list.entries(),
-                    (entry) => entry
-                  ).map((entry, index) => (
-                    <MenuItem key={index} value={entry[1]}>
-                      {entry[1]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>
-                    Organization Website
-                  </BlackHeaderTypography>
-                  <OutlinedTextField
-                    placeholder="Enter your organization's website"
-                    name="orgWebsite"
-                    style={{ width: "454px" }}
-                    value={this.props.experience.orgWebsite}
-                    onChange={this.props.handleNestedChange(
-                      this.props.experience
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>
-                    Organization Social Media
-                  </BlackHeaderTypography>
-                  <OutlinedTextField
-                    placeholder="Enter your organization's social media link"
-                    name="orgSocialMedia"
-                    style={{ width: "454px" }}
-                    value={this.props.experience.orgSocialMedia}
-                    onChange={this.props.handleNestedChange(
-                      this.props.experience
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>
-                    Organization Street Address
-                  </BlackHeaderTypography>
-                  <OutlinedTextField
-                    placeholder="e.g Street Number, street name"
-                    name="orgStreetAddr"
-                    style={{ width: "454px" }}
-                    value={this.props.experience.orgStreetAddr}
-                    onChange={this.props.handleNestedChange(
-                      this.props.experience
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid container direction="row" spacing={2}>
                 <Grid item direction="column">
-                  <FormControl>
+                  <FormControl style={{ width: "454px" }}>
                     <BlackHeaderTypography>
-                      Organization City
+                      Employment Status*
                     </BlackHeaderTypography>
-                    <OutlinedTextField
-                      placeholder="Enter Organization's City"
-                      name="orgCity"
-                      style={{ width: "454px" }}
-                      value={this.props.experience.orgCity}
-                      onChange={this.props.handleNestedChange(
-                        this.props.experience
+                    <OutlinedSelect
+                      value={this.props.picklistInfo.employmentStatus}
+                      displayEmpty
+                      disableUnderline={true}
+                      onChange={this.props.handleNestedChangePicklist(
+                        "employmentStatus"
                       )}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item direction="column">
-                  <FormControl>
-                    <BlackHeaderTypography>
-                      Organization Postal Code
-                    </BlackHeaderTypography>
-                    <OutlinedTextField
-                      placeholder="A1A 1A1"
-                      name="orgPostalCode"
-                      style={{ width: "454px" }}
-                      value={this.props.experience.orgPostalCode}
-                      onChange={this.props.handleNestedChange(
-                        this.props.experience
-                      )}
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
-
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>
-                    Organization Phone
-                  </BlackHeaderTypography>
-                  <OutlinedTextField
-                    placeholder="e.g 000 000 0000"
-                    type="number"
-                    name="orgPhone"
-                    style={{ width: "454px" }}
-                    value={this.props.experience.orgPhone}
-                    onChange={this.props.handleNestedChange(
-                      this.props.experience
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>
-                    Department or Division
-                  </BlackHeaderTypography>
-                  <OutlinedTextField
-                    placeholder="Eg. Human Resources"
-                    name="departmentDivision"
-                    style={{ width: "454px" }}
-                    value={this.props.experience.departmentDivision}
-                    onChange={this.props.handleNestedChange(
-                      this.props.experience
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>
-                    Number of Staff in Organization
-                  </BlackHeaderTypography>
-                  <Select
-                    value={this.props.picklists.size.list.entries()}
-                    name="size"
-                    displayEmpty
-                    disableUnderline={true}
-                    onChange={this.props.handleNestedChangePicklist(
-                      this.props.picklistInfo
-                    )}
-                  >
-                    <MenuItem value="" disabled>
-                      Select the number of staff in your organization
-                    </MenuItem>
-                    {Array.from(
-                      this.props.picklists.size.list.entries(),
-                      (entry) => entry
-                    ).map((entry, index) => (
-                      <MenuItem key={index} value={entry[1]}>
-                        {entry[1]}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid container direction="column">
-                <Grid container direction="row" spacing={2}>
-                  {/* These Checkboxes haven't been implemented yet */}
-                  <Checkbox />
-                  <BlackHeaderTypography>
-                    Share volunteer activity with Employee
-                  </BlackHeaderTypography>
-                </Grid>
-                <Grid container direction="row" spacing={2}>
-                  <Checkbox />
-                  <BlackHeaderTypography>
-                    List employer on BEP public facing website
-                  </BlackHeaderTypography>
-                </Grid>
-                <Grid container direction="row" spacing={2}>
-                  <Checkbox />
-                  <BlackHeaderTypography>
-                    I am a contact for coordinating involvement and/or
-                    recruiting other volunteers in my company
-                  </BlackHeaderTypography>
-                </Grid>
-              </Grid>
-
-              <Grid item>
-                <BlackTextTypography>
-                  Your knowledge and expertise
-                </BlackTextTypography>
-              </Grid>
-
-              <Grid item direction="column">
-                <BlackHeaderTypography>
-                  Areas of Expertise
-                </BlackHeaderTypography>
-                <Autocomplete
-                  multiple
-                  id="expertiseAreas"
-                  options={this.props.picklists.expertiseAreas.list}
-                  getOptionLabel={(option) => option}
-                  filterSelectedOptions
-                  onChange={(_event, newValue) =>
-                    this.props.handleNestedChangeMultiAutocomplete(
-                      "expertiseAreas",
-                      newValue
-                    )
-                  }
-                  renderInput={(params) => (
-                    <OutlinedTextField
-                      {...params}
-                      style={{ width: "454px" }}
-                      variant="outlined"
-                      placeholder="Select Activity Areas of Expertise"
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid container direction="column">
-                <BlackHeaderTypography>
-                  Post Secondary Training I've participated in
-                </BlackHeaderTypography>
-                <Grid>
-                  {Array.from(
-                    this.props.picklistInfo.postSecondaryTraining.entries(),
-                    (entry) => entry
-                  ).map(([option, isSelected]) => (
-                    <Grid
-                      container
-                      key={option}
-                      spacing={0}
-                      justify="flex-end"
-                      alignItems="center"
+                      style={{ height: "40px" }}
                     >
-                      <Grid item xs={1}>
-                        <OutlinedCheckbox
-                          key={option}
-                          value={option}
-                          name={option}
-                          onChange={this.props.createHandleSelectOption(
-                            "postSecondaryTraining"
+                      <MenuItem value="" disabled>
+                        Select your employment status
+                      </MenuItem>
+                      {Array.from(
+                        this.props.picklists.employmentStatus.list.entries(),
+                        (entry) => entry
+                      ).map((entry, index) => (
+                        <MenuItem key={index} value={entry[1]}>
+                          {entry[1]}
+                        </MenuItem>
+                      ))}
+                    </OutlinedSelect>
+                  </FormControl>
+                </Grid>
+
+                <Grid item direction="column">
+                  <FormControl>
+                    <BlackHeaderTypography>
+                      Current Job Title/Position*
+                    </BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="e.g Product Manager"
+                      name="jobTitle"
+                      style={{ width: "454px" }}
+                      value={this.props.experience.jobTitle}
+                      onChange={this.props.handleNestedChange(
+                        this.props.experience
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item direction="column">
+                  <FormControl style={{ width: "454px" }}>
+                    <BlackHeaderTypography>Employer</BlackHeaderTypography>
+                    <OutlinedSelect
+                      name="employerId"
+                      value={this.props.experience.employerId}
+                      onChange={(event: any) => {
+                        this.props.handleNestedChange(this.props.experience)(
+                          event
+                        );
+                        this.setState({
+                          ...this.state,
+                          createEmployer: event.target.value === "__other",
+                        });
+                      }}
+                      style={{ height: "40px" }}
+                      displayEmpty
+                      disableUnderline={true}
+                    >
+                      <MenuItem value="">Select your employer</MenuItem>
+                      <MenuItem value="__other">Other</MenuItem>
+                      {this.props.employers.map((employer: Employer) => (
+                        <MenuItem key={employer.id} value={employer.id}>
+                          {employer.name}
+                        </MenuItem>
+                      ))}
+                    </OutlinedSelect>
+                  </FormControl>
+                </Grid>
+
+                {this.state.createEmployer && (
+                  <React.Fragment>
+                    {" "}
+                    <Grid item direction="column">
+                      <FormControl>
+                        <BlackHeaderTypography>
+                          Organization Name*
+                        </BlackHeaderTypography>
+                        <OutlinedTextField
+                          placeholder="Enter your organization’s name"
+                          name="orgName"
+                          style={{ width: "454px" }}
+                          value={this.props.experience.orgName}
+                          onChange={this.props.handleNestedChange(
+                            this.props.experience
                           )}
                         />
+                      </FormControl>
+                    </Grid>
+                    <Grid item direction="column">
+                      <FormControl style={{ width: "454px" }}>
+                        <BlackHeaderTypography>
+                          Organization Sector
+                        </BlackHeaderTypography>
+                        <OutlinedSelect
+                          value={this.props.picklistInfo.sectors}
+                          displayEmpty
+                          disableUnderline={true}
+                          onChange={this.props.handleNestedChangePicklist(
+                            "sectors"
+                          )}
+                          style={{ height: "40px" }}
+                        >
+                          <MenuItem value="" disabled>
+                            Select your Organization's Sector
+                          </MenuItem>
+                          {Array.from(
+                            this.props.picklists.sectors.list.entries(),
+                            (entry) => entry
+                          ).map((entry, index) => (
+                            <MenuItem key={index} value={entry[1]}>
+                              {entry[1]}
+                            </MenuItem>
+                          ))}
+                        </OutlinedSelect>
+                      </FormControl>
+                    </Grid>
+                    <Grid item direction="column">
+                      <FormControl>
+                        <BlackHeaderTypography>
+                          Organization Website
+                        </BlackHeaderTypography>
+                        <OutlinedTextField
+                          placeholder="Enter your organization's website"
+                          name="orgWebsite"
+                          style={{ width: "454px" }}
+                          value={this.props.experience.orgWebsite}
+                          onChange={this.props.handleNestedChange(
+                            this.props.experience
+                          )}
+                        />
+                      </FormControl>
+                    </Grid>
+                    <Grid item direction="column">
+                      <FormControl>
+                        <BlackHeaderTypography>
+                          Organization Social Media
+                        </BlackHeaderTypography>
+                        <OutlinedTextField
+                          placeholder="Enter your organization's social media link"
+                          name="orgSocialMedia"
+                          style={{ width: "454px" }}
+                          value={this.props.experience.orgSocialMedia}
+                          onChange={this.props.handleNestedChange(
+                            this.props.experience
+                          )}
+                        />
+                      </FormControl>
+                    </Grid>
+                    <Grid item direction="column">
+                      <FormControl>
+                        <BlackHeaderTypography>
+                          Organization Street Address
+                        </BlackHeaderTypography>
+                        <OutlinedTextField
+                          placeholder="e.g Street Number, street name"
+                          name="orgStreetAddr"
+                          style={{ width: "454px" }}
+                          value={this.props.experience.orgStreetAddr}
+                          onChange={this.props.handleNestedChange(
+                            this.props.experience
+                          )}
+                        />
+                      </FormControl>
+                    </Grid>
+                    <Grid item container direction="row" spacing={2}>
+                      <Grid item direction="column">
+                        <FormControl>
+                          <BlackHeaderTypography>
+                            Organization City
+                          </BlackHeaderTypography>
+                          <OutlinedTextField
+                            placeholder="Enter Organization's City"
+                            name="orgCity"
+                            style={{ width: "220px" }}
+                            value={this.props.experience.orgCity}
+                            onChange={this.props.handleNestedChange(
+                              this.props.experience
+                            )}
+                          />
+                        </FormControl>
                       </Grid>
-                      <Grid item xs={11}>
-                        <BlackTextTypography> {option}</BlackTextTypography>
+                      <Grid item direction="column">
+                        <FormControl>
+                          <BlackHeaderTypography>
+                            Organization Postal Code
+                          </BlackHeaderTypography>
+                          <OutlinedTextField
+                            placeholder="A1A 1A1"
+                            name="orgPostalCode"
+                            style={{ width: "220px" }}
+                            value={this.props.experience.orgPostalCode}
+                            onChange={this.props.handleNestedChange(
+                              this.props.experience
+                            )}
+                          />
+                        </FormControl>
                       </Grid>
                     </Grid>
-                  ))}
-                </Grid>
-              </Grid>
+                    <Grid item direction="column">
+                      <FormControl>
+                        <BlackHeaderTypography>
+                          Organization Phone
+                        </BlackHeaderTypography>
+                        <OutlinedTextField
+                          placeholder="e.g 000 000 0000"
+                          type="number"
+                          name="orgPhone"
+                          style={{ width: "454px" }}
+                          value={this.props.experience.orgPhone}
+                          onChange={this.props.handleNestedChange(
+                            this.props.experience
+                          )}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </React.Fragment>
+                )}
 
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>Languages</BlackHeaderTypography>
+                <Grid item direction="column">
+                  <FormControl>
+                    <BlackHeaderTypography>
+                      Department or Division
+                    </BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="Eg. Human Resources"
+                      name="departmentDivision"
+                      style={{ width: "454px" }}
+                      value={this.props.experience.departmentDivision}
+                      onChange={this.props.handleNestedChange(
+                        this.props.experience
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item direction="column">
+                  <FormControl style={{ width: "454px" }}>
+                    <BlackHeaderTypography>
+                      Number of Staff in Organization
+                    </BlackHeaderTypography>
+                    <OutlinedSelect
+                      value={this.props.picklistInfo.size}
+                      displayEmpty
+                      disableUnderline={true}
+                      onChange={this.props.handleNestedChangePicklist("size")}
+                      style={{ height: "40px" }}
+                    >
+                      <MenuItem value="" disabled>
+                        Select the number of staff in your organization
+                      </MenuItem>
+                      {Array.from(
+                        this.props.picklists.size.list.entries(),
+                        (entry) => entry
+                      ).map((entry, index) => (
+                        <MenuItem key={index} value={entry[1]}>
+                          {entry[1]}
+                        </MenuItem>
+                      ))}
+                    </OutlinedSelect>
+                  </FormControl>
+                </Grid>
+
+                <Grid item container direction="column">
+                  <FormControlLabel
+                    control={
+                      <OutlinedCheckbox
+                        name="shareWithEmployer"
+                        checked={this.props.experience.shareWithEmployer}
+                        onChange={this.props.handleNestedChange(
+                          this.props.experience
+                        )}
+                      />
+                    }
+                    label={
+                      <BlackHeaderTypography>
+                        Share volunteer activity with employer
+                      </BlackHeaderTypography>
+                    }
+                  />
+                  <FormControlLabel
+                    control={
+                      <OutlinedCheckbox
+                        name="shareEmployerInfo"
+                        checked={this.props.experience.shareEmployerInfo}
+                        onChange={this.props.handleNestedChange(
+                          this.props.experience
+                        )}
+                      />
+                    }
+                    label={
+                      <BlackHeaderTypography>
+                        List employer on BEP public facing website
+                      </BlackHeaderTypography>
+                    }
+                  />
+                  <FormControlLabel
+                    control={
+                      <OutlinedCheckbox
+                        name="isVolunteerCoordinator"
+                        checked={this.props.experience.isVolunteerCoordinator}
+                        onChange={this.props.handleNestedChange(
+                          this.props.experience
+                        )}
+                      />
+                    }
+                    label={
+                      <BlackHeaderTypography>
+                        I am a contact for coordinating involvement and/or
+                        recruiting other volunteers in my company
+                      </BlackHeaderTypography>
+                    }
+                  />
+                </Grid>
+                <Divider />
+                <Grid item>
+                  <BlackHeaderTypography>
+                    Your knowledge and expertise
+                  </BlackHeaderTypography>
+                </Grid>
+
+                <Grid item direction="column">
+                  <BlackHeaderTypography>
+                    Areas of Expertise*
+                  </BlackHeaderTypography>
                   <Autocomplete
                     multiple
-                    id="languages"
-                    options={this.props.picklists.languages.list}
+                    id="expertiseAreas"
+                    options={this.props.picklists.expertiseAreas.list}
                     getOptionLabel={(option) => option}
                     filterSelectedOptions
                     onChange={(_event, newValue) =>
                       this.props.handleNestedChangeMultiAutocomplete(
-                        "languages",
+                        "expertiseAreas",
                         newValue
                       )
                     }
@@ -485,65 +453,135 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         {...params}
                         style={{ width: "454px" }}
                         variant="outlined"
-                        placeholder="Select Additional Languages you speak"
+                        placeholder="Select Activity Areas of Expertise"
                       />
                     )}
                   />
-                </FormControl>
-              </Grid>
+                </Grid>
 
-              <Grid item direction="column">
-                <FormControl>
+                <Grid item container direction="column">
                   <BlackHeaderTypography>
-                    Description of my Career
+                    Post Secondary Training I've participated in
                   </BlackHeaderTypography>
-                  <OutlinedTextField
-                    placeholder="1 Sentence"
-                    id="title"
-                    style={{ width: "454px" }}
-                    value={this.props.experience.careerDescription}
-                    onChange={this.props.handleNestedChange(
-                      this.props.experience
-                    )}
-                  />
-                </FormControl>
-              </Grid>
+                  <Grid item>
+                    {this.props.picklistInfo.postSecondaryTraining &&
+                      Array.from(
+                        this.props.picklistInfo.postSecondaryTraining.entries(),
+                        (entry) => entry
+                      ).map(([option, isSelected]) => (
+                        <Grid
+                          container
+                          key={option}
+                          spacing={0}
+                          justify="flex-end"
+                          alignItems="center"
+                        >
+                          <Grid item xs={1}>
+                            <FormControlLabel
+                              control={
+                                <OutlinedCheckbox
+                                  key={option}
+                                  value={option}
+                                  name={option}
+                                  onChange={this.props.createHandleSelectOption(
+                                    "postSecondaryTraining"
+                                  )}
+                                />
+                              }
+                              label={
+                                <BlackTextTypography>
+                                  {" "}
+                                  {option}
+                                </BlackTextTypography>
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={11}></Grid>
+                        </Grid>
+                      ))}
+                  </Grid>
+                </Grid>
 
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>
-                    How I got involved in my Field
-                  </BlackHeaderTypography>
-                  <OutlinedTextField
-                    placeholder="I sentence"
-                    id="title"
-                    style={{ width: "454px" }}
-                    value={this.props.experience.departmentDivision}
-                    onChange={this.props.handleNestedChange(
-                      this.props.experience
-                    )}
-                  />
-                </FormControl>
-              </Grid>
+                <Grid item direction="column">
+                  <FormControl>
+                    <BlackHeaderTypography>Languages</BlackHeaderTypography>
+                    <Autocomplete
+                      multiple
+                      id="languages"
+                      options={this.props.picklists.languages.list}
+                      getOptionLabel={(option) => option}
+                      filterSelectedOptions
+                      onChange={(_event, newValue) =>
+                        this.props.handleNestedChangeMultiAutocomplete(
+                          "languages",
+                          newValue
+                        )
+                      }
+                      renderInput={(params) => (
+                        <OutlinedTextField
+                          {...params}
+                          style={{ width: "454px" }}
+                          variant="outlined"
+                          placeholder="Select Additional Languages you speak"
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
 
-              <Grid item direction="column">
-                <FormControl>
-                  <BlackHeaderTypography>
-                    Other information I'd like schools to read
-                  </BlackHeaderTypography>
-                  <OutlinedTextField
-                    placeholder="e.g other topics you can talk about, etc"
-                    id="title"
-                    style={{ width: "454px" }}
-                    value={this.props.experience.extraDescription}
-                    onChange={this.props.handleNestedChange(
-                      this.props.experience
-                    )}
-                  />
-                </FormControl>
+                <Grid item direction="column">
+                  <FormControl>
+                    <BlackHeaderTypography>
+                      Description of my career*
+                    </BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="1 Sentence"
+                      name="careerDescription"
+                      style={{ width: "454px" }}
+                      value={this.props.experience.careerDescription}
+                      onChange={this.props.handleNestedChange(
+                        this.props.experience
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item direction="column">
+                  <FormControl>
+                    <BlackHeaderTypography>
+                      How I got involved in my field*
+                    </BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="1 sentence"
+                      name="fieldInvolvementDescription"
+                      style={{ width: "454px" }}
+                      value={this.props.experience.fieldInvolvementDescription}
+                      onChange={this.props.handleNestedChange(
+                        this.props.experience
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item direction="column">
+                  <FormControl>
+                    <BlackHeaderTypography>
+                      Other information I'd like schools to read
+                    </BlackHeaderTypography>
+                    <OutlinedTextField
+                      placeholder="e.g other topics you can talk about, etc"
+                      name="extraDescription"
+                      style={{ width: "454px" }}
+                      value={this.props.experience.extraDescription}
+                      onChange={this.props.handleNestedChange(
+                        this.props.experience
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
               </Grid>
-            </div>
-          </Grid>
+            </Grid>
+          </div>
         </div>
       </React.Fragment>
     );

@@ -16,8 +16,8 @@ const userFields: string =
     'preferredPronouns__c, userType__c, careerDescription__c, coopPlacementMode__c, coopPlacementSchoolAffiliation__c, coopPlacementTime__c, ' +
     'jobTitle__c, department__c, employer__c, employmentStatus__c, expertiseAreas__c, extraDescription__c, grades__c, ' +
     'isVolunteerCoordinator__c, languages__c, linkedIn__c, localPostSecondaryInstitutions__c, locations__c, postSecondaryTraining__c, ' +
-    'professionalAssociations__c, reasonsForVolunteering__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
-    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c ';
+    'professionalAssociations__c, reasonsForVolunteering__c, shareEmployerInfo__c, shareWithEmployer__c, volunteerDesiredExternalActivities__c, ' +
+    'volunteerDesiredInternalActivities__c, educatorDesiredActivities__c, position__c, moreInfo__c, introductionMethod__c, fieldInvolvementDescription__c, adviceForStudents__c ';
 
 // Map fields of user model to Salesforce fields.
 export const userModelToSalesforceUser = (user: User, id?: string): any => {
@@ -35,7 +35,6 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
     };
 
     if (isEducator(user)) {
-        console.log("IS EDUCATOR");
         salesforceUser = {
             ...salesforceUser,
             educatorDesiredActivities__c: arrayToPicklistString((user as Educator).educatorDesiredActivities),
@@ -49,6 +48,7 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
     } else if (isVolunteer(user)) {
         salesforceUser = {
             ...salesforceUser,
+            adviceForStudents__c: (user as Volunteer).adviceForStudents,
             careerDescription__c: (user as Volunteer).careerDescription,
             ...((user as Volunteer).coopPlacementMode && {
                 coopPlacementMode__c: (user as Volunteer).coopPlacementMode
@@ -64,6 +64,7 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
             employmentStatus__c: (user as Volunteer).employmentStatus,
             expertiseAreas__c: arrayToPicklistString((user as Volunteer).expertiseAreas),
             extraDescription__c: (user as Volunteer).extraDescription,
+            fieldInvolvementDescription__c: (user as Volunteer).fieldInvolvementDescription,
             grades__c: arrayToPicklistString((user as Volunteer).grades),
             introductionMethod__c: (user as Volunteer).introductionMethod,
             isVolunteerCoordinator__c: (user as Volunteer).isVolunteerCoordinator,
@@ -77,6 +78,8 @@ export const userModelToSalesforceUser = (user: User, id?: string): any => {
             postSecondaryTraining__c: arrayToPicklistString((user as Volunteer).postSecondaryTraining),
             professionalAssociations__c: arrayToPicklistString((user as Volunteer).professionalAssociations),
             reasonsForVolunteering__c: arrayToPicklistString((user as Volunteer).reasonsForVolunteering),
+            shareEmployerInfo__c: (user as Volunteer).shareEmployerInfo,
+            shareWithEmployer__c: (user as Volunteer).shareWithEmployer,
             volunteerDesiredExternalActivities__c: arrayToPicklistString(
                 (user as Volunteer).volunteerDesiredExternalActivities
             ),
@@ -114,6 +117,7 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Educator).school = await SchoolService.get(record.school__c);
     } else if (UserType[record.userType__c] === UserType[UserType.Volunteer]) {
         // User is a volunteer.
+        (user as Volunteer).adviceForStudents = record.adviceForStudents__c;
         (user as Volunteer).careerDescription = record.careerDescription__c;
         (user as Volunteer).coopPlacementMode = record.coopPlacementMode__c;
         (user as Volunteer).coopPlacementSchoolAffiliation = record.coopPlacementSchoolAffiliation__c;
@@ -124,7 +128,8 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Volunteer).employmentStatus = record.employmentStatus__c;
         (user as Volunteer).expertiseAreas = picklistStringToArray(record.expertiseAreas__c);
         (user as Volunteer).extraDescription = record.extraDescription__c;
-        (user as Volunteer).grades = picklistStringToArray(record.grades__c);
+        ((user as Volunteer).fieldInvolvementDescription = record.fieldInvolvementDescription__c),
+            ((user as Volunteer).grades = picklistStringToArray(record.grades__c));
         (user as Volunteer).introductionMethod = record.introductionMethod__c;
         (user as Volunteer).isVolunteerCoordinator = record.isVolunteerCoordinator__c;
         (user as Volunteer).languages = picklistStringToArray(record.languages__c);
@@ -136,6 +141,8 @@ const salesforceUserToUserModel = async (record: any): Promise<User> => {
         (user as Volunteer).postSecondaryTraining = picklistStringToArray(record.postSecondaryTraining__c);
         (user as Volunteer).professionalAssociations = picklistStringToArray(record.professionalAssociations__c);
         (user as Volunteer).reasonsForVolunteering = picklistStringToArray(record.reasonsForVolunteering__c);
+        (user as Volunteer).shareEmployerInfo = record.shareEmployerInfo__c;
+        (user as Volunteer).shareWithEmployer = record.shareWithEmployer__c;
         (user as Volunteer).volunteerDesiredExternalActivities = picklistStringToArray(
             record.volunteerDesiredExternalActivities__c
         );
@@ -224,17 +231,27 @@ export const update = async (id: string, user: User): Promise<User> => {
 };
 
 // Create new user and return ID.
-export const create = async (user: Educator): Promise<string> => {
-    console.log(user);
+export const create = async (user: User): Promise<string> => {
+    // If user is a volunteer and its employer does not have an id, create the employer.
+    if (isUser(user) && isVolunteer(user)) {
+        const volunteer = user as Volunteer;
+        let employerId: string;
+        if (
+            volunteer.employer &&
+            typeof volunteer.employer !== 'string' &&
+            (volunteer.employer.id === '' || !volunteer.employer.id)
+        ) {
+            employerId = await EmployerService.create(volunteer.employer);
+        }
+        (user as Volunteer).employer.id = employerId;
+    }
     const userInfo: { id: string; success: boolean; errors: Error[] } = await conn
         .sobject(siteUser)
         .create(userModelToSalesforceUser(user), (err: Error, result: any) => {
             if (err || !result.success) {
-                console.log('1');
                 return console.error(err, result);
             }
         });
-    console.log('2');
     return userInfo.id;
 };
 

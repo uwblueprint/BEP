@@ -76,6 +76,24 @@ export const get = async (id: string): Promise<Employer> => {
     return employer;
 };
 
+export const getAll = async (): Promise<Array<Employer>> => {
+    let employers: Array<Employer> = [];
+    let employerPromises: Array<Promise<Employer>> = [];
+
+    await conn.query(`SELECT ${employerFields} FROM ${employerObjectName}`, (err, result) => {
+        if (err) {
+            return console.error(err);
+        }
+        employerPromises = result.records.map(record => salesforceEmployerToEmployerModel(record));
+    });
+
+    await Promise.all(employerPromises).then(resolvedEvents => {
+        employers = resolvedEvents;
+    });
+
+    return employers;
+};
+
 // Update employer by ID.
 export const update = async (employer: Employer): Promise<Employer> => {
     if (!isEmployer(employer)) {

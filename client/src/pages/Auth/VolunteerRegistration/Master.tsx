@@ -23,17 +23,30 @@ import {
   getLocalPostSecondaryInstitutions,
   getIntroductionMethod,
   getEmploymentStatus,
+  getPreferredPronouns,
   getVolunteerDesiredExternalActivities,
   getVolunteerDesiredInternalActivities,
   getPreferredPronounsPicklist,
+  getCoopPlacementMode,
+  getCoopPlacementTime,
+  getSchoolBoardPicklist,
+  getFollowedProgramsPicklist,
 } from "../../../data/selectors/picklistSelector";
+
+import { getEmployers } from "../../../data/selectors/employerSelector";
 
 import { Grid } from "@material-ui/core";
 
 import {
   fetchUserPicklistService,
   fetchEmployerPicklistService,
+  fetchSchoolPicklistService,
 } from "../../../data/services/picklistServices";
+
+import {
+  fetchEmployersService,
+  createEmployerService,
+} from "../../../data/services/employerService";
 
 import Experience from "./Experience";
 import PersonalInfo from "./PersonalInfo";
@@ -41,10 +54,11 @@ import Involvement from "./Involvement";
 
 import { PicklistType } from "../../../data/types/picklistTypes";
 import { connect } from "react-redux";
+import Employer from "../../../data/types/employerTypes";
 
 const styles = () => ({
   multiSelect: {
-    marginBottom: "26px",
+    // marginBottom: "26px",
     columns: "2 auto",
   },
   root: {
@@ -52,27 +66,90 @@ const styles = () => ({
   },
 });
 
-interface IComponentProps {
-  picklists: {
-    expertiseAreas: { list: string[] };
-    languages: { list: string[] };
-    grades: { list: string[] }; // grade levels willing to volunteer with
-    locations: { list: string[] };
+export interface ExperienceState {
+  jobTitle: string;
+  orgName: string;
+  orgWebsite: string;
+  orgSocialMedia: string; // this seems hard a low priority (need to add)
+  orgStreetAddr: string;
+  orgCity: string;
+  orgPostalCode: string;
+  orgPhone: string;
+  departmentDivision: string; // currenlty not in userTYpes
+  careerDescription: string;
+  involveMethod: string; // currently not in userTypes
+  extraDescription: string; // other info i'd like schools to read
+  shareWithEmployer: boolean;
+  shareEmployerInfo: boolean;
+  isVolunteerCoordinator: boolean;
+  employerId: string;
+  newEmployer: Employer | null;
+  employmentStatus: string;
+  fieldInvolvementDescription: string;
+}
 
-    // uncomment these out once you set up all these routes Faizaan
-    localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
-    professionalAssociations: { list: string[] };
-    employmentStatus: { list: string[] };
-    sectors: { list: string[] }; // somehow need to get picklist of
-    size: { list: string[] };
-    introductionMethod: { list: string[] };
-    volunteerDesiredExternalActivities: { list: string[] };
-    volunteerDesiredInternalActivities: { list: string[] };
-    postSecondaryTraining: { list: string[] };
-    preferredPronouns: { list: string[] };
-  };
+export interface InvolvementState {
+  adviceForStudents: string;
+  reasonsForVolunteering: string;
+  futureAdvice: string;
+  introductionMethod: string;
+  isSubscribed: boolean;
+  agreeConditions: boolean;
+}
+
+export interface PicklistInfo {
+  preferredPronouns: string;
+  localPostSecondaryInstitutions: Map<string, boolean>; //local post secondary alumni
+  professionalAssociations: Map<string, boolean>;
+  employmentStatus: string;
+  sectors: string; // somehow need to get picklist of
+  size: string;
+  expertiseAreas: string[];
+  introductionMethod: string;
+  languages: string[];
+  volunteerDesiredExternalActivities: Map<string, boolean>;
+  volunteerDesiredInternalActivities: Map<string, boolean>;
+  postSecondaryTraining: Map<string, boolean>;
+  moreInfo: Map<string, boolean>;
+  grades: Map<string, boolean>; // grade levels willing to volunteer with
+  locations: Map<string, boolean>;
+  coopPlacementMode: Map<string, boolean>;
+  coopPlacementTime: Map<string, boolean>;
+  coopPlacementSchoolAffiliation: string;
+  followedPrograms: Map<string, boolean>;
+}
+
+export interface RawPicklists {
+  expertiseAreas: { list: string[] };
+  languages: { list: string[] };
+  grades: { list: string[] }; // grade levels willing to volunteer with
+  locations: { list: string[] };
+
+  // uncomment these out once you set up all these routes Faizaan
+  localPostSecondaryInstitutions: { list: string[] }; //local post secondary alumni
+  professionalAssociations: { list: string[] };
+  employmentStatus: { list: string[] };
+  sectors: { list: string[] }; // somehow need to get picklist of
+  size: { list: string[] };
+  introductionMethod: { list: string[] };
+  volunteerDesiredExternalActivities: { list: string[] };
+  volunteerDesiredInternalActivities: { list: string[] };
+  postSecondaryTraining: { list: string[] };
+  coopPlacementMode: { list: string[] };
+  coopPlacementTime: { list: string[] };
+  coopPlacementSchoolAffiliation: { list: string[] };
+  followedPrograms: { list: string[] };
+  preferredPronouns: { list: string[] };
+}
+
+interface IComponentProps {
+  employers: Employer[];
+  picklists: RawPicklists;
   fetchPicklists: any;
   fetchEmployerPicklists: any;
+  fetchSchoolPicklists: any;
+  fetchEmployers: any;
+  createEmmployer: any;
   classes: {
     multiSelect: any;
     root: any;
@@ -93,44 +170,9 @@ interface IComponentState {
     linkedinUrl: string;
     shareWithEmployer: boolean;
   };
-  experience: {
-    jobTitle: string;
-    orgName: string;
-    orgWebsite: string;
-    orgSocialMedia: string; // this seems hard a low priority (need to add)
-    orgStreetAddr: string;
-    orgCity: string;
-    orgPostalCode: string;
-    orgPhone: string;
-    departmentDivision: string; // currenlty not in userTYpes
-    careerDescription: string;
-    involveMethod: string; // currently not in userTypes
-    extraDescription: string; // other info i'd like schools to read
-  };
-  involvement: {
-    reasonsForVolunteering: string;
-    futureAdvice: string;
-    introductionMethod: string;
-    isSubscribed: boolean;
-    agreeConditions: boolean;
-  };
-  picklistInfo: {
-    preferredPronouns: string;
-    localPostSecondaryInstitutions: string[]; //local post secondary alumni
-    professionalAssociations: string[];
-    employmentStatus: string;
-    sectors: string; // somehow need to get picklist of
-    size: string;
-    expertiseAreas: string[];
-    introductionMethod: string;
-    languages: string[];
-    volunteerDesiredExternalActivities: Map<string, boolean>;
-    volunteerDesiredInternalActivities: Map<string, boolean>;
-    postSecondaryTraining: Map<string, boolean>;
-    moreInfo: Map<string, boolean>;
-    grades: Map<string, boolean>; // grade levels willing to volunteer with
-    locations: Map<string, boolean>;
-  };
+  experience: ExperienceState;
+  involvement: InvolvementState;
+  picklistInfo: PicklistInfo;
 }
 
 class Master extends React.Component<IComponentProps, IComponentState> {
@@ -162,8 +204,16 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         careerDescription: "",
         involveMethod: "",
         extraDescription: "",
+        shareWithEmployer: false,
+        shareEmployerInfo: false,
+        isVolunteerCoordinator: false,
+        employerId: "",
+        newEmployer: null,
+        employmentStatus: "",
+        fieldInvolvementDescription: "",
       },
       involvement: {
+        adviceForStudents: "",
         reasonsForVolunteering: "",
         futureAdvice: "",
         introductionMethod: "",
@@ -171,8 +221,8 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         agreeConditions: false,
       },
       picklistInfo: {
-        localPostSecondaryInstitutions: [],
-        professionalAssociations: [],
+        localPostSecondaryInstitutions: new Map(),
+        professionalAssociations: new Map(),
         employmentStatus: "",
         sectors: "",
         size: "",
@@ -186,6 +236,10 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         moreInfo: new Map(),
         grades: new Map(),
         locations: new Map(),
+        coopPlacementMode: new Map(),
+        coopPlacementTime: new Map(),
+        coopPlacementSchoolAffiliation: "",
+        followedPrograms: new Map(),
       },
     };
     this.handleNestedChange = this.handleNestedChange.bind(this);
@@ -207,7 +261,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   createUpdateOptions(picklistName: string) {
-    const picklistInfos = this.state.picklistInfo;
     const picklistOptions = this.getMultiPicklist(picklistName);
 
     return (selectedOptions: string) => {
@@ -217,8 +270,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       );
 
       this.setState({
+        ...this.state,
         picklistInfo: {
-          ...picklistInfos,
+          ...this.state.picklistInfo,
           [picklistName]: picklistOptions,
         },
       });
@@ -234,6 +288,16 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         return picklists.volunteerDesiredExternalActivities;
       case "volunteerDesiredInternalActivities":
         return picklists.volunteerDesiredInternalActivities;
+      case "coopPlacementMode":
+        return picklists.coopPlacementMode;
+      case "coopPlacementTime":
+        return picklists.coopPlacementTime;
+      case "locations":
+        return picklists.locations;
+      case "grades":
+        return picklists.grades;
+      case "followedPrograms":
+        return picklists.followedPrograms;
     }
     return new Map<string, boolean>();
   }
@@ -252,8 +316,11 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   componentDidMount() {
-    const { fetchPicklists } = this.props;
-    const { fetchEmployerPicklists } = this.props;
+    const {
+      fetchPicklists,
+      fetchEmployerPicklists,
+      fetchSchoolPicklists,
+    } = this.props;
 
     const picklistTypes: PicklistType[] = [
       PicklistType.expertiseAreas,
@@ -266,12 +333,22 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       PicklistType.grades,
       PicklistType.localPostSecondaryInstitutions,
       PicklistType.professionalAssociations,
+      PicklistType.preferredPronouns,
       PicklistType.employmentStatus,
       PicklistType.introductionMethod,
       PicklistType.volunteerDesiredExternalActivities,
       PicklistType.volunteerDesiredInternalActivities,
-      PicklistType.preferredPronouns,
+      PicklistType.coopPlacementMode,
+      PicklistType.coopPlacementTime,
+      PicklistType.followedPrograms,
     ];
+
+    const employerPicklistTypes: PicklistType[] = [
+      PicklistType.size,
+      PicklistType.sectors,
+    ];
+
+    const schoolPicklistTypes: PicklistType[] = [PicklistType.schoolBoard];
 
     const createPicklist = (
       filterNames: string[]
@@ -282,6 +359,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     picklistTypes.forEach((type: PicklistType) => {
       fetchPicklists(type).then(() => {
         const picklists = this.props.picklists;
+        // console.log("picklists right now", picklists);
         const picklistInfo = this.state.picklistInfo;
 
         if (type === PicklistType.postSecondaryTraining) {
@@ -296,14 +374,42 @@ class Master extends React.Component<IComponentProps, IComponentState> {
           picklistInfo.volunteerDesiredInternalActivities = new Map(
             createPicklist(picklists.volunteerDesiredInternalActivities.list)
           );
+        } else if (type === PicklistType.coopPlacementMode) {
+          picklistInfo.coopPlacementMode = new Map(
+            createPicklist(picklists.coopPlacementMode.list)
+          );
+        } else if (type === PicklistType.coopPlacementTime) {
+          picklistInfo.coopPlacementTime = new Map(
+            createPicklist(picklists.coopPlacementTime.list)
+          );
+        } else if (type === PicklistType.locations) {
+          picklistInfo.locations = new Map(
+            createPicklist(picklists.locations.list)
+          );
+        } else if (type === PicklistType.grades) {
+          picklistInfo.grades = new Map(createPicklist(picklists.grades.list));
+        } else if (type === PicklistType.followedPrograms) {
+          picklistInfo.followedPrograms = new Map(
+            createPicklist(picklists.followedPrograms.list)
+          );
         }
+
         // else if (type === PicklistType.languages) {
         //   picklistInfo.languages = new Map(
         //     createPicklist(picklists.languages.list)
         //   );
-        // }
-        this.setState({ picklistInfo });
+        // // }
+        // console.log("The Info", picklistInfo);
+        this.setState({ ...this.state, picklistInfo });
       });
+    });
+
+    employerPicklistTypes.forEach((type: PicklistType) => {
+      fetchEmployerPicklists(type);
+    });
+
+    schoolPicklistTypes.forEach((type: PicklistType) => {
+      fetchSchoolPicklists(type);
     });
   }
 
@@ -312,6 +418,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // If the current step is 1 or 2, then add one on "next" button click
     currentStep = currentStep >= 2 ? 3 : currentStep + 1;
     this.setState({
+      ...this.state,
       currentStep: currentStep,
     });
   }
@@ -320,6 +427,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     // If the current step is 2 or 3, then subtract one on "previous" button click
     currentStep = currentStep <= 1 ? 1 : currentStep - 1;
     this.setState({
+      ...this.state,
       currentStep: currentStep,
     });
   }
@@ -340,6 +448,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
       const name = event.target.name;
 
       this.setState({
+        ...this.state,
         personalInfo: {
           ...inputName,
           [name]: newValue,
@@ -349,15 +458,19 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   };
 
   handleNestedChangeExperience = (inputName: any) => {
-    console.log(inputName);
     const experience = this.state.experience;
 
     return (event: any) => {
       event.preventDefault();
-      const newValue = event.target.value;
+      let newValue = event.target.value;
       const name = event.target.name;
 
+      if (event.target.type === "checkbox") {
+        newValue = event.target.checked;
+      }
+
       this.setState({
+        ...this.state,
         experience: {
           ...inputName,
           [name]: newValue,
@@ -367,15 +480,17 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   };
 
   handleNestedChangeInvolvement = (inputName: any) => {
-    console.log(inputName);
-    const involvement = this.state.involvement;
-
     return (event: any) => {
       event.preventDefault();
-      const newValue = event.target.value;
+      let newValue = event.target.value;
       const name = event.target.name;
 
+      if (event.target.type === "checkbox") {
+        newValue = event.target.checked;
+      }
+
       this.setState({
+        ...this.state,
         involvement: {
           ...inputName,
           [name]: newValue,
@@ -395,23 +510,16 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     }));
   };
 
-  handleNestedChangePicklist = (event: any, newValue: any, inputName: any) => {
-    const experience = this.state.picklistInfo;
-
-    // console.log("New event value", inputName.target.value)
-    // console.log("New event id", inputName.target.id)
-
+  handleNestedChangePicklist = (picklistName: string) => {
     return (event: any) => {
       event.preventDefault();
       const newValue = event.target.value;
-      const name = event.target.id;
-
-      console.log("Reacted", event.target);
 
       this.setState({
+        ...this.state,
         picklistInfo: {
-          ...inputName,
-          [name]: newValue,
+          ...this.state.picklistInfo,
+          [picklistName]: newValue,
         },
       });
     };
@@ -458,6 +566,7 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   render() {
+    console.log("The state", this.state);
     return (
       <React.Fragment>
         <PageBody>
@@ -490,20 +599,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                   picklistInfo={this.state.picklistInfo}
                   picklists={this.props.picklists}
                 />
-                <Involvement
-                  currentStep={this.state.currentStep}
-                  handleChange={this.handleChange}
-                  handleNestedChange={this.handleNestedChange}
-                  involvement={this.state.involvement}
-                  picklistInfo={this.state.picklistInfo}
-                  picklists={this.props.picklists}
-                  createHandleSelectOption={this.createHandleSelectOption}
-                  classes={this.props.classes}
-                  handleNestedChangeMultiAutocomplete={
-                    this.handleNestedChangeMultiAutocomplete
-                  }
-                  handleNestedChangePicklist={this.handleNestedChangePicklist}
-                />
                 <Experience
                   currentStep={this.state.currentStep}
                   handleChange={this.handleChange}
@@ -513,9 +608,23 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                     this.handleNestedChangeMultiAutocomplete
                   }
                   experience={this.state.experience}
+                  employers={this.props.employers}
                   picklists={this.props.picklists}
                   picklistInfo={this.state.picklistInfo}
                   createHandleSelectOption={this.createHandleSelectOption}
+                />
+                <Involvement
+                  currentStep={this.state.currentStep}
+                  handleChange={this.handleChange}
+                  handleNestedChange={this.handleNestedChangeInvolvement}
+                  involvement={this.state.involvement}
+                  picklistInfo={this.state.picklistInfo}
+                  picklists={this.props.picklists}
+                  createHandleSelectOption={this.createHandleSelectOption}
+                  handleNestedChangeMultiAutocomplete={
+                    this.handleNestedChangeMultiAutocomplete
+                  }
+                  handleNestedChangePicklist={this.handleNestedChangePicklist}
                 />
                 {this.previousButton}
                 {this.nextButton}
@@ -529,7 +638,9 @@ class Master extends React.Component<IComponentProps, IComponentState> {
 }
 
 const mapStateToProps = (state: any) => {
+  console.log(state.picklists);
   return {
+    employers: getEmployers(state.employers),
     picklists: {
       activities: {
         list: getAllActivitiesPicklist(state.picklists),
@@ -558,6 +669,9 @@ const mapStateToProps = (state: any) => {
       employmentStatus: {
         list: getEmploymentStatus(state.picklists),
       },
+      preferredPronouns: {
+        list: getPreferredPronouns(state.picklists),
+      },
       sectors: {
         list: getEmployerSectorsPicklist(state.picklists),
       }, // somehow need to get picklist of
@@ -573,8 +687,17 @@ const mapStateToProps = (state: any) => {
       volunteerDesiredInternalActivities: {
         list: getVolunteerDesiredInternalActivities(state.picklists),
       },
-      preferredPronouns: {
-        list: getPreferredPronounsPicklist(state.picklists),
+      coopPlacementMode: {
+        list: getCoopPlacementMode(state.picklists),
+      },
+      coopPlacementTime: {
+        list: getCoopPlacementTime(state.picklists),
+      },
+      coopPlacementSchoolAffiliation: {
+        list: getSchoolBoardPicklist(state.picklists),
+      },
+      followedPrograms: {
+        list: getFollowedProgramsPicklist(state.picklists),
       },
     },
   };
@@ -585,6 +708,11 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(fetchUserPicklistService(picklistType)),
   fetchEmployerPicklists: (picklistType: PicklistType) =>
     dispatch(fetchEmployerPicklistService(picklistType)),
+  fetchSchoolPicklists: (picklistType: PicklistType) =>
+    dispatch(fetchSchoolPicklistService(picklistType)),
+  fetchEmployers: dispatch(fetchEmployersService()),
+  createEmmployer: (employer: Employer) =>
+    dispatch(createEmployerService(employer)),
 });
 
 export default connect(

@@ -104,3 +104,19 @@ export const getEmployerSectorsPicklist = createPicklistSelector(
 export const getEmployerSizePicklist = createPicklistSelector(
   PicklistType.size
 ); //orgSize
+
+export const getCoopPlacementMode = createPicklistSelector(
+  PicklistType.coopPlacementMode
+);
+
+export const getCoopPlacementTime = createPicklistSelector(
+  PicklistType.coopPlacementTime
+);
+
+export const getFollowedProgramsPicklist = createPicklistSelector(
+  PicklistType.followedPrograms
+);
+
+export const getPreferredPronouns = createPicklistSelector(
+  PicklistType.preferredPronouns
+);

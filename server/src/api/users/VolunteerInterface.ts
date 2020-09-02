@@ -2,6 +2,7 @@ import UserInterface, { UserType } from './UserInterface';
 import EmployerInterface from '../employers/EmployerInterface';
 
 export default interface VolunteerInterface extends UserInterface {
+    adviceForStudents: string;
     careerDescription: string;
 
     // Applicable only if volunteer is offering co-op placements.
@@ -15,6 +16,7 @@ export default interface VolunteerInterface extends UserInterface {
     employmentStatus: string;
     expertiseAreas: string[];
     extraDescription: string;
+    fieldInvolvementDescription: string;
     grades: string[]; // Grades the volunteer wants to work with.
     introductionMethod: string; // How the volunteer was introduced to BEP.
     isVolunteerCoordinator: boolean;
@@ -25,10 +27,11 @@ export default interface VolunteerInterface extends UserInterface {
     postSecondaryTraining: string[];
     professionalAssociations: string[];
     reasonsForVolunteering: string[];
+    shareEmployerInfo: boolean;
     shareWithEmployer: boolean;
     volunteerDesiredExternalActivities: string[];
     volunteerDesiredInternalActivities: string[];
-    
+
     // professionalAssociations?: {
     //     name: string;
     //     shareActivity: boolean;
@@ -75,6 +78,9 @@ export const isVolunteer = (obj: any): boolean => {
         Array.isArray(obj.volunteerDesiredExternalActivities) &&
         obj.volunteerDesiredExternalActivities.every(item => typeof item === 'string') &&
         Array.isArray(obj.volunteerDesiredInternalActivities) &&
-        obj.volunteerDesiredInternalActivities.every(item => typeof item === 'string')
+        obj.volunteerDesiredInternalActivities.every(item => typeof item === 'string') &&
+        typeof obj.shareEmployerInfo === 'boolean' &&
+        typeof obj.shareWithEmployer === 'boolean' &&
+        typeof obj.fieldInvolvementDescription === 'string'
     );
 };
