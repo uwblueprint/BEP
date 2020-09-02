@@ -23,6 +23,7 @@ import {
   getMoreInfoPicklist,
   getSchoolTypePicklist,
   getSchoolBoardPicklist,
+  getPreferredPronounsPicklist,
 } from "../../data/selectors/picklistSelector";
 
 import { getSchools } from "../../data/selectors/schoolListSelector";
@@ -47,6 +48,7 @@ import {
   BlackTextTypography,
   OutlinedCheckbox,
   PageBody,
+  ContrastButton,
   TextField,
   Select,
 } from "../../components/index";
@@ -87,6 +89,7 @@ interface IComponentProps {
     moreInfo: { list: string[] };
     schoolBoard: { list: string[] };
     type: { list: string[] };
+    preferredPronouns: { list: string[] };
   };
   fetchUserPicklists: any;
   fetchSchoolPicklists: any;
@@ -106,7 +109,6 @@ interface IComponentState {
   confirmPassword: string;
   firstName: string;
   lastName: string;
-  preferredPronouns: string | null;
   isSubscribed: boolean;
   phoneNumber: string;
   schoolName: any;
@@ -117,6 +119,7 @@ interface IComponentState {
     moreInfo: Map<string, boolean>;
     position: string | null;
     introductionMethod: string | null;
+    preferredPronouns: string | null;
   };
   schoolInfo: {
     schoolBoard: string | null;
@@ -149,7 +152,6 @@ class EducatorRegistration extends React.Component<
       confirmPassword: "",
       firstName: "",
       lastName: "",
-      preferredPronouns: "",
       phoneNumber: "",
       schoolName: "",
       isSubscribed: false,
@@ -160,6 +162,7 @@ class EducatorRegistration extends React.Component<
         moreInfo: new Map(),
         introductionMethod: "",
         position: "",
+        preferredPronouns: "",
       },
       schoolInfo: {
         schoolBoard: "",
@@ -176,6 +179,7 @@ class EducatorRegistration extends React.Component<
       PicklistType.position,
       PicklistType.introductionMethod,
       PicklistType.moreInfo,
+      PicklistType.preferredPronouns,
     ];
 
     picklistTypes.forEach((type: PicklistType) => {
@@ -359,7 +363,7 @@ class EducatorRegistration extends React.Component<
       lastName: this.state.lastName,
       password: this.state.password,
       phoneNumber: this.state.phoneNumber,
-      preferredPronouns: this.state.preferredPronouns,
+      preferredPronouns: this.state.picklistInfo.preferredPronouns,
       isSubscribed: this.state.isSubscribed,
       position: this.state.picklistInfo.position,
       school: school[0], //test
@@ -393,6 +397,7 @@ class EducatorRegistration extends React.Component<
             spacing={0}
             justify="flex-start"
             alignItems="center"
+            style={{ display: "block" }}
           >
             <FormControlLabel
               control={
@@ -457,6 +462,7 @@ class EducatorRegistration extends React.Component<
                     name="password"
                     type="password"
                     autoComplete="current-password"
+                    required={true}
                     value={this.state.password}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
@@ -468,6 +474,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="At least 8 characters"
                     name="confirmPassword"
                     value={this.state.confirmPassword}
+                    required={true}
                     type="password"
                     autoComplete="current-password"
                     onChange={this.handleChange}
@@ -484,6 +491,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="Enter first name"
                     name="firstName"
                     value={this.state.firstName}
+                    required={true}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
                   />
@@ -492,6 +500,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="Enter last name"
                     name="lastName"
                     value={this.state.lastName}
+                    required={true}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
                   />
@@ -502,26 +511,29 @@ class EducatorRegistration extends React.Component<
                   <Autocomplete
                     className={this.props.classes.dropDowns}
                     size="small"
-                    value={this.state.preferredPronouns}
+                    value={this.state.picklistInfo.preferredPronouns}
                     options={
-                      this.state.preferredPronouns === null
-                        ? ["She/Her", "He/Him", "They/Them", "Other"]
+                      this.state.picklistInfo.preferredPronouns === null
+                        ? this.props.picklists.preferredPronouns.list
                         : [
-                            this.state.preferredPronouns,
-                            ...["She/Her", "He/Him", "They/Them", "Other"],
+                            this.state.picklistInfo.preferredPronouns,
+                            ...this.props.picklists.preferredPronouns.list,
                           ]
                     }
                     filterSelectedOptions
                     onChange={(_event, newValue) => {
                       this.setState({
-                        ...this.state,
-                        preferredPronouns: newValue,
+                        picklistInfo: {
+                          ...this.state.picklistInfo,
+                          preferredPronouns: newValue,
+                        },
                       });
                     }}
                     renderInput={(params) => (
                       <OutlinedTextField
                         {...params}
                         variant="outlined"
+                        required={true}
                         placeholder="Select your position"
                       />
                     )}
@@ -556,6 +568,7 @@ class EducatorRegistration extends React.Component<
                       <OutlinedTextField
                         {...params}
                         variant="outlined"
+                        required={true}
                         placeholder="Select your school board"
                       />
                     )}
@@ -590,6 +603,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your school type"
+                        required={true}
                       />
                     )}
                   />
@@ -617,6 +631,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your school name"
+                        required={true}
                       />
                     )}
                   />
@@ -648,6 +663,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your position"
+                        required={true}
                       />
                     )}
                   />
@@ -657,6 +673,7 @@ class EducatorRegistration extends React.Component<
                     name="phoneNumber"
                     value={this.state.phoneNumber}
                     onChange={this.handleChange}
+                    required={true}
                     className={this.props.classes.textField}
                   />
                 </div>
@@ -708,6 +725,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="e.g. Event, internet search, etc."
+                        required={true}
                       />
                     )}
                   />
@@ -760,9 +778,9 @@ class EducatorRegistration extends React.Component<
                       }
                     />
                   </Grid>
-                  <ContainedButton type="submit" style={{ marginTop: "3em" }}>
+                  <ContrastButton type="submit" style={{ marginTop: "3em" }}>
                     Finish Registration
-                  </ContainedButton>
+                  </ContrastButton>
                 </div>
               </form>
             </Grid>
@@ -794,6 +812,9 @@ const mapStateToProps = (state: any) => {
       },
       type: {
         list: getSchoolTypePicklist(state.picklists),
+      },
+      preferredPronouns: {
+        list: getPreferredPronounsPicklist(state.picklists),
       },
     },
   };
