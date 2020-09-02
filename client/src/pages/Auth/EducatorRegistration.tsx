@@ -22,6 +22,7 @@ import {
   getMoreInfoPicklist,
   getSchoolTypePicklist,
   getSchoolBoardPicklist,
+  getPreferredPronounsPicklist,
 } from "../../data/selectors/picklistSelector";
 
 import { getSchools } from "../../data/selectors/schoolListSelector";
@@ -87,6 +88,7 @@ interface IComponentProps {
     moreInfo: { list: string[] };
     schoolBoard: { list: string[] };
     type: { list: string[] };
+    preferredPronouns: { list: string[] };
   };
   fetchUserPicklists: any;
   fetchSchoolPicklists: any;
@@ -106,7 +108,6 @@ interface IComponentState {
   confirmPassword: string;
   firstName: string;
   lastName: string;
-  preferredPronouns: string | null;
   isSubscribed: boolean;
   phoneNumber: string;
   schoolName: any;
@@ -117,6 +118,7 @@ interface IComponentState {
     moreInfo: Map<string, boolean>;
     position: string | null;
     introductionMethod: string | null;
+    preferredPronouns: string | null;
   };
   schoolInfo: {
     schoolBoard: string | null;
@@ -149,7 +151,6 @@ class EducatorRegistration extends React.Component<
       confirmPassword: "",
       firstName: "",
       lastName: "",
-      preferredPronouns: "",
       phoneNumber: "",
       schoolName: "",
       isSubscribed: false,
@@ -160,6 +161,7 @@ class EducatorRegistration extends React.Component<
         moreInfo: new Map(),
         introductionMethod: "",
         position: "",
+        preferredPronouns: "",
       },
       schoolInfo: {
         schoolBoard: "",
@@ -176,6 +178,7 @@ class EducatorRegistration extends React.Component<
       PicklistType.position,
       PicklistType.introductionMethod,
       PicklistType.moreInfo,
+      PicklistType.preferredPronouns,
     ];
 
     picklistTypes.forEach((type: PicklistType) => {
@@ -359,7 +362,7 @@ class EducatorRegistration extends React.Component<
       lastName: this.state.lastName,
       password: this.state.password,
       phoneNumber: this.state.phoneNumber,
-      preferredPronouns: this.state.preferredPronouns,
+      preferredPronouns: this.state.picklistInfo.preferredPronouns,
       isSubscribed: this.state.isSubscribed,
       position: this.state.picklistInfo.position,
       school: test[0], //test
@@ -509,20 +512,22 @@ class EducatorRegistration extends React.Component<
                   <Autocomplete
                     className={this.props.classes.dropDowns}
                     size="small"
-                    value={this.state.preferredPronouns}
+                    value={this.state.picklistInfo.preferredPronouns}
                     options={
-                      this.state.preferredPronouns === null
-                        ? ["She/Her", "He/Him", "They/Them", "Other"]
+                      this.state.picklistInfo.preferredPronouns === null
+                        ? this.props.picklists.preferredPronouns.list
                         : [
-                            this.state.preferredPronouns,
-                            ...["She/Her", "He/Him", "They/Them", "Other"],
+                            this.state.picklistInfo.preferredPronouns,
+                            ...this.props.picklists.preferredPronouns.list,
                           ]
                     }
                     filterSelectedOptions
                     onChange={(_event, newValue) => {
                       this.setState({
-                        ...this.state,
-                        preferredPronouns: newValue,
+                        picklistInfo: {
+                          ...this.state.picklistInfo,
+                          preferredPronouns: newValue,
+                        },
                       });
                     }}
                     renderInput={(params) => (
@@ -808,6 +813,9 @@ const mapStateToProps = (state: any) => {
       },
       type: {
         list: getSchoolTypePicklist(state.picklists),
+      },
+      preferredPronouns: {
+        list: getPreferredPronounsPicklist(state.picklists),
       },
     },
   };
