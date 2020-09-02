@@ -453,7 +453,6 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                         placeholder="Select Activity Areas of Expertise"
                       />
                     )}
-                    required={true}
                   />
                 </Grid>
 
