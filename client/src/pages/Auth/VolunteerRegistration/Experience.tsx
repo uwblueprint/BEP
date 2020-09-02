@@ -164,9 +164,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                       displayEmpty
                       disableUnderline={true}
                     >
-                      <MenuItem value="">
-                        Select your employer
-                      </MenuItem>
+                      <MenuItem value="">Select your employer</MenuItem>
                       <MenuItem value="__other">Other</MenuItem>
                       {this.props.employers.map((employer: Employer) => (
                         <MenuItem key={employer.id} value={employer.id}>
@@ -180,6 +178,22 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
                 {this.state.createEmployer && (
                   <React.Fragment>
                     {" "}
+                    <Grid item direction="column">
+                      <FormControl>
+                        <BlackHeaderTypography>
+                          Organization Name*
+                        </BlackHeaderTypography>
+                        <OutlinedTextField
+                          placeholder="Enter your organization’s name"
+                          name="orgName"
+                          style={{ width: "454px" }}
+                          value={this.props.experience.orgName}
+                          onChange={this.props.handleNestedChange(
+                            this.props.experience
+                          )}
+                        />
+                      </FormControl>
+                    </Grid>
                     <Grid item direction="column">
                       <FormControl style={{ width: "454px" }}>
                         <BlackHeaderTypography>
