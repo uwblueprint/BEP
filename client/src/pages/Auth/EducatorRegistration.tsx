@@ -46,6 +46,7 @@ import {
   BlackTextTypography,
   OutlinedCheckbox,
   PageBody,
+  ContrastButton,
   TextField,
   Select,
 } from "../../components/index";
@@ -773,9 +774,9 @@ class EducatorRegistration extends React.Component<
                       }
                     />
                   </Grid>
-                  <ContainedButton type="submit" style={{ marginTop: "3em" }}>
+                  <ContrastButton type="submit" style={{ marginTop: "3em" }}>
                     Finish Registration
-                  </ContainedButton>
+                  </ContrastButton>
                 </div>
               </form>
             </Grid>
