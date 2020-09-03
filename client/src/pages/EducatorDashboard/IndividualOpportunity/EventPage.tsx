@@ -255,7 +255,6 @@ const EventPage = (props: any) => {
               isVolunteer
                 ? applyToEvent
                 : () => {
-                    console.log("duplicate details");
                   }
             }
             color="primary"

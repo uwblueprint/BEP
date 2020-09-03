@@ -27,7 +27,7 @@ authRouter.post('/register', async (req: Express.Request, res: Express.Response)
         if (!isUser(user) || (!isVolunteer(user) && !isEducator(user))) {
             throw Error('Input is not a valid user.');
         }
-        console.log(user);
+
         // Hash Password
         const hash = await bcrypt.hash(user.password, BCRYPT_ROUNDS);
         user.password = hash;
