@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // need to change  api server side to use /api
-const baseURL = 'http://server.bepwr.ca/';
+const baseURL = 'https://server.bepwr.ca/';
 
 const get = (url) => {
     let config = {
