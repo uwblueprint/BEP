@@ -1,5 +1,4 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { Component } from "react";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -7,19 +6,21 @@ import {
   Switch,
   RouteProps,
 } from "react-router-dom";
+
+import Login from "../pages/Auth/SignIn";
+import VolunteerList from "../pages/VolunteerList/VolunteerList";
+import VolunteerRegistration from "../pages/Auth/VolunteerRegistration/VolunteerRegistration";
+import EducatorRegistration from "../pages/Auth/EducatorRegistration";
+import { connect } from "react-redux";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../components/styling/Theme";
 import "./App.css";
 import Navbar from "./Navbar";
 import EducatorDashboard from "../pages/EducatorDashboard/EducatorDashboard";
 import EventPage from "../pages/EducatorDashboard/IndividualOpportunity/EventPage";
-import Login from "../pages/Auth/SignIn";
-import VolunteerList from "../pages/VolunteerList/VolunteerList";
 import VolunteerProfile from '../pages/VolunteerProfile/VolunteerProfile';
 import OpportunityList from "../pages/OpportunityList/OpportunityList";
 import VolunteerDashboard from "../pages/VolunteerDashboard/VolunteerDashboard";
-import VolunteerRegistration from "../pages/Auth/VolunteerRegistration";
-import EducatorRegistration from "../pages/Auth/EducatorRegistration";
 
 import { User } from "../data/types/userTypes";
 import OpportunityForm from "../pages/EducatorDashboard/OpportunityForm";

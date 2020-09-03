@@ -11,6 +11,7 @@ import jsforce from 'jsforce';
 import { userRouter } from './api/users/UserRouter';
 import { userPicklistRouter } from './api/users/picklists/UserPicklistRouter';
 import { employerRouter } from './api/employers/EmployerRouter';
+import { employerPicklistRouter } from './api/employers/picklists/EmployerPicklistRouter';
 import { eventRouter } from './api/events/EventRouter';
 import { schoolRouter } from './api/schools/SchoolRouter';
 import { schoolPicklistRouter } from './api/schools/picklists/SchoolPicklistRouter';
@@ -31,8 +32,6 @@ if (process.env.NODE_ENV !== 'production') {
     if (result.error) {
         throw result.error;
     }
-
-    console.log(result.parsed);
 }
 let conn;
 
@@ -77,6 +76,7 @@ class BackendServer extends Server {
         this.app.use('/api/invitations', invitationRouter);
         this.app.use('/api/schools', schoolRouter);
         this.app.use('/api/schools/picklists', schoolPicklistRouter);
+        this.app.use('/api/employers/picklists', employerPicklistRouter);
 
         //If in development, do not mount JWT auth middleware to users route
         if (process.env.NODE_ENV == 'production') {

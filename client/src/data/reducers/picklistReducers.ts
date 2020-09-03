@@ -32,11 +32,16 @@ const initialState: PicklistState = {
   [PicklistType.position]: [],
   [PicklistType.moreInfo]: [],
   [PicklistType.school]: [],
+  [PicklistType.preferredPronouns]: [],
 
   [PicklistType.schoolBoard]: [],
   [PicklistType.province]: [],
   [PicklistType.city]: [],
   [PicklistType.type]: [],
+
+  [PicklistType.sectors]: [],
+  [PicklistType.size]: [],
+  [PicklistType.employmentStatus]: [],
 };
 
 export default function (

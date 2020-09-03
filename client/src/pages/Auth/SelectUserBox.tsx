@@ -27,14 +27,13 @@ const useStyles = makeStyles({
     borderRadius: "2.93603px",
     margin: "0px 24px 24px 12px",
   },
-  userImage: {
-    position: "relative",
-    display: "block",
-    margin: "0 auto",
-    left: "0",
-    top: "0",
+  eduImage: {
+    width: "91%",
+    marginBottom: "-141px",
+  },
+  volImage: {
+    marginBottom: "-16px",
     width: "90%",
-    height: "100%",
   },
   link: {
     textDecoration: "none",
@@ -76,7 +75,7 @@ function SimpleDialog(props: SimpleDialogProps) {
               </SecondaryMainTextTypography>
             </Grid>
             <Grid>
-              <EducatorImage className={classes.userImage} />
+              <EducatorImage className={classes.eduImage} />
             </Grid>
           </Link>
         </Grid>
@@ -89,7 +88,7 @@ function SimpleDialog(props: SimpleDialogProps) {
               </SecondaryMainTextTypography>
             </Grid>
             <Grid>
-              <VolunteerImage className={classes.userImage} />
+              <VolunteerImage className={classes.volImage} />
             </Grid>
           </Link>
         </Grid>

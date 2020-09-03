@@ -1,4 +1,5 @@
 import { School } from "./schoolListTypes";
+import Employer from "./employerTypes";
 
 export enum UserType {
   Admin = 0,
@@ -29,6 +30,7 @@ export interface Educator extends User {
 }
 
 export interface Volunteer extends User {
+  adviceForStudents: string;
   careerDescription: string;
 
   // Applicable only if volunteer is offering co-op placements.
@@ -42,6 +44,7 @@ export interface Volunteer extends User {
   employmentStatus: string;
   expertiseAreas: string[];
   extraDescription: string;
+  fieldInvolvementDescription: string;
   grades: string[]; // Grades the volunteer wants to work with.
   introductionMethod: string; // How the volunteer was introduced to BEP.
   isVolunteerCoordinator: boolean;
@@ -51,7 +54,8 @@ export interface Volunteer extends User {
   locations: string[]; // Locations the volunteer is available in.
   postSecondaryTraining: string[];
   professionalAssociations: string[];
-  reasonsForVolunteering: string[];
+  reasonsForVolunteering: string;
+  shareEmployerInfo: boolean;
   shareWithEmployer: boolean;
   volunteerDesiredExternalActivities: string[];
   volunteerDesiredInternalActivities: string[];
@@ -59,17 +63,4 @@ export interface Volunteer extends User {
   //     name: string;
   //     shareActivity: boolean;
   // }[];
-}
-
-export default interface Employer {
-  address: string;
-  city: string;
-  id: string;
-  name: string;
-  phoneNumber: string;
-  postalCode: string;
-  sectors: string[];
-  size: string;
-  socialMedia: string[];
-  website: string;
 }

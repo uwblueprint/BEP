@@ -2,6 +2,7 @@ import MaterialExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MaterialCloseIcon from "@material-ui/icons/Close";
 import MaterialSearchIcon from "@material-ui/icons/Search";
 import MaterialInfoIcon from "@material-ui/icons/Info";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { withStyles, createStyles, Theme } from "@material-ui/core/styles";
 
 const blackExpandMoreIconStyle = (theme: Theme) =>
@@ -50,9 +51,13 @@ const BlueSearchIcon = withStyles(blueSearchIconStyle)(MaterialSearchIcon);
 const SecondaryMainContrastInfoIcon = withStyles(
   secondaryMainContrastInfoIconStyle
 )(MaterialInfoIcon);
+const BlueArrowDropDownIcon = withStyles(() => ({
+  root: { fill: "#0A79BF" },
+}))(ArrowDropDownIcon);
 
 export {
   BlackExpandMoreIcon,
+  BlueArrowDropDownIcon,
   BlueSearchIcon,
   SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,

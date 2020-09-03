@@ -4,14 +4,16 @@ import {
   OutlinedButton,
   TextButton,
   Button,
+  ContrastButton,
 } from "./Button";
 import Link from "./Link";
 import { OutlinedTextField, TextField } from "./TextField";
-import { ContainedSelect, Select } from "./Select";
+import { ContainedSelect, OutlinedSelect, Select } from "./Select";
 import { PageHeader, PageBody } from "./Page";
 import Checkbox, { OutlinedCheckbox } from "./Checkbox";
 import {
   BlackExpandMoreIcon,
+  BlueArrowDropDownIcon,
   BlueSearchIcon,
   SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
@@ -22,12 +24,15 @@ import {
   BlackHeaderTypography,
   BlackTextTypography,
   GreyBackgroundTextTypography,
+  GreyTextTypography,
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
   RedTextTypography,
+  ProgressBarGreyTextTypography
 } from "./Typography";
 import Dialog from "./Dialog";
 import DialogTitle from "./DialogTitle";
+import { BlueAvatar, GreyAvatar } from "./Avatar";
 
 export {
   ContainedButton,
@@ -35,14 +40,16 @@ export {
   OutlinedButton,
   TextButton,
   Button,
+  ContrastButton,
 };
 export { Link };
 export { OutlinedTextField, TextField };
-export { ContainedSelect, Select };
+export { ContainedSelect, OutlinedSelect, Select };
 export { PageHeader, PageBody };
 export { Checkbox, OutlinedCheckbox };
 export {
   BlackExpandMoreIcon,
+  BlueArrowDropDownIcon,
   BlueSearchIcon,
   SecondaryMainContrastInfoIcon,
   SecondaryMainExpandMoreIcon,
@@ -53,10 +60,13 @@ export {
   BlackHeaderTypography,
   RedTextTypography,
   GreyBackgroundTextTypography,
+  GreyTextTypography,
   SecondaryContrastTextTypography,
   SecondaryMainTextTypography,
   WhiteTextTypography,
+  ProgressBarGreyTextTypography
 };
 
 export { Dialog };
 export { DialogTitle };
+export { BlueAvatar, GreyAvatar };

@@ -3,9 +3,9 @@ import * as Express from 'express';
 import * as jwt from 'jsonwebtoken';
 
 import * as UserService from './../api/users/UserService';
-import SchoolInterface from '../api/schools/SchoolInterface';
-import { UserType } from '../api/users/UserInterface';
-import EducatorInterface from '../api/users/EducatorInterface';
+import User, { isUser } from '../api/users/UserInterface';
+import { isEducator } from '../api/users/EducatorInterface';
+import { isVolunteer } from '../api/users/VolunteerInterface';
 
 const BCRYPT_ROUNDS = 4;
 
@@ -21,38 +21,15 @@ export const authRouter = Express.Router();
 
 authRouter.post('/register', async (req: Express.Request, res: Express.Response) => {
     try {
-        const email: string = req.body.email;
-        const firstName: string = req.body.firstName;
-        const isSubscribed: boolean = req.body.isSubscribed;
-        const password: string = req.body.password;
-        const phoneNumber: string = req.body.phoneNumber;
-        const lastName: string = req.body.lastName;
-        const preferredPronouns: string = req.body.preferredPronouns;
-        const userType: UserType = req.body.userType;
-        const position: string = req.body.position;
-        const school: SchoolInterface = req.body.school;
-        const moreInfo: string[] = req.body.moreInfo;
-        const introductionMethod: string = req.body.introductionMethod;
-        const educatorDesiredActivities: string[] = req.body.educatorDesiredActivities;
+        const user: User = req.body;
+
+        if (!isUser(user) || (!isVolunteer(user) && !isEducator(user))) {
+            throw Error('Input is not a valid user.');
+        }
 
         // Hash Password
-        const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-
-        const user: EducatorInterface = {
-            educatorDesiredActivities,
-            email,
-            firstName,
-            introductionMethod,
-            isSubscribed,
-            lastName,
-            moreInfo,
-            password: hash,
-            phoneNumber,
-            position,
-            preferredPronouns,
-            school,
-            userType
-        };
+        const hash = await bcrypt.hash(user.password, BCRYPT_ROUNDS);
+        user.password = hash;
 
         await UserService.create(user).then(response => {
             try {
@@ -62,13 +39,14 @@ authRouter.post('/register', async (req: Express.Request, res: Express.Response)
                     // token
                 });
             } catch (e) {
-                res.send(e.message);
+                res.status(500).send(e.message);
             }
         });
     } catch (e) {
         res.status(404).send(e.message);
     }
 });
+
 authRouter.post('/login', async (req: Express.Request, res: Express.Response) => {
     try {
         const email: string = req.body.email;

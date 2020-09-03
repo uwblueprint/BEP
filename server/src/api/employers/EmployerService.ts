@@ -6,7 +6,7 @@ import { conn } from '../../server';
 import Employer, { isEmployer } from './EmployerInterface';
 import { arrayToPicklistString, picklistStringToArray } from '../../util/SalesforcePicklistUtils';
 
-const employerObjectName: string = 'Employer__c';
+export const employerObjectName: string = 'Employer__c';
 const employerFields: string =
     'Name, address__c, city__c, phoneNumber__c, postalCode__c, sectors__c, size__c, ' +
     'socialMedia__c, website__c, Id';
@@ -74,6 +74,24 @@ export const get = async (id: string): Promise<Employer> => {
         });
 
     return employer;
+};
+
+export const getAll = async (): Promise<Array<Employer>> => {
+    let employers: Array<Employer> = [];
+    let employerPromises: Array<Promise<Employer>> = [];
+
+    await conn.query(`SELECT ${employerFields} FROM ${employerObjectName}`, (err, result) => {
+        if (err) {
+            return console.error(err);
+        }
+        employerPromises = result.records.map(record => salesforceEmployerToEmployerModel(record));
+    });
+
+    await Promise.all(employerPromises).then(resolvedEvents => {
+        employers = resolvedEvents;
+    });
+
+    return employers;
 };
 
 // Update employer by ID.

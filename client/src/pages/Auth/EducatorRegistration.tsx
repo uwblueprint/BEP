@@ -6,6 +6,7 @@ import { Redirect } from "react-router";
 /* Types */
 import { PicklistType } from "../../data/types/picklistTypes";
 import { School } from "../../data/types/schoolListTypes";
+import { UserType } from "../../data/types/userTypes";
 
 // import { SchoolListType } from "../../data/types/schoolListTypes";
 
@@ -23,6 +24,7 @@ import {
   getMoreInfoPicklist,
   getSchoolTypePicklist,
   getSchoolBoardPicklist,
+  getPreferredPronounsPicklist,
 } from "../../data/selectors/picklistSelector";
 
 import { getSchools } from "../../data/selectors/schoolListSelector";
@@ -36,6 +38,7 @@ import { Grid } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import {
   ContainedButton,
@@ -44,6 +47,9 @@ import {
   BlackTextTypography,
   OutlinedCheckbox,
   PageBody,
+  ContrastButton,
+  TextField,
+  Select,
   RedTextTypography
 } from "../../components/index";
 
@@ -83,6 +89,7 @@ interface IComponentProps {
     moreInfo: { list: string[] };
     schoolBoard: { list: string[] };
     type: { list: string[] };
+    preferredPronouns: { list: string[] };
   };
   fetchUserPicklists: any;
   fetchSchoolPicklists: any;
@@ -102,7 +109,6 @@ interface IComponentState {
   confirmPassword: string;
   firstName: string;
   lastName: string;
-  preferredPronouns: string | null;
   isSubscribed: boolean;
   phoneNumber: string;
   schoolName: any;
@@ -113,6 +119,7 @@ interface IComponentState {
     moreInfo: Map<string, boolean>;
     position: string | null;
     introductionMethod: string | null;
+    preferredPronouns: string | null;
   };
   schoolInfo: {
     schoolBoard: string | null;
@@ -147,7 +154,6 @@ class EducatorRegistration extends React.Component<
       confirmPassword: "",
       firstName: "",
       lastName: "",
-      preferredPronouns: "",
       phoneNumber: "",
       schoolName: "",
       isSubscribed: false,
@@ -158,6 +164,7 @@ class EducatorRegistration extends React.Component<
         moreInfo: new Map(),
         introductionMethod: "",
         position: "",
+        preferredPronouns: "",
       },
       schoolInfo: {
         schoolBoard: "",
@@ -176,6 +183,7 @@ class EducatorRegistration extends React.Component<
       PicklistType.position,
       PicklistType.introductionMethod,
       PicklistType.moreInfo,
+      PicklistType.preferredPronouns,
     ];
 
     picklistTypes.forEach((type: PicklistType) => {
@@ -221,14 +229,14 @@ class EducatorRegistration extends React.Component<
       Array.from(
         this.state.picklistInfo.educatorDesiredActivities.entries()
       ).forEach((entry) => {
-        if (entry[1] == true) {
+        if (entry[1] === true) {
           this.educatorDesiredActivitiesList.push(entry[0]);
         }
       });
 
       Array.from(this.state.picklistInfo.moreInfo.entries()).forEach(
         (entry) => {
-          if (entry[1] == true) {
+          if (entry[1] === true) {
             this.moreInfoList.push(entry[0]);
           }
         }
@@ -348,21 +356,21 @@ class EducatorRegistration extends React.Component<
   handleSubmit = async (event: any) => {
     event.preventDefault();
 
-    let test = this.props.schoolList.filter(
+    let school = this.props.schoolList.filter(
       (school: School) => school.name === this.state.schoolName
     );
 
     const formattedData = {
-      userType: 1,
+      userType: UserType.Educator,
       email: this.state.email,
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       password: this.state.password,
       phoneNumber: this.state.phoneNumber,
-      preferredPronouns: this.state.preferredPronouns,
+      preferredPronouns: this.state.picklistInfo.preferredPronouns,
       isSubscribed: this.state.isSubscribed,
       position: this.state.picklistInfo.position,
-      school: test[0], //test
+      school: school[0], //test
       introductionMethod: this.state.picklistInfo.introductionMethod,
       moreInfo: this.moreInfoList,
       educatorDesiredActivities: this.educatorDesiredActivitiesList,
@@ -387,6 +395,42 @@ class EducatorRegistration extends React.Component<
     if (redirect) {
       return <Redirect to="/?registered" />;
     }
+
+    const displayPicklistOptions = (
+      picklistMap: Map<string, boolean>,
+      picklistName: string
+    ) => {
+      return Array.from(picklistMap.entries(), (entry) => entry).map(
+        ([option, isSelected]) => (
+          <Grid
+            container
+            xs={12}
+            key={option}
+            spacing={0}
+            justify="flex-start"
+            alignItems="center"
+            style={{ display: "block" }}
+          >
+            <FormControlLabel
+              control={
+                <OutlinedCheckbox
+                  key={option}
+                  value={option}
+                  name={option}
+                  onChange={this.createHandleSelectOption(picklistName)}
+                />
+              }
+              label={
+                <BlackTextTypography style={{ width: "100%" }}>
+                  {" "}
+                  {option}
+                </BlackTextTypography>
+              }
+            />
+          </Grid>
+        )
+      );
+    };
 
     return (
       <React.Fragment>
@@ -434,6 +478,7 @@ class EducatorRegistration extends React.Component<
                     name="password"
                     type="password"
                     autoComplete="current-password"
+                    required={true}
                     value={this.state.password}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
@@ -448,6 +493,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="At least 8 characters"
                     name="confirmPassword"
                     value={this.state.confirmPassword}
+                    required={true}
                     type="password"
                     autoComplete="current-password"
                     onChange={this.handleChange}
@@ -467,6 +513,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="Enter first name"
                     name="firstName"
                     value={this.state.firstName}
+                    required={true}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
                     InputProps={{
@@ -478,6 +525,7 @@ class EducatorRegistration extends React.Component<
                     placeholder="Enter last name"
                     name="lastName"
                     value={this.state.lastName}
+                    required={true}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
                     InputProps={{
@@ -491,26 +539,29 @@ class EducatorRegistration extends React.Component<
                   <Autocomplete
                     className={this.props.classes.dropDowns}
                     size="small"
-                    value={this.state.preferredPronouns}
+                    value={this.state.picklistInfo.preferredPronouns}
                     options={
-                      this.state.preferredPronouns === null
-                        ? ["She/Her", "He/Him", "They/Them", "Other"]
+                      this.state.picklistInfo.preferredPronouns === null
+                        ? this.props.picklists.preferredPronouns.list
                         : [
-                            this.state.preferredPronouns,
-                            ...["She/Her", "He/Him", "They/Them", "Other"],
+                            this.state.picklistInfo.preferredPronouns,
+                            ...this.props.picklists.preferredPronouns.list,
                           ]
                     }
                     filterSelectedOptions
                     onChange={(_event, newValue) => {
                       this.setState({
-                        ...this.state,
-                        preferredPronouns: newValue,
+                        picklistInfo: {
+                          ...this.state.picklistInfo,
+                          preferredPronouns: newValue,
+                        },
                       });
                     }}
                     renderInput={(params) => (
                       <OutlinedTextField
                         {...params}
                         variant="outlined"
+                        required={true}
                         placeholder="Select your position"
                       />
                     )}
@@ -545,6 +596,7 @@ class EducatorRegistration extends React.Component<
                       <OutlinedTextField
                         {...params}
                         variant="outlined"
+                        required={true}
                         placeholder="Select your school board"
                       />
                     )}
@@ -579,6 +631,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your school type"
+                        required={true}
                       />
                     )}
                   />
@@ -606,6 +659,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your school name"
+                        required={true}
                       />
                     )}
                   />
@@ -637,6 +691,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="Select your position"
+                        required={true}
                       />
                     )}
                   />
@@ -646,44 +701,28 @@ class EducatorRegistration extends React.Component<
                     name="phoneNumber"
                     value={this.state.phoneNumber}
                     onChange={this.handleChange}
+                    required={true}
                     className={this.props.classes.textField}
                   />
                 </div>
                 <Divider />
                 <div className={this.props.classes.formSection}>
-                  <BlackHeaderTypography style={{ marginBottom: "2em" }}>
-                    BEP Information
-                  </BlackHeaderTypography>
-                  <BlackHeaderTypography style={{ padding: "1em 0em" }}>
-                    Which activities are you interested in?*
-                  </BlackHeaderTypography>
-                  <Grid className={this.props.classes.multiSelect}>
-                    {Array.from(
-                      this.state.picklistInfo.educatorDesiredActivities.entries(),
-                      (entry) => entry
-                    ).map(([option, isSelected]) => (
-                      <Grid
-                        container
-                        key={option}
-                        spacing={0}
-                        justify="flex-end"
-                        alignItems="center"
-                      >
-                        <Grid item xs={1}>
-                          <OutlinedCheckbox
-                            key={option}
-                            value={option}
-                            name={option}
-                            onChange={this.createHandleSelectOption(
-                              "educatorDesiredActivities"
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={11}>
-                          <BlackTextTypography> {option}</BlackTextTypography>
-                        </Grid>
-                      </Grid>
-                    ))}
+                  <Grid item>
+                    <BlackHeaderTypography style={{ marginBottom: "2em" }}>
+                      BEP Information
+                    </BlackHeaderTypography>
+                  </Grid>
+
+                  <Grid item>
+                    <BlackHeaderTypography style={{ margin: "1em 0em" }}>
+                      Which activities are you interested in?*
+                    </BlackHeaderTypography>
+                  </Grid>
+                  <Grid item className={this.props.classes.multiSelect}>
+                    {displayPicklistOptions(
+                      this.state.picklistInfo.educatorDesiredActivities,
+                      "educatorDesiredActivities"
+                    )}
                   </Grid>
                   <BlackHeaderTypography>
                     How did you hear about us?*
@@ -714,6 +753,7 @@ class EducatorRegistration extends React.Component<
                         {...params}
                         variant="outlined"
                         placeholder="e.g. Event, internet search, etc."
+                        required={true}
                       />
                     )}
                   />
@@ -721,69 +761,59 @@ class EducatorRegistration extends React.Component<
                     Which BEP programs would you like more information about?*
                   </BlackHeaderTypography>
                   <Grid className={this.props.classes.multiSelect}>
-                    {Array.from(
-                      this.state.picklistInfo.moreInfo.entries(),
-                      (entry) => entry
-                    ).map(([option, isSelected]) => (
-                      <Grid
-                        container
-                        key={option}
-                        spacing={0}
-                        justify="flex-end"
-                        alignItems="center"
-                      >
-                        <Grid item xs={1}>
-                          <OutlinedCheckbox
-                            key={option}
-                            value={option}
-                            name={option}
-                            onChange={this.createHandleSelectOption("moreInfo")}
-                          />
-                        </Grid>
-                        <Grid item xs={11}>
-                          <BlackTextTypography> {option}</BlackTextTypography>
-                        </Grid>
-                      </Grid>
-                    ))}
+                    {displayPicklistOptions(
+                      this.state.picklistInfo.moreInfo,
+                      "moreInfo"
+                    )}
                   </Grid>
                 </div>
 
                 <Divider />
                 <div className={this.props.classes.formSection}>
-                  <Grid container spacing={0} alignItems="center">
-                    <OutlinedCheckbox
-                      name="isSubscribed"
-                      onChange={() =>
-                        this.setState({
-                          isSubscribed: !this.state.isSubscribed,
-                        })
+                  <Grid item container direction="column">
+                    <FormControlLabel
+                      control={
+                        <OutlinedCheckbox
+                          name="isSubscribed"
+                          onChange={() =>
+                            this.setState({
+                              isSubscribed: !this.state.isSubscribed,
+                            })
+                          }
+                        />
+                      }
+                      label={
+                        <BlackHeaderTypography>
+                          I would like to subscribe to the BEP newsletter
+                        </BlackHeaderTypography>
                       }
                     />
-                    <BlackHeaderTypography>
-                      I would like to subscribe to the BEP newsletter
-                    </BlackHeaderTypography>
-                  </Grid>
-                  <Grid container spacing={0} alignItems="center" style={{ marginBottom: "1.5em" }}>
-                    <OutlinedCheckbox
-                      name="agreeConditions"
-                      onChange={() =>
-                        this.setState({
-                          agreeConditions: !this.state.agreeConditions,
-                        })
+                    <FormControlLabel
+                      control={
+                        <OutlinedCheckbox
+                          name="agreeConditions"
+                          onChange={() =>
+                            this.setState({
+                              isSubscribed: !this.state.agreeConditions,
+                            })
+                          }
+                        />
+                      }
+                      label={
+                        <BlackHeaderTypography>
+                          I agree to the BEP terms and conditions*
+                        </BlackHeaderTypography>
                       }
                     />
-                    <BlackHeaderTypography>
-                      I agree to the BEP terms and conditions*
-                    </BlackHeaderTypography>
                   </Grid>
                   {failed ? (
                     <RedTextTypography style={{ fontSize: "0.85em" }}>
                       Something went wrong. Please try again.
                     </RedTextTypography>
                   ) : null}
-                  <ContainedButton type="submit" style={{ marginTop: "1.5em" }}>
+                  <ContrastButton type="submit" style={{ marginTop: "1.5em" }}>
                     Finish Registration
-                  </ContainedButton>
+                  </ContrastButton>
                 </div>
               </form>
             </Grid>
@@ -815,6 +845,9 @@ const mapStateToProps = (state: any) => {
       },
       type: {
         list: getSchoolTypePicklist(state.picklists),
+      },
+      preferredPronouns: {
+        list: getPreferredPronounsPicklist(state.picklists),
       },
     },
   };
