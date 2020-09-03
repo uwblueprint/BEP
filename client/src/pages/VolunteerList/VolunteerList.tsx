@@ -4,12 +4,22 @@ import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
+/* Actions */
+import {
+  saveLastNumVolunteersReceived,
+  saveVolunteerPageNum
+} from "../../data/actions/volunteersActions";
+
 /* Services */
 import { fetchVolunteersService } from "../../data/services/volunteersServices";
 import { fetchUserPicklistService } from "../../data/services/picklistServices";
 
 /* Selectors */
-import { getVolunteers } from "../../data/selectors/volunteersSelector";
+import {
+  getVolunteers,
+  getLastNumVolunteersReceived,
+  getVolunteerPageNumber
+} from "../../data/selectors/volunteersSelector";
 import {
   getAllActivitiesPicklist,
   getExpertiesAreasPicklist,
@@ -51,6 +61,8 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 class VolunteerList extends React.Component<
   {
     volunteers: Volunteer[];
+    lastNumVolunteers: number;
+    lastPage: number;
     picklists: {
       activities: { displayName: string; list: string[] };
       expertiseAreas: { displayName: string; list: string[] };
@@ -61,6 +73,8 @@ class VolunteerList extends React.Component<
     };
     fetchVolunteers: any;
     fetchPicklists: any;
+    saveLastVolunteerListLength: any;
+    savePage: any;
   },
   {
     prevY: number;
@@ -69,6 +83,7 @@ class VolunteerList extends React.Component<
     offset: number;
     loadingRef: any;
     loadedAllVolunteers: boolean;
+    loadingVolunteers: boolean;
     lastVolunteerListLength: number;
     searchBar: string;
     filters: {
@@ -111,11 +126,12 @@ class VolunteerList extends React.Component<
     this.state = {
       prevY: 0,
       observer: null,
-      page: 0,
+      page: this.props.lastPage,
       offset: 10,
       loadingRef: React.createRef(),
       loadedAllVolunteers: false,
-      lastVolunteerListLength: 0,
+      loadingVolunteers: false,
+      lastVolunteerListLength: this.props.lastNumVolunteers,
       searchBar: "",
       filters: {
         activities: new Map(),
@@ -138,15 +154,16 @@ class VolunteerList extends React.Component<
         this.setState({ loadedAllVolunteers: true });
       }
 
-      if (!this.state.loadedAllVolunteers) {
-        if (this.props.volunteers.length > 1)
+      if (!this.state.loadedAllVolunteers && !this.state.loadingVolunteers) {
+        if (this.props.volunteers.length > 1) {
           this.setState({
             // Keep track of last volunteer length to determine if any new volunteers are loaded.
             lastVolunteerListLength: this.props.volunteers.length,
           });
+        }
 
+        this.setState({loadingVolunteers: true});
         this.fetchVolunteers(this.state.offset, newPage * this.state.offset);
-
         this.setState({ page: newPage });
       }
     }
@@ -363,6 +380,7 @@ class VolunteerList extends React.Component<
             this.props.volunteers.slice(this.state.page * this.state.offset)
           )
         ),
+        loadingVolunteers: false
       });
     });
   }
@@ -377,10 +395,13 @@ class VolunteerList extends React.Component<
       PicklistType.grades,
     ];
 
-    this.fetchVolunteers(
-      this.state.offset,
-      this.state.page * this.state.offset
-    );
+    if (this.props.volunteers.length === 0) {
+      this.setState({loadingVolunteers: true});
+      this.fetchVolunteers(
+        this.state.offset,
+        this.state.page * this.state.offset
+      );
+    }
 
     const createFilters = (filterNames: string[]): Array<[string, boolean]> => {
       return filterNames.map((item: string) => [item, false]);
@@ -431,6 +452,11 @@ class VolunteerList extends React.Component<
       observer.observe(this.state.loadingRef.current);
       this.setState({ observer });
     }
+  }
+
+  componentWillUnmount() {
+    this.props.saveLastVolunteerListLength(this.state.lastVolunteerListLength);
+    this.props.savePage(this.state.page);
   }
 
   render() {
@@ -670,6 +696,8 @@ class VolunteerList extends React.Component<
 const mapStateToProps = (state: any) => {
   return {
     volunteers: getVolunteers(state.volunteers),
+    lastNumVolunteers: getLastNumVolunteersReceived(state.volunteers),
+    lastPage: getVolunteerPageNumber(state.volunteers),
     picklists: {
       activities: {
         displayName: "Activities",
@@ -704,6 +732,10 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(fetchVolunteersService(limit, offset)),
   fetchPicklists: (picklistType: PicklistType) =>
     dispatch(fetchUserPicklistService(picklistType)),
+  saveLastVolunteerListLength: (num: number) =>
+    dispatch(saveLastNumVolunteersReceived(num)),
+  savePage: (num: number) =>
+    dispatch(saveVolunteerPageNum(num)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VolunteerList);
