@@ -3,10 +3,9 @@ import * as Express from 'express';
 import * as jwt from 'jsonwebtoken';
 
 import * as UserService from './../api/users/UserService';
-import SchoolInterface from '../api/schools/SchoolInterface';
-import User, { UserType, isUser } from '../api/users/UserInterface';
-import Educator, { isEducator } from '../api/users/EducatorInterface';
-import Volunteer, { isVolunteer } from '../api/users/VolunteerInterface';
+import User, { isUser } from '../api/users/UserInterface';
+import { isEducator } from '../api/users/EducatorInterface';
+import { isVolunteer } from '../api/users/VolunteerInterface';
 
 const BCRYPT_ROUNDS = 4;
 
