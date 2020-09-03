@@ -20,46 +20,6 @@ export const authRouter = Express.Router();
  * Controller Definitions
  */
 
-// authRouter.post('/register', async (req: Express.Request, res: Express.Response) => {
-//     try {
-//         const firstName: string = req.body.firstName;
-//         const isSubscribed: boolean = req.body.isSubscribed;
-//         const password: string = req.body.password;
-//         const phoneNumber: string = req.body.phoneNumber;
-//         const lastName: string = req.body.lastName;
-//         const preferredPronouns: string = req.body.preferredPronoun;
-
-//         const userType: UserType = req.body.userType;
-
-//         //Hash Password
-//         const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-
-//         const user: UserInterface = {
-//             email,
-//             firstName,
-//             isSubscribed,
-//             lastName,
-//             preferredPronouns,
-//             password: hash,
-//             phoneNumber,
-//             userType
-//         };
-
-//         await UserService.create(user).then(response => {
-//             // tslint:disable-next-line: no-string-literal
-//             if (response['success']) {
-//                 const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: 5000 });
-//                 res.status(200).send({
-//                     data: response,
-//                     token
-//                 });
-//             }
-//         });
-//     } catch (e) {
-//         res.status(404).send(e.message);
-//     }
-// });
-
 authRouter.post('/register', async (req: Express.Request, res: Express.Response) => {
     try {
         const user: User = req.body;
@@ -67,7 +27,7 @@ authRouter.post('/register', async (req: Express.Request, res: Express.Response)
         if (!isUser(user) || (!isVolunteer(user) && !isEducator(user))) {
             throw Error('Input is not a valid user.');
         }
-
+        console.log(user);
         // Hash Password
         const hash = await bcrypt.hash(user.password, BCRYPT_ROUNDS);
         user.password = hash;
@@ -87,6 +47,7 @@ authRouter.post('/register', async (req: Express.Request, res: Express.Response)
         res.status(404).send(e.message);
     }
 });
+
 authRouter.post('/login', async (req: Express.Request, res: Express.Response) => {
     try {
         const email: string = req.body.email;

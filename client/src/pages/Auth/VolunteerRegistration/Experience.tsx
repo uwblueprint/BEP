@@ -16,7 +16,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Divider from "@material-ui/core/Divider";
 
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { ExperienceState, PicklistInfo, RawPicklists } from "./Master";
+import { ExperienceState, PicklistInfo, RawPicklists } from "./VolunteerRegistration";
 
 import Employer from "../../../data/types/employerTypes";
 

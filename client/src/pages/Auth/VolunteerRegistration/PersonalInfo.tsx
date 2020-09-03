@@ -19,7 +19,7 @@ import {
   PicklistInfo,
   PersonalInfoState,
   getChosenOptions,
-} from "./Master";
+} from "./VolunteerRegistration";
 
 interface IComponentProps {
   currentStep: number;

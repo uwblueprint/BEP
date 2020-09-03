@@ -9,7 +9,7 @@ import {
   PageBody,
   BlackTextTypography,
   SecondaryMainTextTypography
-} from "../../components/index";
+} from "../../../components/index";
 
 const useStyles = makeStyles({
   root: {

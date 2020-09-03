@@ -2,6 +2,7 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import { Redirect } from "react-router";
 
 import {
   PageBody,
@@ -12,6 +13,7 @@ import {
   GreyAvatar,
   SecondaryMainTextTypography,
   ProgressBarGreyTextTypography,
+  RedTextTypography
 } from "../../../components/index";
 import Typography from "@material-ui/core/Typography";
 
@@ -211,6 +213,8 @@ interface IComponentState {
   experience: ExperienceState;
   involvement: InvolvementState;
   picklistInfo: PicklistInfo;
+  redirect: boolean;
+  failed: boolean;
 }
 
 export const getChosenOptions = (map: Map<string, boolean>): string[] =>
@@ -284,6 +288,8 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         coopPlacementSchoolAffiliation: "",
         followedPrograms: new Map(),
       },
+      redirect: false,
+      failed: false
     };
     this.handleNestedChange = this.handleNestedChange.bind(this);
     this.handleNestedChangeExperience = this.handleNestedChangeExperience.bind(
@@ -471,12 +477,8 @@ class Master extends React.Component<IComponentProps, IComponentState> {
         ...this.state,
         currentStep: currentStep,
       };
-      console.log(newState);
+
       this.setState(newState);
-      // this.setState({
-      //   ...this.state,
-      //   currentStep: currentStep,
-      // });
     }
   }
   _prev(event: any) {
@@ -595,101 +597,102 @@ class Master extends React.Component<IComponentProps, IComponentState> {
     };
   };
 
-  handleSubmit = (event: any) => {
+  handleSubmit = async (event: any) => {
     event.preventDefault();
 
-    // const getChosenOptions = (map: Map<string, boolean>): string[] =>
-    //   Array.from(map.entries(), (entry) => entry)
-    //     .filter(([option, isSelected]) => isSelected)
-    //     .map(([option, isSelected]) => option);
-    // const personalInfo: PersonalInfoState = this.state.personalInfo;
-    // const experience: ExperienceState = this.state.experience;
-    // const involvement: InvolvementState = this.state.involvement;
-    // const picklistInfo: PicklistInfo = this.state.picklistInfo;
-    // const employer: Employer = this.props.employers.filter(
-    //   (employer: Employer) => employer.id === experience.employerId
-    // )[0];
+    const getChosenOptions = (map: Map<string, boolean>): string[] =>
+      Array.from(map.entries(), (entry) => entry)
+        .filter(([option, isSelected]) => isSelected)
+        .map(([option, isSelected]) => option);
+    const personalInfo: PersonalInfoState = this.state.personalInfo;
+    const experience: ExperienceState = this.state.experience;
+    const involvement: InvolvementState = this.state.involvement;
+    const picklistInfo: PicklistInfo = this.state.picklistInfo;
+    const employer: Employer = this.props.employers.filter(
+      (employer: Employer) => employer.id === experience.employerId
+    )[0];
 
-    // const volunteer: Volunteer = {
-    //   userType: UserType.Volunteer,
-    //   email: personalInfo.email,
-    //   firstName: personalInfo.firstName,
-    //   followedPrograms: getChosenOptions(picklistInfo.followedPrograms),
-    //   id: "",
-    //   isSubscribed: involvement.isSubscribed,
-    //   lastName: personalInfo.lastName,
-    //   password: personalInfo.password,
-    //   phoneNumber: personalInfo.phoneNumber,
-    //   preferredPronouns: picklistInfo.preferredPronouns,
-    //   adviceForStudents: involvement.adviceForStudents,
-    //   careerDescription: experience.careerDescription,
-    //   coopPlacementMode: picklistInfo.coopPlacementMode,
-    //   coopPlacementSchoolAffiliation:
-    //     picklistInfo.coopPlacementSchoolAffiliation,
-    //   coopPlacementTime: getChosenOptions(picklistInfo.coopPlacementTime),
-    //   jobTitle: experience.jobTitle,
-    //   department: experience.departmentDivision,
-    //   employer,
-    //   employmentStatus: picklistInfo.employmentStatus,
-    //   expertiseAreas: picklistInfo.expertiseAreas,
-    //   extraDescription: experience.extraDescription,
-    //   fieldInvolvementDescription: experience.fieldInvolvementDescription,
-    //   grades: getChosenOptions(picklistInfo.grades),
-    //   introductionMethod: involvement.introductionMethod,
-    //   isVolunteerCoordinator: experience.isVolunteerCoordinator,
-    //   languages: picklistInfo.languages,
-    //   linkedIn: personalInfo.linkedinUrl,
-    //   localPostSecondaryInstitutions: getChosenOptions(
-    //     picklistInfo.localPostSecondaryInstitutions
-    //   ),
-    //   locations: getChosenOptions(picklistInfo.locations),
-    //   postSecondaryTraining: getChosenOptions(
-    //     picklistInfo.postSecondaryTraining
-    //   ),
-    //   professionalAssociations: getChosenOptions(
-    //     picklistInfo.professionalAssociations
-    //   ),
-    //   reasonsForVolunteering: involvement.reasonsForVolunteering,
-    //   shareEmployerInfo: experience.shareEmployerInfo,
-    //   shareWithEmployer: experience.shareWithEmployer,
-    //   volunteerDesiredExternalActivities: getChosenOptions(
-    //     picklistInfo.volunteerDesiredExternalActivities
-    //   ),
-    //   volunteerDesiredInternalActivities: getChosenOptions(
-    //     picklistInfo.volunteerDesiredInternalActivities
-    //   ),
-    // };
+    const volunteer: Volunteer = {
+      userType: UserType.Volunteer,
+      email: personalInfo.email,
+      firstName: personalInfo.firstName,
+      followedPrograms: getChosenOptions(picklistInfo.followedPrograms),
+      id: "",
+      isSubscribed: involvement.isSubscribed,
+      lastName: personalInfo.lastName,
+      password: personalInfo.password,
+      phoneNumber: personalInfo.phoneNumber,
+      preferredPronouns: picklistInfo.preferredPronouns,
+      adviceForStudents: involvement.adviceForStudents,
+      careerDescription: experience.careerDescription,
+      coopPlacementMode: picklistInfo.coopPlacementMode,
+      coopPlacementSchoolAffiliation:
+        picklistInfo.coopPlacementSchoolAffiliation,
+      coopPlacementTime: getChosenOptions(picklistInfo.coopPlacementTime),
+      jobTitle: experience.jobTitle,
+      department: experience.departmentDivision,
+      employer,
+      employmentStatus: picklistInfo.employmentStatus,
+      expertiseAreas: picklistInfo.expertiseAreas,
+      extraDescription: experience.extraDescription,
+      fieldInvolvementDescription: experience.fieldInvolvementDescription,
+      grades: getChosenOptions(picklistInfo.grades),
+      introductionMethod: involvement.introductionMethod,
+      isVolunteerCoordinator: experience.isVolunteerCoordinator,
+      languages: picklistInfo.languages,
+      linkedIn: personalInfo.linkedinUrl,
+      localPostSecondaryInstitutions: getChosenOptions(
+        picklistInfo.localPostSecondaryInstitutions
+      ),
+      locations: getChosenOptions(picklistInfo.locations),
+      postSecondaryTraining: getChosenOptions(
+        picklistInfo.postSecondaryTraining
+      ),
+      professionalAssociations: getChosenOptions(
+        picklistInfo.professionalAssociations
+      ),
+      reasonsForVolunteering: involvement.reasonsForVolunteering,
+      shareEmployerInfo: experience.shareEmployerInfo,
+      shareWithEmployer: experience.shareWithEmployer,
+      volunteerDesiredExternalActivities: getChosenOptions(
+        picklistInfo.volunteerDesiredExternalActivities
+      ),
+      volunteerDesiredInternalActivities: getChosenOptions(
+        picklistInfo.volunteerDesiredInternalActivities
+      ),
+    };
 
-    // console.log(volunteer);
+    if (!volunteer.employer) {
+      if (experience.orgName && experience.orgName.length > 0) {
+        volunteer.employer = {
+          address: experience.orgStreetAddr,
+          city: experience.orgCity,
+          id: "",
+          name: experience.orgName,
+          phoneNumber: experience.orgPhone,
+          postalCode: experience.orgPostalCode,
+          sectors: [picklistInfo.sectors],
+          size: picklistInfo.size,
+          socialMedia: [experience.orgSocialMedia],
+          website: experience.orgWebsite,
+        };
+      } else {
+        delete volunteer.employer;
+      }
+    }
 
-    // if (!volunteer.employer) {
-    //   if (experience.orgName && experience.orgName.length > 0) {
-    //     volunteer.employer = {
-    //       address: experience.orgStreetAddr,
-    //       city: experience.orgCity,
-    //       id: "",
-    //       name: experience.orgName,
-    //       phoneNumber: experience.orgPhone,
-    //       postalCode: experience.orgPostalCode,
-    //       sectors: [picklistInfo.sectors],
-    //       size: picklistInfo.size,
-    //       socialMedia: [experience.orgSocialMedia],
-    //       website: experience.orgWebsite,
-    //     };
-    //   } else {
-    //     delete volunteer.employer;
-    //   }
-    // }
-
-    // const sendUser = async (body: any) => {
-    //   try {
-    //     await registerUser(body);
-    //     console.log("success");
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // };
-    // sendUser(volunteer);
+    const sendUser = async (body: any) => {
+      try {
+        return await registerUser(body);
+      } catch (e) {
+      }
+    };
+    const data = await sendUser(volunteer);
+    if (data) {
+      this.setState({ redirect: true, failed: false })
+    } else {
+      this.setState({ redirect: false, failed: true })
+    }
   };
 
   get previousButton() {
@@ -740,6 +743,11 @@ class Master extends React.Component<IComponentProps, IComponentState> {
   }
 
   render() {
+    const { redirect, failed } = this.state;
+    if (redirect) {
+      return <Redirect to="/?registered" />;
+    }
+
     const getProgressComponent = (step: number) => {
       let currentStep = this.state.currentStep;
       let label = "";
@@ -876,7 +884,6 @@ class Master extends React.Component<IComponentProps, IComponentState> {
                 {getProgressComponent(3)}
               </Grid>
             </Grid>
-
             <form
               onSubmit={
                 this.state.currentStep === 3 ? this.handleSubmit : this._next
@@ -895,6 +902,11 @@ class Master extends React.Component<IComponentProps, IComponentState> {
               >
                 <Grid item xs={12}>
                   {getPage()}
+                  {failed ? (
+                    <RedTextTypography style={{ fontSize: "0.9em", marginBottom: "1%", marginLeft: "34px" }}>
+                      Something went wrong. Please try again.
+                    </RedTextTypography>
+                  ) : null}
                 </Grid>
                 <Grid item xs={6}>
                   {this.previousButton}

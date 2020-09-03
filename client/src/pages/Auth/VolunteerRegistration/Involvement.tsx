@@ -13,7 +13,7 @@ import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-import { PicklistInfo, InvolvementState, RawPicklists } from "./Master";
+import { PicklistInfo, InvolvementState, RawPicklists } from "./VolunteerRegistration";
 
 interface IComponentProps {
   currentStep: number;

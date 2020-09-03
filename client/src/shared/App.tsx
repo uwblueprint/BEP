@@ -9,7 +9,7 @@ import {
 
 import Login from "../pages/Auth/SignIn";
 import VolunteerList from "../pages/VolunteerList/VolunteerList";
-import VolunteerRegistration from "../pages/Auth/VolunteerRegistration/Master";
+import VolunteerRegistration from "../pages/Auth/VolunteerRegistration/VolunteerRegistration";
 import EducatorRegistration from "../pages/Auth/EducatorRegistration";
 import { connect } from "react-redux";
 import { ThemeProvider } from "@material-ui/core/styles";
