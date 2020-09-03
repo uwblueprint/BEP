@@ -110,7 +110,7 @@ export default function SelectUserBox(props: any) {
 
   return (
     <div>
-      <TextButton onClick={handleOpenSelector}>
+      <TextButton onClick={handleOpenSelector} style={{ fontSize: "0.8em", background: "white" }}>
         Don't Have An Account? Sign Up
       </TextButton>
       <SimpleDialog open={open} onClose={handleCloseSelector} />

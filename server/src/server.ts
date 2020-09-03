@@ -17,7 +17,6 @@ import { schoolRouter } from './api/schools/SchoolRouter';
 import { schoolPicklistRouter } from './api/schools/picklists/SchoolPicklistRouter';
 import { applicationRouter } from './api/applications/ApplicationsRouter';
 import { invitationRouter } from './api/invitations/InvitationsRouter';
-import { requestsRouter } from './requests/requests.router';
 import { eventVolunteerRouter } from './api/eventVolunteers/EventVolunteerRouter';
 import { verifyWebToken } from './middleware/jwt';
 import { authRouter } from './auth/authRouter';
@@ -73,7 +72,6 @@ class BackendServer extends Server {
         this.app.use('/api/events', eventRouter);
         this.app.use('/api/event-volunteers', eventVolunteerRouter);
         this.app.use('/api/auth', authRouter);
-        this.app.use('/api/requests', requestsRouter);
         this.app.use('/api/users/picklists', userPicklistRouter);
         this.app.use('/api/employers', employerRouter);
         this.app.use('/api/applications', applicationRouter);

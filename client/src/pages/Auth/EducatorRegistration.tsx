@@ -1,6 +1,7 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
+import { Redirect } from "react-router";
 
 /* Types */
 import { PicklistType } from "../../data/types/picklistTypes";
@@ -31,7 +32,6 @@ import { getSchools } from "../../data/selectors/schoolListSelector";
 import { registerUser } from "../../utils/authApiUtils";
 
 import Typography from "@material-ui/core/Typography";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import Divider from "@material-ui/core/Divider";
 
 import { Grid } from "@material-ui/core";
@@ -42,7 +42,6 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import {
   ContainedButton,
-  DarkContainedButton,
   OutlinedTextField,
   BlackHeaderTypography,
   BlackTextTypography,
@@ -51,6 +50,7 @@ import {
   ContrastButton,
   TextField,
   Select,
+  RedTextTypography
 } from "../../components/index";
 
 const styles = () => ({
@@ -125,6 +125,8 @@ interface IComponentState {
     schoolBoard: string | null;
     type: string | null;
   };
+  redirect: boolean;
+  failed: boolean;
 }
 
 class EducatorRegistration extends React.Component<
@@ -168,6 +170,8 @@ class EducatorRegistration extends React.Component<
         schoolBoard: "",
         type: "",
       },
+      redirect: false,
+      failed: false,
     };
   }
   public moreInfoList: string[] = [];
@@ -349,7 +353,7 @@ class EducatorRegistration extends React.Component<
     });
   };
 
-  handleSubmit = (event: any) => {
+  handleSubmit = async (event: any) => {
     event.preventDefault();
 
     let school = this.props.schoolList.filter(
@@ -374,16 +378,24 @@ class EducatorRegistration extends React.Component<
 
     const sendUser = async (body: any) => {
       try {
-        await registerUser(body);
-        console.log("success");
+        return await registerUser(body);
       } catch (e) {
-        console.log(e);
       }
     };
-    sendUser(formattedData);
+    const data = await sendUser(formattedData);
+    if (data) {
+      this.setState({ redirect: true, failed: false })
+    } else {
+      this.setState({ redirect: false, failed: true })
+    }
   };
 
   render() {
+    const { redirect, failed } = this.state;
+    if (redirect) {
+      return <Redirect to="/?registered" />;
+    }
+
     const displayPicklistOptions = (
       picklistMap: Map<string, boolean>,
       picklistName: string
@@ -419,6 +431,7 @@ class EducatorRegistration extends React.Component<
         )
       );
     };
+
     return (
       <React.Fragment>
         <PageBody>
@@ -449,10 +462,13 @@ class EducatorRegistration extends React.Component<
                   <OutlinedTextField
                     placeholder="e.g. name@email.com"
                     name="email"
+                    type="email"
                     value={this.state.email}
                     onChange={this.handleChange}
-                    required={true}
                     className={this.props.classes.textField}
+                    InputProps={{
+                      required: true
+                    }}
                   />
                   <BlackHeaderTypography>
                     Account Password*
@@ -466,6 +482,9 @@ class EducatorRegistration extends React.Component<
                     value={this.state.password}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
+                    InputProps={{
+                      required: true
+                    }}
                   />
                   <BlackHeaderTypography>
                     Confirm Password*
@@ -479,6 +498,9 @@ class EducatorRegistration extends React.Component<
                     autoComplete="current-password"
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
+                    InputProps={{
+                      required: true
+                    }}
                   />
                 </div>
                 <Divider />
@@ -494,6 +516,9 @@ class EducatorRegistration extends React.Component<
                     required={true}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
+                    InputProps={{
+                      required: true
+                    }}
                   />
                   <BlackHeaderTypography>Last Name*</BlackHeaderTypography>
                   <OutlinedTextField
@@ -503,6 +528,9 @@ class EducatorRegistration extends React.Component<
                     required={true}
                     onChange={this.handleChange}
                     className={this.props.classes.textField}
+                    InputProps={{
+                      required: true
+                    }}
                   />
                   <BlackHeaderTypography>
                     Preferred Pronouns*
@@ -778,7 +806,12 @@ class EducatorRegistration extends React.Component<
                       }
                     />
                   </Grid>
-                  <ContrastButton type="submit" style={{ marginTop: "3em" }}>
+                  {failed ? (
+                    <RedTextTypography style={{ fontSize: "0.85em" }}>
+                      Something went wrong. Please try again.
+                    </RedTextTypography>
+                  ) : null}
+                  <ContrastButton type="submit" style={{ marginTop: "1.5em" }}>
                     Finish Registration
                   </ContrastButton>
                 </div>

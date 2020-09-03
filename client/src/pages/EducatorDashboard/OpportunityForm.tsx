@@ -182,7 +182,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
     handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        //Retrieve from localstorage
+        // Retrieve from localstorage
         let localStorageUser = localStorage.getItem("user") as string
         let userJSON = JSON.parse(localStorageUser)
 
@@ -206,6 +206,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 startDate: this.state.startDateAndTime
               }
         }
+
         const sendOpportunity = async (body: string) => {
             try {
                 await createEvent(body)
@@ -214,13 +215,10 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
             }
         }
         
-
        sendOpportunity(formattedEvent).then(() => {
            this.setState({redirect: true})
        });
     }
-
-
 
     render () {
         if (this.state.redirect) {
@@ -239,9 +237,9 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                         alignItems="flex-end"
                         style={{ height: "100%", width: "100%" }}
                     >
-                          <Grid item direction="column" style={{marginBottom: '10%'}}>
+                          <Grid item direction="column" style={{margin: '5% 0'}}>
                             <BlackTextTypography variant="body1">
-                            <Link to="/events" style={{textDecoration: "none"}}>{`<`} Back </Link>
+                            <a href="javascript:history.back()" style={{textDecoration: "none"}}>{`<`} Back </a>
                             </BlackTextTypography>
                             <BlackTextTypography variant="h1" style={{ marginTop: "0%" }}>
                                 Create New Opportunity
