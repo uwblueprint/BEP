@@ -437,7 +437,7 @@ class EducatorRegistration extends React.Component<
         <PageBody>
           <div style={{ marginTop: "5em" }}>
             <BlackTextTypography>
-              <Link to="/">Back</Link>{" "}
+              <Link to="/">{`<`} Back</Link>{" "} {/* Adds '<' to the "Back link" */}
             </BlackTextTypography>
             <Typography variant="h1" style={{ marginTop: "10px" }}>
               Register for an educator account
@@ -801,7 +801,9 @@ class EducatorRegistration extends React.Component<
                       }
                       label={
                         <BlackHeaderTypography>
-                          I agree to the BEP terms and conditions*
+                         <a href='https://assets.ctfassets.net/jlzki4js68hu/5Z07IrcbvYlLxgFX7csBHw/fea9e299c953c1088f6ae1898230330d/Partnership_Portal_Program_-_Terms_and_Conditions.pdf'>
+                           I agree to the BEP terms and conditions
+                         </a>
                         </BlackHeaderTypography>
                       }
                     />

@@ -508,7 +508,7 @@ class Experience extends React.Component<IComponentProps, IComponentState> {
               </Grid>
 
               <Grid item>
-                <BlackHeaderTypography>Languages</BlackHeaderTypography>
+                <BlackHeaderTypography>Languages (Other than English)</BlackHeaderTypography>
                 <Autocomplete
                   multiple
                   className={this.props.classes.dropDowns}
