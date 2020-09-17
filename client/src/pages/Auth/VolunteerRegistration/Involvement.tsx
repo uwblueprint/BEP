@@ -445,7 +445,9 @@ class Involvement extends React.Component<IComponentProps, IComponentState> {
                     }
                     label={
                       <BlackHeaderTypography>
-                        I agree to the BEP terms and conditions*
+                        <a href='https://assets.ctfassets.net/jlzki4js68hu/5Z07IrcbvYlLxgFX7csBHw/fea9e299c953c1088f6ae1898230330d/Partnership_Portal_Program_-_Terms_and_Conditions.pdf'>
+                           I agree to the BEP terms and conditions
+                         </a>
                       </BlackHeaderTypography>
                     }
                   />
