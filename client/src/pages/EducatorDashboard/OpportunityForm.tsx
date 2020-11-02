@@ -23,7 +23,6 @@ import {
 } from '@material-ui/pickers';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-import {Link} from 'react-router-dom'
 import { ContainedButton } from '../../components/Button'
 import { EventPicklistType } from '../../data/types/EventPicklistTypes';
 import {Event} from '../../data/types/eventTypes';
@@ -69,7 +68,7 @@ const styles = () => ({
 type OpFormProps = {
     name: string;
     requiredVolunteers: number | string;
-    activityType: string[];
+    activityType: string;
     preferredSector: string[];
     singleDayEvent: boolean;
     startDateAndTime: Date | null;
@@ -102,22 +101,33 @@ interface IProps {
 }
 
 class OpportunityForm extends React.Component<IProps, OpFormProps> {
+    getTomorrow() {
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        return date;
+    }
+    getHourLater() {
+        const date = this.getTomorrow();
+        date.setTime(date.getTime() + (1*60*60*1000));
+        return date;
+    }
+
     constructor(props: IProps) {
         super(props);
         if (!props.location.state) {
             this.state = {
                 name: "",
                 requiredVolunteers: '',
-                activityType: [],
+                activityType: '',
                 preferredSector: [],
                 singleDayEvent: true,
-                startDateAndTime: new Date(),
-                endDateAndTime: new Date(),
+                startDateAndTime: this.getTomorrow(),
+                endDateAndTime: this.getHourLater(),
                 numberOfHours: '',
                 transportation: "",
                 numberOfStudents: "",
                 gradeOfStudents: [],
-                postingExpiryDate: new Date(),
+                postingExpiryDate: this.getTomorrow(),
                 public: false,
                 redirect: false,
             };
@@ -214,10 +224,10 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                 console.error(e)
             }
         }
-        
-       sendOpportunity(formattedEvent).then(() => {
+
+        sendOpportunity(formattedEvent).then(() => {
            this.setState({redirect: true})
-       });
+        });
     }
 
     render () {
@@ -295,14 +305,13 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                         </BlackTextTypography>
                         <FormControl variant="outlined">
                         <Autocomplete
-                            multiple
                             id="tags-outlined"
                             defaultValue={this.state.activityType}
                             options={this.props.picklists.activityType.list}
                             getOptionLabel={(option) => option}
                             filterSelectedOptions
                             size='small'
-                            onChange={(_event, newValue) => {this.setState({activityType: newValue})}}
+                            onChange={(_event, newValue) => { if (newValue) this.setState({ activityType: newValue})}}
                             renderInput={(params) => (
                             <OutlinedTextField
                                 {...params}
@@ -316,7 +325,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                     </Grid>
                     <Grid item direction="column">
                         <BlackTextTypography className={this.props.classes.text}>
-                            Preferred Sector (Optional)
+                            Preferred Sectors (Optional)
                         </BlackTextTypography>
                         <FormControl variant="outlined">
                         <Autocomplete

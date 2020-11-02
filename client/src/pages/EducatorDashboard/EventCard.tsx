@@ -89,7 +89,7 @@ export default function EventCard(props: any) {
                 Event Type
               </Typography>
               <Typography variant="body1">
-                {props.event.activityType.join(", ")}
+                {props.event.activityType}
               </Typography>
             </Grid>
             <Grid item xs={6}>

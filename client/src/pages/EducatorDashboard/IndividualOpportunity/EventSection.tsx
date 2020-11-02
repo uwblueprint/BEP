@@ -130,7 +130,7 @@ const EventSection = (props: any) => {
               ACTIVITY TYPE
             </Typography>
             <Typography variant="body1" className={classes.fieldText}>
-              {props.event.activityType.join(", ")}
+              {props.event.activityType}
             </Typography>
           </Grid>
           <Grid item xs={6}>

@@ -364,7 +364,7 @@ const EducatorDashboard: React.SFC<Props> = ({
             </div>
           </TabPanel>
 
-          <Grid container spacing={4}>
+          <Grid container spacing={4} style={{ paddingTop: "50px" }}>
             <Grid item />
             {eventList.length === 0 && retrievedData ? (
               <Container className={classes.noAppsDisc}>

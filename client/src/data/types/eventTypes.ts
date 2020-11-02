@@ -7,7 +7,7 @@ export interface Event {
   contactName: string;
   schoolAddress: string;
   schoolName: string;
-  activityType: string[];
+  activityType: string;
   applicantNumber: number;
   contact: Educator;
   endDate: Date;
