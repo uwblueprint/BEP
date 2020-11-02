@@ -13,7 +13,7 @@ const eventApi: string = 'Event__c';
 const eventFields: string =
     'Id, Name, isActive__c, isPublic__c, activityType__c, gradeOfStudents__c, preferredSector__c, ' +
     'startDate__c, endDate__c, postingExpiry__c, numberOfStudents__c, numberOfVolunteers__c, hoursCommitment__c, ' +
-    'schoolTransportation__c, contact__c, ApplicantNumber__c, invitationNumber__c, School__c';
+    'schoolTransportation__c, contact__c, ApplicantNumber__c, invitationNumber__c';
 
 /**
  * Service Methods
@@ -26,7 +26,7 @@ const eventFields: string =
 
 const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
     let salesforceEvent: any = {
-        activityType__c: arrayToPicklistString(event.activityType),
+        activityType__c: event.activityType,
         contact__c: event.contact.id,
         endDate__c: event.endDate,
         Name: event.eventName,
@@ -48,7 +48,7 @@ const eventModelToSalesforceEvent = (event: Event, id?: string): any => {
 
 const salesforceEventToEventModel = async (record: any): Promise<Event> => {
     const event: Event = {
-        activityType: picklistStringToArray(record.activityType__c),
+        activityType: record.activityType__c,
         applicantNumber: record.ApplicantNumber__c,
         contact: (await UserService.getUser({ id: record.contact__c })) as Educator,
         endDate: record.endDate__c,
@@ -143,7 +143,6 @@ export const create = async (event: Event): Promise<string> => {
 
     const newEvent: Event = event;
     newEvent.contact = newContactObject;
-
     const eventInfo: { id: string; success: boolean; errors: Error[] } = await conn
         .sobject(eventApi)
         .create(eventModelToSalesforceEvent(newEvent), (err: Error, result: any) => {
@@ -151,7 +150,6 @@ export const create = async (event: Event): Promise<string> => {
                 return console.error(err, result);
             }
         });
-
     return eventInfo.id;
 };
 

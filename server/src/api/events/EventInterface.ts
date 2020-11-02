@@ -1,7 +1,7 @@
 import EducatorInterface from '../users/EducatorInterface';
 
 export default interface EventInterface {
-    activityType: string[];
+    activityType: string;
     applicantNumber: number;
     contact: EducatorInterface;
     endDate: Date;
