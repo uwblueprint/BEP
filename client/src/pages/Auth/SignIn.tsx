@@ -39,8 +39,6 @@ class SignIn extends React.Component<
     failed: boolean;
     redirect: boolean;
     isRegistered: boolean;
-    // remove this after beta
-    gatedUser: boolean;
   }
 > {
   constructor(props: any) {
@@ -52,8 +50,6 @@ class SignIn extends React.Component<
       failed: false,
       redirect: false,
       selectUser: "",
-      // remove this after beta
-      gatedUser: false,
       isRegistered: false,
     };
     this.handleChange = this.handleChange.bind(this);
@@ -88,10 +84,8 @@ class SignIn extends React.Component<
     const { email, password } = this.state;
     const { login } = this.props;
 
-    // remove this after beta
-    const accepted = ["bepwr.ca", "uwblueprint.org", "gmail.com", "himandher.ca"];
-    if (email && !(accepted.includes(email.split("@")[1]))) {
-      this.setState({ password: '', email: '', gatedUser: true, failed: false });
+    if (email) {
+      this.setState({ password: '', email: '', failed: false });
     }
 
     if (email && password) {
@@ -113,7 +107,7 @@ class SignIn extends React.Component<
 
   render() {
 
-    const { failed, redirect, gatedUser, isRegistered } = this.state;
+    const { failed, redirect, isRegistered } = this.state;
     if (redirect) {
       const userType = localStorage.getItem("userType");
       if (userType && parseInt(userType) === UserType.Admin) {
@@ -210,13 +204,7 @@ class SignIn extends React.Component<
                       Incorrect email or password. Please try again.
                     </RedTextTypography>
                   ) : null}
-                  { /* remove this after beta */ 
-                  gatedUser ? (
-                    <RedTextTypography style={{ fontSize: "0.85em" }}>
-                      Our site is currently in beta. Please check back September 8th.
-                    </RedTextTypography>
-                  ) : null}
-                  {isRegistered && !(gatedUser || failed) ? (
+                  {isRegistered && !failed ? (
                     <SecondaryMainTextTypography style={{ fontSize: "0.85em" }}>
                       Registration complete. Please login.
                     </SecondaryMainTextTypography>
