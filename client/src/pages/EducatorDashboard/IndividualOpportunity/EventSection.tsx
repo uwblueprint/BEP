@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from "react-redux";
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
@@ -9,6 +10,11 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import { TextButton, ContainedButton, OutlinedButton } from "../../../components/index";
+
+import Application, {
+  ApplicationStatus,
+} from "../../../data/types/applicationTypes";
+import { updateApplicationService } from "../../../data/services/applicationsService";
 
 import { PageViewer } from "../../../data/types/pageTypes";
 
@@ -53,26 +59,27 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const EventSection = (props: any) => {
   const classes = useStyles();
-  const [withdrawOpen, setWithdrawOpen] = React.useState(false);
-  const [cancelOpen, setCancelOpen] = React.useState(false);
-  const [acceptOpen, setAcceptOpen] = React.useState(false);
-  const [denyOpen, setDenyOpen] = React.useState(false);
+  const { event, updateApplication } = props;
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [acceptOpen, setAcceptOpen] = useState(false);
+  const [denyOpen, setDenyOpen] = useState(false);
 
-  var eventStartDate = new Date(props.event.startDate)
+  var eventStartDate = new Date(event.startDate)
     .toLocaleString("default", {
       month: "long",
       day: "numeric",
       year: "numeric",
     })
     .replace(",", "");
-  var eventEndDate = new Date(props.event.endDate)
+  var eventEndDate = new Date(event.endDate)
     .toLocaleString("default", {
       month: "long",
       day: "numeric",
       year: "numeric",
     })
     .replace(",", "");
-  var eventExpiryDate = new Date(props.event.postingExpiry)
+  var eventExpiryDate = new Date(event.postingExpiry)
     .toLocaleString("default", {
       month: "long",
       day: "numeric",
@@ -95,6 +102,10 @@ const EventSection = (props: any) => {
 
   const handleWithdrawConfirm = () => {
     setWithdrawOpen(false);
+    const newApplication: Application = props.application;
+    newApplication.status = ApplicationStatus.WITHDRAWN;
+    updateApplication(newApplication);
+    window.history.back();
   }
 
   const handleCancelConfirm = () => {
@@ -130,7 +141,7 @@ const EventSection = (props: any) => {
               ACTIVITY TYPE
             </Typography>
             <Typography variant="body1" className={classes.fieldText}>
-              {props.event.activityType}
+              {event.activityType}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -142,8 +153,8 @@ const EventSection = (props: any) => {
               PREFERRED SECTOR
             </Typography>
             <Typography variant="body1" className={classes.fieldText}>
-              {props.event.preferredSector
-                ? props.event.preferredSector.join(", ")
+              {event.preferredSector
+                ? event.preferredSector.join(", ")
                 : ""}
             </Typography>
           </Grid>
@@ -168,7 +179,7 @@ const EventSection = (props: any) => {
               GRADES OF PARTICIPATING STUDENTS
             </Typography>
             <Typography variant="body1" className={classes.fieldText}>
-              {props.event.gradeOfStudents}
+              {event.gradeOfStudents}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -180,7 +191,7 @@ const EventSection = (props: any) => {
               HOURS OF COMMITMENT
             </Typography>
             <Typography variant="body1" className={classes.fieldText}>
-              {props.event.hoursCommitment}
+              {event.hoursCommitment}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -192,7 +203,7 @@ const EventSection = (props: any) => {
               NUMBER OF STUDENTS
             </Typography>
             <Typography variant="body1" className={classes.fieldText}>
-              {props.event.numberOfStudents}
+              {event.numberOfStudents}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -204,7 +215,7 @@ const EventSection = (props: any) => {
               NUMBER OF VOLUNTEERS NEEDED
             </Typography>
             <Typography variant="body1" className={classes.fieldText}>
-              {props.event.numberOfVolunteers}
+              {event.numberOfVolunteers}
             </Typography>
           </Grid>
         </Grid>
@@ -227,7 +238,7 @@ const EventSection = (props: any) => {
             >
               SCHOOL
             </Typography>
-            <Typography>{props.event.contact.school.name}</Typography>
+            <Typography>{event.contact.school.name}</Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography
@@ -238,11 +249,11 @@ const EventSection = (props: any) => {
               ADDRESS
             </Typography>
             <Typography>
-              {props.event.contact.school.address},{" "}
-              {props.event.contact.school.city}{" "}
-              {props.event.contact.school.province},{" "}
-              {props.event.contact.school.postalCode.substr(0, 3)}{" "}
-              {props.event.contact.school.postalCode.substr(3, 3)}
+              {event.contact.school.address},{" "}
+              {event.contact.school.city}{" "}
+              {event.contact.school.province},{" "}
+              {event.contact.school.postalCode.substr(0, 3)}{" "}
+              {event.contact.school.postalCode.substr(3, 3)}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -253,7 +264,7 @@ const EventSection = (props: any) => {
             >
               TRANSPORTATION
             </Typography>
-            <Typography>{props.event.schoolTransportation}</Typography>
+            <Typography>{event.schoolTransportation}</Typography>
           </Grid>
         </Grid>
       </Card>
@@ -278,7 +289,7 @@ const EventSection = (props: any) => {
                 Educator
               </Typography>
               <Typography>
-                {props.event.contact.firstName} {props.event.contact.lastName}
+                {event.contact.firstName} {event.contact.lastName}
               </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -289,7 +300,7 @@ const EventSection = (props: any) => {
               >
                 Position
               </Typography>
-              <Typography>{props.event.contact.position}</Typography>
+              <Typography>{event.contact.position}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography
@@ -300,9 +311,9 @@ const EventSection = (props: any) => {
                 Phone Number
               </Typography>
               <Typography>
-                {props.event.contact.phoneNumber.substr(0, 3)}{"-"}
-                {props.event.contact.phoneNumber.substr(3, 3)}{"-"}
-                {props.event.contact.phoneNumber.substr(6, 4)}
+                {event.contact.phoneNumber.substr(0, 3)}{"-"}
+                {event.contact.phoneNumber.substr(3, 3)}{"-"}
+                {event.contact.phoneNumber.substr(6, 4)}
               </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -313,7 +324,7 @@ const EventSection = (props: any) => {
               >
                 Email Address
               </Typography>
-              <Typography>{props.event.contact.email}</Typography>
+              <Typography>{event.contact.email}</Typography>
             </Grid>
           </Grid>
         </Card>
@@ -466,4 +477,9 @@ const EventSection = (props: any) => {
   );
 };
 
-export default EventSection;
+const mapDispatchToProps = (dispatch: any) => ({
+  updateApplication: (application: Application) =>
+    dispatch(updateApplicationService(application)),
+});
+
+export default connect(null, mapDispatchToProps)(EventSection);

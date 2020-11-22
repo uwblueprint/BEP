@@ -140,6 +140,7 @@ const EventPage = (props: any) => {
   const userId = user ? user.id : "";
   const eventData = props.location.state.event;
   const viewerType = props.location.state.type;
+  const applicationData = props.location.state.application;
 
   const isEducator = user.userType === UserType.Educator;
   const isVolunteer = user.userType === UserType.Volunteer;
@@ -338,7 +339,7 @@ const EventPage = (props: any) => {
               </Grid>
             </PageHeader>
             <PageBody>
-              <EventSection event={eventData} isEducator={isEducator} viewerType={viewerType} />
+              <EventSection event={eventData} isEducator={isEducator} viewerType={viewerType} application={applicationData} />
               {isEducator && (
                 <React.Fragment>
                   <Typography

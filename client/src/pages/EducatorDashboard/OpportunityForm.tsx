@@ -297,6 +297,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             required
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
+                            type="number"
                             />
                     </Grid>
                     <Grid item direction="column">
@@ -515,6 +516,7 @@ class OpportunityForm extends React.Component<IProps, OpFormProps> {
                             value={this.state.numberOfStudents}
                             onChange={this.handleChange}
                             style={{ width: "454px"}}
+                            type="number"
                             />
                     </Grid>
                     <Grid item direction="column" style={{paddingBottom: "32px"}}>

@@ -167,6 +167,20 @@ const EventPage: React.SFC<Props> =
       </Grid>
   );
 
+  const createOpportunityCardApplicant = (application: Application, type: number = PageViewer.unknown) => (
+    <Grid item key={application.event.id}>
+        <Link
+          to={{
+            pathname: `/events/${application.event.eventName}`,
+            state: { event: application.event, type, application },
+          }}
+          style={{ textDecoration: "none" }}
+        >
+          <EventCard event={application.event} isPastEvent={false} showOwner={false} type={type} />
+        </Link>
+      </Grid>
+  );
+
   return (
     <React.Fragment>
       <div style={{ height: "100vh" }}>
@@ -217,7 +231,7 @@ const EventPage: React.SFC<Props> =
                     <div style={{margin:"1% 0"}}>Click 'Browse Opportunities' to get started.</div>
                 </Typography> :
               applications.map((application: any) =>
-                createOpportunityCard(application.event, PageViewer.applicant)
+                createOpportunityCardApplicant(application, PageViewer.applicant)
               )}
             </Grid>
           </TabPanel>
