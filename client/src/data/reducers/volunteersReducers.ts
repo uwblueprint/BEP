@@ -2,7 +2,9 @@ import {
   FETCH_VOLUNTEERS, 
   FETCH_VOLUNTEER_APPLICATIONS, 
   FETCH_VOLUNTEER_INVITATIONS, 
-  FETCH_EVENTS_OF_VOLUNTEER 
+  FETCH_EVENTS_OF_VOLUNTEER,
+  FETCH_LAST_NUM_VOLUNTEERS_RECEIVED,
+  FETCH_VOLUNTEER_PAGE_NUM,
 } from "../actions/actionTypes";
 import { Volunteer } from "../types/userTypes";
 import { VolunteersAction } from "../actions/volunteersActions";
@@ -24,6 +26,8 @@ export interface VolunteersState {
   applications: Application[];
   invitations: Invitation[];
   events: EventVolunteer[];
+  lastNumVolunteersRecieved: number;
+  volunteerPageNumber: number;
 }
 
 const initialState: VolunteersState = {
@@ -33,6 +37,8 @@ const initialState: VolunteersState = {
   applications: [],
   invitations: [],
   events: [],
+  lastNumVolunteersRecieved: 0,
+  volunteerPageNumber: 0,
 };
 
 export default function (
@@ -64,6 +70,16 @@ export default function (
         ...state,
         events,
       }
+    case FETCH_LAST_NUM_VOLUNTEERS_RECEIVED:
+      return {
+        ...state,
+        lastNumVolunteersRecieved: action.payload
+      };
+    case FETCH_VOLUNTEER_PAGE_NUM:
+      return {
+        ...state,
+        volunteerPageNumber: action.payload
+      };
     default:
       return state;
   }

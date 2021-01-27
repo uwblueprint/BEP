@@ -12,6 +12,24 @@ export const getVolunteers = createSelector(
   (volunteers) => volunteers
 );
 
+const getLastNumVolunteersReceivedData = (state: VolunteersState) => {
+  return state.lastNumVolunteersRecieved ? state.lastNumVolunteersRecieved : 0;
+};
+
+export const getLastNumVolunteersReceived = createSelector(
+  [getLastNumVolunteersReceivedData],
+  (lastNumVolunteersRecieved) => lastNumVolunteersRecieved
+);
+
+const getVolunteerPageNumberData = (state: VolunteersState) => {
+  return state.volunteerPageNumber ? state.volunteerPageNumber : 0;
+};
+
+export const getVolunteerPageNumber = createSelector(
+  [getVolunteerPageNumberData],
+  (volunteerPageNumber) => volunteerPageNumber
+);
+
 const getVolunteerApplicationsData = (state: any) => {
   return state.volunteers && state.volunteers.applications ? state.volunteers.applications : [];
 }
